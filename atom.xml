@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://LiarrDev.github.io</id>
     <title>Liarr&apos;s Studio</title>
-    <updated>2021-05-29T15:47:25.160Z</updated>
+    <updated>2021-06-07T15:14:48.114Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://LiarrDev.github.io"/>
     <link rel="self" href="https://LiarrDev.github.io/atom.xml"/>
@@ -10,6 +10,98 @@
     <logo>https://LiarrDev.github.io/images/avatar.png</logo>
     <icon>https://LiarrDev.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, Liarr&apos;s Studio</rights>
+    <entry>
+        <title type="html"><![CDATA[『Android Studio』如何导入 SO 库]]></title>
+        <id>https://LiarrDev.github.io/post/How-to-Import-SO-in-Android-Studio/</id>
+        <link href="https://LiarrDev.github.io/post/How-to-Import-SO-in-Android-Studio/">
+        </link>
+        <updated>2021-06-07T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>之前的文章『<a href="https://liarrdev.github.io/post/How-to-Import-JAR-in-Android-Studio/">「Android Studio」如何导入 JAR 包</a>』介绍了传统 JAR 包的导入方式，其实 Android 开发中还有一种相对来说用得比较少但却依然十分重要的库类型：SO 文件。</p>
+<h1 id="什么是-so-库">什么是 SO 库</h1>
+<p>SO 文件（Shared Object）是 Linux 下共享库文件，它的文件格式被称为 ELF 文件格式。由于 Android 操作系统的底层基于 Linux 系统，所以 SO 文件可以运行在 Android 平台上。</p>
+<p>一般来说，SO 文件就类似于常说的动态链接库（DLL，即 Dynamic Link Library）, 都是 C 或 C++ 编译出来的。</p>
+<p>Android 系统也同样开放了 C/C++ 接口供开发者开发 Native 程序。由于基于虚拟机的编程语言 Java 更容易被人反编译，因此越来越多的应用将其中的核心代码以 C/C++ 为编程语言，并且以 SO 文件的形式供上层 Java 代码调用，以保证安全性。</p>
+<h1 id="android-abi">Android ABI</h1>
+<p>不同于 Java 利用虚拟机实现「Compile Once, Run AnyWhere」的跨平台的特性，C/C++ 是「Write Once, Compile EveryWhere」的，这就导致了其需要针对不同的平台进行编译。</p>
+<p>由于 Android 的开源，不同的厂家可以根据自己的需求在不同的硬件上接入 AOSP，因此不同的 Android 设备使用不同的 CPU，而不同的 CPU 支持不同的指令集。CPU 与指令集的每种组合都有专属的 ABI（Application Binary Interface，应用二进制接口）。</p>
+<p>目前常见的 ABI 有如下几种：</p>
+<ul>
+<li><code>armeabi</code>：第 5 代 ARM v5TE，使用软件浮点运算，兼容所有 ARM 设备，通用性强，速度慢（只支持 <code>armeabi</code>）。</li>
+<li><code>armeabi-v7a</code>：第 7 代 ARM v7，使用硬件浮点运算，具有高级扩展功能（支持 <code>armeabi</code> 和 <code>armeabi-v7a</code>）。</li>
+<li><code>arm64-v8a</code>：第 8 代，64 位，包含 AArch32、AArch64 两个执行状态对应 32-bit 和 64-bit（支持 <code>armeabi-v7a</code>、<code>armeabi</code> 和 <code>arm64-v8a</code>）。</li>
+<li><code>x86</code>：Intel 32 位，一般用于平板（支持 <code>x86</code> 和 <code>armeabi</code> 但性能有所损耗）。</li>
+<li><code>x86_64</code>：Intel 64 位，一般用于平板（支持 <code>x86</code> 和 <code>x86_64</code>）。</li>
+<li><code>mips</code>：32 位，支持 RISC。</li>
+<li><code>mips64</code>：64 位，支持 RISC。</li>
+</ul>
+<h1 id="项目导入-so-库">项目导入 SO 库</h1>
+<p>因为 SO 库是针对不同 CPU 架构编译出来的，所以其往往不会像 JAR 一样只会编译一份，而是会针对不同的 ABI 生成多个 SO 库，所以我们在使用时也需要往项目中导入多个 SO 文件。</p>
+<p>由于包含 SO 文件的开源框架并不十分常见，我在这里就以 <a href="https://dev.vivo.com.cn/documentCenter/doc/6">vivo 网游联运 SDK</a> 为例进行介绍。</p>
+<p>首先将其提供的 SDK 压缩文件下载到本地，并对其解压，得到如下目录：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1622991030410.png" alt="vivo 网游联运 SDK 目录" loading="lazy"></figure>
+<p>可以看到，<a href="https://dev.vivo.com.cn/documentCenter/doc/6">vivo 网游联运 SDK</a> 提供了 <code>armeabi</code>、<code>armeabi-v7a</code>、<code>arm64-v8a</code>、<code>x86</code> 和 <code>x86_64</code> 共五种架构的支持，SO 文件分别以同名的方式位于这五个文件夹下，这与我们的 <code>res</code> 类型同名文件存放方式是相似的。</p>
+<p>接下来就可以导入了，『Android Studio』中 SO 库的导入有三种方式。</p>
+<h2 id="通过-libs-目录导入">通过 <code>libs</code> 目录导入</h2>
+<p>理论上，『Android Studio』中所有的库文件都可以扔进「libs」目录，正如之前介绍过的『<a href="https://liarrdev.github.io/post/How-to-Import-JAR-in-Android-Studio/">「Android Studio」如何导入 JAR 包</a>』一般。</p>
+<p>将 SO 文件及上层文件夹复制到 Module 的「libs」目录下：</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1622991089932.png" alt="通过 libs 目录导入 - Project 视图" loading="lazy"></figure>
+<p>由于 Java 代码调用 SO 库涉及到跨语言交互，所以必须通过 JNI（Java Native Interface）进行，同时，通过 JNI 交互的文件也必须通过标识才能被『Android Studio』处理，因此还需要在 Module 的「build.gradle」中加入如下代码：</p>
+<pre><code class="language-Groovy">android {
+    ...
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+}
+</code></pre>
+<p>同步之后即可在项目中使用了。</p>
+<p>切换至「Android」视图下，你还可以发现『Android Studio』将其识别为「jniLibs」文件夹：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1622991108616.png" alt="通过 libs 目录导入 - Android 视图" loading="lazy"></figure>
+<h2 id="通过-jnilibs-目录导入">通过 <code>jniLibs</code> 目录导入</h2>
+<p>除了将「libs」目录指定为「jniLibs」文件夹，我们还可以为 SO 库创建专门的「jniLibs」目录。</p>
+<p>在 <code>/src/main</code> 目录下新建一个名为「jniLibs」的文件夹，将 SO 文件及上层文件夹复制到该目录即可：</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1622991130503.png" alt="通过 jniLibs 目录导入" loading="lazy"></figure>
+<p>由于文件夹的名称已经做了标识，所以我们无需添加代码告知『Android Studio』去处理。</p>
+<h2 id="以-jar-包的方式导入">以 JAR 包的方式导入</h2>
+<p>这种方式比较少见。</p>
+<p>我们可以将 SO 库按照如下目录结构压缩成 JAR，之前『<a href="https://liarrdev.github.io/post/How-to-Import-JAR-in-Android-Studio/">「Android Studio」如何导入 JAR 包</a>』一文也提到，JAR 是以 ZIP 格式构建的，所以可以使用任何压缩工具甚至是命令来压缩。</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1622991157376.png" alt="以 JAR 包的方式导入" loading="lazy"></figure>
+<p>然后按照『<a href="https://liarrdev.github.io/post/How-to-Import-JAR-in-Android-Studio/">「Android Studio」如何导入 JAR 包</a>』一文所提到的方法，跟导入普通 JAR 包一样导入即可。</p>
+<h1 id="当不同库兼容的-abi-不一致">当不同库兼容的 ABI 不一致</h1>
+<p>由于系统会根据 CPU 架构去运行不同的 SO 库，在实际开发项目中，假如我们引用了其他第三库，而这个库可能兼容的 ABI 与已有的不一致，就会产生问题。</p>
+<p>举个例子，比如上方举例的 <a href="https://dev.vivo.com.cn/documentCenter/doc/6">vivo 网游联运 SDK</a> 兼容了 <code>armeabi</code>、<code>armeabi-v7a</code>、<code>arm64-v8a</code>、<code>x86</code> 和 <code>x86_64</code> 五种架构，我现在引入<a href="https://developers.weixin.qq.com/doc/oplatform/Downloads/Android_Resource.html">微信语音识别 SDK</a>，发现其支持 <code>armeabi-v7a</code>、<code>armeabi</code>、<code>mips</code> 和 <code>x86</code> 四种架构，导入后每个文件夹中的 SO 文件并不对等，运行到某些设备上就会崩溃。</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1622991336026.png" alt="导入两个支持不同 ABI 的 SDK" loading="lazy"></figure>
+<p>因为当应用运行时，设备会有先查看与 CPU 匹配的最优 ABI，如果没有，才会去查找其他 ABI，当 CPU 与 ABI 匹配上后，应用仅会读取该 ABI 下的 SO 库，其他 ABI 会直接被无视，假若该 ABI 缺失了对应的 SO 库，运行到对应代码时就会崩溃。</p>
+<p>所以，遇到这种情况时，我们需要对 ABI 做处理。</p>
+<h2 id="仅保留交集-abi">仅保留交集 ABI</h2>
+<p>这种解决方法非常简单粗暴，就是取交集，仅保留所有库都支持的 ABI，其他文件夹都删除。</p>
+<p>比如上方举例提到的两个第三方 SDK，取交集后可以保留 <code>armeabi</code>、<code>armeabi-v7a</code> 和 <code>x86</code> 三种 ABI。</p>
+<figure data-type="image" tabindex="7"><img src="https://LiarrDev.github.io/post-images/1622991383844.png" alt="两个支持不同 ABI 的 SDK 取并集" loading="lazy"></figure>
+<p>当然，考虑到市面上设备占比以及目标用户分布，你甚至可以仅保留 <code>armeabi-v7a</code> 一种 ABI。</p>
+<h2 id="将已有的-so-文件复制到其他-abi-目录">将已有的 SO 文件复制到其他 ABI 目录</h2>
+<p>前面提到，<code>arm64-v8a</code> 是兼容 <code>armeabi-v7a</code> 和 <code>armeabi</code> 的，所以，你还可以将其复制到空缺的文件夹。</p>
+<p>比如将<a href="https://developers.weixin.qq.com/doc/oplatform/Downloads/Android_Resource.html">微信语音识别 SDK</a> 中 <code>armeabi</code> 下的 SO 文件复制到 <code>arm64-v8a</code> 下，就可以使其支持 <code>arm64-v8a</code> 了。</p>
+<h2 id="abi-filters">ABI Filters</h2>
+<p>部分第三方库你还可能是通过远程依赖的，这时候对不同 SDK 的 ABI 处理就会变得复杂，但我们其实可以通过 Gradle 来操作。</p>
+<p>在 Module 的「build.gradle」中加入如下代码：</p>
+<pre><code class="language-Groovy">android {
+    ...
+    defaultConfig {
+        ...
+        ndk {
+            abiFilters 'armeabi', 'arm64-v8a', 'x86'
+        }
+    }
+}
+</code></pre>
+<p>这样，『Android Studio』就可以针对我们指定的 ABI 进行构建了。</p>
+<h1 id="参考内容">参考内容</h1>
+<ul>
+<li><a href="https://developer.android.google.cn/ndk/guides/abis?hl=en">Android ABIs | Android NDK | Android Developers</a></li>
+</ul>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[『Android Studio』如何导入 JAR 包]]></title>
         <id>https://LiarrDev.github.io/post/How-to-Import-JAR-in-Android-Studio/</id>
@@ -1021,117 +1113,6 @@ mailto:
 </code></pre>
 <p>效果如下：</p>
 <figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1562417566508.gif" alt="Menu Dialog" loading="lazy"></figure>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Android 不可编辑的 EditText]]></title>
-        <id>https://LiarrDev.github.io/post/Android-Non-Editable-EditText/</id>
-        <link href="https://LiarrDev.github.io/post/Android-Non-Editable-EditText/">
-        </link>
-        <updated>2020-10-28T16:00:00.000Z</updated>
-        <content type="html"><![CDATA[<p>项目中有时会需要用到一个不可编辑的 <code>EditText</code>，用于展示，很奇怪的需求对吧，明明就应该使用 <code>TextView</code> 来做展示，使用 <code>EditText</code> 来做输入，但现实就是可能为了 UI 统一，又或者是其他乱七八糟的原因，就得这么实现。</p>
-<p>比如在之前的『<a href="https://github.com/LiarrDev/PassBox_Android">PassBox</a>』和『<a href="https://github.com/LiarrDev/HacppleStore_Android">HacppleStore</a>』，我就是这么干的。</p>
-<p>那么在 Android 中应如何将 <code>EditText</code> 设置为不可编辑状态呢？</p>
-<p>我总结了几种方法：</p>
-<h1 id="androideditable">android:editable</h1>
-<pre><code class="language-XML">&lt;EditText
-    ...
-    android:editable=&quot;false&quot; /&gt;
-</code></pre>
-<p>效果如下：</p>
-<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1603732817529.gif" alt="Editable" loading="lazy"></figure>
-<p>可以看到，默认情况下，<code>EditText</code> 并没有获取到焦点，但点击 <code>EditText</code> 后，尽管焦点马上被激活，但输入法并没有弹出。</p>
-<p>需要提醒的是，该属性已经被标记为 <code>@Deprecated</code>：</p>
-<pre><code class="language-XML">&lt;!-- If set, specifies that this TextView has an input method.
-     It will be a textual one unless it has otherwise been specified.
-     For TextView, this is false by default.  
-     For EditText, it is true by default.
-     {@deprecated Use inputType instead.} --&gt;
-&lt;attr name=&quot;editable&quot; format=&quot;boolean&quot; /&gt;
-</code></pre>
-<p>虽然上面提到使用 <code>android:inputType</code> 来代替，但我暂时没找到该属性的替代方法。</p>
-<h1 id="setkeylistener">setKeyListener()</h1>
-<p>在逻辑中使用：</p>
-<pre><code class="language-Java">editText.setKeyListener(false);
-</code></pre>
-<p>效果与 <code>android:editable</code> 相同，默认情况下没有获取到焦点，点击后焦点被激活，输入法没有弹出。</p>
-<p><code>setKeyListener()</code> 实际上是继承自 <code>TextView</code> 的一个方法，传入 <code>null</code> 即为禁止用户输入。</p>
-<h1 id="androidfocusable-setfocusable">android:focusable / setFocusable()</h1>
-<p>在布局文件中：</p>
-<pre><code class="language-XML">&lt;EditText
-    ...
-    android:focusable=&quot;false&quot; /&gt;
-</code></pre>
-<p>或使用逻辑控制：</p>
-<pre><code class="language-Java">editText.setFocusable(false)                // boolean
-editText.setFocusable(View.NOT_FOCUSABLE);  // int
-</code></pre>
-<p>效果如下：</p>
-<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1603732881895.gif" alt="Focusable" loading="lazy"></figure>
-<p>这其实是继承自 <code>View</code> 的一个属性，用于控制对应的 <code>View</code> 能否获取焦点。</p>
-<p>可以看到，默认情况下，<code>EditText</code> 并没有获取到焦点，触摸时 <code>EditText</code> 获取到焦点，并在触摸结束后失去焦点，而通过长按可以将剪贴板的内容粘贴至 <code>EditText</code> 内。</p>
-<p>需要注意的是，<code>setFocusable()</code> 做了方法重载，使用 <code>int</code> 类型参数则需要到 API 26 才支持。</p>
-<h1 id="androidfocusableintouchmode-setfocusableintouchmode">android:focusableInTouchMode / setFocusableInTouchMode()</h1>
-<p>在布局文件中：</p>
-<pre><code class="language-XML">&lt;EditText
-    ...
-    android:focusableInTouchMode=&quot;false&quot; /&gt;
-</code></pre>
-<p>或使用逻辑控制：</p>
-<pre><code class="language-Java">editText.setFocusableInTouchMode(false);
-</code></pre>
-<p>该方法效果和 <code>android:focusable</code> 也一样，同样是继承自 <code>View</code> 的一个属性，用于控制对应的 <code>View</code> 在触摸时能否获取焦点。</p>
-<h1 id="androidenabled-setenabled">android:enabled / setEnabled()</h1>
-<p>在布局文件中：</p>
-<pre><code class="language-XML">&lt;EditText
-    ...
-    android:enabled=&quot;false&quot; /&gt;
-</code></pre>
-<p>或使用逻辑控制：</p>
-<pre><code class="language-Java">editText.setEnabled(false);
-</code></pre>
-<p>效果如下：</p>
-<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1603732910034.gif" alt="Enabled" loading="lazy"></figure>
-<p>编辑框完全失去焦点，即无法通过粘贴的方法修改输入内容，但是整个编辑框变成了暗色状态，不易于阅读。</p>
-<h1 id="androidlongclickable-setlongclickable">android:longClickable / setLongClickable()</h1>
-<p>为了可以清晰显示，并且不可以通过粘贴的方式编辑，我们可以考虑引入一些其他的解决方法。</p>
-<p>通过粘贴方式编辑，实际操作过程是通过长按 <code>EditText</code> 以弹出对应的操作浮窗，才得以完成粘贴操作，那么我们就可以禁用长按操作，来避免用户进行粘贴。</p>
-<p>在布局中：</p>
-<pre><code class="language-XML">&lt;EditText
-    ...
-    android:focusable=&quot;false&quot;
-    android:longClickable=&quot;false&quot; /&gt;
-</code></pre>
-<p>或使用逻辑控制：</p>
-<pre><code class="language-Java">editText.setFocusable(false);
-editText.setLongClickable(false);
-</code></pre>
-<p>效果如下：</p>
-<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1603732935374.gif" alt="禁用长按" loading="lazy"></figure>
-<p>可以看到，文字能够清晰显示，长按 <code>EditText</code> 时也无法呼出操作浮窗，使用 <code>android:focusable</code> 或 <code>setFocusable()</code> 来搭配使用，因此同时也具备了相同的缺点，就是触摸时 <code>EditText</code> 仍然会获取焦点，但因为已经禁用了长按，所以不会产生功能上的问题。</p>
-<p>如果还是不想存在焦点效果，添加个背景即可。</p>
-<h1 id="自定义-edittext">自定义 EditText</h1>
-<p>没有什么效果是自定义 <code>View</code> 解决不了的。</p>
-<pre><code class="language-Java">public class NonEditableEditText extends AppCompatEditText {
-
-    public NonEditableEditText(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return true;
-    }
-}
-</code></pre>
-<p>其实不需要多复杂，只需要重写 <code>onTouchEvent()</code> 方法即可，这里涉及到 <code>View</code> 的事件分发机制，简单来说，返回 <code>true</code> 代表当前 <code>View</code> 已经完整地处理了该事件，且不希望上层 <code>ViewGroup</code> 其他回调方法再次处理。</p>
-<p>我们只需要在布局中使用该自定义控件：</p>
-<pre><code class="language-XML">&lt;com.custom.widget.NonEditableEditText
-    ... /&gt;
-</code></pre>
-<p>效果如下：</p>
-<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1603732968634.gif" alt="自定义 EditText 不响应触摸事件" loading="lazy"></figure>
-<p>可以看到，无论是点击还是长按，该自定义的 <code>EditText</code> 都不会获取焦点，因为它并不会对我们的触摸事件做任何处理。</p>
 ]]></content>
     </entry>
 </feed>
