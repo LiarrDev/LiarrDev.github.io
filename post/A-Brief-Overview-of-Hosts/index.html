@@ -2,7 +2,7 @@
   <head>
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Android P 解除 HTTP 明文通信限制 | Liarr&#39;s Studio</title>
+<title>一文带你简单了解 Hosts | Liarr&#39;s Studio</title>
 <meta name="description" content="温故而知新" />
 <link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
 <link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
@@ -16,8 +16,10 @@
 <script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
 <script src="https://LiarrDev.github.io/media/js/functions.js"></script>
     <meta name="referrer" content="never">
-    <meta name="description" content="随着国内应用市场的逐步规范，上架各应用市场的要求也越来越高，就目前来看，国内应用市场平台上架普遍要求应用的 targetSdkVersion 不得低于 26，也算是紧跟『Google Play』（targetSdkVersion 不得低于 ..." />
-    <meta name="keywords" content="Android" />
+    <meta name="description" content="在日常上网中我经常需要跟 Hosts 打交道，比如访问部分海外网站，或者是在外面访问公司内网，又或者日常开发测试，都需要修改 Hosts。
+不要觉得 Hosts 很高深，说不定你在平时的网上冲浪中也会接触到。
+今天就来简单科普一下 Host..." />
+    <meta name="keywords" content="Hosts" />
     <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
     <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
   </head>
@@ -85,23 +87,23 @@
       <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
 
         <div class="center content">
-          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Remove-Cleartext-Restrictions-above-Android-P.png');">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/A-Brief-Overview-of-Hosts.png');">
             <div class="meta top"> 
-              <time class="meta-info" style="float:left;" datetime="2020-07-28"><i class="fa fa-calendar"></i><span class="lately">1 年前</span></time>
+              <time class="meta-info" style="float:left;" datetime="2021-04-23"><i class="fa fa-calendar"></i><span class="lately">2 个月前</span></time>
               
-              <a href="https://LiarrDev.github.io/post/Remove-Cleartext-Restrictions-above-Android-P/#comments" class="comments meta-info" title="">
-                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Remove-Cleartext-Restrictions-above-Android-P/"> </span>
+              <a href="https://LiarrDev.github.io/post/A-Brief-Overview-of-Hosts/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/A-Brief-Overview-of-Hosts/"> </span>
               </a>
-              <span id="/Remove-Cleartext-Restrictions-above-Android-P/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              <span id="/A-Brief-Overview-of-Hosts/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
               
             </div>
             <div class="info">
               <div class="tags ">
                 
-                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                      <a href="https://LiarrDev.github.io/tag/_JNa_u8e-/" class="ctag ctag-0 ctag-_JNa_u8e-" aria-label="">Hosts</a>
                     
               </div>
-              <h1 class="title ularge white bold">Android P 解除 HTTP 明文通信限制</h1>
+              <h1 class="title ularge white bold">一文带你简单了解 Hosts</h1>
             </div>
           </div>
         </div>  
@@ -111,54 +113,35 @@
             <article class="main-article post">
               <section class="post-content">
                 <div class="text">
-                  <p>随着国内应用市场的逐步规范，上架各应用市场的要求也越来越高，就目前来看，国内应用市场平台上架普遍要求应用的 <code>targetSdkVersion</code> 不得低于 <code>26</code>，也算是紧跟『Google Play』（<code>targetSdkVersion</code> 不得低于 <code>28</code>）的步伐了。</p>
-<p>当然，为了让用户有更加舒适的体验，我们开发应用的时候理应将 <code>targetSdkVersion</code> 设置得越高越好，尽管这意味着开发者将面临更加严格的权限管控和繁琐的适配。</p>
-<p>其中就包括了 Android M（Marshmallow，Android 6.0，API Levle 23）的动态权限、Android O（Oreo，Android 8.0，API Level 26）的渠道通知等。</p>
-<p>而在 Android P（Pie，Android 9，API Level 28）中，则对 HTTP 明文通信做出了限制。</p>
-<blockquote>
-<p>Starting with Android 9 (API level 28), cleartext support is disabled by default.</p>
-<p>从 Android 9（API Level 28）开始，系统默认情况下已停用明文支持。</p>
-</blockquote>
-<p>如果你使用『<a href="https://square.github.io/okhttp/">OkHttp</a>』进行明文的 HTTP 网络请求，会抛出如下异常：</p>
-<pre><code>W/System.err: java.net.UnknownServiceException: CLEARTEXT communication to &lt;HOST&gt; not permitted by network security policy
-</code></pre>
-<p>触发源码如下：</p>
-<pre><code class="language-Java">if (!Platform.get().isCleartextTrafficPermitted(host)) {
-      throw new RouteException(new UnknownServiceException(
-          &quot;CLEARTEXT communication to &quot; + host + &quot; not permitted by network security policy&quot;));
-}
-</code></pre>
-<p>使用 Android 中标准 Java 接口 <code>HttpURLConnection</code> 来进行 HTTP 请求，也同样会抛出异常：</p>
-<pre><code>W/System.err: java.io.IOException: Cleartext HTTP traffic to &lt;HOST&gt; not permitted
-</code></pre>
-<p>而使用 HTTPS 请求则不会出现问题。</p>
-<p>Android P 之后系统限制了明文的网络请求，非加密请求会被系统禁止掉，也就是说如果当前应用的请求是 HTTP 请求而非 HTTPS，就会导系统禁止当前应用进行该请求。</p>
-<p>既然是 Android P 的问题，也就是说只要指定了 <code>targetSdkVersion</code> 为 <code>28</code>，就必定会执行这段代码，那么我只要把其修改为低版本就可以避免了。</p>
-<p>但是，在各大应用平台都在逐渐提高应用上架门槛的情况下，这必定不是长久之计，这与浏览器对 HTTPS 的要求是吻合的，不过在 Android 中我们依然可以通过一些简单的配置让应用支持 HTTP 请求。</p>
-<p>最简单的方法，直接在 <code>AndroidManifest</code> 中设置明文开启：</p>
-<pre><code class="language-XML">&lt;application ...
-    android:usesCleartextTraffic=&quot;true&quot;&gt;
-    ...
-&lt;/application&gt;
-</code></pre>
-<p>复杂一点儿的方法，设置单独的网络安全配置文件，需在「res」目录下新建一个「xml」文件夹，并在该文件夹中创建一个「network_security_config.xml」文件，内容如下：</p>
-<pre><code class="language-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;network-security-config&gt;
-    &lt;base-config cleartextTrafficPermitted=&quot;true&quot; /&gt;
-&lt;/network-security-config&gt;
-</code></pre>
-<p>然后在 <code>AndroidManifest</code> 中引用该网络安全配置文件：</p>
-<pre><code class="language-XML">&lt;application ...
-    android:networkSecurityConfig=&quot;@xml/network_security_config&quot;&gt;
-    ...
-&lt;/application&gt;
-</code></pre>
-<p>尽管这样看来使用单独的网络安全配置文件似乎有点儿繁琐，但有个好处是可以针对特定网域和特定应用配置自定义信任锚、配置用于调试的 CA 等，拥有更大的配置权限。</p>
-<p>最后，还是建议督促下后端和运维人员赶紧上 HTTPS 吧。</p>
-<h1 id="参考内容">参考内容：</h1>
-<ul>
-<li><a href="https://developer.android.google.cn/training/articles/security-config.html">Network security configuration | Android Developers</a></li>
-</ul>
+                  <p>在日常上网中我经常需要跟 Hosts 打交道，比如访问部分海外网站，或者是在外面访问公司内网，又或者日常开发测试，都需要修改 Hosts。</p>
+<p>不要觉得 Hosts 很高深，说不定你在平时的网上冲浪中也会接触到。</p>
+<p>今天就来简单科普一下 Hosts，让小白也能够轻松了解它。</p>
+<h1 id="hosts-是什么">Hosts 是什么</h1>
+<p>Hosts 是一个没有扩展名的系统文件，其作用就是将一些常用的网址域名与其对应的 IP 地址建立一个关联数据库，当用户在浏览器中输入一个需要登录的网址时，系统会首先自动从 Hosts 文件中寻找对应的 IP 地址，一旦找到，系统会立即打开对应网页，如果没有找到，则系统会再将网址提交 DNS 域名解析服务器进行 IP 地址的解析。</p>
+<p>如果这段话讲得很懵逼，那我举个例子，比如说百度的 IP 是 <code>14.215.177.38</code>，这一串没有任何意义和规律的东西很难记对吧，所以百度就搞了一个域名叫 <code>www.baidu.com</code>，那么你在浏览器中只需要输入这个域名就能够访问到百度的首页。</p>
+<p>但是实际上浏览器是通过 IP 地址才能找到该网站所在的服务器并进行访问的。在 Hosts 文件中没有添加这个映射的情况下，系统会先将这个域名告诉 DNS 域名解析服务器，然后等解析出 IP 后再进行访问；而如果在 Hosts 中添加了这个映射，那么就可以跳过解析 IP 这一步，因为它可以直接从 Hosts 中获取到 IP，因此访问速度就会变得快很多。</p>
+<p>访问一些受限制的网站也是同理，DNS 域名解析服务器解析不到对应的 IP，所以你也就无法正常访问了。</p>
+<p>可以说，操作系统的 Hosts 文件则是有着类似本地 DNS 服务器的作用，而且比网络上的 DNS 具有更高的优先级。</p>
+<p>如果这样解释还是不明白，那我再打个比方：</p>
+<p>有一个地点，域名就相当于这个地址，比如广州塔，挺好记的对吧，而 IP 就相当于经纬度，比如我告诉你东经 113.32°，北纬 23.11°，相信你是崩溃的，而 Hosts 的作用就是你有个小本本记录地址和经纬度的映射关系，那么只要我告诉你地址，你不需要再去用专业的工具查，而是马上打开你的小本本，然后就可以根据经纬度立刻在地图上找到定位，这就是效率。</p>
+<p>而限制访问就相当于，存在一个军事基地，但是由于军事基地是保密的，所以你在地图上不一定能找到它，这时候 Hosts 的作用就是，有一个内部人员告诉你这个军事基地的经纬度，那你就记在了小本本上，下次你想找这个军事基地的时候，马上打开你的小本本，就有答案了。</p>
+<h1 id="hosts-的作用">Hosts 的作用</h1>
+<p>根据上述这样的特点，Hosts 文件可以应用在很多场景，包括但不限于以下几种：</p>
+<h2 id="加快域名解析">加快域名解析</h2>
+<p>上面也提到，对于要经常访问的网站，我们可以通过在 Hosts 中配置域名和 IP 的映射关系，提高域名解析速度。由于有了映射关系，当我们输入域名计算机就能很快解析出 IP，而不用请求网络上的 DNS 服务器，同时也能绕过 DNS 污染与劫持。</p>
+<h2 id="方便局域网用户">方便局域网用户</h2>
+<p>在很多单位的局域网中，会有服务器提供给用户使用。但由于局域网中一般很少架设 DNS 服务器，访问这些服务器时，要输入难记的 IP 地址，这对不少人来说相当麻烦。</p>
+<p>可以分别给这些服务器取个容易记住的名字，然后在 Hosts 中建立 IP 映射，这样以后访问的时候，只要输入这个服务器的名字就行了。</p>
+<h2 id="屏蔽网站">屏蔽网站</h2>
+<p>有很多网站不经过用户同意就将各种各样的插件安装到你的计算机中，其中有些说不定就是木马或病毒。对于这些网站我们可以利用 Hosts 把该网站的域名映射到错误的 IP 或本地计算机的 IP，这样就达到屏蔽访问的效果，同样也可以用于屏蔽不健康网站、屏蔽垃圾广告网址等。</p>
+<h2 id="虚拟域名">虚拟域名</h2>
+<p>很多时候，网站建设者需要把软环境搭建好，再进行上传调试。但类似于邮件服务，则需要使用域名来辅助调试，这时就可以将本地 IP 地址与一个虚拟域名做地址指向，就可以达到要求的效果，且无需花费。</p>
+<h2 id="域名重定向">域名重定向</h2>
+<p>开发或测试应用时，利用 Hosts 将域名临时指向到测试服务器 IP，可以方便自己测试，同时又不影响他人和线上的应用。</p>
+<h1 id="总结">总结</h1>
+<p>说了那么多，其实 Hosts 并不神秘，简单理解它就是个电脑本机的「IP 地址 ↔ 域名」的对应表，系统或任何软件都会优先先检查 Hosts 里面有没对应的配置，之后才会去查询网上的 DNS 服务器。</p>
+<p>因此你可以利用 Hosts 做很多有趣、有用的事情。</p>
+<p>当然，本文只是一个简单的科普，追根溯源其实还有很多东西并没有详细聊到，比如 DNS 等，有兴趣的朋友可以自行深挖。</p>
 
                 </div>
                 <div class="clear"></div>
@@ -169,11 +152,11 @@
             <section class="related section">
               
               <article class="prev grid-50 tablet-grid-50 grid-parent">
-                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Using-HttpClient-above-Android-P.png');"></div>
-                 <a href="https://LiarrDev.github.io/post/Using-HttpClient-above-Android-P/" class="full-link"></a>
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Auto-Signing-with-Gradle-in-Android-Studio.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Auto-Signing-with-Gradle-in-Android-Studio/" class="full-link"></a>
                  <div class="info">
-                  <time datetime="2020-08-07">2020-08-07</time>
-                  <h4 class="title white no-margin">在 Android P 上使用 HttpClient</h4>
+                  <time datetime="2021-04-30">2021-04-30</time>
+                  <h4 class="title white no-margin">『Android Studio』用 Gradle 实现自动签名</h4>
                 </div>
                  <span class="epcl-button red">
                   <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
@@ -183,11 +166,11 @@
               
               
               <article class="next grid-50 tablet-grid-50 grid-parent">
-                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Delete-Weibos-with-a-Script.png');"></div>
-                 <a href="https://LiarrDev.github.io/post/Delete-Weibos-with-a-Script/" class="full-link"></a>
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Listening-Clicks-on-Drawables-of-TextView-or-EditText.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Listening-Clicks-on-Drawables-of-TextView-or-EditText/" class="full-link"></a>
                  <div class="info">
-                  <time datetime="2020-07-23">2020-07-23</time>
-                  <h4 class="title white no-margin">用脚本批量删除自己发过的微博</h4>
+                  <time datetime="2021-04-13">2021-04-13</time>
+                  <h4 class="title white no-margin">Android 对 TextView 和 EditText 的 Drawable 监听点击</h4>
                 </div>
                  <span class="epcl-button red">
                   <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
