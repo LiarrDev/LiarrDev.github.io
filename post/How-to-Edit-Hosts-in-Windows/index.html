@@ -2,7 +2,7 @@
   <head>
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Android 为 WebView 重写 Back 键 | Liarr&#39;s Studio</title>
+<title>Windows 修改 Hosts | Liarr&#39;s Studio</title>
 <meta name="description" content="温故而知新" />
 <link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
 <link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
@@ -16,11 +16,9 @@
 <script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
 <script src="https://LiarrDev.github.io/media/js/functions.js"></script>
     <meta name="referrer" content="never">
-    <meta name="description" content="现在很多 App 上许多内容都采用 WebView 来展示 H5 内容，以减少开发时间和开发成本，但是这也就遇到了一个问题。
-在 Android 应用中，是以栈来展示不同的 UI 界面的，栈的概念相信学过开发的人都不会陌生，先进后出嘛。
-
-..." />
-    <meta name="keywords" content="Android" />
+    <meta name="description" content="之前『一文带你简单了解 Hosts』科普了 Hosts 相关内容，这次就教大家如何修改 Hosts。
+考虑到大多数用户最常用的都是 Windows 系统，所以就先来介绍 Windows 下修改 Hosts 的方法，别担心，其他系统后面有机会..." />
+    <meta name="keywords" content="Hosts" />
     <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
     <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
   </head>
@@ -88,23 +86,23 @@
       <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
 
         <div class="center content">
-          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Override-Key-BACK-for-WebView-in-Android.jpeg');">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/How-to-Edit-Hosts-in-Windows.png');">
             <div class="meta top"> 
-              <time class="meta-info" style="float:left;" datetime="2019-05-06"><i class="fa fa-calendar"></i><span class="lately">2 年前</span></time>
+              <time class="meta-info" style="float:left;" datetime="2021-06-01"><i class="fa fa-calendar"></i><span class="lately">21 天前</span></time>
               
-              <a href="https://LiarrDev.github.io/post/Override-Key-BACK-for-WebView-in-Android/#comments" class="comments meta-info" title="">
-                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Override-Key-BACK-for-WebView-in-Android/"> </span>
+              <a href="https://LiarrDev.github.io/post/How-to-Edit-Hosts-in-Windows/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/How-to-Edit-Hosts-in-Windows/"> </span>
               </a>
-              <span id="/Override-Key-BACK-for-WebView-in-Android/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              <span id="/How-to-Edit-Hosts-in-Windows/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
               
             </div>
             <div class="info">
               <div class="tags ">
                 
-                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                      <a href="https://LiarrDev.github.io/tag/_JNa_u8e-/" class="ctag ctag-0 ctag-_JNa_u8e-" aria-label="">Hosts</a>
                     
               </div>
-              <h1 class="title ularge white bold">Android 为 WebView 重写 Back 键</h1>
+              <h1 class="title ularge white bold">Windows 修改 Hosts</h1>
             </div>
           </div>
         </div>  
@@ -114,37 +112,51 @@
             <article class="main-article post">
               <section class="post-content">
                 <div class="text">
-                  <p>现在很多 App 上许多内容都采用 <code>WebView</code> 来展示 H5 内容，以减少开发时间和开发成本，但是这也就遇到了一个问题。</p>
-<p>在 Android 应用中，是以栈来展示不同的 UI 界面的，栈的概念相信学过开发的人都不会陌生，先进后出嘛。</p>
-<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1562139712777.png" alt="栈" loading="lazy"></figure>
-<p>但是，<code>WebView</code> 相当于一个浏览器容器，是嵌在一个 <code>Activity</code> 中的，所以遇到的问题就是，当应用检测到用户触摸 Back 键时，会把这个 <code>Activity</code> 从栈中移除，也就是说，如果我在第一个 <code>Activity</code> 中使用 <code>WebView</code> 的话，无论用户在这个 <code>WebView</code> 中进行了什么操作，只要触摸 Back 键，就相当于退出程序。</p>
-<p>这显然不是我们想要的。</p>
-<p>我们可以通过重写 Back 键的响应方法，让程序监测到当用户触摸 Back 键时，如果 <code>WebView</code> 能够返回，则使网页返回上一页，如果没有上一页，则按照正常的 Back 键逻辑操作。</p>
-<p>方法一，重写 <code>onKeyDown()</code> 方法，代码如下：</p>
-<pre><code class="language-Java">@Override
-public boolean onKeyDown(int keyCode, KeyEvent event) {
-    if(keyCode == KeyEvent.KEYCODE_BACK &amp;&amp; webView.canGoBack()) {
-        webView.goBack();
-        return true;
-    }
-    return super.onKeyDown(keyCode, event);
-}
+                  <p>之前『<a href="https://liarrdev.github.io/post/A-Brief-Overview-of-Hosts/">一文带你简单了解 Hosts</a>』科普了 Hosts 相关内容，这次就教大家如何修改 Hosts。</p>
+<p>考虑到大多数用户最常用的都是 Windows 系统，所以就先来介绍 Windows 下修改 Hosts 的方法，别担心，其他系统后面有机会也会介绍。</p>
+<p>要修改 Hosts，那首先得找到 Hosts 文件。大多数情况下，Hosts 文件的路径为：<code>C:\Windows\System32\drivers\etc\hosts</code>。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1624293899560.png" alt="Hosts File" loading="lazy"></figure>
+<p>Hosts 文件可以用任何文本编辑工具打开，如记事本等。</p>
+<p>Windows 平台下原始的 Hosts 文件内容如下：</p>
+<pre><code class="language-Hosts"># Copyright (c) 1993-2009 Microsoft Corp.
+#
+# This is a sample HOSTS file used by Microsoft TCP/IP for Windows.
+#
+# This file contains the mappings of IP addresses to host names. Each
+# entry should be kept on an individual line. The IP address should
+# be placed in the first column followed by the corresponding host name.
+# The IP address and the host name should be separated by at least one
+# space.
+#
+# Additionally, comments (such as these) may be inserted on individual
+# lines or following the machine name denoted by a '#' symbol.
+#
+# For example:
+#
+#      102.54.94.97     rhino.acme.com          # source server
+#       38.25.63.10     x.acme.com              # x client host
+#
+# localhost name resolution is handled within DNS itself.
+# 127.0.0.1       localhost
+# ::1             localhost
 </code></pre>
-<p>监测当 <code>keyCode</code> 为 Back 键并且网页可回退时则使网页返回。返回值在这里表示是否能完全处理该事件，在此处返回 <code>TRUE</code>，以防止此事件被进一步传播，如果返回 <code>FALSE</code>，则表示还没有处理完这个事件，它应该继续传播到其他监听。</p>
-<p>方法二：重写 <code>onBackPressed()</code> 方法，代码如下：</p>
-<pre><code class="language-Java">@Override
-public void onBackPressed() {
-    if (webView.canGoBack()) {
-        webView.goBack();
-    } else {
-        super.onBackPressed();
-    }
-}
+<p>如果你怀疑你的 Hosts 文件被病毒或木马修改，可复制以上内容修复 Hosts 文件。</p>
+<p>值得一提的是，每行 <code>#</code> 后面的内容都是注释，所以实际上清空 Hosts 内容对系统正常运行并没有什么影响。</p>
+<p>Hosts 一般由网站的管理员提供，当然也有一些特殊途径，Hosts 的获取不在本文的介绍范围，一些公共的网站 IP 你可以尝试使用『<a href="https://www.ipaddress.com">IPAddress.com</a>』等第三方工具查询。</p>
+<p>当你需要添加 Hosts 的时候只需要在文件的末尾追加即可，Hosts 由 IP 和域名共同组成，如：</p>
+<pre><code class="language-Hosts">172.217.8.249    developer.android.com
 </code></pre>
-<p>需要注意的是，<code>super.onBackPressed()</code> 会自动调用 <code>finish()</code> 方法，关闭当前 <code>Activity</code>，所以这里放在 <code>ELSE</code> 分支执行，即当网页不可回退的情况下销毁当前 <code>Activity</code>。</p>
-<p>这两个方法其实大同小异，都是先使用 <code>WebView.canGoBack()</code> 方法来判断网页是否可以回退，如果可以的话就执行 <code>WebView.goBack()</code> 使其返回上一页，如果不可以回退，则调用父类的方法，销毁当前 <code>Activity</code>，唯一的区别就是，<code>onKeyDown()</code> 方法监听的是手机上所有按键，然后再在该方法内部进行判断是否为 Back 键，而 <code>onBackPressed()</code> 方法则仅监听 Back 键。</p>
-<p>当然，这样还会遇到一个交互十分不友好的情况，就是如果用户在 <code>WebView</code> 中进行了多步操作，当用户想要退出应用时，需要连续点击多次 Back 键，使 <code>WebView</code> 中的网页回到最开始的页面才能退出。</p>
-<p>对于这种情况，我的做法是在 <code>Toolbar</code> 上添加一个一键退出的按钮，直接把这个 <code>Activity</code> 给 <code>finish()</code> 掉，这也是目前大多数 App 使用的方案。</p>
+<p>修改完成后保存即可。</p>
+<p>有时候你会遇到无法直接修改系统 Hosts 文件的情况，可以通过将 Hosts 文件复制到桌面，修改完成后再覆盖来解决。</p>
+<p>还有可能会出现不能覆盖的情况，这可能涉及到权限问题，应检查当前登录账号的权限，以及文件的读写权限等。</p>
+<p>需要注意，Hosts 文件配置的映射是静态的，如果网络上的计算机更改了请及时更新 IP 地址，否则将不能访问。</p>
+<p>最后，相信有些朋友会遇到修改 Hosts 后不生效的情况，一般是由于 DNS 缓存的原因导致的。</p>
+<p>系统为了加快用户打开网站的速度，在首次访问网站成功之后，会把 DNS 解析的结果暂时性地保存在本地缓存（称为 DNS 缓存）里一小段时间，如果浏览器在这段时间里再次打开同一个网址，则会自动从 DNS 缓存里取出结果，而不会请求远程的 DNS 服务器，也不会查询 Hosts 文件，从而节省时间提高打开速度。</p>
+<p>因此如果遇到修改了 Hosts 文件但并不生效的情况，就刷新一下系统的 DNS 缓存即可。</p>
+<p>Windows 平台只需打开任一命令行终端，如『CMD』或『Windows PowerShell』等，执行命令：</p>
+<pre><code class="language-Bash">➜   ipconfig /flushdns
+</code></pre>
+<p>可以看到返回“已成功刷新 DNS 解析缓存”，代表刷新成功，如果还是不行，就重启大法好吧。</p>
 
                 </div>
                 <div class="clear"></div>
@@ -155,11 +167,11 @@ public void onBackPressed() {
             <section class="related section">
               
               <article class="prev grid-50 tablet-grid-50 grid-parent">
-                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Android-Activity-with-Dialog-Theme.jpeg');"></div>
-                 <a href="https://LiarrDev.github.io/post/Android-Activity-with-Dialog-Theme/" class="full-link"></a>
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/How-to-Import-SO-in-Android-Studio.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/How-to-Import-SO-in-Android-Studio/" class="full-link"></a>
                  <div class="info">
-                  <time datetime="2019-05-20">2019-05-20</time>
-                  <h4 class="title white no-margin">Android 使用 Dialog 样式的 Activity</h4>
+                  <time datetime="2021-06-08">2021-06-08</time>
+                  <h4 class="title white no-margin">『Android Studio』如何导入 SO 库</h4>
                 </div>
                  <span class="epcl-button red">
                   <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
@@ -169,11 +181,11 @@ public void onBackPressed() {
               
               
               <article class="next grid-50 tablet-grid-50 grid-parent">
-                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Enjoy-Glide-in-One-Shot.png');"></div>
-                 <a href="https://LiarrDev.github.io/post/Enjoy-Glide-in-One-Shot/" class="full-link"></a>
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/How-to-Import-JAR-in-Android-Studio.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/How-to-Import-JAR-in-Android-Studio/" class="full-link"></a>
                  <div class="info">
-                  <time datetime="2019-04-08">2019-04-08</time>
-                  <h4 class="title white no-margin">一次实战爱上『Glide』</h4>
+                  <time datetime="2021-05-27">2021-05-27</time>
+                  <h4 class="title white no-margin">『Android Studio』如何导入 JAR 包</h4>
                 </div>
                  <span class="epcl-button red">
                   <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">

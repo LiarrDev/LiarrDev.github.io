@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://LiarrDev.github.io</id>
     <title>Liarr&apos;s Studio</title>
-    <updated>2021-06-21T15:56:31.470Z</updated>
+    <updated>2021-06-21T16:59:52.973Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://LiarrDev.github.io"/>
     <link rel="self" href="https://LiarrDev.github.io/atom.xml"/>
@@ -100,6 +100,59 @@
 <ul>
 <li><a href="https://developer.android.google.cn/ndk/guides/abis?hl=en">Android ABIs | Android NDK | Android Developers</a></li>
 </ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Windows 修改 Hosts]]></title>
+        <id>https://LiarrDev.github.io/post/How-to-Edit-Hosts-in-Windows/</id>
+        <link href="https://LiarrDev.github.io/post/How-to-Edit-Hosts-in-Windows/">
+        </link>
+        <updated>2021-05-31T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>之前『<a href="https://liarrdev.github.io/post/A-Brief-Overview-of-Hosts/">一文带你简单了解 Hosts</a>』科普了 Hosts 相关内容，这次就教大家如何修改 Hosts。</p>
+<p>考虑到大多数用户最常用的都是 Windows 系统，所以就先来介绍 Windows 下修改 Hosts 的方法，别担心，其他系统后面有机会也会介绍。</p>
+<p>要修改 Hosts，那首先得找到 Hosts 文件。大多数情况下，Hosts 文件的路径为：<code>C:\Windows\System32\drivers\etc\hosts</code>。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1624293899560.png" alt="Hosts File" loading="lazy"></figure>
+<p>Hosts 文件可以用任何文本编辑工具打开，如记事本等。</p>
+<p>Windows 平台下原始的 Hosts 文件内容如下：</p>
+<pre><code class="language-Hosts"># Copyright (c) 1993-2009 Microsoft Corp.
+#
+# This is a sample HOSTS file used by Microsoft TCP/IP for Windows.
+#
+# This file contains the mappings of IP addresses to host names. Each
+# entry should be kept on an individual line. The IP address should
+# be placed in the first column followed by the corresponding host name.
+# The IP address and the host name should be separated by at least one
+# space.
+#
+# Additionally, comments (such as these) may be inserted on individual
+# lines or following the machine name denoted by a '#' symbol.
+#
+# For example:
+#
+#      102.54.94.97     rhino.acme.com          # source server
+#       38.25.63.10     x.acme.com              # x client host
+#
+# localhost name resolution is handled within DNS itself.
+# 127.0.0.1       localhost
+# ::1             localhost
+</code></pre>
+<p>如果你怀疑你的 Hosts 文件被病毒或木马修改，可复制以上内容修复 Hosts 文件。</p>
+<p>值得一提的是，每行 <code>#</code> 后面的内容都是注释，所以实际上清空 Hosts 内容对系统正常运行并没有什么影响。</p>
+<p>Hosts 一般由网站的管理员提供，当然也有一些特殊途径，Hosts 的获取不在本文的介绍范围，一些公共的网站 IP 你可以尝试使用『<a href="https://www.ipaddress.com">IPAddress.com</a>』等第三方工具查询。</p>
+<p>当你需要添加 Hosts 的时候只需要在文件的末尾追加即可，Hosts 由 IP 和域名共同组成，如：</p>
+<pre><code class="language-Hosts">172.217.8.249    developer.android.com
+</code></pre>
+<p>修改完成后保存即可。</p>
+<p>有时候你会遇到无法直接修改系统 Hosts 文件的情况，可以通过将 Hosts 文件复制到桌面，修改完成后再覆盖来解决。</p>
+<p>还有可能会出现不能覆盖的情况，这可能涉及到权限问题，应检查当前登录账号的权限，以及文件的读写权限等。</p>
+<p>需要注意，Hosts 文件配置的映射是静态的，如果网络上的计算机更改了请及时更新 IP 地址，否则将不能访问。</p>
+<p>最后，相信有些朋友会遇到修改 Hosts 后不生效的情况，一般是由于 DNS 缓存的原因导致的。</p>
+<p>系统为了加快用户打开网站的速度，在首次访问网站成功之后，会把 DNS 解析的结果暂时性地保存在本地缓存（称为 DNS 缓存）里一小段时间，如果浏览器在这段时间里再次打开同一个网址，则会自动从 DNS 缓存里取出结果，而不会请求远程的 DNS 服务器，也不会查询 Hosts 文件，从而节省时间提高打开速度。</p>
+<p>因此如果遇到修改了 Hosts 文件但并不生效的情况，就刷新一下系统的 DNS 缓存即可。</p>
+<p>Windows 平台只需打开任一命令行终端，如『CMD』或『Windows PowerShell』等，执行命令：</p>
+<pre><code class="language-Bash">➜   ipconfig /flushdns
+</code></pre>
+<p>可以看到返回“已成功刷新 DNS 解析缓存”，代表刷新成功，如果还是不行，就重启大法好吧。</p>
 ]]></content>
     </entry>
     <entry>
@@ -1040,79 +1093,6 @@ mailto:
 <p>效果如下：</p>
 <figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1562415718972.gif" alt="正常滚动" loading="lazy"></figure>
 <p>虽然本文使用 <code>RecyclerView</code> 作为讲解，但如同文档中所说，这种方法同时还支持解决 <code>ListView</code> 的嵌套滚动问题。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Java 去除 List 中的重复元素]]></title>
-        <id>https://LiarrDev.github.io/post/Java-Remove-Duplicate-Objects-in-List/</id>
-        <link href="https://LiarrDev.github.io/post/Java-Remove-Duplicate-Objects-in-List/">
-        </link>
-        <updated>2020-11-23T16:00:00.000Z</updated>
-        <content type="html"><![CDATA[<p><code>List</code> 是我们在开发中常用的数据结构，是有序且可重复的集合，既然是可重复的集合，开发中我们也常常需要对其做去重操作，在 Java 中，我们可以使用多种方式完成 <code>List</code> 的去重。</p>
-<h1 id="遍历-list-删重">遍历 List 删重</h1>
-<pre><code class="language-Java">public static List&lt;?&gt; removeDuplicate(List&lt;?&gt; list) {
-    for (int i = 0; i &lt; list.size() - 1; i++) {
-        for (int j = list.size() - 1; j &gt; i; j--) {
-            if (list.get(j).equals(list.get(i))) {
-                list.remove(j);
-            }
-        }
-    }
-    return list;
-} 
-</code></pre>
-<p>该方法通过循环 <code>List</code> 中的所有元素然后删除重复项达到去重。</p>
-<h1 id="遍历把未重复的元素存入另一个-list">遍历把未重复的元素存入另一个 List</h1>
-<pre><code class="language-Java">public static List&lt;?&gt; removeDuplicate(List&lt;?&gt; list) {
-    List tempList = new ArrayList();
-    for (int i = 0; i &lt; list.size(); i++) {
-        if (!tempList.contains(list.get(i))) {
-            tempList.add(list.get(i));
-        }
-    }
-    return tempList;
-}
-</code></pre>
-<p>增加了另一个 <code>List</code> 来作存储，把原 <code>List</code> 的元素和新 <code>List</code> 的元素比较，如新 <code>List</code> 中没有该元素，则将该元素存入新 <code>List</code>。</p>
-<h1 id="通过-hashset-剔除重复元素">通过 HashSet 剔除重复元素</h1>
-<pre><code class="language-Java">public static List&lt;?&gt; removeDuplicate(List&lt;?&gt; list) {
-    Set h = new HashSet(list);
-    list.clear();
-    list.addAll(h);
-    return list;
-}
-</code></pre>
-<p><code>Set</code> 是无序、不可重复的集合，正是其不允许重复元素的特点，通过 <code>List</code> 和 <code>Set</code> 互转，可以去掉重复元素。</p>
-<h1 id="保持顺序删除-arraylist-中重复元素">保持顺序删除 ArrayList 中重复元素</h1>
-<pre><code class="language-Java">public static List&lt;?&gt; removeDuplicateWithOrder(List&lt;?&gt; list) {
-    Set&lt;Object&gt; set = new HashSet&lt;&gt;();
-    List tempList = new ArrayList&lt;&gt;();
-    for (Object element : list) {
-        if (set.add(element))
-            tempList.add(element);
-    }
-    return tempList;
-}
-</code></pre>
-<p>虽然同样用到了 <code>HashSet</code>，但加入了逻辑使其保持顺序。</p>
-<h1 id="linkedhashset-高效去重">LinkedHashSet 高效去重</h1>
-<pre><code class="language-Java">public static List&lt;?&gt; removeDuplicate(List&lt;?&gt; list) {
-    Set set = new LinkedHashSet(list);
-    list.clear();
-    list.addAll(set);
-    return list;
-}
-</code></pre>
-<p>利用 <code>LinkedHashSet</code> 不能添加重复数据并能保证添加顺序的特性，该方法效率非常高。</p>
-<h1 id="java-8-的-stream-去重">Java 8 的 Stream 去重</h1>
-<pre><code class="language-Java">public static List&lt;?&gt; removeDuplicate(List&lt;?&gt; list) {
-    return list.stream().distinct().collect(Collectors.toList());
-}
-</code></pre>
-<p>Java 8 支持 <code>Stream</code> 流操作，因此集合去重可以简单地实现。</p>
-<hr>
-<p>上面的部分代码我为了方便演示就直接在传入的 <code>List</code> 上做去重了，在实际使用中，应根据项目实际情况来判断，假如原 <code>List</code> 在去重后仍会继续使用，就应该创建一个新的 <code>List</code> 来存储去重后的元素，避免项目出现意想不到的 Bug。</p>
-<p>另外，为了可复用性，我没有指定 <code>List</code> 的类型，而是使用泛型无界通配符 <code>?</code>，在 IDE 中可能会报警告，按需修复即可。</p>
 ]]></content>
     </entry>
 </feed>
