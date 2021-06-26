@@ -2,7 +2,7 @@
   <head>
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>移除项目中的「.DS_Store」文件 | Liarr&#39;s Studio</title>
+<title>『Android Studio』如何导入 AAR 包 | Liarr&#39;s Studio</title>
 <meta name="description" content="温故而知新" />
 <link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
 <link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
@@ -16,9 +16,8 @@
 <script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
 <script src="https://LiarrDev.github.io/media/js/functions.js"></script>
     <meta name="referrer" content="never">
-    <meta name="description" content="更换了 Macbook Pro 后开发变得方便，但是很多刚转到 macOS 的开发者会发现，使用『Git』上传代码时会有一些名为「.DS_Store」的隐藏文件，而你在『Finder』中还不一定能找到它，即使找到了，你却不一定能够打开它。
-..." />
-    <meta name="keywords" content="" />
+    <meta name="description" content="在『「Android Studio」如何导入 JAR 包』和『「Android Studio」如何导入 SO 库』之后，终于迎来了最重要的 AAR 包了。自从 Android 摆脱『Eclipse』步入『Android Studio』新纪元..." />
+    <meta name="keywords" content="Android" />
     <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
     <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
   </head>
@@ -86,21 +85,23 @@
       <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
 
         <div class="center content">
-          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/移除项目中的「DS_Store」文件.png');">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/How-to-Import-AAR-in-Android-Studio.png');">
             <div class="meta top"> 
-              <time class="meta-info" style="float:left;" datetime="2020-08-18"><i class="fa fa-calendar"></i><span class="lately">10 个月前</span></time>
+              <time class="meta-info" style="float:left;" datetime="2021-06-27"><i class="fa fa-calendar"></i><span class="lately">8 小时内</span></time>
               
-              <a href="https://LiarrDev.github.io/post/移除项目中的「DS_Store」文件/#comments" class="comments meta-info" title="">
-                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/移除项目中的「DS_Store」文件/"> </span>
+              <a href="https://LiarrDev.github.io/post/How-to-Import-AAR-in-Android-Studio/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/How-to-Import-AAR-in-Android-Studio/"> </span>
               </a>
-              <span id="/移除项目中的「DS_Store」文件/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              <span id="/How-to-Import-AAR-in-Android-Studio/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
               
             </div>
             <div class="info">
               <div class="tags ">
                 
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
               </div>
-              <h1 class="title ularge white bold">移除项目中的「.DS_Store」文件</h1>
+              <h1 class="title ularge white bold">『Android Studio』如何导入 AAR 包</h1>
             </div>
           </div>
         </div>  
@@ -110,35 +111,66 @@
             <article class="main-article post">
               <section class="post-content">
                 <div class="text">
-                  <p>更换了 Macbook Pro 后开发变得方便，但是很多刚转到 macOS 的开发者会发现，使用『Git』上传代码时会有一些名为「.DS_Store」的隐藏文件，而你在『Finder』中还不一定能找到它，即使找到了，你却不一定能够打开它。</p>
-<p>这个「.DS_Store」到底是何方神圣？</p>
-<p>.DS_Store 的英文全称 Desktop Services Store，是一种由 Apple 公司的 Mac OS X 操作系统所创造的隐藏文件，目的在于存贮目录的自定义属性，例如文件们的图标位置或者是背景色的选择。相当于 Windows 下的「desktop.ini」文件。</p>
-<p>尽管这些文件本来是为『Finder』所使用，但它们被设想作为一种更通用的有关显示设置的元数据存储，诸如图标位置和视图设置。</p>
-<p>因此「.DS_Store」在代码版本控制中并不需要，在网络传输文件中如果包含了「.DS_Store」甚至还会泄漏一些不必要的信息。</p>
-<p>所以在项目中我常常会删除或隐藏「.DS_Store」，再上传到代码仓库。</p>
-<h1 id="delete-ds_store">Delete .DS_Store</h1>
-<p>如果你的项目中已经存在「.DS_Store」，那么就需要将它删除，可以在『Terminal』中执行以下命令：</p>
-<pre><code>➜   find . -name .DS_Store -print0 | xargs -0 git rm -f --ignore-unmatch
+                  <p>在『<a href="https://liarrdev.github.io/post/How-to-Import-JAR-in-Android-Studio/">「Android Studio」如何导入 JAR 包</a>』和『<a href="https://liarrdev.github.io/post/How-to-Import-SO-in-Android-Studio/">「Android Studio」如何导入 SO 库</a>』之后，终于迎来了最重要的 AAR 包了。自从 Android 摆脱『Eclipse』步入『Android Studio』新纪元之后，ARR 包才是更加完美的第三方库方案。</p>
+<p>为什么这么说？</p>
+<p>『<a href="https://liarrdev.github.io/post/How-to-Import-JAR-in-Android-Studio/">「Android Studio」如何导入 JAR 包</a>』一文中提到，JAR 的全称是 Java Archive，而 AAR 的全称则是 Android Archive，高下立判有没有？</p>
+<p>AAR 是一个 Android 库项目的二进制归档文件，但文件本身是一个简单 ZIP 文件。</p>
+<p>相比 JAR，AAR 包含了更多的资源，因为它是以『Android Studio』中的 Module 为基础建立的。通过解压 AAR，你可以看到有「AndroidManifest.xml」、「classes.jar」、「R.txt」等文件以及「res」等文件夹，同时它也能够包含 SO 库，这也就意味着 AAR 能够比 JAR 和 SO 提供更加强大的能力，比如 UI 库等，可以说是 Android 库的万金油封装方式。</p>
+<p>既然如此，AAR 的导入方式就与 JAR 的导入有些许差异了。</p>
+<p>首先，当然是要将 AAR 文件放到项目中，这里以开源库 <a href="https://liarrdev.github.io/post/Enjoy-Glide-in-One-Shot/"><code>Glide</code></a> 为例，与 JAR 相似，都是放在 Module 的「libs」目录下。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1624694014693.png" alt="将 aar 放置在 libs 目录" loading="lazy"></figure>
+<p>接着是添加依赖，同样也有很多种方式。</p>
+<p>第一种，指定依赖。在 Module 的「build.gradle」文件中加入以下内容：</p>
+<pre><code class="language-Groovy">android {
+    ...
+    repositories {
+        flatDir {
+            dirs 'libs'     // 声明添加libs文件夹为库
+        }
+    }
+}
+
+dependencies {
+    ...
+    implementation(name: 'glide-4.12.0', ext: 'aar')       // 添加 aar_file_name.aar 文件为依赖
+}
+
 </code></pre>
-<p>当前项目中的所有「.DS_Store」就会被清除掉了。</p>
-<h1 id="add-to-git-ignore-list">Add to Git Ignore List</h1>
-<p>如果你常使用『Git』来提交代码，那么你一定对「.gitignore」不陌生，它就是提交代码时的忽略清单，『Git』根据该文件判断不将哪些文件提交至代码仓库。</p>
-<p>打开该文件，在末尾追加如下内容：</p>
-<pre><code># macOS Desktop Services Store
-*/.DS_Store
+<p>其中，<code>implementation</code> 的 <code>name</code> 属性为该 ARR 的文件名。</p>
+<p>需要注意的是，关于 <code>repositories</code> 的配置在网上很多文章都讲得不明不白，说在项目的「build.gradle」文件中做修改，这种博主大概率没有搞清楚『Android Studio』中 Project 和 Module 的概念就出来误人子弟，所以一定要记住是在 Module 的「build.gradle」文件中做修改，否则将会导致 ARR 不能正常使用。</p>
+<p>第二种方法，也是指定依赖，和 JAR 类似，我们可以使用如下方式直接依赖 AAR：</p>
+<pre><code class="language-Groovy">dependencies {
+    ...
+    implementation files('libs/glide-4.12.0.aar')
+}
 </code></pre>
-<p>其实并不难看懂，<code>#</code> 后面的内容是注释，所以实际上只有一行内容，就是匹配当前目录下的所有子目录的「.DS_Store」文件，这样，在使用『Git』提交代码时，无论项目中是否有「.DS_Store」，都不会将它提交上去了。</p>
-<h1 id="prevent-ds_store-file-creation">Prevent .DS_Store File Creation</h1>
-<p>我通常只会在项目中使用上述两种方法移除并忽略「.DS_Store」文件，你可能想一劳永逸，禁止所有目录生成「.DS_Store」文件。</p>
-<p>在收到用户们对远程系统上「.DS_Store」文件会自动创建的投诉之后，Apple 公司在其技术支持站点发表了一篇<a href="https://support.apple.com/zh-cn/HT1629">文章</a>，详细讲述了如何禁止远程「.DS_Store」文件利用网络连接进行的创建。</p>
-<p>还是打开『Terminal』，执行以下命令：</p>
-<pre><code>➜   defaults write com.apple.desktopservices DSDontWriteNetworkStores true
+<p>第三种，全部依赖。也和 JAR 类似，同样是在 Module 的「build.gradle」文件中加入以下内容：</p>
+<pre><code class="language-Groovy">dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar','*.aar'])
+    ...
+}
 </code></pre>
-<p>即可禁用「.DS_Store」文件的生成。</p>
-<p>恢复「.DS_Store」文件的生成，可执行：</p>
-<pre><code>➜   defaults delete com.apple.desktopservices DSDontWriteNetworkStores
+<p>可以看到这种方式更加简洁，直接扩充 <code>dependencies</code> 中的 <code>fileTree</code> 使其 <code>include</code> 原有的 JAR 文件并加入 AAR 文件。</p>
+<p>第四种，作为 Module 导入，这种方法步骤稍复杂一些。</p>
+<p>首先新建一个 Module：</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1624694222884.png" alt="New Module" loading="lazy"></figure>
+<p>选择「Import .JAR/.AAR Package」：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1624694258047.png" alt="Select a Module Type" loading="lazy"></figure>
+<p>填入 AAR 文件路径：</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1624694297062.png" alt="Import Module from Library" loading="lazy"></figure>
+<p>完成后『Android Studio』会生成一个 Module 文件夹：</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1624694373956.png" alt="Library Module" loading="lazy"></figure>
+<p>最后，在需要引用的 Module 中将该 Module 导入：</p>
+<pre><code class="language-Groovy">dependencies {
+    ...
+    implementation project(':glide-4.12.0')
+}
 </code></pre>
-<p>需要注意的是，该方法是不在是网络挂载的盘生成，对本地是无效的。</p>
+<p>但使用该方法无法直接从调用处点击查看源码，个人感觉不太方便。</p>
+<p>最后，还要介绍一种非常规的使用方式，这种方式在我做游戏渠道打包的时候也比较常用。</p>
+<p>上文提到 AAR 在解压之后也有一个 JAR 文件，实际上 AAR 就是 JAR 加上其他资源的扩充。所以当我们拿到一个 AAR 包时，可以将其解压，然后使用『<a href="https://liarrdev.github.io/post/How-to-Import-JAR-in-Android-Studio/">「Android Studio」如何导入 JAR 包</a>』中的方法将 JAR 包导入，并将其他资源文件复制到 Module 中的各个对应的目录下即可，遵循无则复制有则追加的原则，如 AAR 中的「AndroidManifest.xml」中包含的声明，就要追加到 Module 的「AndroidManifest.xml」中去；如 AAR 中的 Layout 文件，一般直接复制到 Module 相同的文件夹。</p>
+<p>这种方法其实在『Eclipse』上使用较多，因为『Eclipse』仅支持导入 JAR 而不支持 AAR，所以才会用到这种方式，这种方式是根据 Android 的打包合并原理得出的。</p>
+<p>至于这几种方法的使用时机，可以参考之前的『<a href="https://liarrdev.github.io/post/Android-Gradle-Plugin-Dependency-Configurations/">Android Gradle Plugin 依赖项配置</a>』一文，以及自己项目的实际情况，合理使用。</p>
 
                 </div>
                 <div class="clear"></div>
@@ -148,6 +180,19 @@
 
             <section class="related section">
               
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/How-to-Edit-Hosts-in-macOS.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/How-to-Edit-Hosts-in-macOS/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2021-06-21">2021-06-21</time>
+                  <h4 class="title white no-margin">macOS 修改 Hosts</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
               
 
                 <div class="clear"></div>

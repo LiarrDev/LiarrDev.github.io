@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://LiarrDev.github.io</id>
     <title>Liarr&apos;s Studio</title>
-    <updated>2021-06-22T16:36:23.782Z</updated>
+    <updated>2021-06-26T08:04:41.850Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://LiarrDev.github.io"/>
     <link rel="self" href="https://LiarrDev.github.io/atom.xml"/>
@@ -10,6 +10,74 @@
     <logo>https://LiarrDev.github.io/images/avatar.png</logo>
     <icon>https://LiarrDev.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, Liarr&apos;s Studio</rights>
+    <entry>
+        <title type="html"><![CDATA[『Android Studio』如何导入 AAR 包]]></title>
+        <id>https://LiarrDev.github.io/post/How-to-Import-AAR-in-Android-Studio/</id>
+        <link href="https://LiarrDev.github.io/post/How-to-Import-AAR-in-Android-Studio/">
+        </link>
+        <updated>2021-06-26T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>在『<a href="https://liarrdev.github.io/post/How-to-Import-JAR-in-Android-Studio/">「Android Studio」如何导入 JAR 包</a>』和『<a href="https://liarrdev.github.io/post/How-to-Import-SO-in-Android-Studio/">「Android Studio」如何导入 SO 库</a>』之后，终于迎来了最重要的 AAR 包了。自从 Android 摆脱『Eclipse』步入『Android Studio』新纪元之后，ARR 包才是更加完美的第三方库方案。</p>
+<p>为什么这么说？</p>
+<p>『<a href="https://liarrdev.github.io/post/How-to-Import-JAR-in-Android-Studio/">「Android Studio」如何导入 JAR 包</a>』一文中提到，JAR 的全称是 Java Archive，而 AAR 的全称则是 Android Archive，高下立判有没有？</p>
+<p>AAR 是一个 Android 库项目的二进制归档文件，但文件本身是一个简单 ZIP 文件。</p>
+<p>相比 JAR，AAR 包含了更多的资源，因为它是以『Android Studio』中的 Module 为基础建立的。通过解压 AAR，你可以看到有「AndroidManifest.xml」、「classes.jar」、「R.txt」等文件以及「res」等文件夹，同时它也能够包含 SO 库，这也就意味着 AAR 能够比 JAR 和 SO 提供更加强大的能力，比如 UI 库等，可以说是 Android 库的万金油封装方式。</p>
+<p>既然如此，AAR 的导入方式就与 JAR 的导入有些许差异了。</p>
+<p>首先，当然是要将 AAR 文件放到项目中，这里以开源库 <a href="https://liarrdev.github.io/post/Enjoy-Glide-in-One-Shot/"><code>Glide</code></a> 为例，与 JAR 相似，都是放在 Module 的「libs」目录下。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1624694014693.png" alt="将 aar 放置在 libs 目录" loading="lazy"></figure>
+<p>接着是添加依赖，同样也有很多种方式。</p>
+<p>第一种，指定依赖。在 Module 的「build.gradle」文件中加入以下内容：</p>
+<pre><code class="language-Groovy">android {
+    ...
+    repositories {
+        flatDir {
+            dirs 'libs'     // 声明添加libs文件夹为库
+        }
+    }
+}
+
+dependencies {
+    ...
+    implementation(name: 'glide-4.12.0', ext: 'aar')       // 添加 aar_file_name.aar 文件为依赖
+}
+
+</code></pre>
+<p>其中，<code>implementation</code> 的 <code>name</code> 属性为该 ARR 的文件名。</p>
+<p>需要注意的是，关于 <code>repositories</code> 的配置在网上很多文章都讲得不明不白，说在项目的「build.gradle」文件中做修改，这种博主大概率没有搞清楚『Android Studio』中 Project 和 Module 的概念就出来误人子弟，所以一定要记住是在 Module 的「build.gradle」文件中做修改，否则将会导致 ARR 不能正常使用。</p>
+<p>第二种方法，也是指定依赖，和 JAR 类似，我们可以使用如下方式直接依赖 AAR：</p>
+<pre><code class="language-Groovy">dependencies {
+    ...
+    implementation files('libs/glide-4.12.0.aar')
+}
+</code></pre>
+<p>第三种，全部依赖。也和 JAR 类似，同样是在 Module 的「build.gradle」文件中加入以下内容：</p>
+<pre><code class="language-Groovy">dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar','*.aar'])
+    ...
+}
+</code></pre>
+<p>可以看到这种方式更加简洁，直接扩充 <code>dependencies</code> 中的 <code>fileTree</code> 使其 <code>include</code> 原有的 JAR 文件并加入 AAR 文件。</p>
+<p>第四种，作为 Module 导入，这种方法步骤稍复杂一些。</p>
+<p>首先新建一个 Module：</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1624694222884.png" alt="New Module" loading="lazy"></figure>
+<p>选择「Import .JAR/.AAR Package」：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1624694258047.png" alt="Select a Module Type" loading="lazy"></figure>
+<p>填入 AAR 文件路径：</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1624694297062.png" alt="Import Module from Library" loading="lazy"></figure>
+<p>完成后『Android Studio』会生成一个 Module 文件夹：</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1624694373956.png" alt="Library Module" loading="lazy"></figure>
+<p>最后，在需要引用的 Module 中将该 Module 导入：</p>
+<pre><code class="language-Groovy">dependencies {
+    ...
+    implementation project(':glide-4.12.0')
+}
+</code></pre>
+<p>但使用该方法无法直接从调用处点击查看源码，个人感觉不太方便。</p>
+<p>最后，还要介绍一种非常规的使用方式，这种方式在我做游戏渠道打包的时候也比较常用。</p>
+<p>上文提到 AAR 在解压之后也有一个 JAR 文件，实际上 AAR 就是 JAR 加上其他资源的扩充。所以当我们拿到一个 AAR 包时，可以将其解压，然后使用『<a href="https://liarrdev.github.io/post/How-to-Import-JAR-in-Android-Studio/">「Android Studio」如何导入 JAR 包</a>』中的方法将 JAR 包导入，并将其他资源文件复制到 Module 中的各个对应的目录下即可，遵循无则复制有则追加的原则，如 AAR 中的「AndroidManifest.xml」中包含的声明，就要追加到 Module 的「AndroidManifest.xml」中去；如 AAR 中的 Layout 文件，一般直接复制到 Module 相同的文件夹。</p>
+<p>这种方法其实在『Eclipse』上使用较多，因为『Eclipse』仅支持导入 JAR 而不支持 AAR，所以才会用到这种方式，这种方式是根据 Android 的打包合并原理得出的。</p>
+<p>至于这几种方法的使用时机，可以参考之前的『<a href="https://liarrdev.github.io/post/Android-Gradle-Plugin-Dependency-Configurations/">Android Gradle Plugin 依赖项配置</a>』一文，以及自己项目的实际情况，合理使用。</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[macOS 修改 Hosts]]></title>
         <id>https://LiarrDev.github.io/post/How-to-Edit-Hosts-in-macOS/</id>
@@ -264,13 +332,13 @@ if errorlevel 1 (
 <p>正是由于过去十几年『Eclipse』的影响，在『Android Studio』中导入 JAR 包也非常简单。</p>
 <p>首先，当然要将 JAR 文件放到项目中，置于 Module 的「libs」目录下，我这里以开源库 <code>Gson</code> 为例。</p>
 <p>在「Android」视图下，「libs」目录是默认不显示的：</p>
-<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1620490548383.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1620490548383.png" alt="Android 视图目录" loading="lazy"></figure>
 <p>我们无需新建该文件夹，只需切至「Project」视图即可：</p>
-<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1620490590290.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1620490590290.png" alt="Project 视图目录" loading="lazy"></figure>
 <p>接着是添加依赖，将 JAR 复制到「libs」目录后，鼠标对该 JAR 包右键菜单，点击「Add As Library...」：</p>
-<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1620490610733.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1620490610733.png" alt="Add As Library" loading="lazy"></figure>
 <p>并选择导入的 Module：</p>
-<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1620490628873.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1620490628873.png" alt="Create Library" loading="lazy"></figure>
 <p>确定后，Gradle 会自动帮我们同步依赖。</p>
 <p>你可以看到 Module 的「build.gradle」文件中自动添加了对应的内容：</p>
 <pre><code class="language-Groovy">dependencies {
@@ -735,62 +803,6 @@ void switchPasswordVisibility(final DrawableEditText editText) {
 <figure data-type="image" tabindex="7"><img src="https://LiarrDev.github.io/post-images/1563362022713.gif" alt="" loading="lazy"></figure>
 <p>可以见到，当切换为密文状态时，点和点之间的距离增大了，与默认样式不统一，会造成用户困扰。</p>
 <p>而使用 <code>setTransformationMethod()</code> 就可以避免上面的情况。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Android 为 TextView 或 EditText 添加 ICON]]></title>
-        <id>https://LiarrDev.github.io/post/Add-Icons-for-TextView-or-EditText-in-Android/</id>
-        <link href="https://LiarrDev.github.io/post/Add-Icons-for-TextView-or-EditText-in-Android/">
-        </link>
-        <updated>2021-03-15T16:00:00.000Z</updated>
-        <content type="html"><![CDATA[<p>在应用开发中，为了友好的用户体验，我们常常需要在文字旁边添加 ICON，因为用户对图形的感知往往要强于文字，比如这样子：</p>
-<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1562338869852.png" alt="分类导航" loading="lazy"></figure>
-<p>大多数新手看一眼觉得很简单，使用 <code>ImageView</code> 和 <code>TextView</code> 组合即可。</p>
-<p>的确，这是一种很简单的方法，但如上图中使用 <code>GridLayout</code> 来展示多个子项，明明 ICON 和文字属于同一项，组合写法会导致代码成倍增加，再加上需要用一个父容器（如 <code>LinearLayout</code>）来包裹这两个子项，布局文件就如老太太的裹脚布——又长又臭。</p>
-<p>当然，你也可以把这个组合抽取出来，做成 <code>Adapter</code> 通用，尽管布局清晰了，但逻辑代码也增加不少。</p>
-<p>实际上，Android 本身就为 <code>TextView</code> 提供了此功能，我们只需一行代码就可以使用：</p>
-<pre><code class="language-XML">&lt;TextView
-    ...
-    android:drawableTop=&quot;@drawable/ic_drawable&quot; /&gt; 
-</code></pre>
-<p>该属性可以为 <code>TextView</code> 在某一方向上添加对应的 <code>Drawable</code>，其他方向只需修改属性中的方向名称即可。</p>
-<p><code>AppCompat</code> 提供了一些 <code>Compat</code> 属性，所以你也可以这样写：</p>
-<pre><code class="language-XML">&lt;TextView
-    ...
-    app:drawableTopCompat=&quot;@drawable/ic_drawable&quot; /&gt; 
-</code></pre>
-<p>如果你想调整 <code>Drawable</code> 和文字的间隔，可以使用这个属性：</p>
-<pre><code class="language-XML">&lt;TextView
-    ...
-    android:drawablePadding=&quot;16dp&quot;
-    app:drawableTopCompat=&quot;@drawable/ic_drawable&quot; /&gt; 
-</code></pre>
-<p>当 <code>Drawable</code> 尺寸过大时，你可能会注意到 <code>Drawable</code> 和文字并不是居中的，这时你要牢记，这个 <code>Drawable</code> 也是 <code>TextView</code> 的一部分：</p>
-<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1562338892794.png" alt="TextView 范围" loading="lazy"></figure>
-<p>对于 <code>View</code> 或 <code>ViewGroup</code> 内部元素的对齐方式，我们通常可以使用：</p>
-<pre><code class="language-XML">&lt;TextView
-    ...
-    android:gravity=&quot;center&quot;
-    app:drawableTopCompat=&quot;@drawable/ic_drawable&quot; /&gt; 
-</code></pre>
-<p>假如你需要在逻辑代码中动态修改该 <code>Drawable</code>，同样提供支持：</p>
-<pre><code class="language-Java">textView.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_drawable), null, null, null); 
-</code></pre>
-<p><code>setCompoundDrawablesWithIntrinsicBounds()</code> 方法接收四个参数，分别是四个方向上的 <code>Drawable</code> 资源，在对应方向传入所需的 <code>Drawable</code> 即可。</p>
-<p>该方法同时也支持以资源 ID 的方式传入 <code>Drawable</code>，所以也可以这样写：</p>
-<pre><code class="language-Java">textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_drawable, 0, 0, 0); 
-</code></pre>
-<p>当你觉得这个功能挺好用时，假如美工让你调整一下 <code>Drawable</code> 的大小，你可能一下子就懵了，似乎找不到这个属性，还不如 <code>ImageView</code> 和 <code>TextView</code> 组合来得方便呀。</p>
-<p>的确，在布局文件中没有调整 <code>Drawable</code> 尺寸的属性，但你要记得，这是一个 <code>Drawable</code>，既然是 <code>Drawable</code>，我们就可以通过逻辑代码控制它的尺寸：</p>
-<pre><code class="language-Java">Drawable drawable = getResources().getDrawable(R.drawable.ic_account);
-drawable.setBounds(0, 0, 180, 180);                     // 设置图片的大小
-textView.setCompoundDrawables(drawable, null, null, null);   // 设置图片的位置 
-</code></pre>
-<p><code>Drawable</code> 的 <code>setBounds()</code> 方法接收四个参数，四个坐标形成一个矩形，<code>Drawable</code> 将在被绘制在这个矩形区域内。</p>
-<p>接着调用的 <code>setCompoundDrawables()</code> 和上面提到的 <code>setCompoundDrawablesWithIntrinsicBounds()</code> 类似，将 <code>Drawable</code> 传入到对应位置即可。</p>
-<p>另外我们知道，<code>EditText</code> 实际上是继承于 <code>TextView</code> 的，那么 <code>EditText</code> 也会有相同的属性，所以我们可以轻而易举的实现类似的功能：</p>
-<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1562421497192.png" alt="EditText With ICON" loading="lazy"></figure>
-<p>属性和方法基本和 <code>TextView</code> 一致，不再重复贴代码。</p>
 ]]></content>
     </entry>
 </feed>
