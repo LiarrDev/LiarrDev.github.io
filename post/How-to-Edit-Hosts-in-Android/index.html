@@ -2,7 +2,7 @@
   <head>
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>一次实战爱上『OkHttp』 | Liarr&#39;s Studio</title>
+<title>Android 修改 Hosts | Liarr&#39;s Studio</title>
 <meta name="description" content="温故而知新" />
 <link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
 <link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
@@ -16,9 +16,9 @@
 <script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
 <script src="https://LiarrDev.github.io/media/js/functions.js"></script>
     <meta name="referrer" content="never">
-    <meta name="description" content="Android 中发起 HTTP 网络请求的方法有很多种，在刚开始学 Android 的时候，我总是比较倾向于使用原生提供的 API，其一是因为不需要导入第三方的依赖，其二是因为代码量也不多，而在实习后才发现，框架原来如此方便。
-比如我需要..." />
-    <meta name="keywords" content="Android" />
+    <meta name="description" content="之前『一文带你简单了解 Hosts』文末提到会带来 Hosts 修改教程系列文章，在『Windows 修改 Hosts』和『macOS 修改 Hosts』之后，你以为这个系列就结束了？不，我又回来了。
+这一次，是 Android 系统修改 ..." />
+    <meta name="keywords" content="Hosts" />
     <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
     <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
   </head>
@@ -86,23 +86,23 @@
       <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
 
         <div class="center content">
-          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Enjoy-OkHttp-in-One-Shot.jpg');">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/How-to-Edit-Hosts-in-Android.jpeg');">
             <div class="meta top"> 
-              <time class="meta-info" style="float:left;" datetime="2018-08-26"><i class="fa fa-calendar"></i><span class="lately">3 年前</span></time>
+              <time class="meta-info" style="float:left;" datetime="2021-07-06"><i class="fa fa-calendar"></i><span class="lately">2 天前</span></time>
               
-              <a href="https://LiarrDev.github.io/post/Enjoy-OkHttp-in-One-Shot/#comments" class="comments meta-info" title="">
-                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Enjoy-OkHttp-in-One-Shot/"> </span>
+              <a href="https://LiarrDev.github.io/post/How-to-Edit-Hosts-in-Android/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/How-to-Edit-Hosts-in-Android/"> </span>
               </a>
-              <span id="/Enjoy-OkHttp-in-One-Shot/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              <span id="/How-to-Edit-Hosts-in-Android/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
               
             </div>
             <div class="info">
               <div class="tags ">
                 
-                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                      <a href="https://LiarrDev.github.io/tag/_JNa_u8e-/" class="ctag ctag-0 ctag-_JNa_u8e-" aria-label="">Hosts</a>
                     
               </div>
-              <h1 class="title ularge white bold">一次实战爱上『OkHttp』</h1>
+              <h1 class="title ularge white bold">Android 修改 Hosts</h1>
             </div>
           </div>
         </div>  
@@ -112,124 +112,69 @@
             <article class="main-article post">
               <section class="post-content">
                 <div class="text">
-                  <p>Android 中发起 <code>HTTP</code> 网络请求的方法有很多种，在刚开始学 Android 的时候，我总是比较倾向于使用原生提供的 API，其一是因为不需要导入第三方的依赖，其二是因为代码量也不多，而在实习后才发现，框架原来如此方便。</p>
-<p>比如我需要写一个登录功能，希望使用 <code>POST</code> 方式提交，先来看看原生中的 <code>HttpURLConnection</code>：</p>
-<pre><code class="language-Java">private void sendRequestWithHttpURLConnection(final String tel, final String password) {
-    new Thread(new Runnable() {
-        @Override
-        public void run() {
-            HttpURLConnection httpURLConnection = null;
-            try {
-                URL url = new URL(&quot;http://url&quot;);        // 接口
-                String data = &quot;tel=&quot; + tel + &quot;&amp;password=&quot; + password;
-                httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.setConnectTimeout(8000);      // 设置连接超时时间
-                httpURLConnection.setReadTimeout(8000);         // 设置读取超时时间
-                httpURLConnection.setRequestMethod(&quot;POST&quot;);     // 设置以 Post 方式提交数据
-                DataOutputStream out = new DataOutputStream(httpURLConnection.getOutputStream());
-                out.writeBytes(data);
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                if (httpURLConnection != null) {
-                    httpURLConnection.disconnect();
-                }
-            }
-        }
-    }).start();
-}
+                  <p>之前『<a href="https://liarrdev.github.io/post/A-Brief-Overview-of-Hosts/">一文带你简单了解 Hosts</a>』文末提到会带来 Hosts 修改教程系列文章，在『<a href="https://liarrdev.github.io/post/How-to-Edit-Hosts-in-Windows/">Windows 修改 Hosts</a>』和『<a href="https://liarrdev.github.io/post/How-to-Edit-Hosts-in-macOS/">macOS 修改 Hosts</a>』之后，你以为这个系列就结束了？不，我又回来了。</p>
+<p>这一次，是 Android 系统修改 Hosts 教程。</p>
+<p>这篇文章其实机缘巧合，因为我在 Android 开发中刚好需要通过修改 Hosts 来跟后端工程师配合测试，所以这篇文章就正好水到渠成。</p>
+<p>因为在 Android 上修改 Hosts 需要获取 ROOT 权限，所以我这次就用模拟器来代替真机演示，使用的是『夜神模拟器』，任何 Android 模拟器都可以使用以下方法操作。</p>
+<p>由于现在很多国内 ROM 限制解锁权限，如 EMUI 等，获取 ROOT 权限操作步骤可能相对复杂，就不再花篇幅介绍了，假如你的手机成功获取了 ROOT 权限，以下方法也是适用的。</p>
+<p>修改 Android 系统的 Hosts 需要提前准备 ADB（Android Debug Bridge）工具，我本来就是从事 Android 开发的，开发工具中已经集成了 ADB，不需要重新安装，在之前的『<a href="https://liarrdev.github.io/post/Permissions-of-Android-Device-Monitor/">Android Device Monitor 权限笔记</a>』中我也使用过它，在此就不过多介绍了。</p>
+<p>如果你的电脑上没有 ADB，可以去单独下载；另外，Android 模拟器的安装目录下一般也会有 ADB 工具，配置到系统环境中即可。</p>
+<p>首先，先用终端查看连接的设备：</p>
+<pre><code class="language-Shell">➜   adb devices
 </code></pre>
-<p>这里省略了部分代码，包括得到数据后的解析以及校验等等，代码并不多嘛，但是实际上跑起来就是，服务器上没有接收到我提交的数据。</p>
-<p>几经周折，终于把残缺的代码补全了：</p>
-<pre><code class="language-Java">private void sendRequestWithHttpURLConnection(final String tel, final String password) {
-    new Thread(new Runnable() {
-        @Override
-        public void run() {
-            HttpURLConnection httpURLConnection = null;
-            try {
-                URL url = new URL(&quot;http://url&quot;);        // 接口
-                String data = &quot;tel=&quot; + tel + &quot;&amp;password=&quot; + password;
-                httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.setConnectTimeout(8000);      // 设置连接超时时间
-                httpURLConnection.setReadTimeout(8000);         // 设置读取超时时间
-                httpURLConnection.setDoOutput(true);            // 打开输出流，以便向服务器提交数据
-                httpURLConnection.setRequestMethod(&quot;POST&quot;);     // 设置以 Post 方式提交数据
-                httpURLConnection.setUseCaches(false);          // 使用 Post 方式不能使用缓存
-                httpURLConnection.setRequestProperty(&quot;Content-Type&quot;, &quot;application/x-www-form-urlencoded&quot;);      //设置请求体的类型是文本类型
-                httpURLConnection.setRequestProperty(&quot;Content-Length&quot;, data.length() + &quot;&quot;);     // 设置请求体的长度
-
-                httpURLConnection.connect();        // 建立连接
-
-                httpURLConnection.getOutputStream().write(data.getBytes());
-
-                int code = httpURLConnection.getResponseCode(); // 服务器的响应码 200 OK //404 页面找不到
-                // // 503服务器内部错误
-                if (code == 200) {
-                    InputStream is = httpURLConnection.getInputStream();
-                    // 把is的内容转换为字符串
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    byte[] buffer = new byte[1024];
-                    int len = -1;
-                    while ((len = is.read(buffer)) != -1) {
-                        bos.write(buffer, 0, len);
-                    }
-                    String result = new String(bos.toByteArray());
-                    is.close();
-                    Toast.makeText(LoginActivity.this, result, Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(LoginActivity.this, &quot;请求失败，失败原因: &quot; + code, Toast.LENGTH_SHORT).show();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                if (httpURLConnection != null) {
-                    httpURLConnection.disconnect();
-                }
-            }
-        }
-    }).start();
-}
+<p>许多模拟器在初次使用 ADB 连接时都不一定能连接上，可以自行搜索对应的解决方法，最常见的就是需要执行 <code>adb connect</code> 命令连接到对应的端口，也有可能遇到 ADB 版本不一致的问题，使用模拟器目录下的 ADB 或者将正在使用的 ADB 工具覆盖模拟器的 ADB 即可。</p>
+<p>通过 ADB 正确连接上 Android 模拟器后，接下来就是修改 Hosts。</p>
+<p>Hosts 目录为：<code>/system/etc/hosts</code>，在一切开始之前，我们还需要一个额外步骤，执行命令：</p>
+<pre><code class="language-Shell">➜   adb remount
 </code></pre>
-<p>我认为最重要的可能是这句：</p>
-<pre><code class="language-Java">httpURLConnection.connect();        // 建立连接
+<p>与其他系统一样，Android 对于 Hosts 文件的处理也是需要权限的，这条命令的作用是重新挂载 <code>/system</code> 分区为可读写。</p>
+<p>然后通过命令将 Hosts 文件拉取到本地：</p>
+<pre><code class="language-Shell">➜   adb pull /system/etc/hosts D:/hosts
 </code></pre>
-<p>网上大多数的资料都没有提到，我就不知道他们是怎么连接的了，当我把这句代码补上后，App 才成功和服务器建立起连接。</p>
-<p>另外下方关于服务器响应码的那段代码也是必须的，得到响应码，判断与服务器连接是否正常，没了这个判断就不能和服务器进行数据的交互。</p>
-<p>这样看下来，跟一开始的“代码并不多”差距就太大了，代码冗余晦涩，阅读起来十分痛苦，于是便打算对这段代码进行重构。</p>
-<p>之前阅读『第一行代码——Android』时有学习过 <code>OkHttp</code>，所以我就打算使用它来代替 <code>HttpURLConnection</code>。</p>
-<p>为什么我虽然从一开始就知道这个网络通信库却不使用呢？因为前文也提到，我以为 <code>HttpURLConnection</code> 的代码量相比 <code>OkHttp</code> 并没有多出多少，但是出现了如此巨大的 Bug，修复完成后代码量居然增加了一倍，所以必须转投 <code>OkHttp</code> 的怀抱。</p>
-<p>首先在项目中添加 <code>OkHttp</code> 库的依赖：</p>
-<pre><code class="language-Groovy">dependencies {
-    implementation 'com.squareup.okhttp3:okhttp:(insert latest version)'
-}
+<p>这是一个常用的 ADB 命令，用于将手机上的文件复制到本地：</p>
+<pre><code class="language-Shell">➜   adb pull {手机文件路径} {本机目录}
 </code></pre>
-<p>为了使其保持最新版本，最好登录其<a href="https://square.github.io/okhttp/">官网</a>或者其 <a href="https://github.com/square/okhttp">Github 项目主页</a>进行查询，当然，添加依赖时『Android Studio』内也会有提示。</p>
-<p>然后就可以在项目中使用了，将上方的代码进行改造，就可以得出一段简洁的代码：</p>
-<pre><code class="language-Java">private void sendRequestWithOkHttp(final String tel, final String password) {
-    new Thread(new Runnable() {
-        @Override
-        public void run() {
-            try {
-                OkHttpClient client = new OkHttpClient();
-                RequestBody requestBody = new FormBody.Builder()
-                        .add(&quot;tel&quot;, tel)
-                        .add(&quot;password&quot;, password)
-                        .build();
-                Request request = new Request.Builder()
-                        .url(&quot;http://url&quot;)      // 接口
-                        .post(requestBody)
-                        .build();
-                Response response = client.newCall(request).execute();
-                String responseCode = response.body().string();
-                Log.e(&quot;GETCODE&quot;, responseCode);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }).start();
-}
+<p>默认情况下 Hosts 里面只有两行内容：</p>
+<pre><code class="language-Hosts">127.0.0.1       localhost
+::1             ip6-localhost
 </code></pre>
-<p>真的太好用了有木有！如此清晰简单的代码就完成了上面的内容，并且还十分容易获取从服务器返回的数据，方便我后面对其进行解析，简直要爱上它了！</p>
+<p>跟之前一样，直接在下面追加自己的 Hosts。然后推回去：</p>
+<pre><code class="language-Shell">➜   adb push D:/hosts/hosts /system/etc/hosts
+</code></pre>
+<p>这也是一个常用的 ADB 命令，用于将本地的文件复制到手机：</p>
+<pre><code class="language-Shell">➜   adb push {本机文件路径} {手机目录}
+</code></pre>
+<p>这里还有一个需要注意的点，不同于 Windows 和 macOS，在 Android 中修改 Hosts 一定要在文件末尾增加一个空行，假如你没有追加，Hosts 不会生效，而当你重新将 Android 设备的 Hosts 文件拉到本地你又会确认自己已经修改了，如此死循环导致你根本发现不了问题。</p>
+<p>那这个问题我是如何发现的呢？</p>
+<p>很简单，不通过拉取文件来查看，因为你在电脑推到手机的文件，再拉回到电脑，依然是符合电脑的规范的，你需要知道 Android 是如何处理这个 Hosts 文件的。</p>
+<p>依然需要通过 <code>adb</code> 命令来查看手机上的 Hosts 文件：</p>
+<pre><code class="language-Shell">➜   adb shell
+  ➜   cat /system/etc/hosts
+</code></pre>
+<p>解释一下，<code>adb shell</code> 很简单，就是进入 Shell 模式，之前在『<a href="https://liarrdev.github.io/post/Permissions-of-Android-Device-Monitor/">Android Device Monitor 权限笔记</a>』中也使用过了。</p>
+<p>你可能会好奇，在『<a href="https://liarrdev.github.io/post/Permissions-of-Android-Device-Monitor/">Android Device Monitor 权限笔记</a>』中执行完 <code>adb shell</code> 后还需执行 <code>su</code> 来切换至超级管理员，为什么这里不需要呢？</p>
+<p>因为大部分模拟器默认就已经开启 ROOT 了所以不需要 <code>su</code> 来获取 ROOT 权限：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1625673015941.png" alt="模拟器系统设置" loading="lazy"></figure>
+<p>进入 Shell 后通过 <code>cat</code> 命令来查看文件内容。</p>
+<p>默认情况下，查询结果如下：</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1625673081537.png" alt="用 cat 命令查看正确的 Hosts" loading="lazy"></figure>
+<p>假如添加完内容后，不追加一个空行，会得到如下结果：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1625673138945.png" alt="用 cat 命令查看错误的 Hosts" loading="lazy"></figure>
+<p>发现了吗，下一条命令的输入位置跟在了最后一行 Hosts 内容之后，这就是导致 Hosts 不生效的原因，所以一定要确保 Hosts 文件最后一行为空行。</p>
+<p>对文件的 <code>push</code> 和 <code>pull</code> 有点太麻烦，我更喜欢用命令来做写入操作：</p>
+<pre><code class="language-Shell">➜   adb shell
+  ➜   echo -e \\n &gt;&gt; /system/etc/hosts
+  ➜   echo ***.***.***.***  www.domain.com &gt;&gt; /system/etc/hosts
+</code></pre>
+<p>通过 <code>echo</code> 写入一个换行符 <code>\n</code>，这个程序员都不陌生了，实际上这个换行符不是必须的，不过是为了防止原 Hosts 末尾没有换行罢了，再把对应的 Hosts 写入，使用这条命令追加 Hosts 会自动在文件末尾追加一个空行，所以不用担心会出现上面的问题。如果要增加多个 Hosts 则重复最后这步即可。</p>
+<p>前面用来查看文件内容的 <code>cat</code> 这个命令是否看起来有些许熟悉？</p>
+<p>没错，我们之前在『<a href="https://liarrdev.github.io/post/How-to-Edit-Hosts-in-macOS/">macOS 修改 Hosts</a>』中也有使用过，实际上，我们同样可以使用之前提到过的 <code>vi</code> 命令做修改：</p>
+<pre><code class="language-Shell">➜   adb shell
+  ➜   vi /system/etc/hosts
+</code></pre>
+<p>也是相同的命令，使用 <code>i</code> 进行插入修改，点击 <code>Esc</code> 退出编辑，再键入 <code>:wq</code> 并回车执行保存退出。</p>
+<p>我尝试了一下『<a href="https://liarrdev.github.io/post/How-to-Edit-Hosts-in-macOS/">macOS 修改 Hosts</a>』中使用过的 <code>nano</code> 命令，发现并不支持。</p>
+<p>对于判断 Hosts 文件是否生效，我们还可以直接在 Shell 中用 <code>ping</code> 命令查看，比通过浏览器或者网络请求要方便一些。</p>
 
                 </div>
                 <div class="clear"></div>
@@ -239,26 +184,13 @@
 
             <section class="related section">
               
-              <article class="prev grid-50 tablet-grid-50 grid-parent">
-                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/C-C++修改控制台颜色.jpeg');"></div>
-                 <a href="https://LiarrDev.github.io/post/C-C++修改控制台颜色/" class="full-link"></a>
-                 <div class="info">
-                  <time datetime="2018-12-09">2018-12-09</time>
-                  <h4 class="title white no-margin">C / C++ 修改控制台颜色</h4>
-                </div>
-                 <span class="epcl-button red">
-                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
-                </span>
-                <div class="overlay"></div>
-              </article>
-              
               
               <article class="next grid-50 tablet-grid-50 grid-parent">
-                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Permissions-of-Android-Device-Monitor.jpg');"></div>
-                 <a href="https://LiarrDev.github.io/post/Permissions-of-Android-Device-Monitor/" class="full-link"></a>
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/How-to-Import-AAR-in-Android-Studio.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/How-to-Import-AAR-in-Android-Studio/" class="full-link"></a>
                  <div class="info">
-                  <time datetime="2018-07-29">2018-07-29</time>
-                  <h4 class="title white no-margin">Android Device Monitor 权限笔记</h4>
+                  <time datetime="2021-06-27">2021-06-27</time>
+                  <h4 class="title white no-margin">『Android Studio』如何导入 AAR 包</h4>
                 </div>
                  <span class="epcl-button red">
                   <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">

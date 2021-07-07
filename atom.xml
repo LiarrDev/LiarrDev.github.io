@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://LiarrDev.github.io</id>
     <title>Liarr&apos;s Studio</title>
-    <updated>2021-06-26T08:04:41.850Z</updated>
+    <updated>2021-07-07T16:05:52.151Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://LiarrDev.github.io"/>
     <link rel="self" href="https://LiarrDev.github.io/atom.xml"/>
@@ -10,6 +10,77 @@
     <logo>https://LiarrDev.github.io/images/avatar.png</logo>
     <icon>https://LiarrDev.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, Liarr&apos;s Studio</rights>
+    <entry>
+        <title type="html"><![CDATA[Android 修改 Hosts]]></title>
+        <id>https://LiarrDev.github.io/post/How-to-Edit-Hosts-in-Android/</id>
+        <link href="https://LiarrDev.github.io/post/How-to-Edit-Hosts-in-Android/">
+        </link>
+        <updated>2021-07-05T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>之前『<a href="https://liarrdev.github.io/post/A-Brief-Overview-of-Hosts/">一文带你简单了解 Hosts</a>』文末提到会带来 Hosts 修改教程系列文章，在『<a href="https://liarrdev.github.io/post/How-to-Edit-Hosts-in-Windows/">Windows 修改 Hosts</a>』和『<a href="https://liarrdev.github.io/post/How-to-Edit-Hosts-in-macOS/">macOS 修改 Hosts</a>』之后，你以为这个系列就结束了？不，我又回来了。</p>
+<p>这一次，是 Android 系统修改 Hosts 教程。</p>
+<p>这篇文章其实机缘巧合，因为我在 Android 开发中刚好需要通过修改 Hosts 来跟后端工程师配合测试，所以这篇文章就正好水到渠成。</p>
+<p>因为在 Android 上修改 Hosts 需要获取 ROOT 权限，所以我这次就用模拟器来代替真机演示，使用的是『夜神模拟器』，任何 Android 模拟器都可以使用以下方法操作。</p>
+<p>由于现在很多国内 ROM 限制解锁权限，如 EMUI 等，获取 ROOT 权限操作步骤可能相对复杂，就不再花篇幅介绍了，假如你的手机成功获取了 ROOT 权限，以下方法也是适用的。</p>
+<p>修改 Android 系统的 Hosts 需要提前准备 ADB（Android Debug Bridge）工具，我本来就是从事 Android 开发的，开发工具中已经集成了 ADB，不需要重新安装，在之前的『<a href="https://liarrdev.github.io/post/Permissions-of-Android-Device-Monitor/">Android Device Monitor 权限笔记</a>』中我也使用过它，在此就不过多介绍了。</p>
+<p>如果你的电脑上没有 ADB，可以去单独下载；另外，Android 模拟器的安装目录下一般也会有 ADB 工具，配置到系统环境中即可。</p>
+<p>首先，先用终端查看连接的设备：</p>
+<pre><code class="language-Shell">➜   adb devices
+</code></pre>
+<p>许多模拟器在初次使用 ADB 连接时都不一定能连接上，可以自行搜索对应的解决方法，最常见的就是需要执行 <code>adb connect</code> 命令连接到对应的端口，也有可能遇到 ADB 版本不一致的问题，使用模拟器目录下的 ADB 或者将正在使用的 ADB 工具覆盖模拟器的 ADB 即可。</p>
+<p>通过 ADB 正确连接上 Android 模拟器后，接下来就是修改 Hosts。</p>
+<p>Hosts 目录为：<code>/system/etc/hosts</code>，在一切开始之前，我们还需要一个额外步骤，执行命令：</p>
+<pre><code class="language-Shell">➜   adb remount
+</code></pre>
+<p>与其他系统一样，Android 对于 Hosts 文件的处理也是需要权限的，这条命令的作用是重新挂载 <code>/system</code> 分区为可读写。</p>
+<p>然后通过命令将 Hosts 文件拉取到本地：</p>
+<pre><code class="language-Shell">➜   adb pull /system/etc/hosts D:/hosts
+</code></pre>
+<p>这是一个常用的 ADB 命令，用于将手机上的文件复制到本地：</p>
+<pre><code class="language-Shell">➜   adb pull {手机文件路径} {本机目录}
+</code></pre>
+<p>默认情况下 Hosts 里面只有两行内容：</p>
+<pre><code class="language-Hosts">127.0.0.1       localhost
+::1             ip6-localhost
+</code></pre>
+<p>跟之前一样，直接在下面追加自己的 Hosts。然后推回去：</p>
+<pre><code class="language-Shell">➜   adb push D:/hosts/hosts /system/etc/hosts
+</code></pre>
+<p>这也是一个常用的 ADB 命令，用于将本地的文件复制到手机：</p>
+<pre><code class="language-Shell">➜   adb push {本机文件路径} {手机目录}
+</code></pre>
+<p>这里还有一个需要注意的点，不同于 Windows 和 macOS，在 Android 中修改 Hosts 一定要在文件末尾增加一个空行，假如你没有追加，Hosts 不会生效，而当你重新将 Android 设备的 Hosts 文件拉到本地你又会确认自己已经修改了，如此死循环导致你根本发现不了问题。</p>
+<p>那这个问题我是如何发现的呢？</p>
+<p>很简单，不通过拉取文件来查看，因为你在电脑推到手机的文件，再拉回到电脑，依然是符合电脑的规范的，你需要知道 Android 是如何处理这个 Hosts 文件的。</p>
+<p>依然需要通过 <code>adb</code> 命令来查看手机上的 Hosts 文件：</p>
+<pre><code class="language-Shell">➜   adb shell
+  ➜   cat /system/etc/hosts
+</code></pre>
+<p>解释一下，<code>adb shell</code> 很简单，就是进入 Shell 模式，之前在『<a href="https://liarrdev.github.io/post/Permissions-of-Android-Device-Monitor/">Android Device Monitor 权限笔记</a>』中也使用过了。</p>
+<p>你可能会好奇，在『<a href="https://liarrdev.github.io/post/Permissions-of-Android-Device-Monitor/">Android Device Monitor 权限笔记</a>』中执行完 <code>adb shell</code> 后还需执行 <code>su</code> 来切换至超级管理员，为什么这里不需要呢？</p>
+<p>因为大部分模拟器默认就已经开启 ROOT 了所以不需要 <code>su</code> 来获取 ROOT 权限：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1625673015941.png" alt="模拟器系统设置" loading="lazy"></figure>
+<p>进入 Shell 后通过 <code>cat</code> 命令来查看文件内容。</p>
+<p>默认情况下，查询结果如下：</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1625673081537.png" alt="用 cat 命令查看正确的 Hosts" loading="lazy"></figure>
+<p>假如添加完内容后，不追加一个空行，会得到如下结果：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1625673138945.png" alt="用 cat 命令查看错误的 Hosts" loading="lazy"></figure>
+<p>发现了吗，下一条命令的输入位置跟在了最后一行 Hosts 内容之后，这就是导致 Hosts 不生效的原因，所以一定要确保 Hosts 文件最后一行为空行。</p>
+<p>对文件的 <code>push</code> 和 <code>pull</code> 有点太麻烦，我更喜欢用命令来做写入操作：</p>
+<pre><code class="language-Shell">➜   adb shell
+  ➜   echo -e \\n &gt;&gt; /system/etc/hosts
+  ➜   echo ***.***.***.***  www.domain.com &gt;&gt; /system/etc/hosts
+</code></pre>
+<p>通过 <code>echo</code> 写入一个换行符 <code>\n</code>，这个程序员都不陌生了，实际上这个换行符不是必须的，不过是为了防止原 Hosts 末尾没有换行罢了，再把对应的 Hosts 写入，使用这条命令追加 Hosts 会自动在文件末尾追加一个空行，所以不用担心会出现上面的问题。如果要增加多个 Hosts 则重复最后这步即可。</p>
+<p>前面用来查看文件内容的 <code>cat</code> 这个命令是否看起来有些许熟悉？</p>
+<p>没错，我们之前在『<a href="https://liarrdev.github.io/post/How-to-Edit-Hosts-in-macOS/">macOS 修改 Hosts</a>』中也有使用过，实际上，我们同样可以使用之前提到过的 <code>vi</code> 命令做修改：</p>
+<pre><code class="language-Shell">➜   adb shell
+  ➜   vi /system/etc/hosts
+</code></pre>
+<p>也是相同的命令，使用 <code>i</code> 进行插入修改，点击 <code>Esc</code> 退出编辑，再键入 <code>:wq</code> 并回车执行保存退出。</p>
+<p>我尝试了一下『<a href="https://liarrdev.github.io/post/How-to-Edit-Hosts-in-macOS/">macOS 修改 Hosts</a>』中使用过的 <code>nano</code> 命令，发现并不支持。</p>
+<p>对于判断 Hosts 文件是否生效，我们还可以直接在 Shell 中用 <code>ping</code> 命令查看，比通过浏览器或者网络请求要方便一些。</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[『Android Studio』如何导入 AAR 包]]></title>
         <id>https://LiarrDev.github.io/post/How-to-Import-AAR-in-Android-Studio/</id>
@@ -553,256 +624,6 @@ android {
 <p>说了那么多，其实 Hosts 并不神秘，简单理解它就是个电脑本机的「IP 地址 ↔ 域名」的对应表，系统或任何软件都会优先先检查 Hosts 里面有没对应的配置，之后才会去查询网上的 DNS 服务器。</p>
 <p>因此你可以利用 Hosts 做很多有趣、有用的事情。</p>
 <p>当然，本文只是一个简单的科普，追根溯源其实还有很多东西并没有详细聊到，比如 DNS 等，有兴趣的朋友可以自行深挖。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Android 对 TextView 和 EditText 的 Drawable 监听点击]]></title>
-        <id>https://LiarrDev.github.io/post/Listening-Clicks-on-Drawables-of-TextView-or-EditText/</id>
-        <link href="https://LiarrDev.github.io/post/Listening-Clicks-on-Drawables-of-TextView-or-EditText/">
-        </link>
-        <updated>2021-04-12T16:00:00.000Z</updated>
-        <content type="html"><![CDATA[<p>之前在『<a href="https://liarrdev.github.io/post/Add-Icons-for-TextView-or-EditText-in-Android/">Android 为 TextView 和 EditText 添加 ICON</a>』一文中介绍了如何为 <code>TextView</code> 和 <code>EditText</code> 添加 <code>Drawable</code> 作为指示，使交互更加友好，开发更方便，但仍遗留了一个问题，我们能否监听该 <code>Drawable</code> 的点击事件？</p>
-<p>这是一个很常见的需求，比如在密码输入框中添加一个用于切换是否显示明文的按钮：</p>
-<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1563355131994.gif" alt="" loading="lazy"></figure>
-<p>你当然可以使用 <code>EditText</code> 加 <code>ImageButton</code> 组合的方式，这不在本文的讨论范围内。</p>
-<p>那么 <code>TextView</code> 或者是继承自 <code>TextView</code> 的 <code>EditText</code> 有没有提供监听 <code>Drawable</code> 点击事件的方法呢？</p>
-<p>很遗憾，并没有。</p>
-<p>因此，我们需要自己去实现对应的点击逻辑。</p>
-<p>如果你上网搜索对应的内容，介绍的文章真不少，你复制下来到自己的项目上运行，效果或许也的确能够达到你的预期，但我这里要泼个冷水，你拷贝的这份代码很可能是错的——这是我踩过的坑。</p>
-<p>其实原理大家都懂，就是实现上可能会忽略一些细节。</p>
-<p>我简单先说下原理：</p>
-<p>假如我们能够测量出 <code>Drawable</code> 在控件内的区域，就可以对该区域内的触摸事件作监听，也就能够实现监听点击事件的效果。</p>
-<p>而难点，恰好就在于如何测量出 <code>Drawable</code> 所在区域，这也是网上很多文章犯错的地方。</p>
-<p>由几何知识可以知道，在二维平面中，只要确定了 2 个顶点的坐标，以这两个顶点分别向两坐标轴作垂线就可以绘制出一个矩形区域。需要明确的是，在 Android 中坐标点的计算和我们在数学上不太相同，Android 中坐标原点为左上角顶点，往右为 X 轴正方向，往下为 Y 轴正方向。</p>
-<p>接下来只需画个图就能清楚明了。</p>
-<p>以 <code>DrawableLeft</code> 为例：</p>
-<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1618149375304.png" alt="" loading="lazy"></figure>
-<p><code>DrawableLeft</code> 在 X 轴方向上的距离很容易计算，其左侧与 Y 轴的距离实际上就是该 <code>View</code> 的 <code>PaddingLeft</code>，其右侧与 Y 轴的距离就是 <code>PaddingLeft</code> 和该 <code>Drawable</code> 的宽度之和。</p>
-<p>但 <code>DrawableLeft</code> 在 Y 轴方向上的距离要稍微复杂一些，因为它会受到 <code>DrawableTop</code> 以及文字区域高度的影响，所以我们不能够直接获取。</p>
-<p>这里解释一下，<code>DrawableTop</code> 的影响应该很好理解，也很好处理；文字区域高度的影响，是指不包含 <code>Drawable</code> 的实际文字区域，当文字区域的高度高于 <code>DrawableLeft</code> 的高度时，我们如果不进行计算，获取到的高度可能会比实际上要高，这会造成我们测量出来的区域比实际区域要大。</p>
-<p>计算的方法也不难，我们只需要获取到 <code>DrawableLeft</code> 中心在 Y 轴方向上的位置，再增减 <code>Drawable</code> 本身一半的高度，即可得到其上下边界到 X 轴的距离。</p>
-<p>这样我们就把 <code>DrawableLeft</code> 所在区域计算出来了，同理 <code>DrawableTop</code> 也能够使用相同的方法计算。</p>
-<p>接下来就是 <code>DrawableRight</code>：</p>
-<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1618149402155.png" alt="" loading="lazy"></figure>
-<p><code>DrawableRight</code> 右侧在 X 轴方向上的距离实际上就是该 <code>View</code> 的总宽度与 <code>PaddingRight</code> 之差，其左侧在 X 轴方向上的距离就是其右侧在 X 轴方向的距离与该 <code>Drawable</code> 的宽度之差。</p>
-<p><code>DrawableRight</code> 在 Y 轴方向上的距离与 <code>DrawableLeft</code> 的计算方式无异，不再赘述。</p>
-<p>用同样的方法，我们也能够计算出 <code>DrawableBottom</code> 的区域。</p>
-<p>原理介绍完了，就该上代码了，为了更好的封装，我们可以自定义 <code>View</code> 来实现，以 <code>TextView</code> 为例：</p>
-<pre><code class="language-Java">public class DrawableTextView extends AppCompatTextView {
-
-    final int DRAWABLE_LEFT = 0;
-    final int DRAWABLE_TOP = 1;
-    final int DRAWABLE_RIGHT = 2;
-    final int DRAWABLE_BOTTOM = 3;
-
-    Drawable mDrawableLeft, mDrawableTop, mDrawableRight, mDrawableBottom;
-
-    public DrawableTextView(@NonNull Context context) {
-        super(context);
-    }
-
-    public DrawableTextView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public DrawableTextView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) { 
-        super(context, attrs, defStyleAttr);
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            if (onDrawableClickListener != null) {
-                mDrawableLeft = getCompoundDrawables()[DRAWABLE_LEFT];
-                mDrawableTop = getCompoundDrawables()[DRAWABLE_TOP];
-                mDrawableRight = getCompoundDrawables()[DRAWABLE_RIGHT];
-                mDrawableBottom = getCompoundDrawables()[DRAWABLE_BOTTOM];
-                if (touchDrawableLeft(event)) {
-                    onDrawableClickListener.onDrawableLeftClick();
-                }
-                if (touchDrawableTop(event)) {
-                    onDrawableClickListener.onDrawableTopClick();
-                }
-                if (touchDrawableRight(event)) {
-                    onDrawableClickListener.onDrawableRightClick();
-                }
-                if (touchDrawableBottom(event)) {
-                    onDrawableClickListener.onDrawableBottomClick();
-                }
-            }
-        }
-        return super.onTouchEvent(event);
-    }
-
-    private boolean touchDrawableLeft(MotionEvent event) {
-        if (mDrawableLeft == null) {
-            return false;
-        }
-        int drawableHeight = mDrawableLeft.getIntrinsicHeight();
-        int drawableWidth = mDrawableLeft.getIntrinsicWidth();
-        int topOfDrawable = getCompoundPaddingTop();
-        int bottomOfDrawable = getHeight() - getCompoundPaddingBottom();
-        double drawableCenterY = 0.5 * (bottomOfDrawable - topOfDrawable) + topOfDrawable;
-        Rect bounds = new Rect(getPaddingLeft(),
-                (int) (drawableCenterY - 0.5 * drawableHeight),
-                getPaddingLeft() + drawableWidth,
-                (int) (drawableCenterY + 0.5 * drawableHeight)
-        );
-        return bounds.contains((int) event.getX(), (int) event.getY());
-    }
-
-    private boolean touchDrawableTop(MotionEvent event) {
-        if (mDrawableTop == null) {
-            return false;
-        }
-        int drawableHeight = mDrawableTop.getIntrinsicHeight();
-        int drawableWidth = mDrawableTop.getIntrinsicWidth();
-        int leftOfDrawable = getCompoundPaddingLeft();
-        int rightOfDrawable = getWidth() - getCompoundPaddingRight();
-        double drawableCenterX = 0.5 * (rightOfDrawable - leftOfDrawable) + leftOfDrawable;
-        Rect bounds = new Rect((int) (drawableCenterX - 0.5 * drawableWidth),
-                getPaddingTop(),
-                (int) (drawableCenterX + 0.5 * drawableWidth),
-                getPaddingTop() + drawableHeight);
-        return bounds.contains((int) event.getX(), (int) event.getY());
-    }
-
-    private boolean touchDrawableRight(MotionEvent event) {
-        if (mDrawableRight == null) {
-            return false;
-        }
-        int drawableHeight = mDrawableRight.getIntrinsicHeight();
-        int drawableWidth = mDrawableRight.getIntrinsicWidth();
-        int topOfDrawable = getCompoundPaddingTop();
-        int bottomOfDrawable = getHeight() - getCompoundPaddingBottom();
-        double drawableCenterY = 0.5 * (bottomOfDrawable - topOfDrawable) + topOfDrawable;
-        Rect bounds = new Rect(getWidth() - getPaddingRight() - drawableWidth,
-                (int) (drawableCenterY - 0.5 * drawableHeight),
-                getWidth() - getPaddingRight(),
-                (int) (drawableCenterY + 0.5 * drawableHeight));
-        return bounds.contains((int) event.getX(), (int) event.getY());
-    }
-
-    private boolean touchDrawableBottom(MotionEvent event) {
-        if (mDrawableBottom == null) {
-            return false;
-        }
-        int drawHeight = mDrawableBottom.getIntrinsicHeight();
-        int drawWidth = mDrawableBottom.getIntrinsicWidth();
-        int leftOfDrawable = getCompoundPaddingLeft();
-        int rightOfDrawable = getWidth() - getCompoundPaddingRight();
-        double drawableCenterX = 0.5 * (rightOfDrawable - leftOfDrawable) + leftOfDrawable;
-        Rect bounds = new Rect((int) (drawableCenterX - 0.5 * drawWidth),
-                getHeight() - getPaddingBottom() - drawHeight,
-                (int) (drawableCenterX + 0.5 * drawWidth),
-                getHeight() - getPaddingBottom());
-        return bounds.contains((int) event.getX(), (int) event.getY());
-    }
-
-    public interface OnDrawableClickListener {
-        void onDrawableLeftClick();
-        void onDrawableTopClick();
-        void onDrawableRightClick();
-        void onDrawableBottomClick();
-    }
-
-    private OnDrawableClickListener onDrawableClickListener;
-
-    public void setOnDrawableClickListener(OnDrawableClickListener listener) {
-        this.onDrawableClickListener = listener;
-    }
-}
-</code></pre>
-<p>代码不短，但我们理解了上面的原理之后也很容易看懂。</p>
-<p>我在这里定义了一个 <code>OnDrawableClickListener</code> 接口，用于分别回调 <code>TextView</code> 四个方向上的点击事件。</p>
-<p>重点内容在重写的 <code>onTouchEvent()</code> 方法内，这个方法用于监听 <code>TextView</code> 的触摸事件。在该方法内，首先通过 <code>getCompoundDrawables()</code> 方法获取到 <code>Drawable</code> 数组，并通过下标分别拿到四个方向上的 <code>Drawable</code> 对象。紧接着判断触摸事件是否落在对应的 <code>Drawable</code> 区域内，然后回调给 <code>OnDrawableClickListener</code>。</p>
-<p>触摸区域的判断就根据上面原理写就可以了，解释下几个方法。</p>
-<p><code>getIntrinsicWidth()</code> 和 <code>getIntrinsicHeight()</code> 分别用于获取当前 <code>Drawable</code> 对象的宽高。</p>
-<p><code>getCompoundPaddingLeft()</code> 获取的则是 <code>TextView</code> 左边界到文字实际显示区域的距离，我们可以看下源码：</p>
-<pre><code class="language-Java">/**
- * Returns the left padding of the view, plus space for the left Drawable if any.
- */
-public int getCompoundPaddingLeft() {
-    final Drawables dr = mDrawables;
-    if (dr == null || dr.mShowing[Drawables.LEFT] == null) {
-        return mPaddingLeft;
-    } else {
-        return mPaddingLeft + dr.mDrawablePadding + dr.mDrawableSizeLeft;
-    }
-}
-</code></pre>
-<p>也就是说，当 <code>DrawableLeft</code> 不存在时，它取得的值是 <code>PaddingLeft</code>，而当 <code>DrawableLeft</code> 存在时，它取得的值是 <code>PaddingLeft</code>、<code>DrawableLeft</code> 的宽度、<code>DrawablePadding</code> 三者之和。其他方向也同理。</p>
-<p>回到刚刚还没解释的问题，当我们知道了文字显示区域距离坐标轴的距离时，<code>Drawable</code> 的中心点也就可以计算出来了。</p>
-<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1618149477448.png" alt="" loading="lazy"></figure>
-<p>你可能会有疑问，『<a href="https://liarrdev.github.io/post/Add-Icons-for-TextView-or-EditText-in-Android/">Android 为 TextView 和 EditText 添加 ICON</a>』一文不是提到可以通过设置 <code>Gravity</code> 来指定内部元素的对齐方式，那会不会影响到 <code>Drawable</code> 位置的计算？</p>
-<p>并不会，因为 <code>Gravity</code> 实际上指定的是文字在文字区域内的显示位置，而不是 <code>Drawable</code> 的位置，即 <code>Drawable</code> 的位置相对于文字区域来说，依然是居中的，所以我们通过文字区域来计算 <code>Drawable</code> 的中心点仍旧可行。</p>
-<p>最后，我们将 <code>Drawable</code> 所在的矩形区域计算出来，并判断触摸事件在该 <code>View</code> 上的落点是否在 <code>Drawable</code> 的矩形区域内，就能够判断该 <code>Drawable</code> 是否被点击。</p>
-<p>这个自定义的控件写完后，只需替换原来的 <code>TextView</code> 即可，属性与原来无异。</p>
-<p>对于继承自 <code>TextView</code> 的 <code>EditText</code> 也同理，使用上面的自定义方法同样适用。</p>
-<p>我这里就使用自定义的 <code>EditText</code> 来写一下文章开头的密码显隐功能。</p>
-<p>首先替换布局文件中原来的 <code>EditText</code> 控件：</p>
-<pre><code class="language-XML">&lt;com.example.DrawableEditText
-    android:id=&quot;@+id/password&quot;
-    android:layout_width=&quot;match_parent&quot;
-    android:layout_height=&quot;wrap_content&quot;
-    android:drawableRight=&quot;@drawable/ic_eye_off&quot;
-    android:inputType=&quot;textPassword&quot; /&gt;
-</code></pre>
-<p>在逻辑代码中响应其点击事件：</p>
-<pre><code class="language-Java">private boolean passwordVisible = false;
-
-void switchPasswordVisibility(final DrawableEditText editText) {
-    editText.setOnDrawableClickListener(new DrawableEditText.OnDrawableClickListener() {
-        @Override
-        public void onDrawableLeftClick() {}
-
-        @Override
-        public void onDrawableTopClick() {}
-
-        @Override
-        public void onDrawableRightClick() {
-            Drawable drawable;
-            if (passwordVisible) {
-                drawable = getResources().getDrawable(R.drawable.ic_eye_off);
-//              editText.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
-                editText.setTransformationMethod(PasswordTransformationMethod.getInstance());
-            } else {
-                drawable = getResources().getDrawable(R.drawable.ic_eye_on);
-//              editText.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                editText.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-            }
-            passwordVisible = !passwordVisible;
-            drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-            editText.setCompoundDrawables(null, null, drawable, null);
-        }
-
-        @Override
-        public void onDrawableBottomClick() {}
-    });
-}
-</code></pre>
-<p>因为只设置了 <code>DrawableRight</code>，所以这里只需要写入 <code>DrawableRight</code> 的事件即可。</p>
-<p>效果如下：</p>
-<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1563361469785.gif" alt="" loading="lazy"></figure>
-<p>虽然我们在 <code>EditText</code> 的控件属性中常用 <code>android:inputType</code> 属性来设置其为密码的样式，但在这里并不建议使用 <code>setInputType()</code> 方法来作更改，而是使用 <code>setTransformationMethod()</code> 方法，主要是因为 <code>setInputType()</code> 方法有两个坑。</p>
-<p>其一，密码从可见状态切回密文状态时，我们以在控件属性中使用的经验，一般会将其设置为：</p>
-<pre><code class="language-Java">editText.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-</code></pre>
-<p>但是运行之后你会发现，并不会生效：</p>
-<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1563362680037.gif" alt="" loading="lazy"></figure>
-<p>可以看我上方注释掉的代码中需要同时设置两个属性才能生效：</p>
-<pre><code class="language-Java">editText.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
-</code></pre>
-<p>对应控件属性中的：</p>
-<pre><code class="language-XML">&lt;EditText
-    ...
-    android:inputType=&quot;textPassword&quot; /&gt;
-</code></pre>
-<p>因为 <code>textPassword</code> 对应的 <code>InputType</code> 的值为 <code>129</code>，而 <code>InputType.TYPE_TEXT_VARIATION_PASSWORD</code> 对应的值是 <code>128</code>，所以很明显需要和值为 <code>1</code> 的 <code>InputType.TYPE_CLASS_TEXT</code> 做按位或运算。</p>
-<p>其二，使用 <code>setInputType()</code> 方法转换后会出现样式不一的情况：</p>
-<figure data-type="image" tabindex="7"><img src="https://LiarrDev.github.io/post-images/1563362022713.gif" alt="" loading="lazy"></figure>
-<p>可以见到，当切换为密文状态时，点和点之间的距离增大了，与默认样式不统一，会造成用户困扰。</p>
-<p>而使用 <code>setTransformationMethod()</code> 就可以避免上面的情况。</p>
 ]]></content>
     </entry>
 </feed>
