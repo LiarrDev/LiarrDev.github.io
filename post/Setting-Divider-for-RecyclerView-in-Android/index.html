@@ -2,7 +2,7 @@
   <head>
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Android Gradle Plugin 依赖项配置 | Liarr&#39;s Studio</title>
+<title>Android 为 RecyclerView 设置分割线 | Liarr&#39;s Studio</title>
 <meta name="description" content="温故而知新" />
 <link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
 <link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
@@ -16,8 +16,8 @@
 <script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
 <script src="https://LiarrDev.github.io/media/js/functions.js"></script>
     <meta name="referrer" content="never">
-    <meta name="description" content="做 Android 开发必定会依赖第三方库，比如常用的如网络请求框架 OkHttp、图片加载框架 Glide 等，即使你完全采用原生 API 来开发，也会依赖 AppCompat 或者 Support 之类的官方库。
-以前 Android ..." />
+    <meta name="description" content="Android 开发者都知道，RecyclerView 是一个非常强大的组件，它的最基本作用是代替原来的 ListView，但又由于其灵活性，RecyclerView 能够帮我们实现许多复杂的页面布局方案。
+用一句话概括就是，ListVie..." />
     <meta name="keywords" content="Android" />
     <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
     <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
@@ -86,14 +86,14 @@
       <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
 
         <div class="center content">
-          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Android-Gradle-Plugin-Dependency-Configurations.png');">
+          <div class="featured-image cover" style="background-image: url('/media/images/gridea.jpg');">
             <div class="meta top"> 
-              <time class="meta-info" style="float:left;" datetime="2021-05-17"><i class="fa fa-calendar"></i><span class="lately">2 个月前</span></time>
+              <time class="meta-info" style="float:left;" datetime="2021-07-10"><i class="fa fa-calendar"></i><span class="lately">15 分钟前</span></time>
               
-              <a href="https://LiarrDev.github.io/post/Android-Gradle-Plugin-Dependency-Configurations/#comments" class="comments meta-info" title="">
-                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Android-Gradle-Plugin-Dependency-Configurations/"> </span>
+              <a href="https://LiarrDev.github.io/post/Setting-Divider-for-RecyclerView-in-Android/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Setting-Divider-for-RecyclerView-in-Android/"> </span>
               </a>
-              <span id="/Android-Gradle-Plugin-Dependency-Configurations/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              <span id="/Setting-Divider-for-RecyclerView-in-Android/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
               
             </div>
             <div class="info">
@@ -102,7 +102,7 @@
                       <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
                     
               </div>
-              <h1 class="title ularge white bold">Android Gradle Plugin 依赖项配置</h1>
+              <h1 class="title ularge white bold">Android 为 RecyclerView 设置分割线</h1>
             </div>
           </div>
         </div>  
@@ -112,62 +112,141 @@
             <article class="main-article post">
               <section class="post-content">
                 <div class="text">
-                  <p>做 Android 开发必定会依赖第三方库，比如常用的如网络请求框架 <a href="https://liarrdev.github.io/post/Enjoy-OkHttp-in-One-Shot/"><code>OkHttp</code></a>、图片加载框架 <a href="https://liarrdev.github.io/post/Enjoy-Glide-in-One-Shot/"><code>Glide</code></a> 等，即使你完全采用原生 API 来开发，也会依赖 <code>AppCompat</code> 或者 <code>Support</code> 之类的官方库。</p>
-<p>以前 Android 开发是在『Eclipse』上进行的，开发者使用第三方库往往需要手动下载 Jar 包再到『Eclipse』内引用，在『Android Studio』推出后，得益于 Gradle 构建工具，我们只需在 Gradle 文件中用使用一行代码即可将第三方库从远程站点依赖到项目中，十分方便。</p>
-<p>我们引用依赖一般都是使用 <code>implementation</code> 配置依赖项，的确大多数第三方库文档的 Usage 都是这么写的，大多数情况下我们这么用也没问题，但是我们依然需要了解其他的依赖项配置。</p>
-<h1 id="implementation">implementation</h1>
-<p>首先我们从最熟悉的 <code>implementation</code> 开始，为什么 <code>implementation</code> 是绝大多数第三方库文档所介绍的配置方式，同时也是『Android Studio』的默认配置方式？</p>
-<p>原因其实很简单，与其他配置方式相比，此依赖项配置可以显著缩短构建时间，因为这样可以减少构建系统需要重新编译的 Module 数。</p>
-<p>当 <code>implementation</code> 依赖项更改了其 API，Gradle 只会重新编译该依赖项以及直接依赖于它的 Module。同时，该 Module 在编译时不会将该依赖项泄露给其他 Module，也就是说，其他 Module 只有在运行时才能使用该依赖项。</p>
-<h1 id="api">api</h1>
-<p>当一个 Module 包含 <code>api</code> 依赖项时，该 Module 会以传递方式将该依赖项导出到其他 Module，以便这些 Module 在运行时和编译时都可以使用该依赖项。</p>
-<p>此配置的行为类似于 <code>compile</code>（现已弃用），会以传递方式导出到其他上游消费者。<br>
-其与 <code>implementation</code> 的最大区别在于能否被上游消费者调用，如下图所示：</p>
-<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1620490674516.jpeg" alt="" loading="lazy"></figure>
-<p>假设 Module X 同时依赖 Library A 和 Library B，而 Library A 通过 <code>implementation</code> 引用 Library C，而 Library B 则使用 <code>api</code> 引用 Library D。</p>
-<p>这时候，Module X 是不能够直接使用 Library C 的，但却能够直接使用 Library D。因为 <code>implementation</code> 可以让 Module 在编译时“隐藏”自己使用的依赖，而 <code>api</code> 则会“传递”自己的依赖。</p>
-<p>同时，如果 <code>api</code> 依赖项更改了其外部 API，Gradle 会在编译时重新编译所有有权访问该依赖项的 Module，因此，拥有大量的 <code>api</code> 依赖项会显著增加构建时间。</p>
-<p>除非要将依赖项的 API 公开给单独的 Module，否则应使用 <code>implementation</code> 依赖项。</p>
-<h1 id="compileonly">compileOnly</h1>
-<p>Gradle 只会将依赖项添加到编译类路径，也就是说，不会将其添加到构建输出。</p>
-<p>如果您创建 Module 时在编译期间需要相应依赖项，但它在运行时可有可无，此配置会很有用。</p>
-<p>如果您使用 <code>compileOnly</code>，那么您的 Module 必须包含一个运行时条件，用于检查是否提供了相应依赖项，然后适当地改变该 Module 的行为，以使该 Module 在未提供相应依赖项的情况下仍可正常运行。</p>
-<p>这样做不会添加不重要的暂时依赖项，因而有助于减小最终 APK 的大小。此配置的行为类似于 <code>provided</code>（现已弃用）。</p>
-<h1 id="runtimeonly">runtimeOnly</h1>
-<p>Gradle 只会将依赖项添加到构建输出，以便在运行时使用。也就是说，不会将其添加到编译类路径。</p>
-<p>此配置的行为类似于 <code>apk</code>（现已弃用）。</p>
-<h1 id="annotationprocessor">annotationProcessor</h1>
-<p>我们在使用一些包含注解的第三方库时经常可以见到它，比如 <code>Dagger</code> 等。</p>
-<p>如需添加对作为注解处理器的库的依赖，可以使用 <code>annotationProcessor</code> 配置将其添加到注解处理器的类路径。</p>
-<p>使用此配置可以将编译类路径与注释处理器类路径分开，从而提高构建性能。</p>
-<h1 id="lintchecks">lintChecks</h1>
-<p>使用此配置可以添加您希望 Gradle 在构建项目时执行的 lint 检查。</p>
-<p>需要注意，使用 Android Gradle Plugin 3.4.0 及更高版本时，此依赖项配置不再将 lint 检查打包在 AAR 项目中。</p>
-<h1 id="lintpublish">lintPublish</h1>
-<p>在 AAR 项目中使用此配置可以添加您希望 Gradle 编译成 <code>lint.jar</code> 文件并打包在 AAR 中的 lint 检查。这会使得使用 AAR 的项目也应用这些 lint 检查。</p>
-<h1 id="testimplementation">testImplementation</h1>
-<p>只在单元测试代码的编译以及最终打包测试 APK 时有效。</p>
-<p>默认新建项目中 <code>JUnit</code> 就是以此配置依赖的，同时可以看到默认项目目录中除了我们一般写业务代码的 <code>/src/main</code> 目录外，还有 <code>/src/test</code> 目录供我们写本地单元测试，<code>testImplementation</code> 就可以为其 Source Set 添加依赖。</p>
-<h1 id="androidtestimplementation">androidTestImplementation</h1>
-<p>只在单元测试代码的编译以及最终打包测试 APK 时有效。</p>
-<p>默认新建项目中 <code>Espresso</code> 就是以此配置依赖的，同时可以看到默认项目目录中除了我们一般写业务代码的 <code>/src/main</code> 目录外，还有 <code>/src/androidTest</code> 目录供我们写仪器化单元测试、UI 测试等，<code>androidTestImplementation</code> 就可以为其 Source Set 添加依赖。</p>
-<h1 id="releaseimplementation-debugimplementation">releaseImplementation / debugImplementation</h1>
-<p>仅仅针对 Release 或 Debug 模式的编译和最终的 Release / Debug Apk 打包。</p>
-<p>DiDi 团队著名框架 <code>DoKit</code> 就是以此配置依赖的，可以针对 Release 和 Debug 采用不同的处理。</p>
-<h1 id="compile">compile</h1>
-<p>该配置已弃用。</p>
-<p>与 <code>api</code> 类似，Gradle 会将依赖项添加到编译类路径和构建输出，并将依赖项导出到其他 Module。</p>
-<h1 id="apk">apk</h1>
-<p>该配置已弃用。</p>
-<p>与 <code>runtimeOnly</code> 类似，Gradle 只会将依赖项添加到构建输出，以便在运行时使用，不会将其添加到编译类路径。</p>
-<h1 id="provided">provided</h1>
-<p>该配置已弃用。</p>
-<p>与 <code>compileOnly</code> 类似，Gradle 只会将依赖项添加到编译类路径，不会将其添加到构建输出。</p>
-<hr>
-<h1 id="参考">参考</h1>
-<ul>
-<li><a href="https://developer.android.google.cn/studio/build/dependencies">添加构建依赖项 | Android 开发者 | Android Developers</a></li>
-</ul>
+                  <p>Android 开发者都知道，<code>RecyclerView</code> 是一个非常强大的组件，它的最基本作用是代替原来的 <code>ListView</code>，但又由于其灵活性，<code>RecyclerView</code> 能够帮我们实现许多复杂的页面布局方案。</p>
+<p>用一句话概括就是，<code>ListView</code> 能实现的 <code>RecyclerView</code> 也能实现，<code>ListView</code> 实现不了的，<code>RecyclerView</code> 也能实现。</p>
+<p>相信很多 Android 初学者也跟我一样，是从<a href="https://guolin.tech">郭霖</a>的《第一行代码——Android》这本书开始的，不得不说这是一本非常适合入门的书籍，但在里面介绍 <code>RecyclerView</code> 的章节中，<a href="https://guolin.tech">郭霖</a>并没有介绍过 <code>RecyclerView</code> 分割线的实现方法，而在第二版第 14 章实战『<a href="https://github.com/guolindev/coolweather">CoolWeather</a>』中则有如下描述：</p>
+<blockquote>
+<p>之所以这次使用了 <code>ListView</code>，是因为它会自动给每个子项之间添加一条分隔线，而如果使用 <code>RecyclerView</code> 想实现同样的功能则会比较麻烦，这里我们总是选择最优的实现方案。</p>
+</blockquote>
+<p>的确，在默认情况下，<code>ListView</code> 是有分割线的，而 <code>RecyclerView</code> 却没有：</p>
+<table>
+    <td><img src="https://liarrdev.github.io/post-images/1625932485374.png"/></td>
+    <td><img src="https://liarrdev.github.io/post-images/1625932672133.png"/></td>
+</table>
+<p><a href="https://guolin.tech">郭霖</a>在书中对于 <code>RecyclerView</code> 界面的调整，大多数都是用 <code>CardView</code> 来实现的，以至于我在后面很长一段时间内以为 <code>RecyclerView</code> 设置分割线需要写一些比较复杂的代码，但随着不断的学习，我发现这个理论实际上是错误的，<code>RecyclerView</code> 其实也能够轻松地设置分割线。</p>
+<p><code>RecyclerView</code> 设置分割线是通过 <code>addItemDecoration()</code> 方法来添加的，该方法接收一个 <code>ItemDecoration</code> 对象，<code>ItemDecoration</code> 实际上是一个抽象类，而 <code>RecyclerView</code> 中恰好有一个默认的实现，也就是 <code>DividerItemDecoration</code>，所以我们可以直接使用：</p>
+<pre><code class="language-Java">recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+</code></pre>
+<p><code>DividerItemDecoration</code> 接收两个参数，第一个是 <code>Context</code>，用于访问资源，第二个 <code>int</code> 类型的参数表示分割线的方向，只能为 <code>HORIZONTAL</code> 或 <code>VERTICAL</code>，即水平或垂直。</p>
+<p>只需要在 <code>setAdapter()</code> 之前调用上方代码即可。效果如下：</p>
+<figure data-type="image" tabindex="1"><img src="https://files.mdnice.com/user/3907/672b2193-213a-40f0-b491-c1e7c1b45c1c.png" alt="RecyclerView 设置分割线" loading="lazy"></figure>
+<p>关于 <code>DividerItemDecoration</code> 的实现，实际上也并不复杂，毕竟也就一条直线的事，我们可以看看源码：</p>
+<pre><code class="language-Java">public class DividerItemDecoration extends RecyclerView.ItemDecoration {
+    public static final int HORIZONTAL = LinearLayout.HORIZONTAL;
+    public static final int VERTICAL = LinearLayout.VERTICAL;
+    private static final String TAG = &quot;DividerItem&quot;;
+    private static final int[] ATTRS = new int[]{ android.R.attr.listDivider };
+    private Drawable mDivider;
+    private int mOrientation;
+    private final Rect mBounds = new Rect();
+
+    public DividerItemDecoration(Context context, int orientation) {
+        final TypedArray a = context.obtainStyledAttributes(ATTRS);
+        mDivider = a.getDrawable(0);
+        if (mDivider == null) {
+            Log.w(TAG, &quot;@android:attr/listDivider was not set in the theme used for this &quot; + &quot;DividerItemDecoration. Please set that attribute all call setDrawable()&quot;);
+        }
+        a.recycle();
+        setOrientation(orientation);
+    }
+
+    public void setOrientation(int orientation) {
+        if (orientation != HORIZONTAL &amp;&amp; orientation != VERTICAL) {
+            throw new IllegalArgumentException(&quot;Invalid orientation. It should be either HORIZONTAL or VERTICAL&quot;);
+        }
+        mOrientation = orientation;
+    }
+
+    public void setDrawable(@NonNull Drawable drawable) {
+        if (drawable == null) {
+            throw new IllegalArgumentException(&quot;Drawable cannot be null.&quot;);
+        }
+        mDivider = drawable;
+    }
+
+    @Nullable
+    public Drawable getDrawable() {
+        return mDivider;
+    }
+
+    @Override
+    public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+        if (parent.getLayoutManager() == null || mDivider == null) {
+            return;
+        }
+        if (mOrientation == VERTICAL) {
+            drawVertical(c, parent);
+        } else {
+            drawHorizontal(c, parent);
+        }
+    }
+
+    private void drawVertical(Canvas canvas, RecyclerView parent) {
+        canvas.save();
+        final int left;
+        final int right;
+        if (parent.getClipToPadding()) {
+            left = parent.getPaddingLeft();
+            right = parent.getWidth() - parent.getPaddingRight();
+            canvas.clipRect(left, parent.getPaddingTop(), right, parent.getHeight() - parent.getPaddingBottom());
+        } else {
+            left = 0;
+            right = parent.getWidth();
+        }
+        final int childCount = parent.getChildCount();
+        for (int i = 0; i &lt; childCount; i++) {
+            final View child = parent.getChildAt(i);
+            parent.getDecoratedBoundsWithMargins(child, mBounds);
+            final int bottom = mBounds.bottom + Math.round(child.getTranslationY());
+            final int top = bottom - mDivider.getIntrinsicHeight();
+            mDivider.setBounds(left, top, right, bottom);
+            mDivider.draw(canvas);
+        }
+        canvas.restore();
+    }
+
+    private void drawHorizontal(Canvas canvas, RecyclerView parent) {
+        canvas.save();
+        final int top;
+        final int bottom;
+        if (parent.getClipToPadding()) {
+            top = parent.getPaddingTop();
+            bottom = parent.getHeight() - parent.getPaddingBottom();
+            canvas.clipRect(parent.getPaddingLeft(), top, parent.getWidth() - parent.getPaddingRight(), bottom);
+        } else {
+            top = 0;
+            bottom = parent.getHeight();
+        }
+        final int childCount = parent.getChildCount();
+        for (int i = 0; i &lt; childCount; i++) {
+            final View child = parent.getChildAt(i);
+            parent.getLayoutManager().getDecoratedBoundsWithMargins(child, mBounds);
+            final int right = mBounds.right + Math.round(child.getTranslationX());
+            final int left = right - mDivider.getIntrinsicWidth();
+            mDivider.setBounds(left, top, right, bottom);
+            mDivider.draw(canvas);
+        }
+        canvas.restore();
+    }
+
+    @Override
+    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+        if (mDivider == null) {
+            outRect.set(0, 0, 0, 0);
+            return;
+        }
+        if (mOrientation == VERTICAL) {
+            outRect.set(0, 0, 0, mDivider.getIntrinsicHeight());
+        } else {
+            outRect.set(0, 0, mDivider.getIntrinsicWidth(), 0);
+        }
+    }
+}
+</code></pre>
+<p>首先就是获取传入的方向，也就是水平还是垂直，然后在 <code>onDraw()</code> 中根据方向调用 <code>drawVertical()</code> 或 <code>drawHorizontal()</code> 实现对分割线的绘制。</p>
+<p>绘制前先测量 <code>RecyclerView</code> 的 <code>padding</code>，以得到与 <code>item</code> 不相邻两边的宽度。通过 <code>getChildCount()</code> 获取 <code>item</code> 的数量，然后遍历各个 <code>item</code>，分别计算与 <code>item</code> 相邻两边的宽度，即可绘制出分割线的区域。</p>
+<p><code>getItemOffsets()</code> 方法用于设置 <code>item</code> 的 <code>padding</code> 属性，<code>setDrawable()</code> 则用于设置分割线的样式。</p>
+<p>了解原理之后，我们就可以更灵活地为 <code>RecyclerView</code> 自定义分割线了。</p>
 
                 </div>
                 <div class="clear"></div>
@@ -177,32 +256,6 @@
 
             <section class="related section">
               
-              <article class="prev grid-50 tablet-grid-50 grid-parent">
-                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/How-to-Import-JAR-in-Android-Studio.png');"></div>
-                 <a href="https://LiarrDev.github.io/post/How-to-Import-JAR-in-Android-Studio/" class="full-link"></a>
-                 <div class="info">
-                  <time datetime="2021-05-27">2021-05-27</time>
-                  <h4 class="title white no-margin">『Android Studio』如何导入 JAR 包</h4>
-                </div>
-                 <span class="epcl-button red">
-                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
-                </span>
-                <div class="overlay"></div>
-              </article>
-              
-              
-              <article class="next grid-50 tablet-grid-50 grid-parent">
-                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Auto-Signing-with-Gradle-in-Android-Studio.png');"></div>
-                 <a href="https://LiarrDev.github.io/post/Auto-Signing-with-Gradle-in-Android-Studio/" class="full-link"></a>
-                 <div class="info">
-                  <time datetime="2021-04-30">2021-04-30</time>
-                  <h4 class="title white no-margin">『Android Studio』用 Gradle 实现自动签名</h4>
-                </div>
-                 <span class="epcl-button red">
-                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
-                </span>
-                <div class="overlay"></div>
-              </article>
               
 
                 <div class="clear"></div>
