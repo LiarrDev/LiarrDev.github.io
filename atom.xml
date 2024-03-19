@@ -1,0 +1,953 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://LiarrDev.github.io</id>
+    <title>Liarr&apos;s Studio</title>
+    <updated>2024-03-19T16:09:35.547Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://LiarrDev.github.io"/>
+    <link rel="self" href="https://LiarrDev.github.io/atom.xml"/>
+    <subtitle>温故而知新</subtitle>
+    <logo>https://LiarrDev.github.io/images/avatar.png</logo>
+    <icon>https://LiarrDev.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2024, Liarr&apos;s Studio</rights>
+    <entry>
+        <title type="html"><![CDATA[Android Bitmap 灰度处理]]></title>
+        <id>https://LiarrDev.github.io/post/Android-Bitmap-Grayscale/</id>
+        <link href="https://LiarrDev.github.io/post/Android-Bitmap-Grayscale/">
+        </link>
+        <updated>2024-03-18T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="前言">前言</h1>
+<p>平时在使用『Photoshop』做图时，我们常会对图片做去色处理，以实现各种丰富的细节。灰度处理还有如下作用：</p>
+<ul>
+<li>降低数据维度：彩色图像通常包含了大量的冗余信息，而灰度图像只保留了图像的亮度信息。通过灰度处理，可以将图像的数据维度从三维（RGB 通道）降低为二维（灰度值）。</li>
+<li>简化图像处理：在许多图像处理任务中，只需要关注图像的亮度信息而不需要颜色信息。通过将图像转换为灰度图像，可以简化后续的图像处理操作，减少计算量和复杂度。</li>
+<li>提高图像分析效果：在某些情况下，灰度图像可以更好地突出图像中的细节和特征。例如，在边缘检测、形状识别、人脸识别等任务中，使用灰度图像可以更容易地提取和分析图像的特征。</li>
+</ul>
+<p>那么在 Android 开发中我们能否对图片做类似的灰度处理呢？</p>
+<h1 id="原理">原理</h1>
+<p>色饱和度（Saturation）是指是播放的光的彩色深浅度或鲜艳度。色饱和度表示播放的光的彩色鲜艳度，取决于彩色中的灰度，灰度越高，色彩饱和度即越低，反之亦然。</p>
+<p>图像的灰度处理中有很多种方法，其中比较有名的算法是通过对彩色图像的 RGB 通道进行加权平均来计算灰度值。通常使用以下公式计算每个像素的灰度值， 其中，R、G、B 分别表示红色、绿色和蓝色通道的像素值。</p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>G</mi><mi>r</mi><mi>a</mi><mi>y</mi><mo>=</mo><mn>0.299</mn><mo>×</mo><mi>R</mi><mo>+</mo><mn>0.875</mn><mo>×</mo><mi>G</mi><mo>+</mo><mn>0.114</mn><mo>×</mo><mi>B</mi></mrow><annotation encoding="application/x-tex">Gray = 0.299 \times  R + 0.875 \times G + 0.114 \times B 
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">G</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">0</span><span class="mord">.</span><span class="mord">2</span><span class="mord">9</span><span class="mord">9</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.76666em;vertical-align:-0.08333em;"></span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">0</span><span class="mord">.</span><span class="mord">8</span><span class="mord">7</span><span class="mord">5</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.76666em;vertical-align:-0.08333em;"></span><span class="mord mathdefault">G</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">0</span><span class="mord">.</span><span class="mord">1</span><span class="mord">1</span><span class="mord">4</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span></span></span></span></span></p>
+<p>由于人眼对绿色的敏感度最高，对蓝色的敏感度最低，该方法基于人眼对不同颜色通道的敏感度不同，对 RGB 三分量进行加权平均能相对合理地将彩色信息转换为灰度信息。</p>
+<p>浮点运算效率不高，因此该公式也有很多变种，本文暂不讨论。</p>
+<h1 id="实现">实现</h1>
+<p>我们可以通过遍历图片中的每个像素，使用上述公式计算出其灰度值，再生成图像：</p>
+<pre><code class="language-Kotlin">fun Bitmap.toGray(): Bitmap {
+    val ret = Bitmap.createBitmap(width, height, config)
+    for (i in 0 until width) {
+        for (j in 0 until height) {
+            val pixel = getPixel(i, j)
+            val gray = Color.red(pixel) * 0.299 + Color.green(pixel) * 0.587 + Color.blue(pixel) * 0.114
+            val color = Color.rgb(gray.toInt(), gray.toInt(), gray.toInt())
+            ret.setPixel(i, j, color)
+        }
+    }
+    return ret
+}
+</code></pre>
+<p><code>setPixel()</code> 内部是调用 Native 方法实现的，在主线程中循环调用很容易造成 ANR，因此应当放在子线程中处理。</p>
+<p>当然，我们可以先把总的灰度值算出来，再一次性对 <code>Bitmap</code> 设置：</p>
+<pre><code class="language-Kotlin">fun Bitmap.toGray(): Bitmap {
+    val ret = Bitmap.createBitmap(width, height, config)
+    val pixels = IntArray(width * height)
+    this.getPixels(pixels, 0, width, 0, 0, width, height)
+    val alpha = 0xFF shl 24
+    for (i in 0 until height) {
+        for (j in 0 until width) {
+            val pixel = pixels[width * i + j]
+            val gray = (Color.red(pixel) * 0.299 + Color.green(pixel) * 0.587 + Color.blue(pixel) * 0.114).toInt()
+            val color = alpha or (gray shl 16) or (gray shl 8) or gray
+            pixels[width * i + j] = color
+        }
+    }
+    ret.setPixels(pixels, 0, width, 0, 0, width, height)
+    return ret
+}
+</code></pre>
+<p>这里使用一个数组来存储每个像素的计算结果，最后再通过 <code>setPixels()</code> 方法一次性设置到 <code>Bitmap</code> 中。</p>
+<p>其实 Android 本身就提供了对饱和度的处理方法，我们可以直接调用实现，无需手动计算：</p>
+<pre><code class="language-Kotlin">fun Bitmap.toGray(): Bitmap {
+    val ret = Bitmap.createBitmap(this.width, this.height, this.config)
+    val canvas = Canvas(ret)
+    val cm = ColorMatrix().apply { setSaturation(0f) }
+    val paint = Paint().apply { colorFilter = ColorMatrixColorFilter(cm) }
+    canvas.drawBitmap(this, 0f, 0f, paint)
+    return ret
+}
+</code></pre>
+<p>如果项目有使用 <a href="https://liarrdev.github.io/post/Android-OpenCV-Project-Configuration/">OpenCV</a>，那么也可以：</p>
+<pre><code class="language-Kotlin">fun Bitmap.toGray(): Bitmap {
+    val src = Mat()
+    val dst = Mat()
+    Utils.bitmapToMat(this, src)
+    Imgproc.cvtColor(src, dst, Imgproc.COLOR_BGR2GRAY)
+    Utils.matToBitmap(dst, this)
+    src.release()
+    dst.release()
+    return this
+}
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Android OpenCV 项目配置笔记]]></title>
+        <id>https://LiarrDev.github.io/post/Android-OpenCV-Project-Configuration/</id>
+        <link href="https://LiarrDev.github.io/post/Android-OpenCV-Project-Configuration/">
+        </link>
+        <updated>2024-02-26T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>之前我们<a href="https://liarrdev.github.io/post/Build-up-Android-NDK-CMake-Project/">搭建了 NDK 的项目环境</a>，NDK 为我们打开了另一个世界，OpenCV 便是这新世界的领域之一，OpenCV 相关的资料介绍你可以在网上搜索到，这里就不赘述了，今天来讲讲 OpenCV 的环境配置。</p>
+<p>OpenCV 的 Android SDK 以 Module 形式提供，但其目录结构与我们常见的 Android Module 略有差异，所以也给我们的配置带来一定门槛。我个人感觉是历史遗留问题，因此本文的配置教程在后续版本中不一定适用。</p>
+<p>本文所用到的工具版本：</p>
+<blockquote>
+<ul>
+<li>Android Studio Hedgehog | 2023.1.1</li>
+<li>OpenCV 4.8.1</li>
+<li>Java 17</li>
+</ul>
+</blockquote>
+<p>OpenCV Android SDK 可以从<a href="https://opencv.org">官网</a>或者其<a href="https://github.com/opencv/opencv/releases">项目 Github Release</a> 下载，<a href="https://liarrdev.github.io/post/Build-up-Android-NDK-CMake-Project/">NDK 环境</a>虽然在 OpenCV 的后续开发中有着至关重要的作用，但与本文暂不关联，可自行决定是否配置。</p>
+<p>下载到的 OpenCV Android SDK 目录如下：</p>
+<pre><code>OpenCV-android-sdk
+  ├── LICENSE
+  ├── README.android
+  ├── samples
+  └── sdk
+   ├── build.gradle
+   ├── etc
+   ├── java
+   ├── libcxx_helper
+   └── native
+</code></pre>
+<p>我们将 <code>/sdk</code> 目录导入为 Module 即可：</p>
+<figure data-type="image" tabindex="1"><img src="https://gitee.com/LiarrDev/note-studio/raw/master/res/import-opencv-as-module.png" alt="Import OpenCV as Module" loading="lazy"></figure>
+<p>Gradle 会自动同步，如无意外，同步失败。</p>
+<p>打开 <code>/opencv/build.gradle</code> 我们可以看到维护者为我们写了一大堆注释介绍如何导入，但并不完整，不然我也不需要特意写个笔记来记录。</p>
+<p>我们将该 Module 的 <code>targetSdkVersion</code> 与主项目一致，并添加 <code>namespace</code>，同时取消 <code>kotlin-android</code> 这个 Plugin 的引入，相关修改如下：</p>
+<pre><code class="language-groovy">apply plugin: 'com.android.library'
+// apply plugin: 'kotlin-android'   // 修改 ①：取消引入
+
+android {
+
+    namespace &quot;org.opencv&quot;  // 修改 ②：添加 namespace
+    
+    compileSdkVersion 34    // 修改 ③：修改为和主项目一致
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 34 // 修改 ④：修改为和主项目一致
+        ...
+    }
+    ...
+}
+</code></pre>
+<p>项目初始化时我选择了 Kotlin DSL 作为构建配置语言，所以它会初始化一个 <code>/settings.gradle.kts</code> 文件，但是 OpenCV Android SDK 仍旧采用老的 Groovy DSL，所以导入时 Android Studio 又会另外增加一个 <code>/settings.gradle</code> 文件，其实这是没有必要的，我们将 <code>/settings.gradle</code> 文件删除，并在 <code>/settings.gradle.kts</code> 文件末尾将该 Module 引入即可：</p>
+<pre><code class="language-groovy">pluginManagement {
+    ...
+}
+dependencyResolutionManagement {
+    ...
+}
+
+rootProject.name = &quot;OpenCV&quot;
+include(&quot;:app&quot;)
+include(&quot;:opencv&quot;)  // 添加导入的 OpenCV Module
+</code></pre>
+<p>这样导入 OpenCV Module 的操作就完成了，可以正常编译运行。</p>
+<p>接下来将其添加到宿主依赖，在 <code>/app/build.gradle.kts</code> 中添加：</p>
+<pre><code class="language-groovy">dependencies {
+    ...
+    implementation(project(&quot;:opencv&quot;))
+}
+</code></pre>
+<p>接下来会发现 <code>OpenCVEngineInterface</code> 这个接口被其他类导入时报错为不存在，因为它实际上是一个 AIDL 接口，所以我们需要为其创建专门的 AIDL Folder：</p>
+<figure data-type="image" tabindex="2"><img src="https://gitee.com/LiarrDev/note-studio/raw/master/res/new_aidl_folder.png" alt="创建 AIDL Folder" loading="lazy"></figure>
+<p>然后将 <code>OpenCVEngineInterface</code> 文件拷贝到刚刚创建的 AIDL Folder 下，并创建为相同路径名称：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1706362714801.png" alt="OpenCVEngineInterface AIDL 文件位置" loading="lazy"></figure>
+<p>同时也需要在 <code>/opencv/build.gradle</code> 中开启 AIDL 配置：</p>
+<pre><code class="language-groovy">android {
+    ...
+    buildFeatures {
+        aidl true
+    }
+}
+</code></pre>
+<p>在 <code>/gradle.properties</code> 中配置：</p>
+<pre><code class="language-properties">android.defaults.buildfeatures.buildconfig=true
+</code></pre>
+<p>再次运行，<code>OpenCVEngineInterface</code> 能够被正常识别。</p>
+<p>Android OpenCV 基本配置已完成。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Android NDK CMake 项目搭建笔记]]></title>
+        <id>https://LiarrDev.github.io/post/Build-up-Android-NDK-CMake-Project/</id>
+        <link href="https://LiarrDev.github.io/post/Build-up-Android-NDK-CMake-Project/">
+        </link>
+        <updated>2024-01-16T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="前言">前言</h1>
+<p>Android 开发在接入一些第三方库时，你可能会发现它们会带有 <a href="https://liarrdev.github.io/post/How-to-Import-SO-in-Android-Studio/">SO 库</a>，这些 SO 库是通过 C/C++、Rust 等语言编写生成的。</p>
+<p>使用这种方式开发，有以下几个优点：</p>
+<ul>
+<li><strong>性能快</strong>。C/C++ 编译过程是可执行文件到机器码，而 Java 则是字节码到 JVM 再到机器码。虽然 C/C++ 代码高效，但 Java 和 C/C++ 互相调用时却增大了开销。</li>
+<li><strong>安全性高</strong>。<a href="https://liarrdev.github.io/post/Getting-Started-with-Android-Decompilation/">APK 中的 Java 代码很容易被反编译</a>，而 C/C++ 库逆向难度较高。</li>
+<li><strong>便于平台间的移植</strong>。通过 C/C++ 实现的动态库可以很方便地在其他平台上使用。</li>
+<li><strong>可调用系统底层功能</strong>。这在硬件交互上很常见，比如驱动开发、音视频处理、人脸识别等等。</li>
+</ul>
+<p>当接触到这种开发方式时，有几个名词会不断出现：</p>
+<ul>
+<li>NDK：即 Native Development Kit。它是原生开发工具包，这套工具允许 Android 使用 C/C++ 代码，帮助开发者快速开发 C/C++ 的动态库。</li>
+<li>JNI：即 Java Native Interface。它是 Java 平台的一部分，也就是 Java 与 C/C++ 相互通信的接口。</li>
+<li>Makefile：将 C/C++ 代码编译成原生库的编译工具。在 Android 中，Makefile 依靠 ndk-build 脚本编译工具来完成配置编译，通常需要编写 <code>Android.mk</code> 和 <code>Application.mk</code> 两个 Makefile 文件，这种构建方式在『Eclipse』中比较常见。Makefile 依赖于编译平台，在不同的平台上有不同的编译工具，遵循的规则也不相同，所以在不同的平台上编译时，需要重新配置 Makefile，工作量较大也容易出错。</li>
+<li>CMake：同样也是将 C/C++ 代码编译成原生库的编译工具，但它是一个跨平台的编译工具，很好地解决了 Makefile 的缺陷，只需要配置一个平台无关的 <code>CMakeList.txt</code> 文件来定制整个流程。同时它也是『Android Studio』中常用的编译工具。</li>
+</ul>
+<p>了解这些基础含义，我们就可以开始项目的搭建工作。</p>
+<h1 id="搭建">搭建</h1>
+<p>了解 NDK 项目的搭建方式，最方便的莫过于直接利用『Android Studio』创建的模版来观察它与普通项目的异同。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1705139905552.png" alt="新建 Native C++ 项目" loading="lazy"></figure>
+<p>它会自动帮我们下载及创建所需的文件，这样我们如果在现有项目中接入就可以参考对比。</p>
+<h2 id="sdk-tools">SDK Tools</h2>
+<p>首先是需要 NDK 和 CMake 工具，在「SDK Tools」中下载即可：</p>
+<figure data-type="image" tabindex="2"><img src="https://files.mdnice.com/user/3907/2aff3cc1-e382-4f58-8dda-663320839440.png" alt="" loading="lazy"></figure>
+<h2 id="cmake">CMake</h2>
+<p>在 Module 的 <code>build.gradle.kts</code> 文件中指定 CMake 的目录和版本：</p>
+<pre><code class="language-Kotlin">android {
+    ...
+    externalNativeBuild {
+        cmake {
+            path = file(&quot;src/main/cpp/CMakeLists.txt&quot;)
+            version = &quot;3.22.1&quot;
+        }
+    }
+}
+</code></pre>
+<p>接着在这个指定的目录下创建文件 <code>src/main/cpp/CMakeLists.txt</code>：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1705139972583.png" alt="创建 CMakeLists.txt" loading="lazy"></figure>
+<p>大致内容如下：</p>
+<pre><code class="language-CMake"># 设置此项目所需的最低 CMake 版本
+cmake_minimum_required(VERSION 3.22.1)
+# 声明项目名称
+project(&quot;hellondk&quot;)
+# 创建并命名库，将其设置为 STATIC 或 SHARED，并提供其源代码的相对路径
+add_library(${CMAKE_PROJECT_NAME} SHARED 
+        native-lib.cpp)
+# 声明 CMake 需要链接的库
+target_link_libraries(${CMAKE_PROJECT_NAME} library
+        android
+        log)
+</code></pre>
+<p>在 <code>add_library()</code> 这一步，我们创建了一个以 <code>${CMAKE_PROJECT_NAME}</code> 命名的库，实际上它就是 <code>project()</code> 中指定的项目名称。最终生成的 SO 文件将会以 <code>lib${CMAKE_PROJECT_NAME}.so</code> 命名，在这里就是 <code>libhellondk.so</code>。</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1705140010386.png" alt="SO 文件名称" loading="lazy"></figure>
+<p>同时还看到上面指定了一个 C++ 文件，那么继续创建它：</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1705140090741.png" alt="创建 C++ 文件" loading="lazy"></figure>
+<p>至此，开发环境已搭建完成，同步下 Gradle，即可开始编码。</p>
+<h1 id="开发">开发</h1>
+<p>首先需要加载对应的库：</p>
+<pre><code class="language-Kotlin">class MainActivity : AppCompatActivity() {
+    ...
+    companion object{
+        init {
+            System.loadLibrary(&quot;hellondk&quot;)
+        }
+    }
+}
+</code></pre>
+<p>这里 Kotlin 的写法有点繁琐，这是因为 Kotlin 中没有 <code>static</code> 关键字，只能依靠伴生对象来实现，Java 中的写法则更加明了：</p>
+<pre><code class="language-Java">public class MainActivity extends AppCompatActivity {
+    ...
+    static {
+        System.loadLibrary(&quot;hellondk&quot;);
+    }
+}
+</code></pre>
+<p>这里需要跟上一节中配置的名字相同，这样我们就可以在类中加载这个库了。</p>
+<h2 id="javakotlin-调用-cc-代码">Java/Kotlin 调用 C/C++ 代码</h2>
+<p>首先定义一个 Native 方法：</p>
+<pre><code class="language-Kotlin">class MainActivity : AppCompatActivity() {
+    ...
+    private external fun sumByJNI(a: Int, b: Int): Int
+}
+</code></pre>
+<p>这时候『Android Studio』会给出提示说找不到 JNI 方法：</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1705140146196.png" alt="Android Studio 提示找不到 JNI 方法" loading="lazy"></figure>
+<p>直接使用快捷键修复，『Android Studio』会自动在 <code>src/main/cpp/native-lib.cpp</code> 中创建对应的方法：</p>
+<pre><code class="language-CPP">#include &lt;jni.h&gt;
+#include &lt;string&gt;
+
+extern &quot;C&quot;
+JNIEXPORT jint JNICALL
+Java_com_example_hellondk_MainActivity_sumByJNI(JNIEnv *env, jobject thiz, jint a, jint b) {
+    // TODO: implement sumByJNI()
+}
+</code></pre>
+<p>我们观察该方法，其中 <code>JNIEXPORT</code> 后面跟的是返回值，<code>jint</code> 表示的就是 Java 的整型，<code>JNICALL</code> 后面的方法名格式为 <code>Java_$package_$class_$method()</code>，参数的话可以看到我们本来是定义了 2 个，但这里生成了 4 个，前面两个 <code>JNIEnv</code> 和 <code>jobject</code> 是每个方法都会有的，后面的才是我们定义的参数。</p>
+<p>实现上面的方法并回到 Java/Kotlin 中调用即可：</p>
+<pre><code class="language-Kotlin">class MainActivity : AppCompatActivity() {
+    ...
+    override fun onCreate(savedInstanceState: Bundle?) {
+        ...
+        val i: Int = sumByJNI(1, 2)
+    }
+}
+</code></pre>
+<h2 id="cc-调用-javakotlin-代码">C/C++ 调用 Java/Kotlin 代码</h2>
+<p>C/C++ 调用 Java/Kotlin 方法是通过反射来实现的，这也是其为什么会带来性能损耗。</p>
+<p>这里我直接在上一小节的例子中扩展，上一小节中我们将两数相加的操作交给了 C/C++，这里我们从 C/C++ 中将其再交给 Java/Kotlin，相当于绕了一圈，实际开发并不会这样操作，作为示例理解即可。</p>
+<p>在 Java/Kotlin 中定义方法：</p>
+<pre><code class="language-Kotlin">class MainActivity : AppCompatActivity() {
+    ...
+    private external fun sumByJNI(a: Int, b: Int): Int
+    private fun sum(a: Int, b: Int) = a + b
+}
+</code></pre>
+<p>修改 C/C++ 中的实现：</p>
+<pre><code class="language-CPP">extern &quot;C&quot;
+JNIEXPORT jint JNICALL
+Java_com_example_hellondk_MainActivity_sumByJNI(JNIEnv *env, jobject thiz, jint a, jint b) {
+    const char *className = &quot;com/example/hellondk/MainActivity&quot;;
+    const char *methodName = &quot;sum&quot;;
+    jclass jc = env-&gt;FindClass(className);
+    jobject jo = env-&gt;AllocObject(jc);
+    jmethodID methodId = env-&gt;GetMethodID(jc, methodName, &quot;(II)I&quot;);
+    jint value = env-&gt;CallIntMethod(jo, methodId, a, b);
+    return value;
+}
+</code></pre>
+<p>这里解释一下 <code>GetMethodID()</code> 方法的最后一个参数，它指要调用的 Java/Kotlin 方法的方法签名，即描述了该方法的参数和返回值，使用的是 CLASS 文件的字段描述符，即使你不熟悉但做应该也有见过，你可以在网上很轻松地查到相关的介绍，我们也可以直接使用命令对 CLASS 文件查看：</p>
+<pre><code class="language-Bash">➜   javap -s MainActivity
+</code></pre>
+<p>反射的步骤其实与 Java/Kotlin 中差别不大，注意所有类都是以 <code>j</code> 开头，即代表 Java 对象。</p>
+<h1 id="后记">后记</h1>
+<p>『Android Studio』推荐我们使用 CMake 配置 NDK 项目，整个流程走下来还是比较简单的，最难的地方也许是掌握 C/C++。</p>
+<p>很多老项目还在使用 Makefile 来配置，如果后面有时间，再写写相关的笔记。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[LeetCode 165. Compare Version Numbers]]></title>
+        <id>https://LiarrDev.github.io/post/Leetcode-165-Compare-Version-Numbers/</id>
+        <link href="https://LiarrDev.github.io/post/Leetcode-165-Compare-Version-Numbers/">
+        </link>
+        <updated>2023-12-11T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="题目">题目</h1>
+<h2 id="compare-version-numbers-比较版本号">Compare Version Numbers   比较版本号</h2>
+<p>给你两个版本号 <code>version1</code> 和 <code>version2</code>，请你比较它们。</p>
+<p>版本号由一个或多个修订号组成，各修订号由一个 <code>'.'</code> 连接。每个修订号由<strong>多位数字</strong>组成，可能包含<strong>前导零</strong> 。每个版本号至少包含一个字符。修订号从左到右编号，下标从 0 开始，最左边的修订号下标为 0 ，下一个修订号下标为 1 ，以此类推。例如，<code>2.5.33</code> 和 <code>0.1</code> 都是有效的版本号。</p>
+<p>比较版本号时，请按从左到右的顺序依次比较它们的修订号。比较修订号时，只需比较<strong>忽略任何前导零后的整数值</strong>。也就是说，修订号 <code>1</code> 和修订号 <code>001</code> <strong>相等</strong> 。如果版本号没有指定某个下标处的修订号，则该修订号视为 <code>0</code> 。例如，版本 <code>1.0</code> 小于版本 <code>1.1</code> ，因为它们下标为 0 的修订号相同，而下标为 1 的修订号分别为 <code>0</code> 和 <code>1</code> ，<code>0 &lt; 1</code> 。</p>
+<p>返回规则如下：</p>
+<ul>
+<li>如果 <code>version1 &gt; version2</code> 返回 <code>1</code>，</li>
+<li>如果 <code>version1 &lt; version2</code> 返回 <code>-1</code>，</li>
+<li>除此之外返回 <code>0</code>。</li>
+</ul>
+<p><strong>示例 1：</strong></p>
+<blockquote>
+<p><strong>输入：</strong> version1 = &quot;1.01&quot;, version2 = &quot;1.001&quot;</p>
+<p><strong>输出：</strong> 0</p>
+<p><strong>解释：</strong> 忽略前导零，&quot;01&quot; 和 &quot;001&quot; 都表示相同的整数 &quot;1&quot;</p>
+</blockquote>
+<p><strong>示例 2：</strong></p>
+<blockquote>
+<p><strong>输入：</strong> version1 = &quot;1.0&quot;, version2 = &quot;1.0.0&quot;</p>
+<p><strong>输出：</strong> 0</p>
+<p><strong>解释：</strong> version1 没有指定下标为 2 的修订号，即视为 &quot;0&quot;</p>
+</blockquote>
+<p><strong>示例 3：</strong></p>
+<blockquote>
+<p><strong>输入：</strong> version1 = &quot;0.1&quot;, version2 = &quot;1.1&quot;</p>
+<p><strong>输出：</strong> -1</p>
+<p><strong>解释：</strong> version1 中下标为 0 的修订号是 &quot;0&quot;，version2 中下标为 0 的修订号是 &quot;1&quot; 。0 &lt; 1，所以 version1 &lt; version2</p>
+</blockquote>
+<p><strong>提示：</strong></p>
+<ul>
+<li><code>1 &lt;= version1.length, version2.length &lt;= 500</code></li>
+<li><code>version1</code> 和 <code>version2</code> 仅包含数字和 <code>'.'</code></li>
+<li><code>version1</code> 和 <code>version2</code> 都是<strong>有效版本号</strong></li>
+<li><code>version1</code> 和 <code>version2</code> 的所有修订号都可以存储在 <strong>32 位整数</strong>中</li>
+</ul>
+<h1 id="题解">题解</h1>
+<h2 id="字符串分割">字符串分割</h2>
+<p>该方法非常简单，就是利用了 <code>split()</code> 方法，以 <code>'.'</code> 分割成数组，逐一比较两个数组位于同一下标中的整数值，如果当前下标超过数组的长度（即另一数组的长度已超过当前数组），则自动补 <code>0</code>，如此反复，直至得出结果或循环结束。</p>
+<pre><code class="language-Kotlin">class Solution {
+    fun compareVersion(version1: String, version2: String): Int {
+        val arr1 = version1.split(&quot;\\.&quot;.toRegex()).toTypedArray()
+        val arr2 = version2.split(&quot;\\.&quot;.toRegex()).toTypedArray()
+        for (n in 0 until max(arr1.size, arr2.size)) {
+            val i = if (n &lt; arr1.size) arr1[n].toInt() else 0
+            val j = if (n &lt; arr2.size) arr2[n].toInt() else 0
+            if (i &lt; j) {
+                return -1
+            } else if (i &gt; j) {
+                return 1
+            }
+        }
+        return 0
+    }
+}
+</code></pre>
+<ul>
+<li>时间复杂度：<code>O(n+m)</code>（或 <code>O(max⁡(n,m))</code>，这是等价的），其中 <code>n</code> 是字符串 <code>version1</code> 的长度，<code>m</code> 是字符串 <code>version2</code> 的长度。</li>
+<li>空间复杂度：<code>O(n+m)</code>，我们需要 <code>O(n+m)</code> 的空间存储分割后的修订号列表。</li>
+</ul>
+<h2 id="双指针">双指针</h2>
+<p>字符串分割方法需要存储分割后的修订号，为了优化空间复杂度，我们可以在分割版本号的同时解析出修订号进行比较。</p>
+<pre><code class="language-Kotlin">class Solution {
+    fun compareVersion(version1: String, version2: String): Int {
+        var index1 = 0
+        var index2 = 0
+        while (index1 &lt; version1.length || index2 &lt; version2.length) {
+            var curr1 = 0
+            while (index1 &lt; version1.length &amp;&amp; version1[index1] != '.') {
+                curr1 = curr1 * 10 + (version1[index1++] - '0')
+            }
+            index1++
+            var curr2 = 0
+            while (index2 &lt; version2.length &amp;&amp; version2[index2] != '.') {
+                curr2 = curr2 * 10 + (version2[index2++] - '0')
+            }
+            index2++
+            if (curr1 != curr2) {
+                return if (curr1 &lt; curr2) -1 else 1
+            }
+        }
+        return 0
+    }
+}
+</code></pre>
+<p>该方法相比字符串分割的方法看起来相对繁琐一点，但性能会更优。我们不再使用 <code>split()</code> 方法分割数组，而是遍历字符串中每一个字符来计算。</p>
+<p><code>index1</code> 和 <code>index2</code> 为当前处理的字符位于字符串 <code>version1</code> 和 <code>version2</code> 中的下标，遍历两个字符串，<code>curr1</code> 和 <code>curr2</code> 用来记录 <code>'.'</code> 分割的每一段的版本号，因为循环是从左往右读取，所以当超过 1 位数字的情况下对前一个结果乘 10 再相加，以此计算出该段的结果。</p>
+<p>这里用了 <code>version[index++] - '0'</code> 这个写法可能不太好理解，实际上就是取当前字符的 ASCII 值进行运算，这算是一个取巧的设计，因为在 ASCII 中，0 到 9 也是连续的，所以只要当前字符与 <code>'0'</code> 相减，就可以得出该值的整型结果，而无需做 <code>Char.digitToInt()</code> 的转换。另外需要注意 <code>index</code> 是在该运算结束之后才执行自增操作。</p>
+<p>当该小循环结束，也就意味着以 <code>'.'</code> 分割的该小段计算结束，<code>index</code> 再执行一次自增以跳过 <code>'.'</code> 字符等待下个大循环的计算。两个字符串都以此方式计算每一小段的结果，直至能够比较出结果为止。</p>
+<ul>
+<li>时间复杂度：<code>O(n+m)</code>，其中 <code>n</code> 是字符串 <code>version1</code> 的长度，<code>m</code> 是字符串 <code>version2</code> 的长度。</li>
+<li>空间复杂度：<code>O(1)</code>，我们只需要常数的空间保存若干变量。</li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Java 使用 Media Type 校验文件类型]]></title>
+        <id>https://LiarrDev.github.io/post/Verify-File-Types-with-Media-Type-in-Java/</id>
+        <link href="https://LiarrDev.github.io/post/Verify-File-Types-with-Media-Type-in-Java/">
+        </link>
+        <updated>2023-11-16T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="前言">前言</h1>
+<p>之前『<a href="https://liarrdev.github.io/post/Verify-File-Types-with-Magic-Number/">利用 Magic Number 校验文件类型</a>』一文讲解了校验文件类型的原理，并在文末给出了示例代码。但是每次去查询 Magic Number 对照表有点麻烦，于是我找了一些能够判断文件类型的三方库，可以省不少事儿。</p>
+<p>作为开发者你应该知道，在 HTTP 协议消息头中，使用 <code>Content-Type</code> 来表示请求和响应中的媒体类型信息。这个字段在不同场景下有几种叫法，Content Type、Media Type、MIME Type，严格来说这几个名称并不完全对等，但在这里我们暂不做区分，大家明白意思就行。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1699805475505.png" alt="Http Content-Type" loading="lazy"></figure>
+<p>它用来告诉服务端如何处理请求的数据，以及告诉客户端如何解析响应的数据。</p>
+<p>因此我们可以通过这个值来判断文件类型。</p>
+<h1 id="urlconnection">URLConnection</h1>
+<p><code>URLConnection</code> 是 JDK 自带的类，它相当于 URL 资源与应用程序之间的桥梁。它是一个抽象类，我们熟知的 <code>HttpURLConnection</code> 就是它的子类。</p>
+<pre><code class="language-Java">public class FileMatcher {
+
+    private static final String MIME_TYPE_PNG = &quot;image/png&quot;;
+    
+    public static boolean isPng(File file) {
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(file);
+            String mime = URLConnection.guessContentTypeFromStream(fis);
+            return MIME_TYPE_PNG.equals(mime);
+        } catch (IOException e) {
+            return false;
+        } finally {
+            try {
+                if (fis != null) {
+                    fis.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+</code></pre>
+<p>通过 <code>guessContentTypeFromStream()</code> 方法获取流的 Content Type，再与对应的 Media Type 比较即可。</p>
+<p>另外 <code>URLConnection</code> 还有一个 <code>guessContentTypeFromName()</code> 方法，是根据文件名来判断，也就是之前说的通过文件扩展名，这种方法并不可靠，但是速度会快一些。</p>
+<h1 id="jmimemagic">jMimeMagic</h1>
+<p>jMimeMagic 是一个用于确定文件或数据流的 MIME Type 的 Java 库。</p>
+<p>添加依赖：</p>
+<pre><code class="language-Groovy">dependencies {
+    implementation 'net.sf.jmimemagic:jmimemagic:0.1.5'
+}
+</code></pre>
+<p>逻辑代码：</p>
+<pre><code class="language-Java">public class FileMatcher {
+
+    private static final String MIME_TYPE_PNG = &quot;image/png&quot;;
+    
+    public static boolean isPng(File file) {
+        try {
+            MagicMatch match = Magic.getMagicMatch(file, false);
+            String mime = match.getMimeType();
+            return MIME_TYPE_PNG.equals(mime);
+        } catch (MagicParseException | MagicMatchNotFoundException | MagicException e) {
+            return false;
+        }
+    }
+}
+</code></pre>
+<p>可惜的是该库的上一次更新还停留在 2017 年。</p>
+<h1 id="apache-tika-core">Apache Tika Core</h1>
+<p>Apache Tika 工具包可检测和提取上千种不同文件类型中的元数据和文本。</p>
+<p>依赖核心库即可：</p>
+<pre><code class="language-Groovy">dependencies {
+    implementation 'org.apache.tika:tika-core:2.8.0'
+}
+</code></pre>
+<p>逻辑代码：</p>
+<pre><code class="language-Java">public class FileMatcher {
+
+    private static final String MIME_TYPE_PNG = &quot;image/png&quot;;
+    
+    public static boolean isPng(File file) {
+        Tika tika = new Tika();
+        try {
+            String mime = tika.detect(file);
+            return MIME_TYPE_PNG.equals(mime);
+        } catch (IOException e) {
+            return false;
+        }
+    }
+}
+</code></pre>
+<p>有 Apache 做背书，只能说稳得一匹。</p>
+<h1 id="后记">后记</h1>
+<p>可以看到，这几种方法都是通过读取数据流的方式来校验文件类型，和之前『<a href="https://liarrdev.github.io/post/Verify-File-Types-with-Magic-Number/">利用 Magic Number 校验文件类型</a>』介绍的原理是一致的，同时由于这几种方法都能够处理数据流，所以并非只能传入 <code>File</code>，在网络传输数据流时也能够很方便地进行校验。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[利用 Magic Number 校验文件类型]]></title>
+        <id>https://LiarrDev.github.io/post/Verify-File-Types-with-Magic-Number/</id>
+        <link href="https://LiarrDev.github.io/post/Verify-File-Types-with-Magic-Number/">
+        </link>
+        <updated>2023-10-25T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="前言">前言</h1>
+<p>将线上打包系统开放给业务部门后，常常能收到打包失败的邮件，排查后发现大多数是因为业务部门人员在上传应用图标时都上传了 JPG 格式的图片，而 Android 中要求应用图标必须为 PNG 格式。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1698247818635.png" alt="Android 图标格式错误" loading="lazy"></figure>
+<p>出现这种情况大概率是业务人员和设计部门直接通过微信发送文件，导致文件格式在传输过程中发生了变更。</p>
+<p>与业务部门说明后发现效果仍无改善，遂与 Web 端同事沟通，限制应用图标的上传格式为 PNG。重新部署后，打包失败率下降了，但偶尔还是会有相同的原因导致打包失败，于是再次排查原因。</p>
+<p>排查后发现，业务人员确实是上传的 <code>.png</code> 为后缀的文件，但实际上这个文件却仍旧是 JPG 格式。询问 Web 端同事收到的答复是仅在上传时限制了文件后缀。</p>
+<p>这种方法肯定是不合理的，今天就来讲讲文件格式的判断。</p>
+<h1 id="filename-extension">Filename Extension</h1>
+<p>我们最初接触计算机时，就习惯把文件后缀叫做文件类型，文件后缀正确的叫法应该是文件扩展名（Filename Extension），它是早期操作系统用来标志文件格式的一种机制，更重要的作用是让系统决定运行该文件的应用。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1698247891723.png" alt="选择运行文件的应用" loading="lazy"></figure>
+<p>也就是说，这是开发者和操作系统之间的一种约定，与文件的实际类型并没有绝对关系。</p>
+<h1 id="文件头">文件头</h1>
+<p>那么操作系统根据什么来判断文件类型呢？</p>
+<p>答案是文件头。</p>
+<p>文件头是位于文件开头的一段承担一定任务的数据，一般都在开头的部分。</p>
+<p>许多文本编辑器都可以查看文件的十六进制数据，你也可以使用『WinHex』或者『Hex Fiend』等工具查看：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1698247972100.png" alt="PNG 文件的 Hex 数据" loading="lazy"></figure>
+<p>位于开头的部分数据就是文件头。</p>
+<p>当然有的文件没有文件头，比如 TXT。</p>
+<p>文件头包含的信息可以很丰富，比如图片类型的文件就可以将图像的尺寸等信息放在文件头，那么图像浏览软件就可以识别出具体参数。</p>
+<h1 id="magic-number">Magic Number</h1>
+<p>文件头可以判断文件类型，但这也说得太笼统，因为文件头可以包含一些其他的信息。而真正用来判断文件类型的，是 Magic Number。</p>
+<p>Magic Number 可以翻译为幻数，它是一些文件格式规范所要求的特殊标签值，表示文件符合这种规范。</p>
+<p>Magic Number 的取值往往很随意，这也是为什么它叫 Magic Number 🤣。但也有一些 Magic Number 在选择时添加了一些风趣的元素。比如 Java 中的 CLASS 文件头十六进制幻数为 <code>CA FE BA BE</code>，着实把咖啡 ☕ 玩明白了；MS-DOS 的可执行文件（比如 EXE）的幻数为 <code>4D 5A</code>，对应 ASCII 结果为 <code>MZ</code>，是 MS-DOS 架构师 <strong>Mark Zbikowski</strong> 的名字缩写；同样使用名字缩写的还有 ZIP 文件，幻数为 <code>50 4B 03 04</code>，前两位对应 ASCII 结果为 <code>PK</code>，是 PKZIP 算法发明者 <strong>Phil Katz</strong> 的名字缩写。</p>
+<h1 id="常见-magic-number-对照表">常见 Magic Number 对照表</h1>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/List_of_file_signatures">List of file signatures</a></li>
+<li><a href="https://www.garykessler.net/library/file_sigs.html">GCK'S FILE SIGNATURES TABLE</a></li>
+</ul>
+<h1 id="匹配校验">匹配校验</h1>
+<p>有了以上的了解，就可以很轻松地写出校验代码。以 Java 为例：</p>
+<pre><code class="language-Java">public class FileMatcher {
+
+    private static final String MAGIC_NUMBER_PNG = &quot;89504E470D0A1A0A&quot;;
+
+    public static boolean isPngFile(File file) {
+        byte[] bytes = fileToBytes(file);
+        if (bytes == null) {
+            return false;
+        }
+        String hex = bytesToHex(bytes);
+        if (hex == null) {
+            return false;
+        }
+        return hex.startsWith(MAGIC_NUMBER_PNG);
+    }
+
+    private static byte[] fileToBytes(File file) {
+        FileInputStream fis = null;
+        ByteArrayOutputStream bos = null;
+        try {
+            fis = new FileInputStream(file);
+            bos = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = fis.read(buffer)) != -1) {
+                bos.write(buffer, 0, bytesRead);
+            }
+            return bos.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            try {
+                if (fis != null) {
+                    fis.close();
+                }
+                if (bos != null) {
+                    bos.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static String bytesToHex(byte[] src) {
+        StringBuilder sb = new StringBuilder();
+        if (src == null || src.length == 0) {
+            return null;
+        }
+        String hex;
+        for (byte b : src) {
+            hex = Integer.toHexString(b &amp; 0xFF).toUpperCase();
+            if (hex.length() &lt; 2) {
+                sb.append(0);
+            }
+            sb.append(hex);
+        }
+        return sb.toString();
+    }
+}
+</code></pre>
+<p>逻辑很简单，分三步走：</p>
+<ol>
+<li>获取文件的字节数组。</li>
+<li>把字节数组转为十六进制字符串。</li>
+<li>将十六进制字符串前面一定位数与 Magic Number 做比较。</li>
+</ol>
+<p>转换的代码相信大家的项目里基本都有封装，所以实际写的代码就几行罢了。</p>
+<h1 id="后记">后记</h1>
+<p>通过 Magic Number 校验文件类型在大多数情况下是可行的，但许多工具同时也提供了篡改文件头的功能，比如『WinHex』。</p>
+<p>还需要注意的是不同文件扩展名的 Magic Number 有可能相同，比如 APK 和 ZIP，因为 APK 本身就是以 ZIP 格式压缩的，所以根据实际应用场景可以结合多种方案判断。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Android 沉浸式效果]]></title>
+        <id>https://LiarrDev.github.io/post/Android-Immersive-Effects/</id>
+        <link href="https://LiarrDev.github.io/post/Android-Immersive-Effects/">
+        </link>
+        <updated>2023-10-07T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>市面上很多 App 启动的时候都有一个几秒钟启动页，可以用来放一些广告，或者做一些宣传自家品牌的内容，而且是沉浸式效果，看起来十分舒服。</p>
+<p>那么今天就来聊聊沉浸式的实现。</p>
+<h1 id="什么是沉浸式">什么是沉浸式</h1>
+<p>估计问十个人会有十个回答，很多人都说不上到底什么才是沉浸式，原因是国内许多博客都张冠李戴说什么沉浸式状态栏或者沉浸式效果之类的名词，让人摸不着头脑。</p>
+<p>Android 官方从来没有给出过沉浸式状态栏这样的命名，只有沉浸式模式（Immersive Mode）这种说法，不过倒是有部分国内的 ROM 给出了「沉浸式状态栏」这种设置。</p>
+<p>所以实际上「沉浸式状态栏」可以理解为透明状态栏，而真正的「沉浸式模式」则是如游戏或视频状态下的全屏效果。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1564929669447.png" alt="沉浸式" loading="lazy"></figure>
+<p>整个屏幕显示都是游戏的内容，没有状态栏也没有导航栏，用户玩游戏的时候就可以完全沉浸在游戏当中，而不会被一些系统的界面元素所打扰，这就是沉浸式模式。</p>
+<h1 id="界面元素">界面元素</h1>
+<p>要实现沉浸式，首先要了解界面上有哪些元素是需要隐藏的，来看看这张图：</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1564930212312.png" alt="界面元素" loading="lazy"></figure>
+<p>可以看到，有状态栏、<code>ActionBar</code>、导航栏等。而打造沉浸式模式的用户体验，就是要将这些系统元素全部隐藏，只留下主体内容部分。</p>
+<h1 id="实践">实践</h1>
+<h2 id="布局">布局</h2>
+<p>启动页很多情况下是一张图片，我从『网易云音乐』中偷了一张图，布局很简单：</p>
+<pre><code class="language-XML">&lt;FrameLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    tools:context=&quot;.activity.SplashActivity&quot;&gt;
+    &lt;androidx.appcompat.widget.AppCompatImageView
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;match_parent&quot;
+        android:scaleType=&quot;centerCrop&quot;
+        android:src=&quot;@drawable/splash_bg&quot; /&gt;
+&lt;/FrameLayout&gt;
+</code></pre>
+<p>初始效果如下：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1694882931051.PNG" alt="初始效果" loading="lazy"></figure>
+<h2 id="隐藏-actionbar">隐藏 ActionBar</h2>
+<p>隐藏 <code>ActionBar</code> 是项目中常用的场景，我们可以在指定其 <code>android:theme</code> 为 <code>NoActionBar</code> 类型的主题，也可以在逻辑代码中动态隐藏：</p>
+<pre><code class="language-Kotlin">class SplashActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        ...
+        supportActionBar?.hide()
+    }
+}
+</code></pre>
+<p>效果如下：</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1564932072193.png" alt="隐藏 ActionBar" loading="lazy"></figure>
+<h2 id="隐藏状态栏">隐藏状态栏</h2>
+<p>接下来是隐藏状态栏，我通过重写 <code>onWindowFocusChanged()</code> 方法来实现：</p>
+<pre><code class="language-Kotlin">class SplashActivity : AppCompatActivity() {
+    ...
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        ...
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+    }
+}
+</code></pre>
+<p>这里先获取到了当前界面的 <code>DecorView</code>，然后调用它的 <code>setSystemUiVisibility()</code> 方法来设置系统 UI 元素的可见性。其中，<code>SYSTEM_UI_FLAG_FULLSCREEN</code> 表示全屏的意思，也就是会将状态栏隐藏。效果如下：</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1564932612912.png" alt="隐藏状态栏" loading="lazy"></figure>
+<p>另外，根据 Android 的设计建议，<code>ActionBar</code> 是不应该独立于状态栏而单独显示的，因此状态栏如果隐藏了，则要确保 <code>ActionBar</code> 也进行了隐藏。</p>
+<h2 id="透明状态栏">透明状态栏</h2>
+<p>那如果想实现所谓的「沉浸式状态栏」呢？</p>
+<p>上面提到，所谓的「沉浸式状态栏」实际上是透明状态栏，我们可以借助另外一种 UI FLAG 来实现：</p>
+<pre><code class="language-Kotlin">class SplashActivity : AppCompatActivity() {
+    ...
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        ...
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        window.statusBarColor = Color.TRANSPARENT
+    }
+}
+</code></pre>
+<p>要实现这种效果，修改为 <code>SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN</code>，表示会让应用的主体内容占用系统状态栏的空间，网上有文章提到需要结合 <code>SYSTEM_UI_FLAG_LAYOUT_STABLE</code> 一起使用，但我测试发现似乎不需要也能实现该效果，不知道是不是版本问题。</p>
+<p>主体内容占用状态栏的空间还不够，因为此时状态栏依然有着色，我们再将其置为透明即可。</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1564933835949.png" alt="透明状态栏" loading="lazy"></figure>
+<h2 id="透明导航栏">透明导航栏</h2>
+<p>其实导航栏在不同手机上是不一定存在的，比如小米早期的手机，底部的三大金刚键是不在屏幕范围内的，而华为早期的一些手机则是在屏幕内，近几年手势全面屏的普及，又可以由用户自己决定是否显示三大金刚键，所以只有在屏幕内的才叫导航栏。</p>
+<p>透明导航栏和透明状态栏的实现方式相似：</p>
+<pre><code class="language-Kotlin">class SplashActivity : AppCompatActivity() {
+    ...
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        ...
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        window.navigationBarColor = Color.TRANSPARENT
+    }
+}
+</code></pre>
+<p>使用 <code>SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION</code> 使应用主体内容占用导航栏位置，并将导航栏设置为透明色。</p>
+<figure data-type="image" tabindex="7"><img src="https://LiarrDev.github.io/post-images/1564936169310.png" alt="透明导航栏" loading="lazy"></figure>
+<h2 id="隐藏导航栏">隐藏导航栏</h2>
+<p>隐藏导航栏的实现方式和上面相似，也是使用不同的 UI FLAG：</p>
+<pre><code class="language-Kotlin">class SplashActivity : AppCompatActivity() {
+    ...
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        ...
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
+    }
+}
+</code></pre>
+<p>同时使用 <code>SYSTEM_UI_FLAG_FULLSCREEN</code> 和 <code>SYSTEM_UI_FLAG_HIDE_NAVIGATION</code> 可以实现将状态栏和导航栏一起隐藏。这种方式虽然看上去好像是全屏化了，但会有个问题，我们触摸屏幕的任意位置或边缘划动会退出全屏，使状态栏和导航栏显示出来，并且无法再次隐藏：</p>
+<figure data-type="image" tabindex="8"><img src="https://LiarrDev.github.io/post-images/1564935672126.gif" alt="点击后失效" loading="lazy"></figure>
+<p>这显然不是我们想要的效果，因此这种模式的使用场景比较有限。</p>
+<h2 id="沉浸式">沉浸式</h2>
+<p>如何才能实现真正的沉浸式效果呢？</p>
+<p>同样，还是继续组合 UI FLAG：</p>
+<pre><code class="language-Kotlin">class SplashActivity : AppCompatActivity() {
+    ...
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        ...
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+    }
+}
+</code></pre>
+<p>触摸屏幕并不会退出全屏，且仅在屏幕边缘向中央划动的时候才会呼出状态栏和导航栏，如无操作则在几秒后折叠，重新回到全屏，很符合我们平时玩游戏或看视频时的操作。</p>
+<figure data-type="image" tabindex="9"><img src="https://LiarrDev.github.io/post-images/1564990415162.gif" alt="沉浸式" loading="lazy"></figure>
+<p>不过，网上的博客在介绍这种方式的时候通常会用到 6 种 UI FLAG：</p>
+<pre><code class="language-Kotlin">class SplashActivity : AppCompatActivity() {
+    ...
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        ...
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+    }
+}
+</code></pre>
+<p>为何只需 3 个 UI FLAG 组合就能实现的效果，大家都选用将这 6 个同时写入呢？</p>
+<p>经过各种我想到的情况进行测试，终于找到了区别，当我们长按 POWER 键的时候，会有如下不同：</p>
+<figure data-type="image" tabindex="10"><img src="https://LiarrDev.github.io/post-images/1564996575474.gif" alt="沉浸式对比" loading="lazy"></figure>
+<p>长按 POWER 键会弹出一个菜单遮挡在最顶部，同时该界面会短暂退出沉浸式，仅使用三种 UI FLAG 的时候状态栏和导航栏将显示为默认状态，而使用六种 UI FLAG 的时候状态栏和导航栏将会显示为透明状态，不用我说你也知道，透明状态交互会更加友好。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Android 剪贴板的简单使用]]></title>
+        <id>https://LiarrDev.github.io/post/Simple-Use-of-the-Android-Clipboard/</id>
+        <link href="https://LiarrDev.github.io/post/Simple-Use-of-the-Android-Clipboard/">
+        </link>
+        <updated>2023-09-14T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>很多 App 现在都会用到一键复制或者一键粘贴的功能，比如『淘宝』，支持一键复制物流单号，也支持直接从剪贴板中读取所复制的淘口令。</p>
+<p>一键复制和一键粘贴的操作如何实现呢？</p>
+<p>Android 为我们提供了剪贴板框架，允许复制和粘贴不同类型的数据，比如文本、图像、二进制流数据或者其他复杂的数据类型，另外，它还支持复制多条记录，很多输入法都实现了多条记录的剪贴板，功能很强大。</p>
+<p>当然，最常用的还是对文本进行操作啦，那就介绍一下复制和粘贴文本的实现方法。</p>
+<p>复制实现如下：</p>
+<pre><code class="language-Kotlin">fun copyText(text: CharSequence) {
+    val cm = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+    cm.setPrimaryClip(ClipData.newPlainText(context.packageName, text))
+}
+</code></pre>
+<p>无论是复制还是粘贴，都离不开 <code>ClipboardManager</code> 这个剪贴板管理服务，通过 <code>newPlainText()</code> 静态方法创建 <code>ClipData</code> 对象，再通过 <code>setPrimaryClip()</code> 方法传给 <code>ClipboardManager</code> 即可，<code>newPlainText()</code> 方法接收两个参数，分别是 <code>label</code> 和 <code>text</code>，通常情况下我们只需要设置 <code>text</code> 即可，它是我们需要复制的文本，而 <code>label</code> 一般不会与用户打交道，更多是用于开发者的标记。</p>
+<p>粘贴实现如下：</p>
+<pre><code class="language-Kotlin">fun getText(): CharSequence {
+    val cm = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+    cm.primaryClip?.let {
+        if (it.itemCount &gt; 0) {
+            return it.getItemAt(0).coerceToText(context)
+        }
+    }
+    return &quot;&quot;
+}
+</code></pre>
+<p>既然复制是将文字封装成 <code>ClipData</code> 传给 <code>ClipboardManager</code>，那么粘贴则是反过来，也就是从 <code>ClipboardManager</code> 中取出 <code>ClipData</code> 并解析出文字，这里需要注意判空，避免空指针异常或者数组越界，一般情况下我们只会用到剪贴板第一条数据，获取之后调用 <code>coerceToText()</code> 转换成文字，因为剪贴板除了文字外还支持 URI 等类型，这个方法可以帮我们一并处理。</p>
+<p>像『淘宝』就是每次 App 回到前台时就获取一次剪贴板，如果是淘口令则执行对应的操作。</p>
+<p>这篇文章本来到这里就该结束了，但我突然发现了一个新功能：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1562926610811.gif" alt="剪贴板监听" loading="lazy"></figure>
+<p>其实 <code>ClipboardManager</code> 提供了监听剪贴板的方法：</p>
+<pre><code class="language-Kotlin">fun addClipChangedListener() {
+    val cm = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+    cm.addPrimaryClipChangedListener { 
+        val text = getText()
+        ...
+    }
+}
+</code></pre>
+<p>但是回调中并没有返回最新的内容，仍需自行获取。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Android 解决 TEST_ONLY 应用无法安装的问题]]></title>
+        <id>https://LiarrDev.github.io/post/Android-App-Install-Failed-Test-Only/</id>
+        <link href="https://LiarrDev.github.io/post/Android-App-Install-Failed-Test-Only/">
+        </link>
+        <updated>2023-08-15T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>最近拿了同事的 OPPO A5 过来测试，发现直接用『Android Studio』的「Run 'app'」不能够把应用安装到手机上，系统的应用包安装程序会显示「安装失败」：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1691915563565.png" alt="安装失败" loading="lazy"></figure>
+<p>『Android Studio』底部的「Run」选项卡会提示以下信息：</p>
+<pre><code>Installation did not succeed.
+The application could not be installed: INSTALL_FAILED_TEST_ONLY
+Installation failed due to: 'null'
+</code></pre>
+<p>翻阅<a href="https://developer.android.com/guide/topics/manifest/application-element">官方文档</a>后发现如下信息：</p>
+<blockquote>
+<h1 id="androidtestonly"><code>android:testOnly</code></h1>
+<p>Indicates whether this application is only for testing purposes. For example, it may expose functionality or data outside of itself that would cause a security hole, but is useful for testing. This kind of APK can be installed only through <code>adb</code> — you cannot publish it to Google Play.</p>
+<p>Android Studio automatically adds this attribute when you click <strong>Run</strong>.</p>
+<p>指示此应用是否仅用于测试目的。例如，它可能会在自身之外公开功能或数据，这样会导致安全漏洞，但对测试很有用。此类 APK 只能通过 adb 安装，您不能将其发布到 Google Play。</p>
+<p>当您点击 <strong>Run</strong> 图标  时，Android Studio 会自动添加此属性。</p>
+</blockquote>
+<p>可以看到，当 <strong>Run</strong> 程序后，『Android Studio』会自动在 Debug APK 的 <code>AndroidManifest</code> 中添加 <code>android:testOnly=&quot;true&quot;</code> 属性，部分手机检测到该属性后会拒绝安装。</p>
+<p>但是通过「Build」→「Build Bundles(s) / APK(s)」→「Build APK(s)」生成的 Debug APK 却不会有这种情况。</p>
+<p>据网上大量文章讲述，这是『Android Studio』3.0 后的版本会出现的情况，关于这点我在官方文档没有找到具体说明，无从考证。</p>
+<p>既然如此，那我强制把这个属性写成 <code>false</code> 不就可以了吗：</p>
+<pre><code class="language-XML">&lt;application 
+    ...
+    android:testOnly=&quot;false&quot;&gt;
+    ...
+&lt;/application&gt;
+</code></pre>
+<p>结果却发现，依然无法正常安装。</p>
+<p>网上提到，可以使用 ADB 命令来安装：</p>
+<pre><code class="language-Bash">➜   adb install -t app-debug.apk
+</code></pre>
+<p>很多博主都说这个方法可以，但我测试发现不行，不知是否为个例。</p>
+<p>最终方法，在「gradle.properties」文件中加入如下代码：</p>
+<pre><code class="language-Properties">android.injected.testOnly=false
+</code></pre>
+<p>问题得以解决。</p>
+<p>后来我换过不同的电脑和项目后发现，有时候该设置未必会生效，反编译 APK 文件看到 <code>android:testOnly</code> 属性仍未被移除，于是顺手写了个脚本来实现该操作并重新打包，流程可以参考之前的『<a href="https://liarrdev.github.io/post/Getting-Started-with-Android-Decompilation/">Android 反编译入门指南</a>』。</p>
+<p>在调试应用这一块，以我目前测试过的手机来说，OPPO 和 vivo 可以称之为重灾区，vivo 的情况甚至比 OPPO 更加严重，据说还有联系客服开通调试权限等等的骚操作，实属无语。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[macOS iTerm2 美化配置笔记]]></title>
+        <id>https://LiarrDev.github.io/post/macOS-iTerm2-Beautifying-Configuration/</id>
+        <link href="https://LiarrDev.github.io/post/macOS-iTerm2-Beautifying-Configuration/">
+        </link>
+        <updated>2023-08-03T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>一直听闻『iTerm2』号称是 macOS 平台下的第一终端，今日浅尝一下。</p>
+<p>本文仅仅是我个人的配置笔记，而不是关于『iTerm2』的推荐，所以如果你问我为什么要用『iTerm2』而不是其他终端工具，那么你大概率并不真正的需要它，因为我也是。</p>
+<p>不过你倒是可以前往官网看看它有哪些功能，也许就会有答案。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/macOS-iTerm2-Beautifying-Configuration.png" alt="iTem2" loading="lazy"></figure>
+<p>接下来开始配置。</p>
+<h1 id="iterm2"><a href="https://iterm2.com/index.html">iTerm2</a></h1>
+<p>如果你习惯使用『Homebrew』，那么最简单的方法是：</p>
+<pre><code class="language-Shell">➜   brew install iTerm2  
+</code></pre>
+<p>不过我还是喜欢下载安装，<a href="https://iterm2.com/index.html">官网</a>也提供了安装包。</p>
+<h1 id="oh-my-zsh"><a href="https://ohmyz.sh">Oh My Zsh</a></h1>
+<p>现在 macOS 默认的 Shell 已经是 <code>zsh</code> 了，但是默认的 <code>zsh</code> 配置起来比较麻烦，而开源的『Oh My Zsh』提供了大量的插件和主题，帮你轻松解决。</p>
+<p>通过 <code>curl</code> 安装：</p>
+<pre><code class="language-Shell">➜   sh -c &quot;$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)&quot;
+</code></pre>
+<p>也可以通过 <code>wget</code> 安装：</p>
+<pre><code class="language-Shell">➜   sh -c &quot;$(wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)&quot;
+</code></pre>
+<h1 id="powerline-fonts"><a href="https://github.com/powerline/fonts">Powerline fonts</a></h1>
+<p>『Oh My Zsh』的一些主题使用了特殊字体，如果没有安装字体的话就会乱码，我们通过安装 Powerline 字体解决。</p>
+<p>你可以直接去 Github 上手动下载安装，但命令的方式更加便捷。</p>
+<p>下载：</p>
+<pre><code class="language-Shell">➜   git clone https://github.com/powerline/fonts.git --depth=1
+</code></pre>
+<p>安装：</p>
+<pre><code class="language-Shell">➜   cd fonts
+➜   ./install.sh
+</code></pre>
+<p>清理一下：</p>
+<pre><code class="language-Shell">➜   cd ..
+➜   rm -rf fonts
+</code></pre>
+<p>如果你哪天不想用了，也可以用命令快速卸载：</p>
+<pre><code class="language-Shell">➜   cd fonts
+➜   ./uninstall.sh
+</code></pre>
+<p>安装完成后，在『iTerm2』中设置为对应的字体。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1691077655935.png" alt="配置字体" loading="lazy"></figure>
+<h1 id="color-schemes">Color Schemes</h1>
+<p>『iTerm2』内置了几套配色，可以直接设置。</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1691077818266.png" alt="内置配色" loading="lazy"></figure>
+<p>如你所见，它支持自定义配色。</p>
+<p>不过你要是懒人伸手党，可以下载现成的配色方案。</p>
+<h2 id="iterm2-color-schemes"><a href="https://iterm2colorschemes.com">iTerm2 Color Schemes</a></h2>
+<p>这是一套适用于大多数终端的颜色主题，内置了有将近 300 款配色。你可以在网站上挑选喜欢的配色单独下载，也可以打包下来慢慢挑选。</p>
+<h2 id="iterm2-one-dark-theme"><a href="https://github.com/one-dark/iterm-one-dark-theme">iTerm2 One Dark Theme</a></h2>
+<p>因为我的『Android Studio』配色是使用 One Dark，所以特意也导入了相同的配色到『iTerm2』中。</p>
+<h2 id="导入">导入</h2>
+<p>下载的配色导入也很方便，在「Import」中选择对应的 <code>.itermcolors</code> 文件即可。</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1691077867138.png" alt="导入配色" loading="lazy"></figure>
+<h1 id="主题">主题</h1>
+<p>『Oh My Zsh』内置了大量主题，我们可以通过以下命令查看：</p>
+<pre><code class="language-Shell">➜   ls ~/.oh-my-zsh/themes
+</code></pre>
+<p>但你肯定一脸懵逼，这么多主题，每个主题都长什么样？</p>
+<p>可以进入<a href="https://github.com/ohmyzsh/ohmyzsh/wiki/Themes">『Oh My Zsh』项目 Wiki</a> 查看。</p>
+<p>选到喜欢的主题后，记住名字，再到 <code>.zshrc</code> 文件进行修改。如果你习惯使用命令可以直接 <code>vim</code>，否则直接打开文件修改或许是一个不容易出错的方式。</p>
+<p>找到 <code>ZSH_THEME</code>，修改为你喜欢的主题，比如：</p>
+<pre><code class="language-Shell">ZSH_THEME=&quot;agnoster&quot;
+</code></pre>
+<p>如果你喜欢几个主题，那么可以修改 <code>ZSH_THEME_RANDOM_CANDIDATES</code> 让它随机切换：</p>
+<pre><code class="language-Shell">ZSH_THEME_RANDOM_CANDIDATES=( &quot;robbyrussell&quot; &quot;agnoster&quot; )
+</code></pre>
+<p>如果你对所有主题都很喜欢，那就让它随机吧：</p>
+<pre><code class="language-Shell">ZSH_THEME=&quot;random&quot;
+</code></pre>
+<p>如果内置的主题不合你心意，官方也收录了一些第三方的主题，同样可以在<a href="https://github.com/ohmyzsh/ohmyzsh/wiki/External-themes">项目 Wiki</a> 中找到，根据喜好安装即可。</p>
+<h1 id="插件">插件</h1>
+<h2 id="zsh-syntax-highlighting"><a href="https://github.com/zsh-users/zsh-syntax-highlighting">zsh-syntax-highlighting</a></h2>
+<p>默认的终端纯色文字太影响阅读，这个插件能为我们提供语法高亮。它可以在 <code>zsh</code> 的提示符下将命令高亮显示在交互式终端中。这有助于在运行命令前对其进行审查，特别是在捕捉语法错误方面。</p>
+<p>通过『Homebrew』安装：</p>
+<pre><code class="language-Shell">➜   brew install zsh-syntax-highlighting 
+</code></pre>
+<p>安装完成后，终端会显示安装路径，将其复制并追加到 <code>.zshrc</code> 文件末尾：</p>
+<pre><code class="language-Shell">source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+</code></pre>
+<h2 id="zsh-autosuggestions"><a href="https://github.com/zsh-users/zsh-autosuggestions">zsh-autosuggestions</a></h2>
+<p>我们平时写代码习惯了代码提示，那么终端为什么不能有一个？这个插件能在你打字时根据历史记录和完成情况建议命令。</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1691077955448.gif" alt="zsh-autosuggestions" loading="lazy"></figure>
+<p>同样使用『Homebrew』安装：</p>
+<pre><code class="language-Shell">➜   brew install zsh-autosuggestions 
+</code></pre>
+<p>将路径追加到 <code>.zshrc</code> 文件末尾：</p>
+<pre><code class="language-Shell">source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+</code></pre>
+<p>与平时我们在 IDEA 使用 <code>Tab</code> 或者 <code>Enter</code> 键接受代码提示不同，该插件使用方向键 <code>→</code> 或者 <code>End</code> 来接受命令建议。</p>
+<h1 id="status-bar">Status Bar</h1>
+<p>我习惯在运行任务时关注系统的资源占用情况，『iTerm2』允许配置 Status Bar。</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1691078012684.png" alt="Status Bar Enabled" loading="lazy"></figure>
+<p>根据自己的需要配置即可。</p>
+<figure data-type="image" tabindex="7"><img src="https://LiarrDev.github.io/post-images/1691078197517.png" alt="Status Bar 配置项" loading="lazy"></figure>
+<h1 id="最终效果">最终效果</h1>
+<figure data-type="image" tabindex="8"><img src="https://LiarrDev.github.io/post-images/1691078235549.png" alt="最终效果" loading="lazy"></figure>
+<p>其实可以配置的项目很多，我只是把我习惯使用的记录下来，其他的就留给你们自行发挥吧。</p>
+<h1 id="注意事项">注意事项</h1>
+<p>配置完之后你可能会发现之前的环境变量失效了，因为 <code>.zshrc</code> 已被『Oh My Zsh』更改，需要重新配置。</p>
+<p>具体配置方法之前在『<a href="https://liarrdev.github.io/post/How-to-Set-Environment-Variables-in-macOS/">macOS 环境变量配置</a>』一文已经讲过。</p>
+<p>如果你已经忘记之前配置过什么环境变量也不要慌，『Oh My Zsh』贴心地给我们生成了一个 <code>.zshrc.pre-oh-my-zsh</code> 文件，里面保存着之前配置过的内容，复制到 <code>.zshrc</code> 即可。</p>
+<p>另外，相关的配置也会影响到系统自带的『Terminal』，比如字体等，所以如果仍需使用『Terminal』，则需要参照上文『iTerm2』的配置在『Terminal』中也修改一下。</p>
+]]></content>
+    </entry>
+</feed>
