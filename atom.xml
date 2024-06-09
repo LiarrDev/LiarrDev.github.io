@@ -1,0 +1,1641 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://LiarrDev.github.io</id>
+    <title>Liarr&apos;s Studio</title>
+    <updated>2024-06-09T14:56:56.526Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://LiarrDev.github.io"/>
+    <link rel="self" href="https://LiarrDev.github.io/atom.xml"/>
+    <subtitle>温故而知新</subtitle>
+    <logo>https://LiarrDev.github.io/images/avatar.png</logo>
+    <icon>https://LiarrDev.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2024, Liarr&apos;s Studio</rights>
+    <entry>
+        <title type="html"><![CDATA[浅析 EPUB 结构]]></title>
+        <id>https://LiarrDev.github.io/post/EPUB-Structure/</id>
+        <link href="https://LiarrDev.github.io/post/EPUB-Structure/">
+        </link>
+        <updated>2024-06-30T14:50:30.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="什么是-epub">什么是 EPUB</h1>
+<p>EPUB（Electronic Publication）是一种电子图书标准，由国际数字出版论坛（IDPF）提出，属于一种可以“自动重新排版”的内容；也就是文字内容可以根据阅读设备的特性，以最适于阅读的方式显示。它的文件扩展名为 <code>.epub</code>。</p>
+<h1 id="epub-的组成">EPUB 的组成</h1>
+<p>EPUB 文件内部使用了 XHTML 或 DTBook（一种由 <strong>DAISY Consortium</strong> 提出的 XML 标准）来展现文字，并以 ZIP 压缩格式来打包文件内容。因此我们可以通过解压缩的方式来了解 EPUB 的构成。</p>
+<p>下面这个是我从某电子书网站下载的两个 EPUB 文件解压图：</p>
+<p><img src="https://LiarrDev.github.io/post-images/1717944900149.png" alt="EPUB 目录结构 1" loading="lazy"><br>
+<img src="https://LiarrDev.github.io/post-images/1717944909348.png" alt="EPUB 目录结构 2" loading="lazy"></p>
+<p>EPUB 的标准和规范一直在迭代，目录也有所差异，但文件组成是大同小异的，下面将逐一介绍各文件的作用。</p>
+<h2 id="mimetype">MIMETYPE</h2>
+<p>它的文件名就是 <code>mimetype</code>，无文件扩展名，用于描述 EPUB 的 <a href="https://liarrdev.github.io/post/Verify-File-Types-with-Media-Type-in-Java/">MIME</a>，所以它的内容只有一行：</p>
+<pre><code>application/epub+zip
+</code></pre>
+<h2 id="meta-inf">META-INF</h2>
+<p>用于存放特定文件，默认情况下里面只有一个 <code>container.xml</code> 文件，用于描述 OPF 的存放位置。由于 EPUB 的制作差异，<code>META-INF</code> 文件夹还可能包含数字签名和加密信息等文件，Java 开发者对这个目录应该不陌生。</p>
+<p><code>container.xml</code> 文件如下：</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;container version=&quot;1.0&quot; xmlns=&quot;urn:oasis:names:tc:opendocument:xmlns:container&quot;&gt;
+   &lt;rootfiles&gt;
+      &lt;rootfile full-path=&quot;content.opf&quot; media-type=&quot;application/oebps-package+xml&quot;/&gt;
+   &lt;/rootfiles&gt;
+&lt;/container&gt;
+</code></pre>
+<p>该文件是必定存在的，它相当于是 EPUB 系统的指路牌。</p>
+<h2 id="opf">OPF</h2>
+<p>OPF 文件是 EPUB 规范中最复杂的元数据，它用来定义 OPS 一系列内容组合到一起的机制。</p>
+<p>常用的文件名是 <code>content.opf</code>，当然也可以是其他，但文件扩展名必须是 <code>.opf</code>，它内部其实是一个标准的 XML，下面是一个例子。</p>
+<pre><code class="language-xml">&lt;?xml version='1.0' encoding='utf-8'?&gt;
+&lt;package xmlns=&quot;http://www.idpf.org/2007/opf&quot; version=&quot;2.0&quot; unique-identifier=&quot;uuid_id&quot;&gt;
+    &lt;metadata xmlns:opf=&quot;http://www.idpf.org/2007/opf&quot; xmlns:dc=&quot;http://purl.org/dc/elements/1.1/&quot;&gt;
+        &lt;dc:title&gt;不连续杀人事件&lt;/dc:title&gt;
+        &lt;dc:creator&gt;坂口安吾&lt;/dc:creator&gt;
+        &lt;dc:description&gt;不连续杀人事件&lt;/dc:description&gt;
+        &lt;dc:language&gt;zh-cn&lt;/dc:language&gt;
+        &lt;dc:date&gt;&lt;/dc:date&gt;
+        &lt;dc:contributor&gt;COAY.COM [http://www.coay.com]&lt;/dc:contributor&gt;
+        &lt;dc:publisher&gt;COAY.COM&lt;/dc:publisher&gt;
+        &lt;dc:identifier id=&quot;uuid_id&quot; opf:scheme=&quot;uuid&quot;&gt;8337&lt;/dc:identifier&gt;
+        &lt;dc:subject&gt;不连续杀人事件&lt;/dc:subject&gt;
+    &lt;/metadata&gt;
+    &lt;manifest&gt;
+        &lt;item href=&quot;article_381876.html&quot; id=&quot;id381876&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381877.html&quot; id=&quot;id381877&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381878.html&quot; id=&quot;id381878&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381879.html&quot; id=&quot;id381879&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381880.html&quot; id=&quot;id381880&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381881.html&quot; id=&quot;id381881&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381882.html&quot; id=&quot;id381882&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381883.html&quot; id=&quot;id381883&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381884.html&quot; id=&quot;id381884&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381885.html&quot; id=&quot;id381885&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381886.html&quot; id=&quot;id381886&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381887.html&quot; id=&quot;id381887&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;catalog.html&quot; id=&quot;catalog&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;cover.jpg&quot; id=&quot;cover&quot; media-type=&quot;image/jpeg&quot;/&gt;
+        &lt;item href=&quot;coay.jpg&quot; id=&quot;ad&quot; media-type=&quot;image/jpeg&quot;/&gt;
+        &lt;item href=&quot;stylesheet.css&quot; id=&quot;css&quot; media-type=&quot;text/css&quot;/&gt;
+        &lt;item href=&quot;titlepage.xhtml&quot; id=&quot;titlepage&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;page.xhtml&quot; id=&quot;page&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;toc.ncx&quot; media-type=&quot;application/x-dtbncx+xml&quot; id=&quot;ncx&quot;/&gt;
+    &lt;/manifest&gt;
+    &lt;spine toc=&quot;ncx&quot;&gt;
+        &lt;itemref idref=&quot;titlepage&quot;/&gt;
+        &lt;itemref idref=&quot;page&quot;/&gt;
+        &lt;itemref idref=&quot;catalog&quot;/&gt;
+        &lt;itemref idref=&quot;id381876&quot;/&gt;
+        &lt;itemref idref=&quot;id381877&quot;/&gt;
+        &lt;itemref idref=&quot;id381878&quot;/&gt;
+        &lt;itemref idref=&quot;id381879&quot;/&gt;
+        &lt;itemref idref=&quot;id381880&quot;/&gt;
+        &lt;itemref idref=&quot;id381881&quot;/&gt;
+        &lt;itemref idref=&quot;id381882&quot;/&gt;
+        &lt;itemref idref=&quot;id381883&quot;/&gt;
+        &lt;itemref idref=&quot;id381884&quot;/&gt;
+        &lt;itemref idref=&quot;id381885&quot;/&gt;
+        &lt;itemref idref=&quot;id381886&quot;/&gt;
+        &lt;itemref idref=&quot;id381887&quot;/&gt;
+        &lt;itemref idref=&quot;page&quot;/&gt;
+    &lt;/spine&gt;
+    &lt;guide&gt;
+        &lt;reference href=&quot;titlepage.xhtml&quot; type=&quot;cover&quot; title=&quot;封面&quot;/&gt;
+        &lt;reference href=&quot;catalog.html&quot; type=&quot;toc&quot; title=&quot;目录&quot;/&gt;
+    &lt;/guide&gt;
+&lt;/package&gt;
+</code></pre>
+<p>它由四个部分组成：</p>
+<ul>
+<li><code>&lt;metadata&gt;</code>：元数据信息。包含书名、作者、出版社等信息，其中 <code>&lt;dc:title&gt;</code> 和 <code>&lt;dc:identifier&gt;</code> 这两个数据是必须的。按照 EPUB 规范，<code>&lt;dc:identifier&gt;</code> 由数字图书的创建者定义，必须唯一，对于图书出版商来说，这个字段一般包括 ISBN 或者 Library of Congress 编号。</li>
+<li><code>&lt;manifest&gt;</code>：文件列表。列出电子书中包含的资源文件（HTML、CSS、NCX、图片等），它的每一子项都包含了文件 ID、相对路径以及媒体类型。</li>
+<li><code>&lt;spine&gt;</code>：文档线性阅读顺序。其中 <code>toc</code> 属性指向 <code>&lt;manifest&gt;</code> 中 <code>.ncx</code> 文件的 <code>id</code>，子项的 <code>idref</code> 属性同样指向 <code>&lt;manifest&gt;</code> 中的文件 <code>id</code>。</li>
+<li><code>&lt;guide&gt;</code>：电子书指引页。比如封面、目录、序言等，通过 <code>href</code> 属性指向文件路径。</li>
+</ul>
+<h2 id="ncx">NCX</h2>
+<p>NCX 定义了数字图书的目录表，复杂的图书中，目录表通常采用层次结构，包括嵌套的内容、章节等。</p>
+<p>它的文件名通常是 <code>toc.ncx</code>，是一个逻辑目录，内部也是一个标准的 XML，下面是一个例子。</p>
+<pre><code class="language-xml">&lt;?xml version='1.0' encoding='utf-8'?&gt;
+&lt;ncx xmlns=&quot;http://www.daisy.org/z3986/2005/ncx/&quot; version=&quot;2005-1&quot;&gt;
+    &lt;head&gt;
+        &lt;meta name=&quot;dtb:uid&quot; content=&quot;coay_8337&quot;/&gt;
+        &lt;meta name=&quot;dtb:depth&quot; content=&quot;2&quot;/&gt;
+        &lt;meta name=&quot;dtb:generator&quot; content=&quot;COAY.COM [http://www.coay.com]&quot;/&gt;
+        &lt;meta name=&quot;dtb:totalPageCount&quot; content=&quot;0&quot;/&gt;
+        &lt;meta name=&quot;dtb:maxPageNumber&quot; content=&quot;0&quot;/&gt;
+    &lt;/head&gt;
+    &lt;docTitle&gt;&lt;text&gt;不连续杀人事件&lt;/text&gt;&lt;/docTitle&gt;
+    &lt;docAuthor&gt;&lt;text&gt;坂口安吾&lt;/text&gt;&lt;/docAuthor&gt;
+    &lt;navMap&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381876&quot; playOrder=&quot;1&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第一章 丑恶万分的人际关系（1）&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381876.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381877&quot; playOrder=&quot;2&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第一章 丑恶万分的人际关系（2）&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381877.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381878&quot; playOrder=&quot;3&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第二章 意外的访客&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381878.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381879&quot; playOrder=&quot;4&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第三章 不速之客&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381879.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381880&quot; playOrder=&quot;5&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第四章 第一位被害者&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381880.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381881&quot; playOrder=&quot;6&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第五章 猫 铃（1）&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381881.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381882&quot; playOrder=&quot;7&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第五章 猫 铃（2）&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381882.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381883&quot; playOrder=&quot;8&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第六章 第二桩案件&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381883.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381884&quot; playOrder=&quot;9&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第七章 身为侦探小说迷的老政客&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381884.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381885&quot; playOrder=&quot;10&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第八章 唯一的不在场证明&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381885.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381886&quot; playOrder=&quot;11&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第九章 火葬归途&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381886.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381887&quot; playOrder=&quot;12&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第十章 疯子大集合&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381887.html&quot;/&gt;
+        &lt;/navPoint&gt;
+    &lt;/navMap&gt;
+&lt;/ncx&gt;
+</code></pre>
+<p>它有如下几个部分组成：</p>
+<ul>
+<li><code>&lt;head&gt;</code>：该标签内主要包含四个 <code>&lt;meta&gt;</code> 元素：
+<ul>
+<li><code>dtb:uid</code>：数字图书唯一 ID。一般和 OPF 中的 <code>&lt;dc:identifier&gt;</code> 对应。</li>
+<li><code>dtb:depth</code>：反映目录表中的层次深度。</li>
+<li><code>dtb:totalPageCount</code>：仅用于纸质图书，保留 <code>0</code> 即可。</li>
+<li><code>dtb:maxPageNumber</code>：仅用于纸质图书，保留 <code>0</code> 即可。</li>
+</ul>
+</li>
+<li><code>&lt;docTitle&gt;</code>：图书标题。一般和 OPF 中的 <code>&lt;dc:title&gt;</code> 对应。</li>
+<li><code>&lt;docAuthor&gt;</code>：图书作者。一般和 OPF 中的 <code>&lt;dc:creator&gt;</code> 对应。</li>
+<li><code>&lt;navMap&gt;</code>：图书目录。包含多个 <code>&lt;navPoint&gt;</code>，内部又包含下列元素：
+<ul>
+<li><code>playOrder</code>：文档阅读顺序。和 OPF 中 <code>&lt;spine&gt;</code> 的子项顺序相同。</li>
+<li><code>&lt;navLabel&gt;</code>：章节标题。</li>
+<li><code>&lt;content&gt;</code>：指向文件路径。和 OPF 中 <code>&lt;manifest&gt;</code> 子项配置的路径一致。</li>
+</ul>
+</li>
+</ul>
+<h2 id="资源文件">资源文件</h2>
+<p>除了上面介绍的几个重要文件外，剩下的几乎都是资源文件。包括 HTML/XHTML、CSS、JPG、PNG、SVG 等等。HTML/XHTML 则是书籍的内容，里面会引用 CSS 和图片等。</p>
+<p>这些文件没有明确的路径要求（事实上除了 <code>mimetype</code> 和 <code>container.xml</code> 两个文件有明确的要求外，其他文件都没有明确的路径要求），这也是为什么文章开头的两个 EPUB 目录会相差这么大。</p>
+<h2 id="opf-spine-和-ncx-navmap-的区别">OPF <code>&lt;spine&gt;</code> 和 NCX <code>&lt;navMap&gt;</code> 的区别</h2>
+<p>两个文件都描述了文档的顺序和内容，这很容易混淆。</p>
+<p>OPF <code>&lt;spine&gt;</code> 描述了书中各个章节是如何实际连接起来的，比方说翻过第一章最后一页就到第二章第一页。</p>
+<p>NCX <code>&lt;navMap&gt;</code> 在图书一开始描述目录。目录肯定会包含书中主要的章节，但是还可能包含没有单独分页的小节。</p>
+<p>NCX 包含的 <code>&lt;navPoint&gt;</code> 元素通常比 OPF <code>&lt;spine&gt;</code> 中的 <code>itemref</code> 元素多。一般情况下，<code>&lt;spine&gt;</code> 中的所有项都会出现在 NCX 中，但 NCX 可能更详细。</p>
+<h1 id="开发">开发</h1>
+<p>基于以上知识，你完全可以自行构建一本 EPUB 电子书了。所以在此我不打算介绍 EPUB 的制作流程。</p>
+<p>简单说一下 EPUB 阅读器的制作。</p>
+<p>由上面的介绍得知，EPUB 内容是依靠 HTML/XHTML 渲染的，以 Android 为例，我们就可以借助 <code>WebView</code> 加载。</p>
+<p>首先需要解压 EPUB 文件，取出 <code>META-INF</code> 中的 <code>container.xml</code> 文件，解析获取 OPF 文件路径，再取出 OPF 文件进行解析，获取元数据、资源、阅读顺序等信息，最后将 HTML/XHTML 按顺序交给 <code>WebView</code> 加载。</p>
+<p>因为上面介绍的配置文件基本都是 XML，你可以借助之前介绍的 <a href="https://liarrdev.github.io/post/Enjoy-Dom4J-in-One-Shot/">Dom4J</a> 完成解析。</p>
+<p>如果需要交互功能，可以向 <code>WebView</code> 中注入 JavaScript 来完成。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[一次实战爱上 Dom4J]]></title>
+        <id>https://LiarrDev.github.io/post/Enjoy-Dom4J-in-One-Shot/</id>
+        <link href="https://LiarrDev.github.io/post/Enjoy-Dom4J-in-One-Shot/">
+        </link>
+        <updated>2024-06-27T15:32:02.000Z</updated>
+        <content type="html"><![CDATA[<p>项目工程中使用 XML 作为配置文件很常见，比如 Android 项目中的 <code>AndroidManifest.xml</code> 和 Maven 项目中的 <code>pom.xml</code>，我们在编写脚本工具时经常需要对这类 XML 文件进行读写操作。</p>
+<p>XML 的解析有很多种方法，但总体来说都比 JSON 要复杂。今天来介绍一个我常用的 XML 解析库——Dom4J。</p>
+<p>为了避免引起逻辑上的混乱，下面我会分几个例子介绍其用法。</p>
+<p>添加依赖：</p>
+<pre><code class="language-Kotlin">dependencies {
+    implementation(&quot;org.dom4j:dom4j:2.1.4&quot;)
+}
+</code></pre>
+<p>首先看如何读取 XML，一般情况下我们会读取 XML 文件：</p>
+<pre><code class="language-kotlin">fun parseXml(file: File) {
+    val document = SAXReader().read(file)
+    // ...
+}
+</code></pre>
+<p><code>SAXReader</code> 从 SAX 解析事件创建 Dom4J 树，通过 <code>read()</code> 方法读取 XML 并生成一个 <code>Document</code> 对象。</p>
+<p><code>read()</code> 不仅支持 <code>File</code> 类型，其他的如 <code>URL</code>、<code>InputStream</code>、<code>Reader</code> 等也是可以的。</p>
+<p>如果希望从字符串中解析，可以换一种方式：</p>
+<pre><code class="language-kotlin">fun parseXml(xml: String) {
+    val document = DocumentHelper.parseText(xml)
+    // ...
+}
+</code></pre>
+<p>读取 XML 内容后，我们通过这个 <code>Document</code> 对象，就可以获取到里面的节点。</p>
+<p>举个例子，我们解析如下 XML：</p>
+<pre><code class="language-xml">&lt;school&gt;
+    &lt;student&gt;
+        &lt;name&gt;Tom&lt;/name&gt;
+        &lt;age&gt;18&lt;/age&gt;
+    &lt;/student&gt;
+&lt;/school&gt;
+</code></pre>
+<p>代码如下：</p>
+<pre><code class="language-kotlin">fun parseDocument(document: Document) {
+    val rootElement = document.rootElement
+    val student = rootElement.element(&quot;student&quot;)
+    val name = student.elementText(&quot;name&quot;)
+    val age = student.element(&quot;age&quot;).text
+    // ...
+}
+</code></pre>
+<p>通过 <code>Document</code> 的 <code>getRootElement()</code> 方法拿到根节点，每个节点都是一个 <code>Element</code> 对象，调用其 <code>element()</code> 方法可以获取子节点。最内层的节点，我们有两种方式获取它的值，一种是对该节点的父节点调用 <code>elementText()</code> 方法，可以直接根据子节点的名称获取到值；另一种是先获取到该子节点 <code>Element</code> 对象再调用 <code>getText()</code> 方法获取值。所获取到的值都是 <code>String</code> 类型，按需转换。</p>
+<p>在 Android 中我们常见的配置往往是通过属性配置的，比如：</p>
+<pre><code class="language-xml">&lt;FrameLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;&gt;
+    &lt;TextView
+        android:id=&quot;@+id/text&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;warp_content&quot;
+        android:background=&quot;@color/white&quot;
+        tools:background=&quot;@color/black&quot; /&gt;
+&lt;/FrameLayout&gt;
+</code></pre>
+<p>这是一个布局文件，解析其属性的方法如下：</p>
+<pre><code class="language-kotlin">fun parseDocument(document: Document) {
+    val rootElement = document.rootElement
+    val textView = rootElement.element(&quot;TextView&quot;)
+    val id = textView.attributeValue(&quot;id&quot;)
+    // ...
+}
+</code></pre>
+<p>获取到对应元素的 <code>Element</code> 后，调用 <code>attributeValue()</code> 方法传入属性名获取对应的值，可以看到，虽然该 XML 中每个属性都指定了命名空间，也就是前面的 <code>android:</code>，但我们并不需要传入完整的 <code>android:id</code> 才能获取到该属性的值，恰恰相反，如果把命名空间也写上反而获取不到，这是因为命名空间需要额外配置。</p>
+<p>相信你已经注意到，上方对于 <code>background</code> 属性，我在两个命名空间下都有定义，分别是 <code>android:background</code> 和 <code>tools:background</code>，如果直接调用 <code>attributeValue(&quot;background&quot;)</code>，你猜它会获取到哪个值？</p>
+<p>实际上，哪个定义排在前面，它就会获取哪个属性的值。</p>
+<p>对于不同命名空间的属性，我们可以通过以下方法进行获取：</p>
+<pre><code class="language-kotlin">fun parseDocument(document: Document) {
+    val rootElement = document.rootElement
+    val toolsNamespace = Namespace.get(&quot;tools&quot;, &quot;http://schemas.android.com/tools&quot;)
+    val androidNamespace = Namespace.get(&quot;android&quot;, &quot;http://schemas.android.com/apk/res/android&quot;)
+    val textView = rootElement.element(&quot;TextView&quot;)
+    val toolsBackground = textView.attributeValue(QName.get(&quot;background&quot;, toolsNamespace))
+    val androidBackground = textView.attributeValue(QName.get(&quot;background&quot;, androidNamespace))
+    // ...
+}
+</code></pre>
+<p>先传入前缀和其 <code>Uri</code> 构建对应的命名空间 <code>Namespace</code>，获取属性值时，我们不再简单粗暴地传入属性名，而是通过 <code>Namespace</code> 构建 <code>QName</code>，<code>QName</code> 是 XML 元素或属性的限定名称值，它能够帮助我们根据命名空间解析正确的值。</p>
+<p>对于一些相同标签的组，我们无法直接通过标签名直接获取到我们想要的值，可以一次性把这个组下所有的标签都获取到，再根据条件筛选。</p>
+<p>比如 Android 中用到的：</p>
+<pre><code class="language-xml">&lt;application xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
+    &lt;activity android:name=&quot;.MainActivity&quot; /&gt;
+    &lt;activity android:name=&quot;.SplashActivity&quot; /&gt;
+    &lt;activity android:name=&quot;.AboutActivity&quot; /&gt;
+&lt;/application&gt;
+</code></pre>
+<p>通过 <code>Element</code> 的 <code>elements()</code> 可以获取其所有的子节点。</p>
+<pre><code class="language-kotlin">fun parseDocument(document: Document) {
+    val rootElement = document.rootElement
+    val activities = rootElement.elements()
+    activities.forEach {
+        if (it.attribute(&quot;name&quot;).text.contains(&quot;MainActivity&quot;)) {
+            // ...
+        }
+    }
+}
+</code></pre>
+<p>获取所有属性也是一样的操作，调用 <code>attributes()</code> 即可，不再赘述。</p>
+<p>另外还可以通过 <code>elementIterator()</code> 和 <code>attributeIterator()</code> 获取迭代器，使用迭代器遍历来完成操作。</p>
+<p>以上就是使用 Dom4J 对 XML 的读操作，在这几个例子中我们可以发现，主要操作的几个对象无非就是 <code>Document</code>、<code>Element</code> 和 <code>Attribute</code>，接下来的写操作大同小异。</p>
+<pre><code class="language-kotlin">fun createDocument(): Document {
+    val document = DocumentHelper.createDocument()
+    val root = document.addElement(&quot;root&quot;)
+    val author = root.addElement(&quot;author&quot;)
+        .addAttribute(&quot;location&quot;, &quot;UK&quot;)
+        .addText(&quot;James Strachan&quot;)
+    return document
+}
+</code></pre>
+<p>节点、属性的添加与修改，都可以通过 <code>addElement()</code> 和 <code>addAttribute()</code> 来完成，需要注意的是，如果涉及到命名空间，依旧要借助 <code>QName</code>。</p>
+<p>为了方便日志打印或其他操作，可以将 <code>Document</code> 转为 XML 字符串：</p>
+<pre><code class="language-kotlin">fun convertToXml(document: Document) {
+    val text = document.asXML()
+    // ...
+}
+</code></pre>
+<p>作为脚本，最重要的当然是回写到文件：</p>
+<pre><code class="language-kotlin">fun write(document: Document) {
+    FileWriter(&quot;output.xml&quot;).use { 
+        val writer = XMLWriter(it)
+        writer.write(document)
+        writer.close()
+    }
+}
+</code></pre>
+<p>根据路径创建 <code>FileWriter</code>，再创建出 <code>XMLWriter</code> 并调用 <code>write()</code> 将 <code>Document</code> 写入到路径所对应的文件中，最后不要忘了调用 <code>close()</code>。</p>
+<p>除了写入到文件中外，还可以输出到控制台：</p>
+<pre><code class="language-kotlin">fun log(document: Document) {
+    val format = OutputFormat.createPrettyPrint()
+    val writer = XMLWriter(System.out, format)
+    writer.write(document)
+    writer.close()
+}
+</code></pre>
+<p>这里同时还创建了一个格式美化的 <code>OutputFormat</code>，创建 <code>XMLWriter</code> 不再借助 <code>FileWriter</code>，而是传入 <code>System.out</code>，相信任何一个 Java 开发者对这个都不陌生。</p>
+<p>以上就是 Dom4J 的常见用法，更详细的介绍可以查阅<a href="https://dom4j.github.io">官方文档</a>。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[使用 Fiddler Everywhere 在 Android 上抓包]]></title>
+        <id>https://LiarrDev.github.io/post/Capture-Traffic-on-Android-with-Fiddler-Everywhere/</id>
+        <link href="https://LiarrDev.github.io/post/Capture-Traffic-on-Android-with-Fiddler-Everywhere/">
+        </link>
+        <updated>2024-06-05T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>抓包是我们在开发中常用的调试手段，可以快速地帮助我们定位前后端的问题，虽然新版本的 Android Studio 已经配备了「Network Inspector」，但在某些场景或者特殊机型上仍不能很好胜任，所以往往需要借助一些第三方的工具进行抓包。</p>
+<p>常见的抓包工具有『Wireshark』、『Charles』和『Fiddler』等等，本次介绍使用『Fiddler Everywhere』在 Android 设备上抓包。</p>
+<p>『Fiddler Everywhere』是『Fiddler』的一个分支，支持 macOS、Windows 和 Linux。</p>
+<p>下载完成并登录，开始配置。</p>
+<p>在「Capture and Inspect Traffic」中选择「Remote Devices」，并选择 Android 设备：</p>
+<p><img src="https://LiarrDev.github.io/post-images/1717601188418.png" alt="Fiddler 主页" loading="lazy"><br>
+<img src="https://LiarrDev.github.io/post-images/1717601197473.png" alt="Fiddler 选择设备" loading="lazy"></p>
+<p>进入配置界面，按照步骤来。</p>
+<p>第一步，默认即可。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1717601227325.png" alt="Fiddler Config" loading="lazy"></figure>
+<p>第二步，下载 CA 证书。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1717601257838.png" alt="Fidder Download CA" loading="lazy"></figure>
+<p>确保手机和电脑连接同一网络，手机扫描二维码或者打开上面的链接，点击下载。</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1717601298856.png" alt="手机下载 CA" loading="lazy"></figure>
+<p>第三步，安装 CA 证书。</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1717601329045.png" alt="Fiddler Install CA" loading="lazy"></figure>
+<p>该设置的位置往往隐藏得比较深，而且不同手机不同版本都略有差异，可以参考我以下的位置。</p>
+<table>
+    <td><img src="https://liarrdev.github.io/post-images/1717601357503.png" /></td>
+    <td><img src="https://liarrdev.github.io/post-images/1717601374247.png" /></td>
+    <td><img src="https://liarrdev.github.io/post-images/1717601384727.png" /></td>
+    <td><img src="https://liarrdev.github.io/post-images/1717601396801.png" /></td>
+</table>
+<p>选择上一步下载的证书文件进行安装，可以给证书命名，方便我们辨认。</p>
+<table>
+    <td><img src="https://liarrdev.github.io/post-images/1717601614196.png" /></td>
+    <td><img src="https://liarrdev.github.io/post-images/1717601627805.png" /></td>
+</table>
+<p>安装完成后，可以在「用户凭据」中查看刚刚安装的证书。</p>
+<table>
+    <td><img src="https://liarrdev.github.io/post-images/1717601645854.png" /></td>
+    <td><img src="https://liarrdev.github.io/post-images/1717601653773.png" /></td>
+</table>
+<p>第四步，对 Wi-Fi 设置代理。</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1717601696727.png" alt="Fiddler Config Wi-Fi" loading="lazy"></figure>
+<p>参考上面提供的主机名和端口号，在手机上设置。</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1717601730654.png" alt="手机代理设置" loading="lazy"></figure>
+<p>第五步，测试连接。</p>
+<figure data-type="image" tabindex="7"><img src="https://LiarrDev.github.io/post-images/1717601752937.png" alt="Fiddler Test Conectivity" loading="lazy"></figure>
+<p>手机扫描二维码或直接访问上面的链接，页面提示连接成功。</p>
+<figure data-type="image" tabindex="8"><img src="https://LiarrDev.github.io/post-images/1717601809569.png" alt="手机连接代理成功" loading="lazy"></figure>
+<p>配置完成，下面可以开始抓包。</p>
+<figure data-type="image" tabindex="9"><img src="https://LiarrDev.github.io/post-images/1717601853644.png" alt="Fiddler 抓包" loading="lazy"></figure>
+<p>但需要注意的是，电脑上也需要信任证书才能对 HTTPS 进行抓包。</p>
+<figure data-type="image" tabindex="10"><img src="https://LiarrDev.github.io/post-images/1717601864762.png" alt="Fiddler 信任证书" loading="lazy"></figure>
+<p>记得抓包调试结束后，关闭第四步中对 Wi-Fi 设置的代理。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Android WebView 选择本地文件]]></title>
+        <id>https://LiarrDev.github.io/post/Select-Local-File-in-Android-Webview/</id>
+        <link href="https://LiarrDev.github.io/post/Select-Local-File-in-Android-Webview/">
+        </link>
+        <updated>2024-05-27T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>网页开发常常会遇到选择本地文件的需求，在浏览器环境下，页面可以很轻松地拉起资源管理器，而在 Hybrid 应用开发中，往往还需要做一些适配。</p>
+<p>你也许觉得诧异，之前的『<a href="https://liarrdev.github.io/post/Interactin-with-JavaScript-in-Android-WebView/">Android WebView 和 JavaScript 交互</a>』所介绍的方法难道不足以完成交互吗？</p>
+<p>确实，之前介绍的文章已经足够我们完成上述需求，H5 页面响应点击事件后调用 Android 端的方法，Android 端完成文件选择操作，再调用 JavaScript 方法将数据返回。在选择文件这个需求上，似乎不够优雅。</p>
+<p>我们看看浏览器上 H5 是如何选择文件的：</p>
+<pre><code class="language-HTML">&lt;html&gt;
+    &lt;input type=&quot;file&quot; /&gt;
+&lt;/html&gt;
+</code></pre>
+<p>可以看到只需要 <code>&lt;input/&gt;</code> 标签指定文件属性即可实现。如果为了兼容移动平台而修改大量代码的话，大可不必。</p>
+<p>那么应该如何做呢？</p>
+<p>我们先简单写一个 HTML 文件用于测试：</p>
+<pre><code class="language-HTML">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body&gt;
+    &lt;input id=&quot;select_file&quot; type=&quot;file&quot; accept=&quot;image/*&quot; /&gt;
+    &lt;img id=&quot;image&quot; src=&quot;&quot; style=&quot;width: 120px; height: auto; margin: 24px&quot; /&gt;
+    &lt;script type=&quot;text/javascript&quot;&gt;
+        var input = document.getElementById(&quot;select_file&quot;);
+        var image = document.getElementById(&quot;image&quot;);
+        input.onchange = function () {
+            if (this.files.length &gt; 0) {
+                var url = URL.createObjectURL(this.files[0]);
+                image.src = url;
+            }
+        }
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>这里只使用了 <code>&lt;input/&gt;</code> 标签和 <code>&lt;img/&gt;</code>，交互就是选择图片并将其显示出来。我目前对于前端的技术并不太熟悉，做得有些丑陋请勿见怪。浏览器的效果如下：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1716390856305.gif" alt="浏览器选择单个文件" loading="lazy"></figure>
+<p>其实 Android 端 <code>WebView</code> 也提供了对文件类型 <code>&lt;input/&gt;</code> 的处理方案：</p>
+<pre><code class="language-Kotlin">class MainActivity : AppCompatActivity() {
+
+    private var fileUploadCallback: ValueCallback&lt;Array&lt;Uri&gt;&gt;? = null
+    
+    private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == RESULT_OK) {
+            it.data?.dataString?.apply {
+                fileUploadCallback?.onReceiveValue(arrayOf(Uri.parse(this)))
+                fileUploadCallback = null
+            }
+        }
+    }
+    
+    override fun onCreate(savedInstanceState: Bundle?) {
+        ...
+        webView.webChromeClient = object : WebChromeClient() {
+            override fun onShowFileChooser(webView: WebView?, filePathCallback: ValueCallback&lt;Array&lt;Uri&gt;&gt;?, fileChooserParams: FileChooserParams?): Boolean {
+                val intent = fileChooserParams?.createIntent() ?: return super.onShowFileChooser(webView, filePathCallback, fileChooserParams)
+                fileUploadCallback = filePathCallback
+                launcher.launch(intent)
+                return true
+            }
+        }
+    }
+}
+</code></pre>
+<p><code>WebChromeClient</code> 提供了一个 <code>onShowFileChooser()</code> 方法通知客户端显示文件选择器，我们可以在这里处理选择文件的操作，其中 <code>ValueCallback&lt;Uri[]&gt;</code> 类型的参数是一个回调，以提供要上传的文件的路径列表，我们在文件选择完成后使用它；<code>FileChooserParams</code> 用于描述要打开的文件选择器的模式以及与其一起使用的选项，这么听起来和 <code>Intent</code> 有点像，它也确实可以通过 <code>createIntent()</code> 来创建；返回值是布尔类型，如果我们需要执行回调，则返回 <code>true</code>，默认处理则为 <code>false</code>。</p>
+<p>效果如下：</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1716390884948.gif" alt="WebView 选择单个文件" loading="lazy"></figure>
+<p>某些场景下，我们可能需要上传多张图片，我们修改 HTML 文件：</p>
+<pre><code class="language-HTML">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body&gt;
+    &lt;input id=&quot;select_file&quot; type=&quot;file&quot; accept=&quot;image/*&quot; multiple /&gt;
+    &lt;img id=&quot;image_0&quot; src=&quot;&quot; style=&quot;width: 120px; height: auto; margin: 24px&quot; /&gt;
+    &lt;img id=&quot;image_1&quot; src=&quot;&quot; style=&quot;width: 120px; height: auto; margin: 24px&quot; /&gt;
+    &lt;script type=&quot;text/javascript&quot;&gt;
+        var input = document.getElementById(&quot;select_file&quot;);
+        var image0 = document.getElementById(&quot;image_0&quot;);
+        var image1 = document.getElementById(&quot;image_1&quot;);
+        input.onchange = function () {
+            if (this.files.length &gt; 0) {
+                var url0 = URL.createObjectURL(this.files[0]);
+                image0.src = url0;
+            }
+            if (this.files.length &gt; 1) {
+                var url1 = URL.createObjectURL(this.files[1]);
+                image1.src = url1;
+            }
+        }
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>主要是 <code>&lt;input/&gt;</code> 标签增加了 <code>multiple</code> 属性，支持同时选择多个文件，然后 JavaScript 中增加了对第二张图片的处理。浏览器效果如下：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1716390926914.gif" alt="浏览器选择多个文件" loading="lazy"></figure>
+<p>Android 端也需要做相应的处理：</p>
+<pre><code class="language-Kotlin">class MainActivity : AppCompatActivity() {
+
+    private var fileUploadCallback: ValueCallback&lt;Array&lt;Uri&gt;&gt;? = null
+    
+    private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == RESULT_OK) {
+            var results = emptyArray&lt;Uri&gt;()
+            it.data?.clipData?.apply {
+                val list = mutableListOf&lt;Uri&gt;()
+                for (i in 0 until itemCount) {
+                    list.add(getItemAt(i).uri)
+                }
+                results = list.toTypedArray()
+            }
+            it.data?.dataString?.apply {
+                results = arrayOf(Uri.parse(this))
+            }
+            fileUploadCallback?.onReceiveValue(results)
+            fileUploadCallback = null
+        }
+    }
+    
+    override fun onCreate(savedInstanceState: Bundle?) {
+        ...
+        webView.webChromeClient = object : WebChromeClient() {
+            override fun onShowFileChooser(webView: WebView?, filePathCallback: ValueCallback&lt;Array&lt;Uri&gt;&gt;?, fileChooserParams: FileChooserParams?): Boolean {
+                val intent = fileChooserParams?.createIntent() ?: return super.onShowFileChooser(webView, filePathCallback, fileChooserParams)
+                if (fileChooserParams.mode == FileChooserParams.MODE_OPEN_MULTIPLE) { 
+                    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                }
+                fileUploadCallback = filePathCallback
+                launcher.launch(intent)
+                return true
+            }
+        }
+    }
+}
+</code></pre>
+<p>需要注意，尽管 HTML 已经配置了 <code>multiple</code> 属性，但是 <code>createIntent()</code> 似乎并不会给 <code>Intent</code> 添加 <code>Intent.EXTRA_ALLOW_MULTIPLE</code> 标记。因此我们需要手动从 <code>FileChooserParams</code> 中调用 <code>getModel()</code> 方法判断并添加此标记。它有 4 个值：</p>
+<pre><code class="language-Java">public class WebChromeClient {
+    ...
+    public static abstract class FileChooserParams {
+        /** Open single file. Requires that the file exists before allowing the user to pick it. */
+        public static final int MODE_OPEN = 0;
+        /** Like Open but allows multiple files to be selected. */
+        public static final int MODE_OPEN_MULTIPLE = 1;
+        /** Like Open but allows a folder to be selected. The implementation should enumerate
+            all files selected by this operation.
+            This feature is not supported at the moment.
+            @hide */
+        public static final int MODE_OPEN_FOLDER = 2;
+        /**  Allows picking a nonexistent file and saving it. */
+        public static final int MODE_SAVE = 3;
+        ...
+    }
+}
+</code></pre>
+<p>不过 <code>MODE_OPEN_FOLDER</code> 被标记为 <code>@hide</code>，所以我们只能用其他三个。</p>
+<p>文件选择完成后，我们的处理也与上文选择单个文件有所不同，当选择多个文件时，<code>Uri</code> 会通过 <code>ClipData</code> 返回，这里需要注意的是，当选择单个文件时，<code>ClipData</code> 会为空，此时的处理方案与上文选择单个文件一致。</p>
+<p>效果如下：</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1716390949811.gif" alt="WebView 选择多个文件" loading="lazy"></figure>
+<p>这样我们就实现了Android 端 <code>WebView</code> 与 Web 端 <code>&lt;input/&gt;</code> 选择文件的优雅交互。</p>
+<p>其实 Activity Result API 还给我们提供了选择文件的 <code>ActivityResultContracts</code>，能够更加方便我们解析结果，不过就要写两个 <code>ActivityResultLauncher</code> 分别处理：</p>
+<pre><code class="language-Kotlin">class MainActivity : AppCompatActivity() {
+
+    private var fileUploadCallback: ValueCallback&lt;Array&lt;Uri&gt;&gt;? = null
+    
+    private val documentLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()) {
+        it?.run {
+            fileUploadCallback?.onReceiveValue(arrayOf(this))
+            fileUploadCallback = null
+        }
+    }
+    
+    private val documentsLauncher = registerForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) {
+        fileUploadCallback?.onReceiveValue(it.toTypedArray())
+        fileUploadCallback = null
+    }
+    
+    override fun onCreate(savedInstanceState: Bundle?) {
+        ...
+        webView.webChromeClient = object : WebChromeClient() {
+            override fun onShowFileChooser(webView: WebView?, filePathCallback: ValueCallback&lt;Array&lt;Uri&gt;&gt;?, fileChooserParams: FileChooserParams?): Boolean {
+                fileUploadCallback = filePathCallback
+                return when (fileChooserParams?.mode) {
+                    FileChooserParams.MODE_OPEN -&gt; {
+                        documentLauncher.launch(fileChooserParams.acceptTypes)
+                        true
+                    }
+                    FileChooserParams.MODE_OPEN_MULTIPLE -&gt; {
+                        documentsLauncher.launch(fileChooserParams.acceptTypes)
+                        true
+                    }
+                    else -&gt; super.onShowFileChooser(webView, filePathCallback, fileChooserParams)
+                }
+            }
+        }
+    }
+}
+</code></pre>
+<p>这种方法不需要将 <code>FileChooserParams</code> 生成 <code>Intent</code>（但是要记得通过 <code>getAcceptTypes()</code> 取出并设置 <a href="https://liarrdev.github.io/post/Verify-File-Types-with-Media-Type-in-Java/">MIME 类型</a>），<code>ActivityResultContracts</code> 已经替我们做了相关的处理，文件选择的结果也不需要手动解析，直接就可以拿到 <code>Uri</code> 进行下一步操作，我个人是认为比上面的统一处理是要清晰一些。</p>
+<p>大多数使用场景其实都是上传图片，可以配合之前的文章『<a href="https://liarrdev.github.io/post/Try-Photo-Picker-on-Android-13-without-Permission-Hassles/">浅尝 Android 13 Photo Picker 无惧权限烦恼</a>』一起食用。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[为 Android 应用构建 Widget]]></title>
+        <id>https://LiarrDev.github.io/post/Building-Widgets-for-Android-Apps/</id>
+        <link href="https://LiarrDev.github.io/post/Building-Widgets-for-Android-Apps/">
+        </link>
+        <updated>2024-04-29T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="背景">背景</h1>
+<p>应用 Widget 是可以嵌入到其他应用（如主屏幕）并接收定期更新的微型应用视图，Google 官方的翻译叫做「微件」，在国内的叫法也有许多，比如「小组件」等。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1714405924819.png" alt="Music Widget" loading="lazy"></figure>
+<p>从 Android 1.5（Cupcake，API 3）开始，Widget 就已存在，到后来 Android 4.0（Ice Cream Sandwich，API 14）则逐渐改版调整，直到 Android 6.0（Marshmallow，API 23）交互才稳定下来。</p>
+<p>不过由于 Android 的自由度导致不同应用的 Widget 设计风格各异，官方也没有为开发者们提供设计规范以及素材，堆积的 Widget 反而会让桌面变得凌乱，既不美观也不实用，于是 Widget 在经历了短暂的繁荣之后便日渐被人遗忘。</p>
+<p>没想到 2020 年 iOS 14 的发布则重新将手机系统上的桌面小组件功能拉回了人们的视野中（iOS 的小组件发展史本文按下不表，有兴趣的读者可自行查阅资料），Widget 又焕发了第二春，除了官方优化外，国内系统比如 OriginOS 也交出了高分答卷。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1714405996005.png" alt="OriginOS" loading="lazy"></figure>
+<p>说了这么多，接下来就写个 Widget 实践一下。</p>
+<h1 id="实践">实践</h1>
+<h2 id="基本配置">基本配置</h2>
+<p>得益于『Android Studio』提供的各种能力，我们可以一键生成 Widget 模版。</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1714406028530.png" alt="Android Studio 创建 Widget" loading="lazy"></figure>
+<p>创建之前我们需要先简单配置一些信息，比如放置的位置、尺寸调整模式、最小宽高等。</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1714406073399.png" alt="配置 Widget 信息" loading="lazy"></figure>
+<p>虽然可以自动创建，但我们也要知道其创建了哪些东西才能够接着开发。</p>
+<p>首先是 <code>/res/xml/new_app_widget_info.xml</code>，我们在上面配置的大部分信息会在这里生成：</p>
+<pre><code class="language-XML">&lt;appwidget-provider xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    android:description=&quot;@string/app_widget_description&quot;
+    android:initialKeyguardLayout=&quot;@layout/new_app_widget&quot;
+    android:initialLayout=&quot;@layout/new_app_widget&quot;
+    android:minWidth=&quot;40dp&quot;
+    android:minHeight=&quot;40dp&quot;
+    android:previewImage=&quot;@drawable/example_appwidget_preview&quot;
+    android:previewLayout=&quot;@layout/new_app_widget&quot;
+    android:resizeMode=&quot;horizontal|vertical&quot;
+    android:targetCellWidth=&quot;1&quot;
+    android:targetCellHeight=&quot;1&quot;
+    android:updatePeriodMillis=&quot;86400000&quot;
+    android:widgetCategory=&quot;home_screen&quot; /&gt;
+</code></pre>
+<p>它是一个 <code>AppWidgetProviderInfo</code> 对象，用来描述应用 Widget 的元数据，比如预览、布局、更新频率等。</p>
+<p>这里有几个属性需要关注，<code>android:previewImage</code> 是预览图片，会在添加 Widget 前展示，而在 Android 12（S，API 31）之后，它支持配置 <code>android:previewLayout</code> 预览布局：</p>
+<table>
+    <td><img src="https://liarrdev.github.io/post-images/1714406150776.png" /></td>
+    <td><img src="https://liarrdev.github.io/post-images/1714406118501.png" /></td>
+</table>
+<p><code>android:updatePeriodMillis</code> 用来控制定期更新的频率，但不能保证实际更新按此值正好准时发生，其不支持少于 30 分钟的值，官方建议尽可能降低更新频率，比如不超过每小时一次，以节省电池电量。</p>
+<p><code>android:initialLayout</code> 是 Widget 的布局，其基于 <code>RemoteViews</code>，所以它并不支持所有的 <code>View</code> 或 <code>ViewGroup</code>，尽管在 Android 12（S，API 31）之后扩展了支持。因此尽量使用基础的视图控件，或者在使用前查阅文档。</p>
+<p>Widget 必须定义 <code>android:minWidth</code> 和 <code>android:minHeight</code>，表示默认情况下应占用的最小空间量。当用户向其主屏幕添加微件时，Widget 占用的宽度和高度通常会超过所指定的最小值。虽然单元格的宽度和高度以及应用到 Widget 的自动外边距量可能会因设备而异，但可以使用下表根据所需占用的网格单元格数大致估算 Widget 的最小尺寸：</p>
+<table>
+<thead>
+<tr>
+<th>单元格数量（列数或行数）</th>
+<th>可用尺寸 (dp)（<code>minWidth</code> 或 <code>minHeight</code>）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>40dp</td>
+</tr>
+<tr>
+<td>2</td>
+<td>110dp</td>
+</tr>
+<tr>
+<td>3</td>
+<td>180dp</td>
+</tr>
+<tr>
+<td>4</td>
+<td>250dp</td>
+</tr>
+<tr>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr>
+<td>n</td>
+<td>70 × n − 30</td>
+</tr>
+</tbody>
+</table>
+<p>接下来看看 <code>AndroidManifest.xml</code>：</p>
+<pre><code class="language-XML">&lt;manifest ...&gt;
+    &lt;application ...&gt;
+        ...
+        &lt;receiver
+            android:name=&quot;.widget.NewAppWidget&quot;
+            android:exported=&quot;false&quot;&gt;
+            &lt;intent-filter&gt;
+                &lt;action android:name=&quot;android.appwidget.action.APPWIDGET_UPDATE&quot; /&gt;
+            &lt;/intent-filter&gt;
+            &lt;meta-data
+                android:name=&quot;android.appwidget.provider&quot;
+                android:resource=&quot;@xml/new_app_widget_info&quot; /&gt;
+        &lt;/receiver&gt;
+    &lt;/application&gt;
+&lt;/manifest&gt;
+</code></pre>
+<p>生成模版自动为我们注册了广播接收器，并将前文中的 <code>AppWidgetProviderInfo</code> 元数据配置到此处。 根据我们已有的认知，不是只有四大组件才需要注册吗？</p>
+<p>没错，其实 Widget 本身也是一个 <code>BroadcastReceiver</code>，我们来看其实现类：</p>
+<pre><code class="language-Kotlin">class NewAppWidget : AppWidgetProvider() {
+    ...
+}
+</code></pre>
+<p>可以看到，其继承 <code>AppWidgetProvider</code>，而 <code>AppWidgetProvider</code> 的父类正是 <code>BroadcastReceiver</code>：</p>
+<pre><code class="language-Java">public class AppWidgetProvider extends BroadcastReceiver {
+    ...
+}
+</code></pre>
+<p><code>AppWidgetProvider</code> 作为一个辅助类来处理 App Widget 的广播，仅接收与 Widget 有关的广播事件，例如当更新、删除、启用和停用 Widget 时发出的广播。因此我们需要着重了解其生命周期：</p>
+<pre><code class="language-Java">public class AppWidgetProvider extends BroadcastReceiver {
+    public void onReceive(Context context, Intent intent) {...}
+    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {}
+    public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {}
+    public void onDeleted(Context context, int[] appWidgetIds) {}
+    public void onEnabled(Context context) {}
+    public void onDisabled(Context context) {}
+    public void onRestored(Context context, int[] oldWidgetIds, int[] newWidgetIds) {}
+}
+</code></pre>
+<p><code>onReceive()</code> 不用过多解释，它就是实现了 <code>BroadcastReceiver</code> 的抽象方法，然后将各种事件分类处理重新分发到其他方法中。</p>
+<p><code>onUpdate()</code> 会在我们设定的更新频率中触发，所以更新 Widget 的相关逻辑应当在此处编写。</p>
+<p><code>onAppWidgetOptionsChanged()</code> 在首次放置 Widget 时以及每次调整 Widget 大小时都会调用，使用此回调可根据 Widget 的大小范围显示或隐藏内容。</p>
+<p>每次从 Widget 托管应用中删除 Widget 时，<code>onDeleted()</code> 方法会被调用。</p>
+<p><code>onEnabled()</code> 在首次创建 Widget 实例时调用，如果用户添加多个 Widget 实例，则仅在首次添加时才会调用该方法。 同样，<code>onDisabled()</code> 会在宿主删除最后一个 Widget 实例时被调用。</p>
+<p>不难看出，<code>onUpdate()</code> 是最重要的方法，『Android Studio』生成的模版中也仅实现了该方法：</p>
+<pre><code class="language-Kotlin">class NewAppWidget : AppWidgetProvider() {
+    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+        for (appWidgetId in appWidgetIds) {
+            updateAppWidget(context, appWidgetManager, appWidgetId)
+        }
+    }
+}
+internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+    val widgetText = context.getString(R.string.appwidget_text)
+    val views = RemoteViews(context.packageName, R.layout.new_app_widget)
+    views.setTextViewText(R.id.appwidget_text, widgetText)
+    appWidgetManager.updateAppWidget(appWidgetId, views)
+}
+</code></pre>
+<p>示例代码为我们简单实现了更新逻辑，逻辑清晰，无需解释。</p>
+<p><code>AppWidgetProvider</code> 只是一个辅助类。如果希望直接接收 App Widget 广播，自行实现 <code>BroadcastReceiver</code> 同样可行，只需关注如下 <code>Intent Action</code>：</p>
+<ul>
+<li><code>ACTION_APPWIDGET_UPDATE</code></li>
+<li><code>ACTION_APPWIDGET_DELETED</code></li>
+<li><code>ACTION_APPWIDGET_ENABLED</code></li>
+<li><code>ACTION_APPWIDGET_DISABLED</code></li>
+<li><code>ACTION_APPWIDGET_OPTIONS_CHANGED</code></li>
+</ul>
+<p>参照 <code>AppWidgetProvider</code> 的处理方式，当然还可以发送自定义的广播内容，这在处理一些过滤逻辑时很有用。</p>
+<h2 id="更新-widget">更新 Widget</h2>
+<p>值得一提的是，更新 Widget 内容可能会消耗大量的计算资源。所以官方也提供了三种更新方式：</p>
+<ul>
+<li>完整更新：将新的 <code>RemoteViews</code> 替换之前的 <code>RemoteViews</code>，这是计算开销最大的更新。</li>
+</ul>
+<pre><code class="language-Kotlin">internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+    ...
+    val remoteViews = RemoteViews(context.getPackageName(), R.layout.widgetlayout).also {
+        setTextViewText(R.id.textview_widget_layout1, &quot;Updated text1&quot;)
+        setTextViewText(R.id.textview_widget_layout2, &quot;Updated text2&quot;)
+    }
+    appWidgetManager.updateAppWidget(appWidgetId, remoteViews)
+}
+</code></pre>
+<ul>
+<li>部分更新：将新的 <code>RemoteViews</code> 与之前提供的 <code>RemoteViews</code> 合并，以更新 Widget 的某些部分。如果 Widget 未收到至少一个完整更新，系统会忽略此方法。</li>
+</ul>
+<pre><code class="language-Kotlin">internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+    ...
+    val remoteViews = RemoteViews(context.getPackageName(), R.layout.widgetlayout).also {
+        setTextViewText(R.id.textview_widget_layout, &quot;Updated text&quot;)
+    }
+    appWidgetManager.partiallyUpdateAppWidget(appWidgetId, remoteViews)
+}
+</code></pre>
+<ul>
+<li>集合数据刷新：使 Widget 中集合视图的数据失效，这会触发 <code>RemoteViewsFactory.onDataSetChanged()</code>。</li>
+</ul>
+<pre><code class="language-Kotlin">internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+    ...
+    appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_listview)
+}
+</code></pre>
+<p>除了在接收广播时更新 Widget，在应用内更新也同样可行，比如给 Widget 换肤等场景。只需获取到 <code>AppWidgetManager</code> 和 <code>AppWidgetIds</code> 即可：</p>
+<pre><code class="language-Kotlin">object MyAppWidgetManager {
+    fun updateAppWidget(context: Context) {
+        val appWidgetManager = AppWidgetManager.getInstance(context)
+        val appWidgetIds = appWidgetManager.getAppWidgetIds(ComponentName(context, NewAppWidget::class.java))
+        for (appWidgetId in appWidgetIds) {
+            updateAppWidget(context, appWidgetManager, appWidgetId)
+        }
+    }
+}
+</code></pre>
+<p>如果通过发送广播的方式，也可以这样写：</p>
+<pre><code class="language-kotlin">object MyAppWidgetManager {
+    fun updateAppWidget(context: Context) {
+        val appWidgetManager = AppWidgetManager.getInstance(context)
+        val appWidgetIds = appWidgetManager.getAppWidgetIds(ComponentName(context, NewAppWidget::class.java))
+        val intent = Intent().apply {
+            ...     // action, package, ect.
+            putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
+        }
+        context.sendBroadcast(intent)
+    }
+}
+</code></pre>
+<p>还可以自定义 <code>action</code> 来过滤操作。</p>
+<p>由于本质上就是 <code>BroadcastReceiver</code> 的特性，Widget 更新的时长和优先级尤为重要，系统通常会允许 <code>BroadcastReceiver</code> 最多运行 10 秒，然后会将其视为无响应并触发 ANR 错误。如果更新 Widget 需要更长的时间，使用 <code>WorkManager</code> 安排任务是个不错的选择。</p>
+<p>但在 Widget 中使用 <code>WorkManager</code> 也会引发一些预期之外的事情，比如 <code>WorkManager</code> 可能会导致 Widget 频繁刷新，从而引发 Widget 闪烁，这是一个<a href="https://issuetracker.google.com/issues/115575872">已知 Bug</a>，Google 提供了一个另类的解决方法，是用 <code>setInitialDelay()</code> 方法给 <code>WorkManager</code> 配置一个 10 年的初始延迟。经过测试这个方法确实能够解决问题，但不优雅，Google 团队也表示未来将优化 <code>WorkManager</code> 在 Widget 中的表现。</p>
+<h2 id="remoteviews-更新控件"><code>RemoteViews</code> 更新控件</h2>
+<p>上面提到，Widget 是通过 <code>RemoteViews</code> 来更新的，而 <code>RemoteViews</code> 并不是一个 <code>View</code> 或 <code>ViewGroup</code>：</p>
+<pre><code class="language-Java">public class RemoteViews implements Parcelable, Filter {
+    ...
+}
+</code></pre>
+<p>这意味着我们并不能像平时更新 <code>View</code> 那样对 Widget 内的控件进行设置，只能使用 <code>RemoteViews</code> 提供的方法，比如上面提到的：</p>
+<pre><code class="language-Kotlin">internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+    ...
+    val views = RemoteViews(context.packageName, R.layout.new_app_widget)
+    views.setTextViewText(R.id.appwidget_text, widgetText)
+    views.setImageViewResource(R.id.appwidget_img, R.drawable.bg)
+    ...
+}
+</code></pre>
+<p>虽然 <code>RemoteViews</code> 提供了常用的方法，但这种用法仍为我们带来不少麻烦，比如我想对 Widget 里面的某个 <code>View</code> 动态设置背景，似乎就找不到类似 <code>RemoteViews.setBackground()</code> 之类的方法。不过点进 <code>RemoteViews</code> 的源码后发现，其实上面的这些操作都是通过反射实现的，比如：</p>
+<pre><code class="language-Java">public class RemoteViews implements Parcelable, Filter {
+    ...
+    public void setImageViewResource(@IdRes int viewId, @DrawableRes int srcId) {
+        setInt(viewId, &quot;setImageResource&quot;, srcId);
+    }
+    public void setInt(@IdRes int viewId, String methodName, int value) {
+        addAction(new ReflectionAction(viewId, methodName, BaseReflectionAction.INT, value));
+    }
+}
+</code></pre>
+<p>所以给 <code>View</code> 设置背景时，我们可以为 <code>RemoteViews</code> 写个扩展方法：</p>
+<pre><code class="language-Kotlin">fun RemoteViews.setBackgroundResource(@IdRes viewId: Int, @DrawableRes srcId: Int) {
+    this.setInt(viewId, &quot;setBackgroundResource&quot;, srcId)
+}
+</code></pre>
+<p>这样就能实现想要的效果。</p>
+<h2 id="获取-widget-尺寸">获取 Widget 尺寸</h2>
+<p>由于 <code>RemoteViews</code> 的限制，我们无法在 Widget 内使用自定义 <code>View</code>，这样类似简单常用的圆角 <code>ImageView</code> 都无法实现，这个时候可以考虑曲线救国，比如对图片的 <code>Bitmap</code> 进行裁剪处理，生成一个圆角的图片进行显示。</p>
+<p>但是同一 Widget 在不同 ROM 下显示的尺寸都会有差异，所以使用 <code>ImageView</code> 作为圆角背景图展示时可能会遇到图片拉伸等问题，官方也没有提供对应的 API 供我们获取，我<a href="https://stackoverflow.com/questions/25153604/get-the-size-of-my-homescreen-widget">在 StackOverflow 上找到了一个并不完美的解决方案</a>：</p>
+<pre><code class="language-Kotlin">/**
+ *  获取 Widget 尺寸
+ *
+ *  @param context Do not pass Application context
+ */
+class WidgetSizeProvider(private val context: Context) {
+
+    private val appWidgetManager = AppWidgetManager.getInstance(context)
+
+    fun getWidgetsSize(widgetId: Int): Pair&lt;Int, Int&gt; {
+        val isPortrait = context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+        val width = getWidgetWidth(isPortrait, widgetId)
+        val height = getWidgetHeight(isPortrait, widgetId)
+        val widthInPx = context.dip(width)
+        val heightInPx = context.dip(height)
+        return widthInPx to heightInPx
+    }
+
+    private fun getWidgetWidth(isPortrait: Boolean, widgetId: Int) = if (isPortrait) {
+        getWidgetSizeInDp(widgetId, AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
+    } else {
+        getWidgetSizeInDp(widgetId, AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH)
+    }
+
+    private fun getWidgetHeight(isPortrait: Boolean, widgetId: Int) = if (isPortrait) {
+        getWidgetSizeInDp(widgetId, AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
+    } else {
+        getWidgetSizeInDp(widgetId, AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
+    }
+
+    private fun getWidgetSizeInDp(widgetId: Int, key: String) = appWidgetManager.getAppWidgetOptions(widgetId).getInt(key, 0)
+
+    private fun Context.dip(value: Int): Int = (value * resources.displayMetrics.density).toInt()
+}
+</code></pre>
+<p>测试过程中发现，在平板上这种方法判断横竖屏不准确，<a href="https://stackoverflow.com/questions/2435548/how-to-detect-orientation-change-in-home-screen-widget">Widget 中也无法监听屏幕旋转</a>，于是加上宽高的判断：</p>
+<pre><code class="language-Kotlin">/**
+ *  获取 Widget 尺寸
+ *
+ *  @param context Do not pass Application context
+ */
+class WidgetSizeProvider(private val context: Context) {
+    ...
+    fun getWidgetsSize(widgetId: Int): Pair&lt;Int, Int&gt; {
+        val isPortrait = ScreenUtils.getScreenHeight(context) &gt; ScreenUtils.getScreenWidth(context)
+                &amp;&amp; context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+        ...
+    }
+}
+</code></pre>
+<p>但是目前仍有一个问题无法解决，系统允许设置桌面图标网格列数，默认情况下，大多数手机桌面图标网格为 4 列。</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1714406253378.png" alt="桌面网格设置" loading="lazy"></figure>
+<p>绝大多数手机在 4 列的情况下获取到的宽高都没问题，或者说即使有误差但视觉上不易察觉出来，当切换到 5 列时，通过以上方法在很多厂商定制的系统（HarmonyOS、MagicOS、REDMAGIC OS 等）中出现了严重的误差，通过计算得知这些系统在返回宽度时是按照每列固定的宽度返回，而不是实际占据的宽度。</p>
+<p>举个例子，比如在 4 列的情况下，图标所占用的宽度为 <code>64dp</code>，两个图标间隔为 <code>16dp</code>，这样一个横向铺满的 Widget 宽度为 <code>304dp</code>；当切到 5 列时，这些定制的系统返回的结果是 <code>384dp</code>。</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1714406276430.png" alt="获取 Widget 宽度异常" loading="lazy"></figure>
+<p>问题就出在这里，一个横向铺满的 Widget，无论列数如何变更，它们的宽度差值应该不会超过一个间隔的宽度，这些厂商粗暴的计算导致返回的结果超过了小组件实际的宽度，甚至超过了屏幕的宽度。</p>
+<p>而测试发现，<strong>在搭载原生 Android 系统的 Google Pixel 上却没有此问题！</strong> 虽然这种获取尺寸的方法并非官方认证，但不同系统的割裂情况依然让我头疼。</p>
+<p>我猜测，产生这个问题的原因可能是因为从 Android 12 开始官方才支持调整桌面图标网格，而大多数 ROM 在很早之前就使用自己的方式实现了，但并没有考虑到 Widget 尺寸的问题，同时即使 Android 12 官方已经实现该功能，这些厂商因为种种原因没有迁移反而将屎山代码流传下来所导致。</p>
+<h2 id="从-widget-中启动应用">从 Widget 中启动应用</h2>
+<p>一般情况下点击 Widget 会启动应用，行为与在桌面点击应用图标一致，冷启动时进入启动页，热启动时进入到退到后台时所在的页面。但在 Android 12 上，该默认行为被取消了，也就是说不设置点击事件的情况下，点击 Widget 将不会自动启动应用，我们可以尝试给它构建一个无路径的 <code>Intent</code> 来解决该问题：</p>
+<pre><code class="language-Kotlin">internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+    val views = RemoteViews(context.packageName, R.layout.new_app_widget)
+    if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.S) {
+        val stackBuilder = TaskStackBuilder.create(context).addNextIntent(Intent())
+        val pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+        views.setOnClickPendingIntent(R.id.appwidget_root, pendingIntent)
+    }
+    appWidgetManager.updateAppWidget(appWidgetId, views)
+}
+</code></pre>
+<p>要是想修改该行为也是可以的：</p>
+<pre><code class="language-Kotlin">internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+    val views = RemoteViews(context.packageName, R.layout.new_app_widget)
+    val stackBuilder = TaskStackBuilder.create(context).apply {
+        addNextIntentWithParentStack(Intent(context, MainActivity::class.java))
+        addNextIntent(Intent(context, WidgetActivity::class.java))
+    }
+    val pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+    views.setOnClickPendingIntent(R.id.appwidget_text, pendingIntent)
+    appWidgetManager.updateAppWidget(appWidgetId, views)
+}
+</code></pre>
+<p>这里看到设置了两个 <code>Activity</code>，其中 <code>WidgetActivity</code> 是要跳转的页面，<code>MainActivity</code> 是首页，这是一个很常见的交互，即小组件跳转到具体页面后返回直接回到应用主页，而不是退出应用。通过 <code>addNextIntentWithParentStack()</code> 可以构建包含返回栈的 <code>PendingIntent</code>。</p>
+<p>仍需要注意的是，一般应用会在闪屏页执行一些初始化操作，但如果像上面修改了 Widget 的启动页面后，应用不经闪屏页即进入 <code>WidgetActivity</code>，会导致某些功能出现异常，所以可以考虑做一个中间页跳转，在中间页做初始化操作，或者直接复用闪屏页功能，根据不同情况跳转。</p>
+<p>当 Widget 内不同的 <code>View</code> 需要响应不同的 <code>PendingIntent</code> 时，我们习惯性会通过 <code>putExtra()</code> 方法给同一个键传递不同的值，但在这里你可能会发现，后一个设置的值总会覆盖前一个，比如：</p>
+<pre><code class="language-Kotlin">internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+    val views = RemoteViews(context.packageName, R.layout.new_app_widget)
+    val stackBuilder1 = TaskStackBuilder.create(context).apply { 
+        ...
+        addNextIntent(Intent(context, WidgetActivity::class.java).putExtra(&quot;arg&quot;, 1))
+    }
+    val pendingIntent1 = stackBuilder1.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+    views.setOnClickPendingIntent(R.id.appwidget_text, pendingIntent2)
+    val stackBuilder2 = TaskStackBuilder.create(context).apply {
+        ...
+        addNextIntent(Intent(context, WidgetActivity::class.java).putExtra(&quot;arg&quot;, 2))
+    }
+    val pendingIntent2 = stackBuilder2.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+    views.setOnClickPendingIntent(R.id.appwidget_img, pendingIntent2)
+    appWidgetManager.updateAppWidget(appWidgetId, views)
+}
+</code></pre>
+<p>无论点击哪一个 <code>View</code>，我们在 <code>WidgetActivity</code> 接收数据会发现都是 <code>2</code>，这显然是不合理的。究其原因，是系统把这两个 <code>PendingIntent</code> 都当成同一个去处理了，我们有两种方法可以避免这个问题。</p>
+<p>一是为 <code>Intent</code> 添加不同的 <code>action</code>：</p>
+<pre><code class="language-Kotlin">internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+    val stackBuilder1 = TaskStackBuilder.create(context).apply { 
+        ...
+        addNextIntent(Intent(context, WidgetActivity::class.java).putExtra(&quot;arg&quot;, 1).setAction(&quot;action_1&quot;))
+    }
+    val stackBuilder2 = TaskStackBuilder.create(context).apply {
+        ...
+        addNextIntent(Intent(context, WidgetActivity::class.java).putExtra(&quot;arg&quot;, 2).setAction(&quot;action_2&quot;))
+    }
+    ...
+    appWidgetManager.updateAppWidget(appWidgetId, views)
+}
+</code></pre>
+<p>二是指定唯一的 <code>requestCode</code>：</p>
+<pre><code class="language-Kotlin">internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+    val pendingIntent1 = stackBuilder1.getPendingIntent(1, PendingIntent.FLAG_UPDATE_CURRENT)
+    val pendingIntent2 = stackBuilder2.getPendingIntent(2, PendingIntent.FLAG_UPDATE_CURRENT)
+    ...
+    appWidgetManager.updateAppWidget(appWidgetId, views)
+}
+</code></pre>
+<p>这两种方案都可以为每个 <code>View</code> 区分 <code>PendingIntent</code> 并传递不同的参数，确保它们能够按照我们期望的方式执行。</p>
+<h2 id="widget-的名称和描述">Widget 的名称和描述</h2>
+<p>Widget 的描述是从 Android 12（S，API 31）开始支持的，也就是上文模版中配置的：</p>
+<pre><code class="language-XML">&lt;appwidget-provider ...
+    android:description=&quot;@string/app_widget_description&quot; /&gt;
+</code></pre>
+<p>但是 Widget 名称并没有默认配置，这时系统会将应用名称作为其默认名称。当一个应用有多个 Widget 的情况下，未配置名称会让用户无法得知每一个 Widget 的作用，比如看『豆瓣』的几个 Widget 你能分辨出它们分别是什么吗：</p>
+<figure data-type="image" tabindex="7"><img src="https://LiarrDev.github.io/post-images/1714406319197.png" alt="豆瓣的 Widget 没有配置名称" loading="lazy"></figure>
+<p>Widget 的名称实际上是通过配置 <code>BroadcastReceiver</code> 的 <code>label</code> 实现的：</p>
+<pre><code class="language-XML">&lt;manifest ...&gt;
+    &lt;application ...&gt;
+        ...
+        &lt;receiver
+            android:name=&quot;.widget.NewAppWidget&quot;
+            android:exported=&quot;false&quot;
+            android:label=&quot;@string/widget_name&quot;&gt;
+            ...
+        &lt;/receiver&gt;
+    &lt;/application&gt;
+&lt;/manifest&gt;
+</code></pre>
+<p>效果如下：</p>
+<table>
+    <td><img src="https://liarrdev.github.io/post-images/1714406438471.png" /></td>
+    <td><img src="https://liarrdev.github.io/post-images/1714406444780.png" /></td>
+</table>
+<h2 id="应用内向桌面添加-widget">应用内向桌面添加 Widget</h2>
+<p>你在日常使用一些 App 时也许有留意到，系统允许在应用内直接向桌面添加 Widget：</p>
+<figure data-type="image" tabindex="8"><img src="https://LiarrDev.github.io/post-images/1714406508376.png" alt="应用内向桌面添加 Widget" loading="lazy"></figure>
+<p>这个功能实际上是从 Android 8（Oreo，API 26）开始提供的：</p>
+<pre><code class="language-Kotlin">fun addWidgetToHomeScreen(context: Context) {
+    if (Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.O) {
+        return
+    }
+    val appWidgetManager = AppWidgetManager.getInstance(context)
+    val provider = ComponentName(context, NewAppWidget::class.java)
+    if (appWidgetManager.isRequestPinAppWidgetSupported) {
+        val intent = Intent(context, NewAppWidget::class.java)
+        val successCallback = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        appWidgetManager.requestPinAppWidget(provider, null, successCallback)
+    }
+}
+</code></pre>
+<p>如果应用不需要收到系统是否成功将 Widget 固定到受支持的启动器上的通知，可以将 <code>null</code> 作为 <code>requestPinAppWidget()</code> 的第三个参数传入。</p>
+<h1 id="总结">总结</h1>
+<p>以上就是构建 App Widget 的简单介绍，同时也涉及到 <code>RemoteViews</code>、 <code>PendingIntent</code> 和 <code>WorkManager</code> 的一些坑，事实上还有许多配置未提及，另一方面 Android 12（S，API 31）这个版本也为 Widget 扩展了许多能力，本文未能一一介绍，如需要更高级的定制功能，可自行查阅文档。</p>
+<h1 id="参考内容">参考内容</h1>
+<ul>
+<li><a href="https://developer.android.google.cn/develop/ui/views/appwidgets/overview">应用 widget 概览 | Android Developers</a></li>
+<li><a href="https://developer.android.google.cn/guide/topics/appwidgets">构建应用微件 | Android 开发者 | Android Developers</a></li>
+<li><a href="https://developer.android.google.cn/guide/practices/ui_guidelines/widget_design">应用微件设计指南 | Android 开发者 | Android Developers</a></li>
+<li><a href="https://developer.android.google.cn/reference/android/widget/RemoteViews">RemoteViews | Android Developers</a></li>
+<li><a href="https://developer.android.google.cn/training/notify-user/navigation">从通知启动 Activity | Android 开发者 | Android Developers</a></li>
+<li><a href="https://issuetracker.google.com/issues/115575872">Disabling component leads to AppWidgetProvider.onUpdate call - Google Issue Tracker</a></li>
+<li><a href="https://issuetracker.google.com/issues/241076154">widgets are &quot;flickering&quot; during every update (even if there is no content change) - Google Issue Tracker</a></li>
+<li><a href="https://issuetracker.google.com/issues/180436098">Bug: WorkManager can trigger onUpdate of AppWidget - Google Issue Tracker</a></li>
+<li><a href="https://stackoverflow.com/questions/73908973/refresh-appwidget-with-network-request-using-remoteview-button">android - Refresh AppWidget with network request using RemoteView button - Stack Overflow</a></li>
+<li><a href="https://stackoverflow.com/questions/25153604/get-the-size-of-my-homescreen-widget">android - Get the size of my homescreen widget - Stack Overflow</a></li>
+<li><a href="https://stackoverflow.com/questions/2435548/how-to-detect-orientation-change-in-home-screen-widget">android - How to detect orientation change in home screen widget? - Stack Overflow</a></li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[浅尝 Android 13 Photo Picker 无惧权限烦恼]]></title>
+        <id>https://LiarrDev.github.io/post/Try-Photo-Picker-on-Android-13-without-Permission-Hassles/</id>
+        <link href="https://LiarrDev.github.io/post/Try-Photo-Picker-on-Android-13-without-Permission-Hassles/">
+        </link>
+        <updated>2024-04-11T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="背景">背景</h1>
+<p>最近两年适配 Android 新版本的小伙伴应该都发现，Android 对于系统读写权限的管理又收窄了。</p>
+<p>Android 13（Tiramisu, API 33）上，废弃了 <code>READ_EXTERNAL_STORAGE</code> 权限，新增 <code>READ_MEDIA_IMAGES</code>、<code>READ_MEDIA_VIDEO</code> 和 <code>READ_MEDIA_AUDIO</code> 三个权限分别用于控制图片、视频、音频的访问。</p>
+<p>Android 14（UpsideDownCake, API 34）上则新增了 <code>READ_MEDIA_VISUAL_USER_SELECTED</code> 权限，用户可以选择性地让应用访问部分图片或视频。</p>
+<p>由于系统选择器过于丑陋，相信大多数需要用到图片选择功能的 App，都会自行实现或者接入三方库来内置图片选择器功能，而这个行为在 Android 14 上则会遇到新的问题，当用户仅授权部分图片或视频时，整个操作路径会非常长，即用户首先需要选择授权哪些照片给应用，然后再从应用内置的图片选择器中选择照片。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1712849165811.gif" alt="Android 14 授权部分照片" loading="lazy"></figure>
+<p>另一方面，<a href="https://support.google.com/googleplay/android-developer/answer/14115180">Play Store 对于权限的获取政策也在将来收紧</a>：</p>
+<blockquote>
+<h4 id="timeline-information">Timeline information</h4>
+<p>We anticipate the following timeline for the rollout of the Photo and Video Permissions policy. Note that this is subject to change; updates will be posted in this article.</p>
+<ul>
+<li><strong>October 2023:</strong> We announced the new Photos and Video Permissions policy.</li>
+<li><strong>Mid 2024:</strong> Apps with one-time or infrequent use of photos requested to use a system photo picker and remove <code>READ_MEDIA_IMAGES</code> and <code>READ_MEDIA_VIDEO</code> permissions from their app manifest.</li>
+<li><strong>Early 2025:</strong> Only apps with broad access core functionality can use <code>READ_MEDIA_IMAGES</code> and <code>READ_MEDIA_VIDEO</code> permissions.</li>
+</ul>
+<h4 id="时间表信息">时间表信息</h4>
+<p>我们预计将按照以下时间表发布“照片和视频权限”政策。请注意，此时间表可能会有变动；届时我们会在本文中发布更新。</p>
+<ul>
+<li><strong>2023 年 10 月：</strong> 我们公布了新的“照片和视频权限”政策。</li>
+<li><strong>2024 年年中：</strong> 如果应用只用一次照片，或者很少用到照片，则必须使用系统照片选择器，并从应用清单中移除 <code>READ_MEDIA_IMAGES</code> 和 <code>READ_MEDIA_VIDEO</code> 权限。</li>
+<li><strong>2025 年初：</strong> 只有核心功能需要获取广泛访问权限的应用才能使用 <code>READ_MEDIA_IMAGES</code> 和 <code>READ_MEDIA_VIDEO</code> 权限。</li>
+</ul>
+</blockquote>
+<h1 id="photo-picker">Photo Picker</h1>
+<p>好消息是，从 Android 13（Tiramisu, API 33）开始，官方提供了系统级图片选择器 Photo Picker，样式和体验都非常丝滑。最重要的是，无需申请权限，只需几行代码即可轻松接入。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1712849225948.gif" alt="Photo Picker" loading="lazy"></figure>
+<h2 id="androidxactivity-160">androidx.activity 1.6.0+</h2>
+<p>首先把 <code>androidx.activity</code> 升级到最新版本：</p>
+<pre><code class="language-kts">dependencies {
+    implementation(&quot;androidx.activity:activity:1.8.2&quot;)
+}
+</code></pre>
+<p>由于项目原因无法升级的，在下文会给出解决方案。</p>
+<p>接下来只需使用 Activity Result API 调用即可：</p>
+<pre><code class="language-Kotlin">class MainActivity : AppCompatActivity() {
+    ...
+    private val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {
+        if (it != null) {
+            // 选择图片的 Uri
+        } else {
+            // 未选择图片
+        }
+    }
+    private fun pickImage() = pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+    private fun pickVideo() = pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly))
+    private fun pickImageOrVideo() = pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
+    private fun pickByMime(mimeType: String) = pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.SingleMimeType(mimeType)))
+}
+</code></pre>
+<p>通过向 <code>PickVisualMediaRequest()</code> 中传入不同的类型来构建不同的请求对象。是的，你没看错，我们调用的 <code>PickVisualMediaRequest()</code> 实际上是一个方法，它会在内部帮我们构建同名类的对象：</p>
+<pre><code class="language-Kotlin">fun PickVisualMediaRequest(
+    mediaType: VisualMediaType = ImageAndVideo
+) = PickVisualMediaRequest.Builder().setMediaType(mediaType).build()
+
+class PickVisualMediaRequest internal constructor() {
+    ...
+    class Builder {
+        ...
+    }
+}
+</code></pre>
+<p><code>VisualMediaType</code> 是一个密封接口，由上面我们示例的几种类型实现，分别对应仅选择图片、仅选择视频、选择图片或视频和仅选择特定的 <a href="https://liarrdev.github.io/post/Verify-File-Types-with-Media-Type-in-Java/">MIME 类型</a>。</p>
+<p>效果如下：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1712849269292.gif" alt="Photo Picker 单选" loading="lazy"></figure>
+<p>如果想设置多选，Photo Picker 同样支持：</p>
+<pre><code class="language-Kotlin">class MainActivity : AppCompatActivity() {
+    ...
+    private val pickMultipleMedia = registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(5)) {
+        if (it.isNotEmpty()) {
+            // 选择的图片 Uri 集合
+        } else {
+            // 未选择图片
+        }
+    }
+    private fun pickImages() = pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+    private fun pickVideos() = pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly))
+    private fun pickImageOrVideos() = pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
+    private fun pickByMimes(mimeType: String) = pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.SingleMimeType(mimeType)))
+}
+</code></pre>
+<p>只需把 <code>ActivityResultContract</code> 更换为多选的 <code>PickMultipleVisualMedia</code> 即可，同时可以传入一个整型参数控制选择的文件数量上限。效果如下：</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1712849314280.gif" alt="Photo Picker 多选" loading="lazy"></figure>
+<p>是不是非常简单？</p>
+<p>前文提到，Photo Picker 从 Android 13（Tiramisu, API 33）开始支持，这个说法其实并不准确，官方文档中提到，支持 Google Play Service 的设备也是可以更新使用的，在不支持 Photo Picker 的低版本机型中，该库会自动调用 <code>ACTION_OPEN_DOCUMENT</code> 打开系统资源管理器进行选择：</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1712849346963.gif" alt="资源管理器" loading="lazy"></figure>
+<p>同时，如果你使用多选模式，资源管理器会忽略所设置的数量上限。</p>
+<p>官方也提供了一个方法用于判断 Photo Picker 在给定设备上是否可用：</p>
+<pre><code class="language-kotlin">class ActivityResultContracts private constructor() {
+    ...
+    @RequiresApi(19)
+    open class PickVisualMedia : ActivityResultContract&lt;PickVisualMediaRequest, Uri?&gt;() {
+        companion object {
+            ...
+            @SuppressLint(&quot;ClassVerificationFailure&quot;, &quot;NewApi&quot;)
+            @JvmStatic
+            fun isPhotoPickerAvailable(context: Context): Boolean {
+                return isSystemPickerAvailable() || isSystemFallbackPickerAvailable(context) ||
+                        isGmsPickerAvailable(context)
+            }
+        }
+        ...
+    }
+}
+</code></pre>
+<h2 id="androidxactivity-151-">androidx.activity 1.5.1-</h2>
+<p>接下来说说 <code>androidx.activity</code> 在低版本中如何处理，低版本中存在的问题主要是 <code>PickVisualMedia</code> 和 <code>PickMultipleVisualMedia</code> 两个 <code>ActivityResultContract</code> 的缺失，同时连带 <code>isPhotoPickerAvailable()</code> 这个判断方法也无法使用。</p>
+<p>我们采用的策略就是当系统版本不低于 Android 13 时，使用 Photo Picker，否则使用系统资源管理器。</p>
+<p>实现的方法有很多，我这里简单写两个 <code>ActivityResultContracts</code> 示例，你可以根据实际情况进行扩展：</p>
+<pre><code class="language-kotlin">object PicResultContract {
+
+    class PickImage : ActivityResultContract&lt;Void?, Uri?&gt;() {
+        override fun createIntent(context: Context, input: Void?): Intent {
+            if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.TIRAMISU) {
+                return Intent(MediaStore.ACTION_PICK_IMAGES).setType(&quot;image/*&quot;)
+            }
+            return Intent(Intent.ACTION_OPEN_DOCUMENT).setType(&quot;image/*&quot;)
+        }
+
+        override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
+            return intent.takeIf { resultCode == Activity.RESULT_OK }?.data
+        }
+    }
+
+    class PickImages : ActivityResultContract&lt;Int, List&lt;Uri&gt;&gt;() {
+        override fun createIntent(context: Context, input: Int): Intent {
+            if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.TIRAMISU) {
+                return Intent(MediaStore.ACTION_PICK_IMAGES)
+                    .putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, input)
+                    .setType(&quot;image/*&quot;)
+            }
+            return Intent(Intent.ACTION_OPEN_DOCUMENT)
+                .putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                .setType(&quot;image/*&quot;)
+        }
+
+        override fun parseResult(resultCode: Int, intent: Intent?): List&lt;Uri&gt; {
+            val i = intent.takeIf { resultCode == Activity.RESULT_OK }
+            val data = i?.data
+            if (data != null) {
+                return listOf(data)
+            }
+            val clipData = i?.clipData
+            if (clipData != null &amp;&amp; clipData.itemCount &gt; 0) {
+                return (0 until clipData.itemCount).map {
+                    clipData.getItemAt(it).uri
+                }
+            }
+            return emptyList()
+        }
+    }
+}
+</code></pre>
+<p>示例中的多选仍然参考了高版本中的策略，当使用资源管理器时，所设置的文件数量上线也会被忽略。</p>
+<p>使用方法与原来类似（仅做示例使用所以没有完全参照原来的写法复刻，自行改造即可）：</p>
+<pre><code class="language-Kotlin">class MainActivity : AppCompatActivity() {
+    ...
+    private val pickImage = registerForActivityResult(PicResultContract.PickImage()) {
+        if (it != null) {
+            // 选择图片的 Uri
+        } else {
+            // 未选择图片
+        }
+    }
+    private val pickImages = registerForActivityResult(PicResultContract.PickImages()) {
+        if (it.isNotEmpty()) {
+            // 选择的图片 Uri 集合
+        } else {
+            // 未选择图片
+        }
+    }
+    private fun pickImage() = pickImage.launch(null)
+    private fun pickImages() = pickImages.launch(5)
+}
+</code></pre>
+<h1 id="后记">后记</h1>
+<p>前阵子 <a href="https://guolin.tech">@郭霖</a> 发了一篇文章『<a href="https://guolin.blog.csdn.net/article/details/137410229">Android 14新特性，选择性照片和视频访问授权</a>』，我也在评论区探讨了交互的策略，在支持的设备（或 Android 13+）中使用 Photo Picker，否则使用应用内实现的图片选择器，或许是当下最好的方案。</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1712849385839.jpg" alt="互动" loading="lazy"></figure>
+<h1 id="参考内容">参考内容</h1>
+<ul>
+<li><a href="https://developer.android.com/training/data-storage/shared/photopicker">Photo picker | Android Developers</a></li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Android Bitmap 灰度处理]]></title>
+        <id>https://LiarrDev.github.io/post/Android-Bitmap-Grayscale/</id>
+        <link href="https://LiarrDev.github.io/post/Android-Bitmap-Grayscale/">
+        </link>
+        <updated>2024-03-18T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="前言">前言</h1>
+<p>平时在使用『Photoshop』做图时，我们常会对图片做去色处理，以实现各种丰富的细节。灰度处理还有如下作用：</p>
+<ul>
+<li>降低数据维度：彩色图像通常包含了大量的冗余信息，而灰度图像只保留了图像的亮度信息。通过灰度处理，可以将图像的数据维度从三维（RGB 通道）降低为二维（灰度值）。</li>
+<li>简化图像处理：在许多图像处理任务中，只需要关注图像的亮度信息而不需要颜色信息。通过将图像转换为灰度图像，可以简化后续的图像处理操作，减少计算量和复杂度。</li>
+<li>提高图像分析效果：在某些情况下，灰度图像可以更好地突出图像中的细节和特征。例如，在边缘检测、形状识别、人脸识别等任务中，使用灰度图像可以更容易地提取和分析图像的特征。</li>
+</ul>
+<p>那么在 Android 开发中我们能否对图片做类似的灰度处理呢？</p>
+<h1 id="原理">原理</h1>
+<p>色饱和度（Saturation）是指是播放的光的彩色深浅度或鲜艳度。色饱和度表示播放的光的彩色鲜艳度，取决于彩色中的灰度，灰度越高，色彩饱和度即越低，反之亦然。</p>
+<p>图像的灰度处理中有很多种方法，其中比较有名的算法是通过对彩色图像的 RGB 通道进行加权平均来计算灰度值。通常使用以下公式计算每个像素的灰度值， 其中，R、G、B 分别表示红色、绿色和蓝色通道的像素值。</p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>G</mi><mi>r</mi><mi>a</mi><mi>y</mi><mo>=</mo><mn>0.299</mn><mo>×</mo><mi>R</mi><mo>+</mo><mn>0.875</mn><mo>×</mo><mi>G</mi><mo>+</mo><mn>0.114</mn><mo>×</mo><mi>B</mi></mrow><annotation encoding="application/x-tex">Gray = 0.299 \times  R + 0.875 \times G + 0.114 \times B 
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">G</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">0</span><span class="mord">.</span><span class="mord">2</span><span class="mord">9</span><span class="mord">9</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.76666em;vertical-align:-0.08333em;"></span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">0</span><span class="mord">.</span><span class="mord">8</span><span class="mord">7</span><span class="mord">5</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.76666em;vertical-align:-0.08333em;"></span><span class="mord mathdefault">G</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">0</span><span class="mord">.</span><span class="mord">1</span><span class="mord">1</span><span class="mord">4</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span></span></span></span></span></p>
+<p>由于人眼对绿色的敏感度最高，对蓝色的敏感度最低，该方法基于人眼对不同颜色通道的敏感度不同，对 RGB 三分量进行加权平均能相对合理地将彩色信息转换为灰度信息。</p>
+<p>浮点运算效率不高，因此该公式也有很多变种，本文暂不讨论。</p>
+<h1 id="实现">实现</h1>
+<p>我们可以通过遍历图片中的每个像素，使用上述公式计算出其灰度值，再生成图像：</p>
+<pre><code class="language-Kotlin">fun Bitmap.toGray(): Bitmap {
+    val ret = Bitmap.createBitmap(width, height, config)
+    for (i in 0 until width) {
+        for (j in 0 until height) {
+            val pixel = getPixel(i, j)
+            val gray = Color.red(pixel) * 0.299 + Color.green(pixel) * 0.587 + Color.blue(pixel) * 0.114
+            val color = Color.rgb(gray.toInt(), gray.toInt(), gray.toInt())
+            ret.setPixel(i, j, color)
+        }
+    }
+    return ret
+}
+</code></pre>
+<p><code>setPixel()</code> 内部是调用 Native 方法实现的，在主线程中循环调用很容易造成 ANR，因此应当放在子线程中处理。</p>
+<p>当然，我们可以先把总的灰度值算出来，再一次性对 <code>Bitmap</code> 设置：</p>
+<pre><code class="language-Kotlin">fun Bitmap.toGray(): Bitmap {
+    val ret = Bitmap.createBitmap(width, height, config)
+    val pixels = IntArray(width * height)
+    this.getPixels(pixels, 0, width, 0, 0, width, height)
+    val alpha = 0xFF shl 24
+    for (i in 0 until height) {
+        for (j in 0 until width) {
+            val pixel = pixels[width * i + j]
+            val gray = (Color.red(pixel) * 0.299 + Color.green(pixel) * 0.587 + Color.blue(pixel) * 0.114).toInt()
+            val color = alpha or (gray shl 16) or (gray shl 8) or gray
+            pixels[width * i + j] = color
+        }
+    }
+    ret.setPixels(pixels, 0, width, 0, 0, width, height)
+    return ret
+}
+</code></pre>
+<p>这里使用一个数组来存储每个像素的计算结果，最后再通过 <code>setPixels()</code> 方法一次性设置到 <code>Bitmap</code> 中。</p>
+<p>其实 Android 本身就提供了对饱和度的处理方法，我们可以直接调用实现，无需手动计算：</p>
+<pre><code class="language-Kotlin">fun Bitmap.toGray(): Bitmap {
+    val ret = Bitmap.createBitmap(this.width, this.height, this.config)
+    val canvas = Canvas(ret)
+    val cm = ColorMatrix().apply { setSaturation(0f) }
+    val paint = Paint().apply { colorFilter = ColorMatrixColorFilter(cm) }
+    canvas.drawBitmap(this, 0f, 0f, paint)
+    return ret
+}
+</code></pre>
+<p>如果项目有使用 <a href="https://liarrdev.github.io/post/Android-OpenCV-Project-Configuration/">OpenCV</a>，那么也可以：</p>
+<pre><code class="language-Kotlin">fun Bitmap.toGray(): Bitmap {
+    val src = Mat()
+    val dst = Mat()
+    Utils.bitmapToMat(this, src)
+    Imgproc.cvtColor(src, dst, Imgproc.COLOR_BGR2GRAY)
+    Utils.matToBitmap(dst, this)
+    src.release()
+    dst.release()
+    return this
+}
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Android OpenCV 项目配置笔记]]></title>
+        <id>https://LiarrDev.github.io/post/Android-OpenCV-Project-Configuration/</id>
+        <link href="https://LiarrDev.github.io/post/Android-OpenCV-Project-Configuration/">
+        </link>
+        <updated>2024-02-26T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>之前我们<a href="https://liarrdev.github.io/post/Build-up-Android-NDK-CMake-Project/">搭建了 NDK 的项目环境</a>，NDK 为我们打开了另一个世界，OpenCV 便是这新世界的领域之一，OpenCV 相关的资料介绍你可以在网上搜索到，这里就不赘述了，今天来讲讲 OpenCV 的环境配置。</p>
+<p>OpenCV 的 Android SDK 以 Module 形式提供，但其目录结构与我们常见的 Android Module 略有差异，所以也给我们的配置带来一定门槛。我个人感觉是历史遗留问题，因此本文的配置教程在后续版本中不一定适用。</p>
+<p>本文所用到的工具版本：</p>
+<blockquote>
+<ul>
+<li>Android Studio Hedgehog | 2023.1.1</li>
+<li>OpenCV 4.8.1</li>
+<li>Java 17</li>
+</ul>
+</blockquote>
+<p>OpenCV Android SDK 可以从<a href="https://opencv.org">官网</a>或者其<a href="https://github.com/opencv/opencv/releases">项目 Github Release</a> 下载，<a href="https://liarrdev.github.io/post/Build-up-Android-NDK-CMake-Project/">NDK 环境</a>虽然在 OpenCV 的后续开发中有着至关重要的作用，但与本文暂不关联，可自行决定是否配置。</p>
+<p>下载到的 OpenCV Android SDK 目录如下：</p>
+<pre><code>OpenCV-android-sdk
+  ├── LICENSE
+  ├── README.android
+  ├── samples
+  └── sdk
+   ├── build.gradle
+   ├── etc
+   ├── java
+   ├── libcxx_helper
+   └── native
+</code></pre>
+<p>我们将 <code>/sdk</code> 目录导入为 Module 即可：</p>
+<figure data-type="image" tabindex="1"><img src="https://gitee.com/LiarrDev/note-studio/raw/master/res/import-opencv-as-module.png" alt="Import OpenCV as Module" loading="lazy"></figure>
+<p>Gradle 会自动同步，如无意外，同步失败。</p>
+<p>打开 <code>/opencv/build.gradle</code> 我们可以看到维护者为我们写了一大堆注释介绍如何导入，但并不完整，不然我也不需要特意写个笔记来记录。</p>
+<p>我们将该 Module 的 <code>targetSdkVersion</code> 与主项目一致，并添加 <code>namespace</code>，同时取消 <code>kotlin-android</code> 这个 Plugin 的引入，相关修改如下：</p>
+<pre><code class="language-groovy">apply plugin: 'com.android.library'
+// apply plugin: 'kotlin-android'   // 修改 ①：取消引入
+
+android {
+
+    namespace &quot;org.opencv&quot;  // 修改 ②：添加 namespace
+    
+    compileSdkVersion 34    // 修改 ③：修改为和主项目一致
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 34 // 修改 ④：修改为和主项目一致
+        ...
+    }
+    ...
+}
+</code></pre>
+<p>项目初始化时我选择了 Kotlin DSL 作为构建配置语言，所以它会初始化一个 <code>/settings.gradle.kts</code> 文件，但是 OpenCV Android SDK 仍旧采用老的 Groovy DSL，所以导入时 Android Studio 又会另外增加一个 <code>/settings.gradle</code> 文件，其实这是没有必要的，我们将 <code>/settings.gradle</code> 文件删除，并在 <code>/settings.gradle.kts</code> 文件末尾将该 Module 引入即可：</p>
+<pre><code class="language-groovy">pluginManagement {
+    ...
+}
+dependencyResolutionManagement {
+    ...
+}
+
+rootProject.name = &quot;OpenCV&quot;
+include(&quot;:app&quot;)
+include(&quot;:opencv&quot;)  // 添加导入的 OpenCV Module
+</code></pre>
+<p>这样导入 OpenCV Module 的操作就完成了，可以正常编译运行。</p>
+<p>接下来将其添加到宿主依赖，在 <code>/app/build.gradle.kts</code> 中添加：</p>
+<pre><code class="language-groovy">dependencies {
+    ...
+    implementation(project(&quot;:opencv&quot;))
+}
+</code></pre>
+<p>接下来会发现 <code>OpenCVEngineInterface</code> 这个接口被其他类导入时报错为不存在，因为它实际上是一个 AIDL 接口，所以我们需要为其创建专门的 AIDL Folder：</p>
+<figure data-type="image" tabindex="2"><img src="https://gitee.com/LiarrDev/note-studio/raw/master/res/new_aidl_folder.png" alt="创建 AIDL Folder" loading="lazy"></figure>
+<p>然后将 <code>OpenCVEngineInterface</code> 文件拷贝到刚刚创建的 AIDL Folder 下，并创建为相同路径名称：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1706362714801.png" alt="OpenCVEngineInterface AIDL 文件位置" loading="lazy"></figure>
+<p>同时也需要在 <code>/opencv/build.gradle</code> 中开启 AIDL 配置：</p>
+<pre><code class="language-groovy">android {
+    ...
+    buildFeatures {
+        aidl true
+    }
+}
+</code></pre>
+<p>在 <code>/gradle.properties</code> 中配置：</p>
+<pre><code class="language-properties">android.defaults.buildfeatures.buildconfig=true
+</code></pre>
+<p>再次运行，<code>OpenCVEngineInterface</code> 能够被正常识别。</p>
+<p>Android OpenCV 基本配置已完成。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Android NDK CMake 项目搭建笔记]]></title>
+        <id>https://LiarrDev.github.io/post/Build-up-Android-NDK-CMake-Project/</id>
+        <link href="https://LiarrDev.github.io/post/Build-up-Android-NDK-CMake-Project/">
+        </link>
+        <updated>2024-01-16T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="前言">前言</h1>
+<p>Android 开发在接入一些第三方库时，你可能会发现它们会带有 <a href="https://liarrdev.github.io/post/How-to-Import-SO-in-Android-Studio/">SO 库</a>，这些 SO 库是通过 C/C++、Rust 等语言编写生成的。</p>
+<p>使用这种方式开发，有以下几个优点：</p>
+<ul>
+<li><strong>性能快</strong>。C/C++ 编译过程是可执行文件到机器码，而 Java 则是字节码到 JVM 再到机器码。虽然 C/C++ 代码高效，但 Java 和 C/C++ 互相调用时却增大了开销。</li>
+<li><strong>安全性高</strong>。<a href="https://liarrdev.github.io/post/Getting-Started-with-Android-Decompilation/">APK 中的 Java 代码很容易被反编译</a>，而 C/C++ 库逆向难度较高。</li>
+<li><strong>便于平台间的移植</strong>。通过 C/C++ 实现的动态库可以很方便地在其他平台上使用。</li>
+<li><strong>可调用系统底层功能</strong>。这在硬件交互上很常见，比如驱动开发、音视频处理、人脸识别等等。</li>
+</ul>
+<p>当接触到这种开发方式时，有几个名词会不断出现：</p>
+<ul>
+<li>NDK：即 Native Development Kit。它是原生开发工具包，这套工具允许 Android 使用 C/C++ 代码，帮助开发者快速开发 C/C++ 的动态库。</li>
+<li>JNI：即 Java Native Interface。它是 Java 平台的一部分，也就是 Java 与 C/C++ 相互通信的接口。</li>
+<li>Makefile：将 C/C++ 代码编译成原生库的编译工具。在 Android 中，Makefile 依靠 ndk-build 脚本编译工具来完成配置编译，通常需要编写 <code>Android.mk</code> 和 <code>Application.mk</code> 两个 Makefile 文件，这种构建方式在『Eclipse』中比较常见。Makefile 依赖于编译平台，在不同的平台上有不同的编译工具，遵循的规则也不相同，所以在不同的平台上编译时，需要重新配置 Makefile，工作量较大也容易出错。</li>
+<li>CMake：同样也是将 C/C++ 代码编译成原生库的编译工具，但它是一个跨平台的编译工具，很好地解决了 Makefile 的缺陷，只需要配置一个平台无关的 <code>CMakeList.txt</code> 文件来定制整个流程。同时它也是『Android Studio』中常用的编译工具。</li>
+</ul>
+<p>了解这些基础含义，我们就可以开始项目的搭建工作。</p>
+<h1 id="搭建">搭建</h1>
+<p>了解 NDK 项目的搭建方式，最方便的莫过于直接利用『Android Studio』创建的模版来观察它与普通项目的异同。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1705139905552.png" alt="新建 Native C++ 项目" loading="lazy"></figure>
+<p>它会自动帮我们下载及创建所需的文件，这样我们如果在现有项目中接入就可以参考对比。</p>
+<h2 id="sdk-tools">SDK Tools</h2>
+<p>首先是需要 NDK 和 CMake 工具，在「SDK Tools」中下载即可：</p>
+<figure data-type="image" tabindex="2"><img src="https://files.mdnice.com/user/3907/2aff3cc1-e382-4f58-8dda-663320839440.png" alt="SDK Tools" loading="lazy"></figure>
+<h2 id="cmake">CMake</h2>
+<p>在 Module 的 <code>build.gradle.kts</code> 文件中指定 CMake 的目录和版本：</p>
+<pre><code class="language-Kotlin">android {
+    ...
+    externalNativeBuild {
+        cmake {
+            path = file(&quot;src/main/cpp/CMakeLists.txt&quot;)
+            version = &quot;3.22.1&quot;
+        }
+    }
+}
+</code></pre>
+<p>接着在这个指定的目录下创建文件 <code>src/main/cpp/CMakeLists.txt</code>：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1705139972583.png" alt="创建 CMakeLists.txt" loading="lazy"></figure>
+<p>大致内容如下：</p>
+<pre><code class="language-CMake"># 设置此项目所需的最低 CMake 版本
+cmake_minimum_required(VERSION 3.22.1)
+# 声明项目名称
+project(&quot;hellondk&quot;)
+# 创建并命名库，将其设置为 STATIC 或 SHARED，并提供其源代码的相对路径
+add_library(${CMAKE_PROJECT_NAME} SHARED 
+        native-lib.cpp)
+# 声明 CMake 需要链接的库
+target_link_libraries(${CMAKE_PROJECT_NAME} library
+        android
+        log)
+</code></pre>
+<p>在 <code>add_library()</code> 这一步，我们创建了一个以 <code>${CMAKE_PROJECT_NAME}</code> 命名的库，实际上它就是 <code>project()</code> 中指定的项目名称。最终生成的 SO 文件将会以 <code>lib${CMAKE_PROJECT_NAME}.so</code> 命名，在这里就是 <code>libhellondk.so</code>。</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1705140010386.png" alt="SO 文件名称" loading="lazy"></figure>
+<p>同时还看到上面指定了一个 C++ 文件，那么继续创建它：</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1705140090741.png" alt="创建 C++ 文件" loading="lazy"></figure>
+<p>至此，开发环境已搭建完成，同步下 Gradle，即可开始编码。</p>
+<h1 id="开发">开发</h1>
+<p>首先需要加载对应的库：</p>
+<pre><code class="language-Kotlin">class MainActivity : AppCompatActivity() {
+    ...
+    companion object{
+        init {
+            System.loadLibrary(&quot;hellondk&quot;)
+        }
+    }
+}
+</code></pre>
+<p>这里 Kotlin 的写法有点繁琐，这是因为 Kotlin 中没有 <code>static</code> 关键字，只能依靠伴生对象来实现，Java 中的写法则更加明了：</p>
+<pre><code class="language-Java">public class MainActivity extends AppCompatActivity {
+    ...
+    static {
+        System.loadLibrary(&quot;hellondk&quot;);
+    }
+}
+</code></pre>
+<p>这里需要跟上一节中配置的名字相同，这样我们就可以在类中加载这个库了。</p>
+<h2 id="javakotlin-调用-cc-代码">Java/Kotlin 调用 C/C++ 代码</h2>
+<p>首先定义一个 Native 方法：</p>
+<pre><code class="language-Kotlin">class MainActivity : AppCompatActivity() {
+    ...
+    private external fun sumByJNI(a: Int, b: Int): Int
+}
+</code></pre>
+<p>这时候『Android Studio』会给出提示说找不到 JNI 方法：</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1705140146196.png" alt="Android Studio 提示找不到 JNI 方法" loading="lazy"></figure>
+<p>直接使用快捷键修复，『Android Studio』会自动在 <code>src/main/cpp/native-lib.cpp</code> 中创建对应的方法：</p>
+<pre><code class="language-CPP">#include &lt;jni.h&gt;
+#include &lt;string&gt;
+
+extern &quot;C&quot;
+JNIEXPORT jint JNICALL
+Java_com_example_hellondk_MainActivity_sumByJNI(JNIEnv *env, jobject thiz, jint a, jint b) {
+    // TODO: implement sumByJNI()
+}
+</code></pre>
+<p>我们观察该方法，其中 <code>JNIEXPORT</code> 后面跟的是返回值，<code>jint</code> 表示的就是 Java 的整型，<code>JNICALL</code> 后面的方法名格式为 <code>Java_$package_$class_$method()</code>，参数的话可以看到我们本来是定义了 2 个，但这里生成了 4 个，前面两个 <code>JNIEnv</code> 和 <code>jobject</code> 是每个方法都会有的，后面的才是我们定义的参数。</p>
+<p>实现上面的方法并回到 Java/Kotlin 中调用即可：</p>
+<pre><code class="language-Kotlin">class MainActivity : AppCompatActivity() {
+    ...
+    override fun onCreate(savedInstanceState: Bundle?) {
+        ...
+        val i: Int = sumByJNI(1, 2)
+    }
+}
+</code></pre>
+<h2 id="cc-调用-javakotlin-代码">C/C++ 调用 Java/Kotlin 代码</h2>
+<p>C/C++ 调用 Java/Kotlin 方法是通过反射来实现的，这也是其为什么会带来性能损耗。</p>
+<p>这里我直接在上一小节的例子中扩展，上一小节中我们将两数相加的操作交给了 C/C++，这里我们从 C/C++ 中将其再交给 Java/Kotlin，相当于绕了一圈，实际开发并不会这样操作，作为示例理解即可。</p>
+<p>在 Java/Kotlin 中定义方法：</p>
+<pre><code class="language-Kotlin">class MainActivity : AppCompatActivity() {
+    ...
+    private external fun sumByJNI(a: Int, b: Int): Int
+    private fun sum(a: Int, b: Int) = a + b
+}
+</code></pre>
+<p>修改 C/C++ 中的实现：</p>
+<pre><code class="language-CPP">extern &quot;C&quot;
+JNIEXPORT jint JNICALL
+Java_com_example_hellondk_MainActivity_sumByJNI(JNIEnv *env, jobject thiz, jint a, jint b) {
+    const char *className = &quot;com/example/hellondk/MainActivity&quot;;
+    const char *methodName = &quot;sum&quot;;
+    jclass jc = env-&gt;FindClass(className);
+    jobject jo = env-&gt;AllocObject(jc);
+    jmethodID methodId = env-&gt;GetMethodID(jc, methodName, &quot;(II)I&quot;);
+    jint value = env-&gt;CallIntMethod(jo, methodId, a, b);
+    return value;
+}
+</code></pre>
+<p>这里解释一下 <code>GetMethodID()</code> 方法的最后一个参数，它指要调用的 Java/Kotlin 方法的方法签名，即描述了该方法的参数和返回值，使用的是 CLASS 文件的字段描述符，即使你不熟悉但做应该也有见过，你可以在网上很轻松地查到相关的介绍，我们也可以直接使用命令对 CLASS 文件查看：</p>
+<pre><code class="language-Bash">➜   javap -s MainActivity
+</code></pre>
+<p>反射的步骤其实与 Java/Kotlin 中差别不大，注意所有类都是以 <code>j</code> 开头，即代表 Java 对象。</p>
+<h1 id="后记">后记</h1>
+<p>『Android Studio』推荐我们使用 CMake 配置 NDK 项目，整个流程走下来还是比较简单的，最难的地方也许是掌握 C/C++。</p>
+<p>很多老项目还在使用 Makefile 来配置，如果后面有时间，再写写相关的笔记。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[LeetCode 165. Compare Version Numbers]]></title>
+        <id>https://LiarrDev.github.io/post/Leetcode-165-Compare-Version-Numbers/</id>
+        <link href="https://LiarrDev.github.io/post/Leetcode-165-Compare-Version-Numbers/">
+        </link>
+        <updated>2023-12-11T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="题目">题目</h1>
+<h2 id="compare-version-numbers-比较版本号">Compare Version Numbers   比较版本号</h2>
+<p>给你两个版本号 <code>version1</code> 和 <code>version2</code>，请你比较它们。</p>
+<p>版本号由一个或多个修订号组成，各修订号由一个 <code>'.'</code> 连接。每个修订号由<strong>多位数字</strong>组成，可能包含<strong>前导零</strong> 。每个版本号至少包含一个字符。修订号从左到右编号，下标从 0 开始，最左边的修订号下标为 0 ，下一个修订号下标为 1 ，以此类推。例如，<code>2.5.33</code> 和 <code>0.1</code> 都是有效的版本号。</p>
+<p>比较版本号时，请按从左到右的顺序依次比较它们的修订号。比较修订号时，只需比较<strong>忽略任何前导零后的整数值</strong>。也就是说，修订号 <code>1</code> 和修订号 <code>001</code> <strong>相等</strong> 。如果版本号没有指定某个下标处的修订号，则该修订号视为 <code>0</code> 。例如，版本 <code>1.0</code> 小于版本 <code>1.1</code> ，因为它们下标为 0 的修订号相同，而下标为 1 的修订号分别为 <code>0</code> 和 <code>1</code> ，<code>0 &lt; 1</code> 。</p>
+<p>返回规则如下：</p>
+<ul>
+<li>如果 <code>version1 &gt; version2</code> 返回 <code>1</code>，</li>
+<li>如果 <code>version1 &lt; version2</code> 返回 <code>-1</code>，</li>
+<li>除此之外返回 <code>0</code>。</li>
+</ul>
+<p><strong>示例 1：</strong></p>
+<blockquote>
+<p><strong>输入：</strong> version1 = &quot;1.01&quot;, version2 = &quot;1.001&quot;</p>
+<p><strong>输出：</strong> 0</p>
+<p><strong>解释：</strong> 忽略前导零，&quot;01&quot; 和 &quot;001&quot; 都表示相同的整数 &quot;1&quot;</p>
+</blockquote>
+<p><strong>示例 2：</strong></p>
+<blockquote>
+<p><strong>输入：</strong> version1 = &quot;1.0&quot;, version2 = &quot;1.0.0&quot;</p>
+<p><strong>输出：</strong> 0</p>
+<p><strong>解释：</strong> version1 没有指定下标为 2 的修订号，即视为 &quot;0&quot;</p>
+</blockquote>
+<p><strong>示例 3：</strong></p>
+<blockquote>
+<p><strong>输入：</strong> version1 = &quot;0.1&quot;, version2 = &quot;1.1&quot;</p>
+<p><strong>输出：</strong> -1</p>
+<p><strong>解释：</strong> version1 中下标为 0 的修订号是 &quot;0&quot;，version2 中下标为 0 的修订号是 &quot;1&quot; 。0 &lt; 1，所以 version1 &lt; version2</p>
+</blockquote>
+<p><strong>提示：</strong></p>
+<ul>
+<li><code>1 &lt;= version1.length, version2.length &lt;= 500</code></li>
+<li><code>version1</code> 和 <code>version2</code> 仅包含数字和 <code>'.'</code></li>
+<li><code>version1</code> 和 <code>version2</code> 都是<strong>有效版本号</strong></li>
+<li><code>version1</code> 和 <code>version2</code> 的所有修订号都可以存储在 <strong>32 位整数</strong>中</li>
+</ul>
+<h1 id="题解">题解</h1>
+<h2 id="字符串分割">字符串分割</h2>
+<p>该方法非常简单，就是利用了 <code>split()</code> 方法，以 <code>'.'</code> 分割成数组，逐一比较两个数组位于同一下标中的整数值，如果当前下标超过数组的长度（即另一数组的长度已超过当前数组），则自动补 <code>0</code>，如此反复，直至得出结果或循环结束。</p>
+<pre><code class="language-Kotlin">class Solution {
+    fun compareVersion(version1: String, version2: String): Int {
+        val arr1 = version1.split(&quot;\\.&quot;.toRegex()).toTypedArray()
+        val arr2 = version2.split(&quot;\\.&quot;.toRegex()).toTypedArray()
+        for (n in 0 until max(arr1.size, arr2.size)) {
+            val i = if (n &lt; arr1.size) arr1[n].toInt() else 0
+            val j = if (n &lt; arr2.size) arr2[n].toInt() else 0
+            if (i &lt; j) {
+                return -1
+            } else if (i &gt; j) {
+                return 1
+            }
+        }
+        return 0
+    }
+}
+</code></pre>
+<ul>
+<li>时间复杂度：<code>O(n+m)</code>（或 <code>O(max⁡(n,m))</code>，这是等价的），其中 <code>n</code> 是字符串 <code>version1</code> 的长度，<code>m</code> 是字符串 <code>version2</code> 的长度。</li>
+<li>空间复杂度：<code>O(n+m)</code>，我们需要 <code>O(n+m)</code> 的空间存储分割后的修订号列表。</li>
+</ul>
+<h2 id="双指针">双指针</h2>
+<p>字符串分割方法需要存储分割后的修订号，为了优化空间复杂度，我们可以在分割版本号的同时解析出修订号进行比较。</p>
+<pre><code class="language-Kotlin">class Solution {
+    fun compareVersion(version1: String, version2: String): Int {
+        var index1 = 0
+        var index2 = 0
+        while (index1 &lt; version1.length || index2 &lt; version2.length) {
+            var curr1 = 0
+            while (index1 &lt; version1.length &amp;&amp; version1[index1] != '.') {
+                curr1 = curr1 * 10 + (version1[index1++] - '0')
+            }
+            index1++
+            var curr2 = 0
+            while (index2 &lt; version2.length &amp;&amp; version2[index2] != '.') {
+                curr2 = curr2 * 10 + (version2[index2++] - '0')
+            }
+            index2++
+            if (curr1 != curr2) {
+                return if (curr1 &lt; curr2) -1 else 1
+            }
+        }
+        return 0
+    }
+}
+</code></pre>
+<p>该方法相比字符串分割的方法看起来相对繁琐一点，但性能会更优。我们不再使用 <code>split()</code> 方法分割数组，而是遍历字符串中每一个字符来计算。</p>
+<p><code>index1</code> 和 <code>index2</code> 为当前处理的字符位于字符串 <code>version1</code> 和 <code>version2</code> 中的下标，遍历两个字符串，<code>curr1</code> 和 <code>curr2</code> 用来记录 <code>'.'</code> 分割的每一段的版本号，因为循环是从左往右读取，所以当超过 1 位数字的情况下对前一个结果乘 10 再相加，以此计算出该段的结果。</p>
+<p>这里用了 <code>version[index++] - '0'</code> 这个写法可能不太好理解，实际上就是取当前字符的 ASCII 值进行运算，这算是一个取巧的设计，因为在 ASCII 中，0 到 9 也是连续的，所以只要当前字符与 <code>'0'</code> 相减，就可以得出该值的整型结果，而无需做 <code>Char.digitToInt()</code> 的转换。另外需要注意 <code>index</code> 是在该运算结束之后才执行自增操作。</p>
+<p>当该小循环结束，也就意味着以 <code>'.'</code> 分割的该小段计算结束，<code>index</code> 再执行一次自增以跳过 <code>'.'</code> 字符等待下个大循环的计算。两个字符串都以此方式计算每一小段的结果，直至能够比较出结果为止。</p>
+<ul>
+<li>时间复杂度：<code>O(n+m)</code>，其中 <code>n</code> 是字符串 <code>version1</code> 的长度，<code>m</code> 是字符串 <code>version2</code> 的长度。</li>
+<li>空间复杂度：<code>O(1)</code>，我们只需要常数的空间保存若干变量。</li>
+</ul>
+]]></content>
+    </entry>
+</feed>
