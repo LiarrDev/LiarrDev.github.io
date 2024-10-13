@@ -1,0 +1,1257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://LiarrDev.github.io</id>
+    <title>Liarr&apos;s Studio</title>
+    <updated>2024-10-13T14:24:16.137Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://LiarrDev.github.io"/>
+    <link rel="self" href="https://LiarrDev.github.io/atom.xml"/>
+    <subtitle>温故而知新</subtitle>
+    <logo>https://LiarrDev.github.io/images/avatar.png</logo>
+    <icon>https://LiarrDev.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2024, Liarr&apos;s Studio</rights>
+    <entry>
+        <title type="html"><![CDATA[『MOJiKana』中模仿实体按键的动效是如何实现的？]]></title>
+        <id>https://LiarrDev.github.io/post/MOJiKana-Physical-Button-Motion-Effect/</id>
+        <link href="https://LiarrDev.github.io/post/MOJiKana-Physical-Button-Motion-Effect/">
+        </link>
+        <updated>2024-11-06T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>在『<a href="https://www.hugecore.net/mojikana">MOJiKana</a>』中你可以看到我们大量使用了模仿实体按键的按压动效：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1728828620081.gif" alt="模仿实体按键动效" loading="lazy"></figure>
+<p>一开始这种动效仅在五十音列表中使用到，我们只需在 <code>Adapter</code> 中对子项进行处理即可，随着版本的迭代，该动效开始广泛应用到其他按钮设计中，如果针对每个按钮都做这种动效处理，项目中会存在大量的冗余代码，不易于维护，所以我考虑将其封装成一个组件，让每个需要用到的地方都尽可能简单地接入。</p>
+<p>先来看看原理，如下图所示，我们只需要通过叠加两个图层，上面的图层采用较浅的颜色，下面的图层采用较深的颜色，并在上下两个图层的底部制造一个间距，即可在视觉上形成一个实体按键的效果。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1728828647053.png" alt="图层分解" loading="lazy"></figure>
+<p>当按钮被按下时，我们取消两个图层底部的间距，使底部的深色图层被覆盖隐藏，再给图层与父布局顶部添加同样的间距，就能够模仿出实体按键被按下的效果。</p>
+<p>使用两个图层其实是 Android 的能力限制，像 ArkUI 中我们实际上只采用一个图层，然后通过调整底部边框的宽度来实现的，尽管如此，实现思路大体一致。</p>
+<p>知道了原理，下面开始编码。</p>
+<p>考虑到需要封装成通用组件，我们把几个重要的属性提取出来：</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;resources&gt;
+    &lt;declare-styleable name=&quot;KeyCapLayout&quot;&gt;
+        &lt;attr name=&quot;keyCapFlatColor&quot; format=&quot;color&quot; /&gt;
+        &lt;attr name=&quot;keyCapShadowColor&quot; format=&quot;color&quot; /&gt;
+        &lt;attr name=&quot;keyStroke&quot; format=&quot;dimension&quot; /&gt;
+        &lt;attr name=&quot;keyCapRadius&quot; format=&quot;dimension&quot; /&gt;
+    &lt;/declare-styleable&gt;
+&lt;/resources&gt;
+</code></pre>
+<p>我把这个组件命名为 <code>KeyCapLayout</code>，因为它很像我们键盘中的键帽。<code>keyCapFlatColor</code> 表示的是按键表面的颜色，也就是原理中上面图层的颜色，<code>keyCapShadowColor</code> 表示的是按键的侧面阴影颜色，也就是原理中下面图层的颜色，<code>keyStroke</code> 表示的是按键的厚度，也可以理解为在机械键盘中我们常说的键程，<code>keyCapRadius</code> 表示的是按键的圆角半径，我这里没有区分上下两个图层的半径，而是采用同样的大小，读者可按需添加。</p>
+<p>接下来封装组件：</p>
+<pre><code class="language-Kotlin">class KeyCapLayout @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyle: Int = 0
+) : FrameLayout(context, attrs, defStyle) {
+
+    private val keyCapFlat: QMUIFrameLayout     // 键盘顶部
+    private val keyCapShadow: QMUIFrameLayout   // 键盘侧面
+    private val tagFlat = &quot;keyCapFlat&quot;
+    private val tagShadow = &quot;keyCapShadow&quot;
+    private var keystroke = 0                   // 键程
+
+    init {
+        val a = context.obtainStyledAttributes(attrs, R.styleable.KeyCapLayout)
+        val flat = a.getColor(R.styleable.KeyCapLayout_keyCapFlatColor, Color.YELLOW)
+        val shadow = a.getColor(R.styleable.KeyCapLayout_keyCapShadowColor, Color.GRAY)
+        keystroke = a.getDimension(R.styleable.KeyCapLayout_keyStroke, 4.dp.toFloat()).toInt()
+        val radius = a.getDimension(R.styleable.KeyCapLayout_keyCapRadius, 8.dp.toFloat()).toInt()
+        a.recycle()
+
+        keyCapFlat = QMUIFrameLayout(context).apply {
+            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+            tag = tagFlat
+        }
+        keyCapShadow = QMUIFrameLayout(context).apply {
+            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+            tag = tagShadow
+        }
+        setKeyCapFlatColor(flat)
+        setKeyCapShadowColor(shadow)
+        setKeyCapRadius(radius)
+        setKeyStroke(keystroke)
+        addView(keyCapShadow)
+        addView(keyCapFlat)
+    }
+
+    /**
+     * 设置键帽颜色
+     */
+    fun setKeyCapFlatColor(@ColorInt color: Int) {
+        keyCapFlat.setBackgroundColor(color)
+    }
+
+    /**
+     * 设置竖面阴影色
+     */
+    fun setKeyCapShadowColor(@ColorInt color: Int) {
+        keyCapShadow.setBackgroundColor(color)
+    }
+
+    /**
+     * 设置圆角
+     */
+    fun setKeyCapRadius(radius: Int) {
+        keyCapFlat.radius = radius
+        keyCapShadow.radius = radius
+    }
+
+    /**
+     * 设置键程
+     */
+    fun setKeyStroke(height: Int) {
+        val lp = keyCapFlat.layoutParams as LayoutParams
+        lp.setMargins(0, 0, 0, height)
+        keyCapFlat.layoutParams = lp
+    }
+
+    /**
+     * 处理按压
+     * @param press 是否按压
+     */
+    private fun handlePress(press: Boolean) {
+        val lpFlat = keyCapFlat.layoutParams as LayoutParams
+        val lpShadow = keyCapShadow.layoutParams as LayoutParams
+        if (press) {
+            lpFlat.setMargins(0, keystroke, 0, 0)
+            lpShadow.setMargins(0, keystroke, 0, 0)
+        } else {
+            lpFlat.setMargins(0, 0, 0, keystroke)
+            lpShadow.setMargins(0)
+        }
+        keyCapFlat.layoutParams = lpFlat
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        when (event?.action) {
+            MotionEvent.ACTION_DOWN -&gt; {
+                handlePress(true)
+            }
+
+            MotionEvent.ACTION_UP -&gt; {
+                handlePress(false)
+                performClick()
+            }
+
+            MotionEvent.ACTION_CANCEL -&gt; {
+                handlePress(false)
+            }
+        }
+        return true
+    }
+
+    override fun addView(child: View?) {
+        if (child?.tag == tagFlat || child?.tag == tagShadow) {
+            super.addView(child)
+        } else {
+            keyCapFlat.addView(child)
+        }
+    }
+
+    override fun addView(child: View?, index: Int) {
+        if (child?.tag == tagFlat || child?.tag == tagShadow) {
+            super.addView(child, index)
+        } else {
+            keyCapFlat.addView(child, index)
+        }
+    }
+
+    override fun addView(child: View?, params: ViewGroup.LayoutParams?) {
+        if (child?.tag == tagFlat || child?.tag == tagShadow) {
+            super.addView(child, params)
+        } else {
+            keyCapFlat.addView(child, params)
+        }
+    }
+
+    override fun addView(child: View?, index: Int, params: ViewGroup.LayoutParams?) {
+        if (child?.tag == tagFlat || child?.tag == tagShadow) {
+            super.addView(child, index, params)
+        } else {
+            keyCapFlat.addView(child, index, params)
+        }
+    }
+
+    override fun addView(child: View?, width: Int, height: Int) {
+        if (child?.tag == tagFlat || child?.tag == tagShadow) {
+            super.addView(child, width, height)
+        } else {
+            keyCapFlat.addView(child, width, height)
+        }
+    }
+}
+</code></pre>
+<p><code>KeyCapLayout</code> 继承自 <code>FrameLayout</code>，无论是简单的文字图片，或是复杂的自定义视图，都可以很方便地往里面添加。</p>
+<p>原理中提到的上下两个图层，为了方便圆角的设置，我采用了 <a href="https://github.com/Tencent/QMUI_Android">@Tencent/QMUI_Android</a> 这个库的 <code>QMUIFrameLayout</code> 来作容器，你也可以采用其他的圆角方案。</p>
+<p>写 XML 布局时，如果我们直接在 <code>KeyCapLayout</code> 中添加子视图，子视图默认会被插入到 <code>KeyCapLayout</code> 中，这样在处理按压效果时还需要额外处理子视图的上下偏移，如果我们能够将它插入到上图层中，它就仿佛印在按键表面一样，跟随图层上下偏移，所以我们重写 <code>addView()</code> 方法，将子视图添加到上图层中。</p>
+<p>因为我们首先需要调用 <code>addView()</code> 把上下两个图层添加到 <code>KeyCapLayout</code> 中，所以为了避免递归死循环，我们给上下图层分别配置 <code>Tag</code>，<code>addView()</code> 时判断不是这两个上下图层则添加到上图层中。</p>
+<p>按压效果就重写触摸事件 <code>onTouchEvent()</code> 处理，上面的原理已经介绍过了，不再重复。</p>
+<p>调用时只需包裹在我们的内容上即可：</p>
+<pre><code class="language-xml">&lt;com.example.banner.KeyCapLayout
+    android:layout_width=&quot;120dp&quot;
+    android:layout_height=&quot;56dp&quot;
+    app:keyCapFlatColor=&quot;#595959&quot;
+    app:keyCapRadius=&quot;56dp&quot;
+    app:keyCapShadowColor=&quot;#404040&quot;
+    app:keyStroke=&quot;6dp&quot;&gt;
+
+    &lt;TextView
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:layout_gravity=&quot;center&quot;
+        android:textStyle=&quot;bold&quot;
+        android:textColor=&quot;@color/white&quot;
+        android:textSize=&quot;18sp&quot;
+        android:text=&quot;Button&quot; /&gt;
+&lt;/com.example.banner.KeyCapLayout&gt;
+</code></pre>
+<p>点击事件也是直接调用 <code>KeyCapLayout</code> 的 <code>setOnClickListener()</code> 方法，我们在 <code>onTouchEvent()</code> 中处理了相关逻辑，当接收到 <code>MotionEvent.ACTION_UP</code> 事件时，会自动触发 <code>onClick()</code> 方法。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[FastScroller & AlphabetIndexer 构建 Android 字母索引器]]></title>
+        <id>https://LiarrDev.github.io/post/Android-FastScroller-AlphabetIndexer/</id>
+        <link href="https://LiarrDev.github.io/post/Android-FastScroller-AlphabetIndexer/">
+        </link>
+        <updated>2024-10-10T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>之前我在『<a href="https://liarrdev.github.io/post/Wonderful-ArkUI-AlphabetIndexer/">ArkUI AlphabetIndexer 真香</a>』一文中提到，Android 平台也自带了一个 <code>AlphabetIndexer</code>，不少 Android 开发者都表示没见过这玩意儿。</p>
+<p>Android 中的字母索引器的 UI 其实应该叫 <code>FastScroller</code>，即「快速滑动块」，而 <code>AlphabetIndexer</code> 这个类也确实存在，只不过它是作为辅助类来处理逻辑，<code>FastScroller</code> 才是处理滑块的显示。 因为使用起来不方便又或者是样式不符合国人使用习惯等原因，在国内的 App 中都不常见，我们可以先看看它的效果：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1727108128429.gif" alt="FastScroller" loading="lazy"></figure>
+<p>今天就来聊聊怎么实现，虽然日常基本不会使用，就当涨涨见识。</p>
+<p>首先来看看布局，列表的子项就一个 <code>TextView</code>，没什么好说的。</p>
+<pre><code class="language-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;TextView xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    android:id=&quot;@+id/tv_contact&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    android:padding=&quot;16dp&quot;
+    android:textSize=&quot;16sp&quot;
+    android:textStyle=&quot;bold&quot; /&gt;
+</code></pre>
+<p>页面则使用一个 <code>ListView</code> 来做展示。</p>
+<pre><code class="language-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    android:orientation=&quot;vertical&quot;&gt;
+
+    &lt;com.google.android.material.appbar.MaterialToolbar
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:background=&quot;@android:color/holo_purple&quot;
+        app:title=&quot;Contacts&quot; /&gt;
+
+    &lt;ListView
+        android:id=&quot;@+id/list_view&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;match_parent&quot;
+        android:fastScrollEnabled=&quot;true&quot;
+        tools:listitem=&quot;@layout/item_contact&quot; /&gt;
+&lt;/LinearLayout&gt;
+</code></pre>
+<p>注意这里要配置 <code>android:fastScrollEnabled</code> 属性。</p>
+<p>不使用 <code>RecyclerView</code> 的原因是它还需要配置其他属性，相对来说更加复杂，后续后机会再单独介绍。</p>
+<p>接下来编写适配器：</p>
+<pre><code class="language-Kotlin">class ContactAdapter(
+    context: Context,
+    cursor: Cursor,
+    data: List&lt;Map&lt;String, String&gt;&gt;,
+    @LayoutRes resource: Int,
+    from: Array&lt;String&gt;,
+    @IdRes to: IntArray
+) : SimpleAdapter(context, data, resource, from, to), SectionIndexer {
+
+    private val indexer = AlphabetIndexer(cursor, 0, &quot;ABCDEFGHIJKLMNOPQRSTUVWXYZ&quot;)
+
+    override fun getSections(): Array&lt;Any&gt; {
+        return indexer.sections
+    }
+
+    override fun getPositionForSection(sectionIndex: Int): Int {
+        return indexer.getPositionForSection(sectionIndex)
+    }
+
+    override fun getSectionForPosition(position: Int): Int {
+        return indexer.getSectionForPosition(position)
+    }
+}
+</code></pre>
+<p>前面的布局中可以看到样式十分简单，所以这里直接继承 <code>SimpleAdapter</code>，同时实现 <code>SectionIndexer</code>，这里十分关键。</p>
+<p>构建 <code>AlphabetIndexer</code>，需要用到 <code>Cursor</code>，我们从上一层传入，并将 26 个字母作为索引。</p>
+<p><code>AlphabetIndexer</code> 本身也是 <code>SectionIndexer</code> 的子类，所以在我们实现的 <code>SectionIndexer</code> 的接口中调用 <code>AlphabetIndexer</code> 的对应方法返回。</p>
+<p>提到 <code>Cursor</code>，我们最先想到可以直接查询本地通讯录的数据，它会给我们返回一个 <code>Cursor</code> 对象，就不用我们手动封装数据源了：</p>
+<pre><code class="language-Kotlin">class MainActivity : AppCompatActivity() {
+
+    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(binding.root)
+        val cursor = contentResolver.query(
+            ContactsContract.Contacts.CONTENT_URI,
+            arrayOf(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY),
+            null,
+            null,
+            ContactsContract.Contacts.DISPLAY_NAME_PRIMARY
+        )
+        startManagingCursor(cursor)
+        cursor?.let {
+            val list = getData(it)
+            val adapter = ContactAdapter(
+                this,
+                it,
+                list,
+                R.layout.item_contact,
+                arrayOf(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY),
+                intArrayOf(R.id.tv_contact)
+            )
+            binding.listView.adapter = adapter
+        }
+    }
+
+    private fun getData(cursor: Cursor): List&lt;Map&lt;String, String&gt;&gt; {
+        val list = mutableListOf&lt;Map&lt;String, String&gt;&gt;()
+        if (cursor.moveToFirst()) {
+            do {
+                val column = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY)
+                val name = cursor.getString(column)
+                list.add(mapOf(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY to name))
+            } while (cursor.moveToNext())
+        }
+        return list
+    }
+}
+</code></pre>
+<p><code>Cursor</code> 数据取出 <code>ContactsContract.Contacts.DISPLAY_NAME_PRIMARY</code> 这一列用于组装子项，再将 <code>Cursor</code> 传入刚刚的 <code>ContactAdapter</code> 中构建 <code>AlphabetIndexer</code>。</p>
+<p>获取联系人还需要动态申请权限，这部分代码没有给出，自行处理即可。</p>
+<p>有些朋友敲完之后可能会发现侧边的索引器出不来，其实不是代码的问题，只是数据量不够导致的，你可以配置 <code>android:fastScrollAlwaysVisible</code> 属性让它保持显示：</p>
+<pre><code class="language-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;LinearLayout ...&gt;
+    ...
+    &lt;ListView ...
+        android:fastScrollAlwaysVisible=&quot;true&quot;
+        android:fastScrollEnabled=&quot;true&quot; /&gt;
+&lt;/LinearLayout&gt;
+</code></pre>
+<p>如果不配置该属性，默认情况下只有当内容大于 4 页时，<code>ListView</code> 才会显示索引器，我们可以在源码中得出这个结论。</p>
+<p><code>ListView</code> 的父类 <code>AbsListView</code> 的构造方法中有 <code>android:fastScrollEnabled</code> 这个属性的配置：</p>
+<pre><code class="language-Java">public abstract class AbsListView extends AdapterView&lt;ListAdapter&gt; implements TextWatcher,
+        ViewTreeObserver.OnGlobalLayoutListener, Filter.FilterListener,
+        ViewTreeObserver.OnTouchModeChangeListener,
+        RemoteViewsAdapter.RemoteAdapterConnectionCallback {
+    
+    @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.P, trackingBug = 123768941)
+    private FastScroller mFastScroll;
+    
+    public AbsListView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        ...
+        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.AbsListView, defStyleAttr, defStyleRes);
+        setFastScrollEnabled(a.getBoolean(R.styleable.AbsListView_fastScrollEnabled, false));
+        setFastScrollStyle(a.getResourceId(R.styleable.AbsListView_fastScrollStyle, 0));
+        setFastScrollAlwaysVisible(a.getBoolean(R.styleable.AbsListView_fastScrollAlwaysVisible, false));
+        ...
+    }
+    
+    public void setFastScrollEnabled(final boolean enabled) {
+        if (mFastScrollEnabled != enabled) {
+            mFastScrollEnabled = enabled;
+            if (isOwnerThread()) {
+                setFastScrollerEnabledUiThread(enabled);
+            } else {
+                post(new Runnable() {
+                    @Override
+                    public void run() {
+                        setFastScrollerEnabledUiThread(enabled);
+                    }
+                });
+            }
+        }
+    }
+
+    private void setFastScrollerEnabledUiThread(boolean enabled) {
+        if (mFastScroll != null) {
+            mFastScroll.setEnabled(enabled);
+        } else if (enabled) {
+            mFastScroll = new FastScroller(this, mFastScrollStyle);
+            mFastScroll.setEnabled(true);
+        }
+        resolvePadding();
+        if (mFastScroll != null) {
+            mFastScroll.updateLayout();
+        }
+    }
+}
+</code></pre>
+<p>可以看到 <code>ListView</code> 的快速滑动块是通过 <code>FastScroller</code> 类实现的，接下来看看 <code>FastScroller</code> 的创建流程：</p>
+<pre><code class="language-java">/**
+ * Helper class for AbsListView to draw and control the Fast Scroll thumb
+ */
+class FastScroller {
+    /** Minimum number of pages to justify showing a fast scroll thumb. */
+    private static final int MIN_PAGES = 4;
+
+    /**
+     * @return Whether the fast scroll thumb is enabled.
+     */
+    public boolean isEnabled() {
+        return mEnabled &amp;&amp; (mLongList || mAlwaysShow);
+    }
+    
+    /**
+     * Called when one of the variables affecting enabled state changes.
+     *
+     * @param peekIfEnabled whether the thumb should peek, if enabled
+     */
+    private void onStateDependencyChanged(boolean peekIfEnabled) {
+        if (isEnabled()) {
+            if (isAlwaysShowEnabled()) {
+                setState(STATE_VISIBLE);
+            } else if (mState == STATE_VISIBLE) {
+                postAutoHide();
+            } else if (peekIfEnabled) {
+                setState(STATE_VISIBLE);
+                postAutoHide();
+            }
+        } else {
+            stop();
+        }
+        mList.resolvePadding();
+    }
+
+    private void updateLongList(int childCount, int itemCount) {
+        final boolean longList = childCount &gt; 0 &amp;&amp; itemCount / childCount &gt;= MIN_PAGES;
+        if (mLongList != longList) {
+            mLongList = longList;
+            onStateDependencyChanged(false);
+        }
+    }
+    ...
+}
+</code></pre>
+<p>不难理解，当开启 <code>android:fastScrollEnabled</code> 配置时，有两种条件可以显示快速滑动块，一是长列表，二是 <code>android:fastScrollAlwaysVisible</code> 也为 <code>true</code>，长列表的判断条件是数据量大于等于 <code>MIN_PAGES</code>，即 <code>4</code> 页。</p>
+<p>以上就是 Android 字母索引的简单实现，关于自定义等其他用法就不展开介绍了，毕竟使用率不高，以后有机会再聊。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[浅析 EPUB 结构]]></title>
+        <id>https://LiarrDev.github.io/post/EPUB-Structure/</id>
+        <link href="https://LiarrDev.github.io/post/EPUB-Structure/">
+        </link>
+        <updated>2024-09-28T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="什么是-epub">什么是 EPUB</h1>
+<p>EPUB（Electronic Publication）是一种电子图书标准，由国际数字出版论坛（IDPF）提出，属于一种可以“自动重新排版”的内容；也就是文字内容可以根据阅读设备的特性，以最适于阅读的方式显示。它的文件扩展名为 <code>.epub</code>。</p>
+<h1 id="epub-的组成">EPUB 的组成</h1>
+<p>EPUB 文件内部使用了 XHTML 或 DTBook（一种由 <strong>DAISY Consortium</strong> 提出的 XML 标准）来展现文字，并以 ZIP 压缩格式来打包文件内容。因此我们可以通过解压缩的方式来了解 EPUB 的构成。</p>
+<p>下面这个是我从某电子书网站下载的两个 EPUB 文件解压图：</p>
+<p><img src="https://LiarrDev.github.io/post-images/1717944900149.png" alt="EPUB 目录结构 1" loading="lazy"><br>
+<img src="https://LiarrDev.github.io/post-images/1717944909348.png" alt="EPUB 目录结构 2" loading="lazy"></p>
+<p>EPUB 的标准和规范一直在迭代，目录也有所差异，但文件组成是大同小异的，下面将逐一介绍各文件的作用。</p>
+<h2 id="mimetype">MIMETYPE</h2>
+<p>它的文件名就是 <code>mimetype</code>，无文件扩展名，用于描述 EPUB 的 <a href="https://liarrdev.github.io/post/Verify-File-Types-with-Media-Type-in-Java/">MIME</a>，所以它的内容只有一行：</p>
+<pre><code>application/epub+zip
+</code></pre>
+<h2 id="meta-inf">META-INF</h2>
+<p>用于存放特定文件，默认情况下里面只有一个 <code>container.xml</code> 文件，用于描述 OPF 的存放位置。由于 EPUB 的制作差异，<code>META-INF</code> 文件夹还可能包含数字签名和加密信息等文件，Java 开发者对这个目录应该不陌生。</p>
+<p><code>container.xml</code> 文件如下：</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;container version=&quot;1.0&quot; xmlns=&quot;urn:oasis:names:tc:opendocument:xmlns:container&quot;&gt;
+   &lt;rootfiles&gt;
+      &lt;rootfile full-path=&quot;content.opf&quot; media-type=&quot;application/oebps-package+xml&quot;/&gt;
+   &lt;/rootfiles&gt;
+&lt;/container&gt;
+</code></pre>
+<p>该文件是必定存在的，它相当于是 EPUB 系统的指路牌。</p>
+<h2 id="opf">OPF</h2>
+<p>OPF 文件是 EPUB 规范中最复杂的元数据，它用来定义 OPS 一系列内容组合到一起的机制。</p>
+<p>常用的文件名是 <code>content.opf</code>，当然也可以是其他，但文件扩展名必须是 <code>.opf</code>，它内部其实是一个标准的 XML，下面是一个例子。</p>
+<pre><code class="language-xml">&lt;?xml version='1.0' encoding='utf-8'?&gt;
+&lt;package xmlns=&quot;http://www.idpf.org/2007/opf&quot; version=&quot;2.0&quot; unique-identifier=&quot;uuid_id&quot;&gt;
+    &lt;metadata xmlns:opf=&quot;http://www.idpf.org/2007/opf&quot; xmlns:dc=&quot;http://purl.org/dc/elements/1.1/&quot;&gt;
+        &lt;dc:title&gt;不连续杀人事件&lt;/dc:title&gt;
+        &lt;dc:creator&gt;坂口安吾&lt;/dc:creator&gt;
+        &lt;dc:description&gt;不连续杀人事件&lt;/dc:description&gt;
+        &lt;dc:language&gt;zh-cn&lt;/dc:language&gt;
+        &lt;dc:date&gt;&lt;/dc:date&gt;
+        &lt;dc:contributor&gt;COAY.COM [http://www.coay.com]&lt;/dc:contributor&gt;
+        &lt;dc:publisher&gt;COAY.COM&lt;/dc:publisher&gt;
+        &lt;dc:identifier id=&quot;uuid_id&quot; opf:scheme=&quot;uuid&quot;&gt;8337&lt;/dc:identifier&gt;
+        &lt;dc:subject&gt;不连续杀人事件&lt;/dc:subject&gt;
+    &lt;/metadata&gt;
+    &lt;manifest&gt;
+        &lt;item href=&quot;article_381876.html&quot; id=&quot;id381876&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381877.html&quot; id=&quot;id381877&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381878.html&quot; id=&quot;id381878&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381879.html&quot; id=&quot;id381879&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381880.html&quot; id=&quot;id381880&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381881.html&quot; id=&quot;id381881&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381882.html&quot; id=&quot;id381882&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381883.html&quot; id=&quot;id381883&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381884.html&quot; id=&quot;id381884&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381885.html&quot; id=&quot;id381885&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381886.html&quot; id=&quot;id381886&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381887.html&quot; id=&quot;id381887&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;catalog.html&quot; id=&quot;catalog&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;cover.jpg&quot; id=&quot;cover&quot; media-type=&quot;image/jpeg&quot;/&gt;
+        &lt;item href=&quot;coay.jpg&quot; id=&quot;ad&quot; media-type=&quot;image/jpeg&quot;/&gt;
+        &lt;item href=&quot;stylesheet.css&quot; id=&quot;css&quot; media-type=&quot;text/css&quot;/&gt;
+        &lt;item href=&quot;titlepage.xhtml&quot; id=&quot;titlepage&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;page.xhtml&quot; id=&quot;page&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;toc.ncx&quot; media-type=&quot;application/x-dtbncx+xml&quot; id=&quot;ncx&quot;/&gt;
+    &lt;/manifest&gt;
+    &lt;spine toc=&quot;ncx&quot;&gt;
+        &lt;itemref idref=&quot;titlepage&quot;/&gt;
+        &lt;itemref idref=&quot;page&quot;/&gt;
+        &lt;itemref idref=&quot;catalog&quot;/&gt;
+        &lt;itemref idref=&quot;id381876&quot;/&gt;
+        &lt;itemref idref=&quot;id381877&quot;/&gt;
+        &lt;itemref idref=&quot;id381878&quot;/&gt;
+        &lt;itemref idref=&quot;id381879&quot;/&gt;
+        &lt;itemref idref=&quot;id381880&quot;/&gt;
+        &lt;itemref idref=&quot;id381881&quot;/&gt;
+        &lt;itemref idref=&quot;id381882&quot;/&gt;
+        &lt;itemref idref=&quot;id381883&quot;/&gt;
+        &lt;itemref idref=&quot;id381884&quot;/&gt;
+        &lt;itemref idref=&quot;id381885&quot;/&gt;
+        &lt;itemref idref=&quot;id381886&quot;/&gt;
+        &lt;itemref idref=&quot;id381887&quot;/&gt;
+        &lt;itemref idref=&quot;page&quot;/&gt;
+    &lt;/spine&gt;
+    &lt;guide&gt;
+        &lt;reference href=&quot;titlepage.xhtml&quot; type=&quot;cover&quot; title=&quot;封面&quot;/&gt;
+        &lt;reference href=&quot;catalog.html&quot; type=&quot;toc&quot; title=&quot;目录&quot;/&gt;
+    &lt;/guide&gt;
+&lt;/package&gt;
+</code></pre>
+<p>它由四个部分组成：</p>
+<ul>
+<li><code>&lt;metadata&gt;</code>：元数据信息。包含书名、作者、出版社等信息，其中 <code>&lt;dc:title&gt;</code> 和 <code>&lt;dc:identifier&gt;</code> 这两个数据是必须的。按照 EPUB 规范，<code>&lt;dc:identifier&gt;</code> 由数字图书的创建者定义，必须唯一，对于图书出版商来说，这个字段一般包括 ISBN 或者 Library of Congress 编号。</li>
+<li><code>&lt;manifest&gt;</code>：文件列表。列出电子书中包含的资源文件（HTML、CSS、NCX、图片等），它的每一子项都包含了文件 ID、相对路径以及媒体类型。</li>
+<li><code>&lt;spine&gt;</code>：文档线性阅读顺序。其中 <code>toc</code> 属性指向 <code>&lt;manifest&gt;</code> 中 <code>.ncx</code> 文件的 <code>id</code>，子项的 <code>idref</code> 属性同样指向 <code>&lt;manifest&gt;</code> 中的文件 <code>id</code>。</li>
+<li><code>&lt;guide&gt;</code>：电子书指引页。比如封面、目录、序言等，通过 <code>href</code> 属性指向文件路径。</li>
+</ul>
+<h2 id="ncx">NCX</h2>
+<p>NCX 定义了数字图书的目录表，复杂的图书中，目录表通常采用层次结构，包括嵌套的内容、章节等。</p>
+<p>它的文件名通常是 <code>toc.ncx</code>，是一个逻辑目录，内部也是一个标准的 XML，下面是一个例子。</p>
+<pre><code class="language-xml">&lt;?xml version='1.0' encoding='utf-8'?&gt;
+&lt;ncx xmlns=&quot;http://www.daisy.org/z3986/2005/ncx/&quot; version=&quot;2005-1&quot;&gt;
+    &lt;head&gt;
+        &lt;meta name=&quot;dtb:uid&quot; content=&quot;coay_8337&quot;/&gt;
+        &lt;meta name=&quot;dtb:depth&quot; content=&quot;2&quot;/&gt;
+        &lt;meta name=&quot;dtb:generator&quot; content=&quot;COAY.COM [http://www.coay.com]&quot;/&gt;
+        &lt;meta name=&quot;dtb:totalPageCount&quot; content=&quot;0&quot;/&gt;
+        &lt;meta name=&quot;dtb:maxPageNumber&quot; content=&quot;0&quot;/&gt;
+    &lt;/head&gt;
+    &lt;docTitle&gt;&lt;text&gt;不连续杀人事件&lt;/text&gt;&lt;/docTitle&gt;
+    &lt;docAuthor&gt;&lt;text&gt;坂口安吾&lt;/text&gt;&lt;/docAuthor&gt;
+    &lt;navMap&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381876&quot; playOrder=&quot;1&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第一章 丑恶万分的人际关系（1）&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381876.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381877&quot; playOrder=&quot;2&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第一章 丑恶万分的人际关系（2）&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381877.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381878&quot; playOrder=&quot;3&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第二章 意外的访客&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381878.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381879&quot; playOrder=&quot;4&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第三章 不速之客&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381879.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381880&quot; playOrder=&quot;5&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第四章 第一位被害者&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381880.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381881&quot; playOrder=&quot;6&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第五章 猫 铃（1）&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381881.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381882&quot; playOrder=&quot;7&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第五章 猫 铃（2）&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381882.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381883&quot; playOrder=&quot;8&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第六章 第二桩案件&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381883.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381884&quot; playOrder=&quot;9&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第七章 身为侦探小说迷的老政客&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381884.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381885&quot; playOrder=&quot;10&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第八章 唯一的不在场证明&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381885.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381886&quot; playOrder=&quot;11&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第九章 火葬归途&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381886.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381887&quot; playOrder=&quot;12&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第十章 疯子大集合&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381887.html&quot;/&gt;
+        &lt;/navPoint&gt;
+    &lt;/navMap&gt;
+&lt;/ncx&gt;
+</code></pre>
+<p>它有如下几个部分组成：</p>
+<ul>
+<li><code>&lt;head&gt;</code>：该标签内主要包含四个 <code>&lt;meta&gt;</code> 元素：
+<ul>
+<li><code>dtb:uid</code>：数字图书唯一 ID。一般和 OPF 中的 <code>&lt;dc:identifier&gt;</code> 对应。</li>
+<li><code>dtb:depth</code>：反映目录表中的层次深度。</li>
+<li><code>dtb:totalPageCount</code>：仅用于纸质图书，保留 <code>0</code> 即可。</li>
+<li><code>dtb:maxPageNumber</code>：仅用于纸质图书，保留 <code>0</code> 即可。</li>
+</ul>
+</li>
+<li><code>&lt;docTitle&gt;</code>：图书标题。一般和 OPF 中的 <code>&lt;dc:title&gt;</code> 对应。</li>
+<li><code>&lt;docAuthor&gt;</code>：图书作者。一般和 OPF 中的 <code>&lt;dc:creator&gt;</code> 对应。</li>
+<li><code>&lt;navMap&gt;</code>：图书目录。包含多个 <code>&lt;navPoint&gt;</code>，内部又包含下列元素：
+<ul>
+<li><code>playOrder</code>：文档阅读顺序。和 OPF 中 <code>&lt;spine&gt;</code> 的子项顺序相同。</li>
+<li><code>&lt;navLabel&gt;</code>：章节标题。</li>
+<li><code>&lt;content&gt;</code>：指向文件路径。和 OPF 中 <code>&lt;manifest&gt;</code> 子项配置的路径一致。</li>
+</ul>
+</li>
+</ul>
+<h2 id="资源文件">资源文件</h2>
+<p>除了上面介绍的几个重要文件外，剩下的几乎都是资源文件。包括 HTML/XHTML、CSS、JPG、PNG、SVG 等等。HTML/XHTML 则是书籍的内容，里面会引用 CSS 和图片等。</p>
+<p>这些文件没有明确的路径要求（事实上除了 <code>mimetype</code> 和 <code>container.xml</code> 两个文件有明确的要求外，其他文件都没有明确的路径要求），这也是为什么文章开头的两个 EPUB 目录会相差这么大。</p>
+<h2 id="opf-spine-和-ncx-navmap-的区别">OPF <code>&lt;spine&gt;</code> 和 NCX <code>&lt;navMap&gt;</code> 的区别</h2>
+<p>两个文件都描述了文档的顺序和内容，这很容易混淆。</p>
+<p>OPF <code>&lt;spine&gt;</code> 描述了书中各个章节是如何实际连接起来的，比方说翻过第一章最后一页就到第二章第一页。</p>
+<p>NCX <code>&lt;navMap&gt;</code> 在图书一开始描述目录。目录肯定会包含书中主要的章节，但是还可能包含没有单独分页的小节。</p>
+<p>NCX 包含的 <code>&lt;navPoint&gt;</code> 元素通常比 OPF <code>&lt;spine&gt;</code> 中的 <code>itemref</code> 元素多。一般情况下，<code>&lt;spine&gt;</code> 中的所有项都会出现在 NCX 中，但 NCX 可能更详细。</p>
+<h1 id="开发">开发</h1>
+<p>基于以上知识，你完全可以自行构建一本 EPUB 电子书了。所以在此我不打算介绍 EPUB 的制作流程。</p>
+<p>简单说一下 EPUB 阅读器的制作。</p>
+<p>由上面的介绍得知，EPUB 内容是依靠 HTML/XHTML 渲染的，以 Android 为例，我们就可以借助 <code>WebView</code> 加载。</p>
+<p>首先需要解压 EPUB 文件，取出 <code>META-INF</code> 中的 <code>container.xml</code> 文件，解析获取 OPF 文件路径，再取出 OPF 文件进行解析，获取元数据、资源、阅读顺序等信息，最后将 HTML/XHTML 按顺序交给 <code>WebView</code> 加载。</p>
+<p>因为上面介绍的配置文件基本都是 XML，你可以借助之前介绍的 <a href="https://liarrdev.github.io/post/Enjoy-Dom4J-in-One-Shot/">Dom4J</a> 完成解析。</p>
+<p>如果需要交互功能，可以向 <code>WebView</code> 中注入 JavaScript 来完成。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[ArkUI AlphabetIndexer 真香]]></title>
+        <id>https://LiarrDev.github.io/post/Wonderful-ArkUI-AlphabetIndexer/</id>
+        <link href="https://LiarrDev.github.io/post/Wonderful-ArkUI-AlphabetIndexer/">
+        </link>
+        <updated>2024-09-19T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>最近在为公司开发 HarmonyOS NEXT 的应用，对 HarmonyOS NEXT 有所了解的朋友应该知道，它与当前市面上所搭载的 HarmonyOS 系统的手机不同，现在市面上的 HarmonyOS 仍基于 Android 平台，应用也大多数是基于 Java/Kotlin 开发，而即将发布的 HarmonyOS NEXT 版本，将不再兼容原有的 Android 应用，而是使用一套基于 ArkTS 的开发框架 ArkUI。</p>
+<p>在开发期间我也深深地感受到，与同为声明式 UI 框架的 Jetpack Compose 相比，ArkUI 仍旧十分难用，一部分是 ArkTS 这个语言与 Kotlin 的差距，一部分是 ArkUI 设计者在开发时考虑的场景欠缺，一部分是代码编辑器 DevEco Studio 功能不完善，当然还有一部分是我对 ArkUI/ArkTS 的不熟悉。</p>
+<p>尽管每天开发时都在口吐莲花，但我不得不说，ArkUI 确实有一个组件我得吹爆它，就是 <code>AlphabetIndexer</code>，翻译过来叫字母索引器，夸它的原因也很简单，虽然 Android 中也有 <code>AlphabetIndexer</code>，可是它仅提供了一些基础接口，具体逻辑还需要自己实现，虽然扩展性高，不过对于相同的效果，我们往往会选择自己手搓或者使用三方库。</p>
+<p>对于不知道 <code>AlphabetIndexer</code> 是什么的朋友，我先上个效果图：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1726156739937.gif" alt="AlphabetIndexer" loading="lazy"></figure>
+<p>右边的可以点击滑动的就是 <code>AlphabetIndexer</code>，当列表数据非常多时，它能够快速帮我们定位到需要寻找的数据附近，在通讯录中也很常见。</p>
+<p>废话了这么久，开整。</p>
+<p>首先定义好我们的数据类，数据有两种格式，一种是分类标题字母 <code>RegionAlphabet</code>，只需包含一个 <code>string</code> 类型的字段；一种是数据详情 <code>RegionDetail</code>，需要包含一个 <code>string</code> 类型的名称和一个 <code>number</code> 类型的区码。</p>
+<pre><code class="language-TypeScript">export class RegionAlphabet {
+  alphabet: string = &quot;&quot;;
+
+  constructor(alphabet: string) {
+    this.alphabet = alphabet
+  }
+}
+
+export class RegionDetail {
+  region: string = &quot;&quot;;
+  code: number = 0;
+}
+
+export type BaseRegion = RegionAlphabet | RegionDetail
+</code></pre>
+<p>另外还定义了一个 <code>BaseRegion</code> 类型关联这两种数据类，方便我们后面的数据处理。</p>
+<pre><code class="language-TypeScript">export class RegionViewModel {
+  static alphabets: string[] = [
+    &quot;热&quot;, &quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;, &quot;F&quot;, &quot;G&quot;, &quot;H&quot;, &quot;I&quot;,
+    &quot;J&quot;, &quot;K&quot;, &quot;L&quot;, &quot;M&quot;, &quot;N&quot;, &quot;O&quot;, &quot;P&quot;, &quot;Q&quot;, &quot;R&quot;, &quot;S&quot;,
+    &quot;T&quot;, &quot;U&quot;, &quot;V&quot;, &quot;W&quot;, &quot;X&quot;, &quot;Y&quot;, &quot;Z&quot;
+  ]
+  static hotRegions: RegionDetail[] = [
+    { &quot;region&quot;: &quot;中国大陆&quot;, &quot;code&quot;: 86 },
+    { &quot;region&quot;: &quot;中国香港&quot;, &quot;code&quot;: 852 },
+    { &quot;region&quot;: &quot;中国澳门&quot;, &quot;code&quot;: 853 },
+    { &quot;region&quot;: &quot;中国台湾&quot;, &quot;code&quot;: 886 },
+    { &quot;region&quot;: &quot;美国&quot;, &quot;code&quot;: 1 },
+    { &quot;region&quot;: &quot;日本&quot;, &quot;code&quot;: 81 }
+  ]
+  private static regions: RegionDetail[] = [
+    { &quot;region&quot;: &quot;阿富汗&quot;, &quot;code&quot;: 93 },
+    { &quot;region&quot;: &quot;阿尔巴尼亚&quot;, &quot;code&quot;: 355 },
+    { &quot;region&quot;: &quot;阿尔及利亚&quot;, &quot;code&quot;: 213 },
+    { &quot;region&quot;: &quot;美属萨摩亚&quot;, &quot;code&quot;: 1684 },
+    { &quot;region&quot;: &quot;安道尔&quot;, &quot;code&quot;: 376 },
+    { &quot;region&quot;: &quot;安哥拉&quot;, &quot;code&quot;: 244 },
+    ...
+}
+</code></pre>
+<p>这里有 3 个数据源，首先是我们 <code>AlphabetIndexer</code> 用到的字母索引列表，除了常规的 26 个字母，我们还会在前面放置常用的标签，减少用户的操作步骤。第二个数据源就是常用的数据，第三个类型是总数据，这部分数据太多，我只截取小部分数据示例，读者知道是这种格式即可。</p>
+<p>我们还需要将数据源统一成一个数组暴露出去，处理一下数据：</p>
+<pre><code class="language-TypeScript">export class RegionViewModel {
+  ...
+  static getRegions(): BaseRegion[] {
+    let groupBy = RegionViewModel.regions.sort((a, b) =&gt; {
+      let pinyinA: string = pinyin4js.convertToPinyinString(a.region, '', pinyin4js.WITHOUT_TONE)
+      let pinyinB: string = pinyin4js.convertToPinyinString(b.region, '', pinyin4js.WITHOUT_TONE)
+      if (pinyinA &lt; pinyinB) {
+        return -1
+      } else if (pinyinA &gt; pinyinB) {
+        return 1
+      } else {
+        return 0
+      }
+    }).reduce((acc, curr) =&gt; {
+      let firstLetter: string = pinyin4js.convertToPinyinString(curr.region, '', pinyin4js.WITHOUT_TONE)
+        .charAt(0)
+        .toUpperCase();
+      (acc[firstLetter] ??= []).push(curr);
+      return acc;
+    }, {} as Record&lt;string, RegionDetail[]&gt;)
+
+    let list: BaseRegion[] = []
+    list.push(new RegionAlphabet(&quot;热门&quot;))
+    list.push(...RegionViewModel.hotRegions)
+    Object.keys(groupBy).forEach(key =&gt; {
+      list.push(new RegionAlphabet(key))
+      list.push(...groupBy[key])
+    })
+    return list
+  }
+}
+</code></pre>
+<p>这里使用了一个官方库 <a href="https://ohpm.openharmony.cn/#/cn/detail/@ohos%2Fpinyin4js">@ohos/pinyin4js</a>，用来将汉字转为拼音，需要先提前安装：</p>
+<pre><code class="language-shell">➜   ohpm install @ohos/pinyin4js
+</code></pre>
+<p>上面的代码虽然有点长，但做的事情不多。首先是将数组内的 <code>RegionDetail</code> 元素按照 <code>region</code> 属性转为拼音的顺序进行排序，然后按照其拼音首字母进行分组，这样就可以与我们定义的拼音索引对应，最后再按组顺序插入到列表中，返回结果。</p>
+<p>需要注意一个坑的地方，由于 ArkTS 的语言特性，<code>RegionDetail</code> 数据是通过对象转换而来的，而不是 <code>new</code> 出来的实例，所以实际插入到数组中是一个 <code>Object</code>，而不是 <code>RegionDetail</code>，在后面使用时需要留意。</p>
+<p>数据准备完毕，开始写界面。</p>
+<pre><code class="language-TypeScript">@Entry
+@Component
+struct RegionPage {
+  @State private selectedIndex: number = 0
+  @State private regions: BaseRegion[] = RegionViewModel.getRegions()
+  private scroller: Scroller = new Scroller()
+
+  build() {
+    Column() {
+      Toolbar({ title: 'Region' })
+      Stack({ alignContent: Alignment.End }) {
+        List({ scroller: this.scroller }) {
+          ForEach(this.regions, (item: BaseRegion) =&gt; {
+            ListItem() {
+              if (item instanceof RegionAlphabet) {
+                Text(item.alphabet).fontColor(Color.Gray).fontSize(12).height(32)
+              } else {
+                Row() {
+                  Text((item as RegionDetail).region).fontWeight(FontWeight.Bold).fontSize(16).layoutWeight(1)
+                  Text(`+${(item as RegionDetail).code}`).fontSize(16).fontColor(Color.Gray)
+                }
+                .height($r('sys.float.titlebar_default_height'))
+                .alignItems(VerticalAlign.Center)
+                .onClick(() =&gt; router.back({ url: Routers.LOGIN_PAGE, params: { regionCode: (item as RegionDetail).code } }))
+              }
+            }.padding({ left: 24, right: 44 })
+          })
+        }.onScrollIndex(index =&gt; {
+          let item = this.regions[index]
+          if (item instanceof RegionAlphabet) {
+            this.selectedIndex = RegionViewModel.alphabets.indexOf(item.alphabet)
+          } else {
+            if (index &lt; RegionViewModel.hotRegions.length + 1) {
+              this.selectedIndex = 0
+              return
+            }
+            let region = (item as RegionDetail).region
+            let alphabet: string = pinyin4js.convertToPinyinString(region, '', pinyin4js.WITHOUT_TONE)
+              .charAt(0)
+              .toUpperCase()
+            this.selectedIndex = RegionViewModel.alphabets.indexOf(alphabet)
+          }
+        })
+
+        AlphabetIndexer({ arrayValue: RegionViewModel.alphabets, selected: 0 })
+          .selected(this.selectedIndex)
+          .height('100%')
+          .onSelect(index =&gt; {
+            if (index == 0) {
+              this.scroller.scrollToIndex(0)
+              return
+            }
+            let letter = RegionViewModel.alphabets[index]
+            let position = this.regions.findIndex(value =&gt; (value as RegionAlphabet).alphabet == letter)
+            if (position &gt; 0) {
+              this.scroller.scrollToIndex(position)
+            }
+          })
+      }
+    }
+    .height('100%')
+    .width('100%')
+  }
+}
+</code></pre>
+<p>界面的布局就不展开介绍了，需要关注一点是列表数据项的判断，上文提到，<code>RegionDetail</code> 在数组内仅仅是一个 <code>Object</code>，所以不能像 <code>RegionAlphabet</code> 那样通过 <code>instanceof</code> 来判断，只能筛选完 <code>RegionAlphabet</code> 之后再通过 <code>as</code> 来强转，你也可以使用其他写法来规避这个问题。</p>
+<p>重点看下关联逻辑。</p>
+<p><code>List</code> 中需要传入一个 <code>Scroller</code>，后续在 <code>AlphabetIndexer</code> 中可以用来控制滚动，同时 <code>List</code> 在滚动时也需要通知 <code>AlphabetIndexer</code> 刷新状态，所以需要一个变量 <code>selectedIndex</code> 来记录选中的索引。</p>
+<p>当 <code>List</code> 滚动时会通过 <code>onScrollIndex()</code> 回调监听。如果当前可见的第一个列表项数据是 <code>RegionAlphabet</code> 时，<code>AlphabetIndexer</code> 选中的就是 <code>RegionAlphabet</code> 对应在索引数据源的下标；如果当前可见的第一个列表项数据不是 <code>RegionAlphabet</code>，判断该项在数组中的位置是否小于 <code>hotRegions</code> 的长度加 <code>1</code>（加 <code>1</code> 是因为需要加上第一个 <code>RegionAlphabet</code>），是的话直接将 <code>AlphabetIndexer</code> 选中的下标置 <code>0</code>，如果不是的话，将数据项强转为 <code>RegionDetail</code>，取出其 <code>region</code> 字段的拼音首字母，选中该字母在索引数据源的下标即可。</p>
+<p>使用 <code>AlphabetIndexer</code> 选中时会通过 <code>onSelect()</code>回调监听。当选中下标为 <code>0</code> 的项时，直接将 <code>List</code> 滚到顶部；否则获取选中的字母，滚动到对应的 <code>RegionAlphabet</code> 所在的位置。</p>
+<p>整个流程就是这么简单，虽然 <code>AlphabetIndexer</code> 在项目中的使用率不高，但这个组件的出现确实方便了我们开发，样式也符合我们的常见场景，Android 开发者实名羡慕。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[TabLayout & ViewPager2 快速打造选项卡切换效果]]></title>
+        <id>https://LiarrDev.github.io/post/Tab-Switching-Effects-by-TabLayout-and-ViewPager2/</id>
+        <link href="https://LiarrDev.github.io/post/Tab-Switching-Effects-by-TabLayout-and-ViewPager2/">
+        </link>
+        <updated>2024-08-27T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>大家使用一些常见的 App 时都能发现 Tab 卡片切换效果，比如『AppGallery』『Mi Home』等：</p>
+<table>
+  <td><img src="https://liarrdev.github.io/post-images/1723986867915.gif" /></td>
+  <td><img src="https://liarrdev.github.io/post-images/1723986877933.gif" /></td>
+</table>
+<p>这种交互将下方卡片和顶部 Tab 进行联动，用户可以通过左右滑动卡片，或者点击 Tab 切换卡片，特别适合将同一模组不同内容的页面合并展示。</p>
+<p>得益于 Android 官方的良好封装，我们要实现这种方式也非常简单。</p>
+<p>先来看布局：</p>
+<pre><code class="language-XML">&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    android:orientation=&quot;vertical&quot;&gt;
+
+    &lt;com.google.android.material.tabs.TabLayout
+        android:id=&quot;@+id/tab_layout&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;wrap_content&quot; /&gt;
+
+    &lt;androidx.viewpager2.widget.ViewPager2
+        android:id=&quot;@+id/view_pager&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;match_parent&quot; /&gt;
+&lt;/LinearLayout&gt;
+</code></pre>
+<p>拆开两部分来看，顶部必然是使用 <code>TabLayout</code> 组件，下面则使用 <code>ViewPager2</code> 来实现。</p>
+<p>既然有 <code>ViewPager2</code>，那之前肯定有 <code>ViewPager</code>，老版本的 <code>ViewPager</code> 是继承自 <code>ViewGroup</code> 自定义实现的，而 <code>ViewPager2</code> 虽然也继承自 <code>ViewGroup</code>，但却是基于 <code>RecyclerView</code> 封装的，解决了 <code>ViewPager</code> 的大部分痛点，大多数情况下我们优先选择 <code>ViewPager2</code> 来实现我们的需求。</p>
+<p><code>TabLayout</code> 和 <code>ViewPager2</code> 都有自己的切换逻辑，那么我们需要做的，就是将它们关联起来，实现联动的效果。</p>
+<pre><code class="language-Kotlin">class MainActivity : AppCompatActivity() {
+
+    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        ...
+        binding.viewPager.adapter = object : FragmentStateAdapter(this) {
+            override fun getItemCount() = 2
+            override fun createFragment(position: Int) = when (position) {
+                0 -&gt; Fragment0()
+                else -&gt; Fragment1()
+            }
+        }
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position -&gt;
+            when (position) {
+                0 -&gt; tab.text = &quot;Tab 0&quot;
+                else -&gt; tab.text = &quot;Tab 1&quot;
+            }
+        }.attach()
+    }
+}
+</code></pre>
+<p>给 <code>ViewPager2</code> 设置一个 <code>adapter</code>，并实现 <code>FragmentStateAdapter</code> 接口，重写 <code>getItemCount()</code> 和 <code>createFragment()</code> 方法，分别返回 <code>ViewPager2</code> 的页面数量和对应位置的 <code>Fragment</code>。这部分属于 <code>ViewPager2</code> 的知识，这里不再赘述。</p>
+<p>接下来，我们创建一个 <code>TabLayoutMediator</code> 对象，并调用它的 <code>attach()</code> 方法，将 <code>TabLayout</code> 和 <code>ViewPager2</code> 关联起来。同时还可以根据需要，对 <code>TabLayout.Tab</code> 做一些自定义的处理操作。</p>
+<p>这样，我们就实现了 <code>TabLayout</code> 和 <code>ViewPager2</code> 联动。效果如下：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1723987029740.gif" alt="" loading="lazy"></figure>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Reqable]]></title>
+        <id>https://LiarrDev.github.io/post/Reqable/</id>
+        <link href="https://LiarrDev.github.io/post/Reqable/">
+        </link>
+        <updated>2024-08-20T15:04:05.000Z</updated>
+        <content type="html"><![CDATA[<p>之前介绍了<a href="https://liarrdev.github.io/post/Capture-Traffic-on-Android-with-Fiddler-Everywhere/">如何使用『Fiddler Everywhere』在手机上进行抓包</a>，它需要使手机与电脑连接同一个局域网完成抓包操作，我相信许多开发小伙伴都遇到过下班回家路上突然收到消息说出现 Bug 的情况，在地铁上的你是否焦头烂额又无能为力？</p>
+<p>要是有一款能直接在手机上进行抓包的工具那该多好！</p>
+<p>不慌！它来了！</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1721487966012.png" alt="Reqable" loading="lazy"></figure>
+<p>『<a href="https://reqable.com">Reqable</a>』是一款先进的 API 生产力工具，支持全平台（Windows、macOS、Linux、Android、iOS）、免登录、轻量级、高性能、无广告，官方宣称它是 Fiddler + Charles + Postman 的结合。</p>
+<p>它的作者是 <a href="https://github.com/MegatronKing">Megatron King</a>，他同时也是『HttpCanary』的作者，用过『HttpCanary』的朋友应该可以从应用图标看出，其正是『Reqable』的前身。</p>
+<p>先来看看在手机上的抓包操作。</p>
+<p>打开『Reqable』并点击右下角按钮启动调试，然后将其退到后台即可，『Reqable』会启动一个画中画窗口用于展示，设备上所有的网络请求都会在其中展示。</p>
+<table>
+<td><img src="https://liarrdev.github.io/post-images/1721488445765.png"/></td>
+<td><img src="https://liarrdev.github.io/post-images/1721488475438.png"/></td>
+</table>
+<p>操作完成后，回到『Reqable』，列表会展示所有请求，可以通过搜索、筛选、排序等操作找到自己想要的请求。</p>
+<table>
+<td><img src="https://liarrdev.github.io/post-images/1721488538139.png"/></td>
+<td><img src="https://liarrdev.github.io/post-images/1721488548862.png"/></td>
+</table>
+<p>点击查看完整的请求和响应。</p>
+<table>
+<td><img src="https://liarrdev.github.io/post-images/1721488574083.png"/></td>
+<td><img src="https://liarrdev.github.io/post-images/1721488584038.png"/></td>
+</table>
+<p>是不是十分简单？如果希望在电脑上查看手机的请求，也不需要繁琐的 Wi-Fi 代理配置，直接扫一扫就可以连接。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1721488600973.png" alt="扫描二维码连接" loading="lazy"></figure>
+<table>
+<td><img src="https://liarrdev.github.io/post-images/1721488638082.png"/></td>
+<td><img src="https://liarrdev.github.io/post-images/1721488650693.png"/></td>
+</table>
+<p>连接成功后就可以在电脑上查看手机的请求。</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1721488665791.png" alt="电脑上查看请求" loading="lazy"></figure>
+<p>点击查看请求和响应也是常规操作。</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1721488688640.png" alt="请求和响应" loading="lazy"></figure>
+<p>当然，如果你不想在手机上下载『Reqable』，仅仅希望通过传统的局域网 Wi-Fi 代理连接来抓包，也是完全没问题的，只需在电脑上安装『Reqable』即可，步骤和之前介绍的<a href="https://liarrdev.github.io/post/Capture-Traffic-on-Android-with-Fiddler-Everywhere/">使用『Fiddler Everywhere』抓包方法</a>大同小异，这里就不展开描述了。</p>
+<p>上面介绍的抓包只是『Fiddler』和『Charles』具备的功能，那么『Postman』具备的功能在哪里呢？</p>
+<p>只需新建一个标签，即可进行 API 调试。</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1721488720982.png" alt="API 调试" loading="lazy"></figure>
+<p>同时它还支持自定义重写和断点规则，或者编写 Python 脚本，拦截处理请求或者响应数据，修改或者模拟数据，满足各式各样的测试场景。</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1721488739268.png" alt="编写脚本" loading="lazy"></figure>
+<p>除此之外，『Reqable』还提供了大量的内置开发工具，在此就不一一介绍了。</p>
+<p>总的来说，『<a href="https://reqable.com">Reqable</a>』是一款比较全面的国产抓包工具，功能相对完善，比较适合国人的操作习惯，简单便捷，抓包性能也比较高，基于 Flutter 开发，支持 HTTP3/QUIC，全平台客户端，一系列的特点都是优秀的证明，值得一试。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[解决 Tomcat 10 Servlet 无法访问的问题]]></title>
+        <id>https://LiarrDev.github.io/post/Fix-Tomcat-10-Servlet-Inaccessibility-Problems/</id>
+        <link href="https://LiarrDev.github.io/post/Fix-Tomcat-10-Servlet-Inaccessibility-Problems/">
+        </link>
+        <updated>2024-07-31T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>之前<a href="https://liarrdev.github.io/post/IntelliJ-IDEA-CE-Tomcat-Configuration-for-macOS/">在 IntelliJ IDEA Community Edition 配置好了 Tomcat</a>，接下来就要开始写接口了，Spring 的框架暂时还没用上，先简单写个 Servlet。</p>
+<pre><code class="language-Kotlin">import javax.servlet.annotation.WebServlet
+import javax.servlet.http.HttpServlet
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
+
+@WebServlet(&quot;/hello&quot;)
+class HelloServlet: HttpServlet() {
+    override fun doGet(req: HttpServletRequest?, resp: HttpServletResponse?) {
+        println(&quot;HelloServlet doGet&quot;)
+        resp?.writer?.write(&quot;Hello Servlet&quot;)
+    }
+}
+</code></pre>
+<p>部署上去发现，根页面可以正常访问，但是却无法访问 Servlet。</p>
+<p><img src="https://LiarrDev.github.io/post-images/1720254390753.png" alt="根页面访问正常" loading="lazy"><br>
+<img src="https://LiarrDev.github.io/post-images/1720254399703.png" alt="Servlet 访问失败" loading="lazy"></p>
+<p>其实这个问题的答案早已写在 Apache Tomcat 官网 <a href="https://tomcat.apache.org/download-10.cgi">Tomcat 10 的下载页</a>，只不过大多数人在下载的时候都没有注意到：</p>
+<blockquote>
+<p>Users of Tomcat 10 onwards should be aware that, as a result of the move from Java EE to Jakarta EE as part of the transfer of Java EE to the Eclipse Foundation, the primary package for all implemented APIs has changed from <code>javax.*</code> to <code>jakarta.*</code>. This will almost certainly require code changes to enable applications to migrate from Tomcat 9 and earlier to Tomcat 10 and later.</p>
+<p>Tomcat 10 及以后版本的用户应注意，作为 Java EE 向 Eclipse 基金会转移的一部分，Java EE 已从 Java EE 迁移到 Jakarta EE，因此所有已实施 API 的主包已从 <code>javax.*</code> 变为 <code>jakarta.*</code>。这几乎肯定需要修改代码，以使应用程序能从 Tomcat 9 及更早版本迁移到 Tomcat 10 及更高版本。</p>
+</blockquote>
+<p>Java Servlet API 是由 Sun Microsystems / Oracle 开发和维护的，其包名以 <code>javax.servlet</code> 开头。从 Java EE 8 开始，Servlet API 的维护权转交给了 Eclipse Foundation 的 Jakarta EE 社区，因此，在最新的 Jakarta EE 版本中，Servlet API 的包名已经更改为 <code>jakarta.servlet</code>。</p>
+<p>也就是说 <code>javax.servlet</code> 是旧版本的包名，而 <code>jakarta.servlet</code> 是新版本的包名。这个变化是为了反映 Jakarta EE 作为一个独立的开源项目，并且将标准 Java 技术规范的发展移交给了 Jakarta EE 社区。</p>
+<p>我们只需在项目中替换对应的依赖及包名即可：</p>
+<pre><code class="language-kotlin">dependencies {
+//    implementation(&quot;javax.servlet:javax.servlet-api:4.0.1&quot;)
+    implementation(&quot;jakarta.servlet:jakarta.servlet-api:6.0.0&quot;)
+}
+</code></pre>
+<pre><code class="language-Kotlin">// 修改包名
+import jakarta.servlet.annotation.WebServlet
+import jakarta.servlet.http.HttpServlet
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
+
+@WebServlet(&quot;/hello&quot;)
+class HelloServlet: HttpServlet() {
+    override fun doGet(req: HttpServletRequest?, resp: HttpServletResponse?) {
+        println(&quot;HelloServlet doGet&quot;)
+        resp?.writer?.write(&quot;Hello Servlet&quot;)
+    }
+}
+</code></pre>
+<p>重新部署，访问成功：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1720254477090.png" alt="Servlet 访问成功" loading="lazy"></figure>
+<p>写这篇文章的时候发现网上很多博主遇到该问题的时候都采用了降级到 Tomcat 9 的方式来避免该问题的发生，这实际上是一种惰性思维，因为他们并没有解决问题而是逃避问题。</p>
+<p>我理解许多程序员因为开发任务繁重而不得不选择一种能尽快让项目运行起来的方法，但一定不要养成放弃思考的习惯。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[macOS 平台 IntelliJ IDEA 社区版 Tomcat 配置笔记]]></title>
+        <id>https://LiarrDev.github.io/post/IntelliJ-IDEA-CE-Tomcat-Configuration-for-macOS/</id>
+        <link href="https://LiarrDev.github.io/post/IntelliJ-IDEA-CE-Tomcat-Configuration-for-macOS/">
+        </link>
+        <updated>2024-07-10T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="前言">前言</h1>
+<p>以前读书的时候浅浅接触过 Java Web 开发，因为水土不服，所以后来走上了 Android 开发这条路。最近突然兴起，想再次了解了解后端开发，今天迈出第一步，搭建开发环境。</p>
+<p>想起彼时，JetBrains 的开发套件在国内似乎还未流行起来，大多数人仍在使用 Eclipse 开发，环境的配置也比较繁琐。现在只需下载 IntelliJ IDEA Ultimate，几乎不需要什么配置，开箱即用。</p>
+<p>但是众所周知，IntelliJ IDEA Ultimate 需要付费使用，我作为学习需要，还不值得花这笔钱，而网上各种破解都由于版本的迭代变得愈发不稳定，因此免费的 IntelliJ IDEA Community Edition 才是更加适合我的选择。</p>
+<p>由此又产生了另一个问题，IntelliJ IDEA Community Edition 是不包含 Tomcat 的，所以还是需要我们手动配置。</p>
+<h1 id="配置">配置</h1>
+<p>前往 <a href="https://tomcat.apache.org">Apache Tomcat 官网</a> 下载，下载完成后解压至 <code>~/Library/</code> 目录，终端进入 Tomcat 下的 <code>bin</code> 目录执行命令：</p>
+<pre><code class="language-shell">➜   sudo chmod 755 *.sh
+</code></pre>
+<p>该命令用于授权读写和执行权限，接着尝试启动 Tomcat 服务：</p>
+<pre><code class="language-shell">➜   sudo sh ./startup.sh
+</code></pre>
+<p>不知道因为什么原因，即使已经<a href="https://liarrdev.github.io/post/How-to-Set-Environment-Variables-in-macOS/">配置过环境变量</a>，Tomcat 无法正确读取我的 JDK 路径：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1711298190649.png" alt="找不到 Java Runtime" loading="lazy"></figure>
+<p>这并不是什么大问题，因为我们等会可以直接在 IntelliJ IDEA Community Edition 中启动它，你可以跳过这部分的内容。</p>
+<p>不过为了能够在终端直接启动，我们可以手动配置一下。</p>
+<p>先看看这个问题是在哪里触发的。上方的命令会先进入 <code>startup.sh</code> 文件，内部会调用 <code>catalina.sh</code>：</p>
+<pre><code class="language-shell">PRGDIR=`dirname &quot;$PRG&quot;`
+EXECUTABLE=catalina.sh
+
+if $os400; then
+  eval
+else
+  if [ ! -x &quot;$PRGDIR&quot;/&quot;$EXECUTABLE&quot; ]; then
+    echo &quot;Cannot find $PRGDIR/$EXECUTABLE&quot;
+    echo &quot;The file is absent or does not have execute permission&quot;
+    echo &quot;This file is needed to run this program&quot;
+    exit 1
+  fi
+fi
+
+exec &quot;$PRGDIR&quot;/&quot;$EXECUTABLE&quot; start &quot;$@&quot;
+</code></pre>
+<p>而 <code>catalina.sh</code> 内部则会调用 <code>setclasspath.sh</code>：</p>
+<pre><code class="language-shell"># Get standard Java environment variables
+if $os400; then
+  . &quot;$CATALINA_HOME&quot;/bin/setclasspath.sh
+else
+  if [ -r &quot;$CATALINA_HOME&quot;/bin/setclasspath.sh ]; then
+    . &quot;$CATALINA_HOME&quot;/bin/setclasspath.sh
+  else
+    echo &quot;Cannot find $CATALINA_HOME/bin/setclasspath.sh&quot;
+    echo &quot;This file is needed to run this program&quot;
+    exit 1
+  fi
+fi
+</code></pre>
+<p><code>setclasspath.sh</code> 内部找不到 <code>JAVA_HOME</code> 和 <code>JRE_HOME</code> 就会报错：</p>
+<pre><code class="language-shell"># Make sure prerequisite environment variables are set
+if [ -z &quot;$JAVA_HOME&quot; ] &amp;&amp; [ -z &quot;$JRE_HOME&quot; ]; then
+  ...
+  if [ -z &quot;$JAVA_HOME&quot; ] &amp;&amp; [ -z &quot;$JRE_HOME&quot; ]; then
+    echo &quot;Neither the JAVA_HOME nor the JRE_HOME environment variable is defined&quot;
+    echo &quot;At least one of these environment variable is needed to run this program&quot;
+    exit 1
+  fi
+fi
+</code></pre>
+<p>那么我就可以在 <code>setclasspath.sh</code> 顶部强行写入路径：</p>
+<pre><code class="language-shell"># 写入 Java 路径，以自己的安装路径为准
+export JAVA_HOME=&quot;/Users/liarr/Applications/Android Studio.app/Contents/jbr/Contents/Home&quot;
+</code></pre>
+<p>保存后再次启动：</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1711298227808.png" alt="Tomcat 启动" loading="lazy"></figure>
+<p>没有问题。打开浏览器，访问 <code>http://localhost:8080</code>，能正常访问。</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1711298254379.png" alt="Localhost" loading="lazy"></figure>
+<p>关闭 Tomcat 服务：</p>
+<pre><code class="language-shell">➜   sudo sh ./shutdown.sh
+</code></pre>
+<p>接下来进入 IntelliJ IDEA Community Edition 进行配置。首先安装「Smart Tomcat」插件：</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1711298275381.png" alt="Smart Tomcat" loading="lazy"></figure>
+<p>然后在「Tomcat Server」中添加我们上面安装的 Tomcat 路径：</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1711298290144.png" alt="Tomcat Server" loading="lazy"></figure>
+<p>配置完成后就可以创建项目，为了省去手动创建文件的步骤，这里我直接选择「Maven Archetype」，当然如果你熟悉项目结构的话也可以使用 Gradle 等其他构建方式。</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1711298308306.png" alt="创建 Maven 项目" loading="lazy"></figure>
+<p>进入后修改运行配置：</p>
+<figure data-type="image" tabindex="7"><img src="https://LiarrDev.github.io/post-images/1711298326639.png" alt="编辑运行配置" loading="lazy"></figure>
+<p>在这里添加「Smart Tomcat」：</p>
+<figure data-type="image" tabindex="8"><img src="https://LiarrDev.github.io/post-images/1711298344552.png" alt="运行配置设置为 Smart Tomcat" loading="lazy"></figure>
+<p>然后直接运行，控制台会打印出访问地址：</p>
+<figure data-type="image" tabindex="9"><img src="https://LiarrDev.github.io/post-images/1711298358769.png" alt="控制台日志" loading="lazy"></figure>
+<p>点击即可在浏览器访问，它所渲染的是 <code>./src/main/webapp/index.jsp</code> 的内容。</p>
+<p>至此，基于 IntelliJ IDEA Community Edition 的 Tomcat 配置就已完成，可以愉快地进行下一步的学习了。</p>
+<p>另外，这种方法适用于我们开发和调试阶段，如果需要部署到生产环境，需要打成 WAR 包，这属于后话。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[一次实战爱上 Dom4J]]></title>
+        <id>https://LiarrDev.github.io/post/Enjoy-Dom4J-in-One-Shot/</id>
+        <link href="https://LiarrDev.github.io/post/Enjoy-Dom4J-in-One-Shot/">
+        </link>
+        <updated>2024-06-18T23:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>项目工程中使用 XML 作为配置文件很常见，比如 Android 项目中的 <code>AndroidManifest.xml</code> 和 Maven 项目中的 <code>pom.xml</code>，我们在编写脚本工具时经常需要对这类 XML 文件进行读写操作。</p>
+<p>XML 的解析有很多种方法，但总体来说都比 JSON 要复杂。今天来介绍一个我常用的 XML 解析库——Dom4J。</p>
+<p>为了避免引起逻辑上的混乱，下面我会分几个例子介绍其用法。</p>
+<p>添加依赖：</p>
+<pre><code class="language-Kotlin">dependencies {
+    implementation(&quot;org.dom4j:dom4j:2.1.4&quot;)
+}
+</code></pre>
+<p>首先看如何读取 XML，一般情况下我们会读取 XML 文件：</p>
+<pre><code class="language-kotlin">fun parseXml(file: File) {
+    val document = SAXReader().read(file)
+    // ...
+}
+</code></pre>
+<p><code>SAXReader</code> 从 SAX 解析事件创建 Dom4J 树，通过 <code>read()</code> 方法读取 XML 并生成一个 <code>Document</code> 对象。</p>
+<p><code>read()</code> 不仅支持 <code>File</code> 类型，其他的如 <code>URL</code>、<code>InputStream</code>、<code>Reader</code> 等也是可以的。</p>
+<p>如果希望从字符串中解析，可以换一种方式：</p>
+<pre><code class="language-kotlin">fun parseXml(xml: String) {
+    val document = DocumentHelper.parseText(xml)
+    // ...
+}
+</code></pre>
+<p>读取 XML 内容后，我们通过这个 <code>Document</code> 对象，就可以获取到里面的节点。</p>
+<p>举个例子，我们解析如下 XML：</p>
+<pre><code class="language-xml">&lt;school&gt;
+    &lt;student&gt;
+        &lt;name&gt;Tom&lt;/name&gt;
+        &lt;age&gt;18&lt;/age&gt;
+    &lt;/student&gt;
+&lt;/school&gt;
+</code></pre>
+<p>代码如下：</p>
+<pre><code class="language-kotlin">fun parseDocument(document: Document) {
+    val rootElement = document.rootElement
+    val student = rootElement.element(&quot;student&quot;)
+    val name = student.elementText(&quot;name&quot;)
+    val age = student.element(&quot;age&quot;).text
+    // ...
+}
+</code></pre>
+<p>通过 <code>Document</code> 的 <code>getRootElement()</code> 方法拿到根节点，每个节点都是一个 <code>Element</code> 对象，调用其 <code>element()</code> 方法可以获取子节点。最内层的节点，我们有两种方式获取它的值，一种是对该节点的父节点调用 <code>elementText()</code> 方法，可以直接根据子节点的名称获取到值；另一种是先获取到该子节点 <code>Element</code> 对象再调用 <code>getText()</code> 方法获取值。所获取到的值都是 <code>String</code> 类型，按需转换。</p>
+<p>在 Android 中我们常见的配置往往是通过属性配置的，比如：</p>
+<pre><code class="language-xml">&lt;FrameLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;&gt;
+    &lt;TextView
+        android:id=&quot;@+id/text&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;warp_content&quot;
+        android:background=&quot;@color/white&quot;
+        tools:background=&quot;@color/black&quot; /&gt;
+&lt;/FrameLayout&gt;
+</code></pre>
+<p>这是一个布局文件，解析其属性的方法如下：</p>
+<pre><code class="language-kotlin">fun parseDocument(document: Document) {
+    val rootElement = document.rootElement
+    val textView = rootElement.element(&quot;TextView&quot;)
+    val id = textView.attributeValue(&quot;id&quot;)
+    // ...
+}
+</code></pre>
+<p>获取到对应元素的 <code>Element</code> 后，调用 <code>attributeValue()</code> 方法传入属性名获取对应的值，可以看到，虽然该 XML 中每个属性都指定了命名空间，也就是前面的 <code>android:</code>，但我们并不需要传入完整的 <code>android:id</code> 才能获取到该属性的值，恰恰相反，如果把命名空间也写上反而获取不到，这是因为命名空间需要额外配置。</p>
+<p>相信你已经注意到，上方对于 <code>background</code> 属性，我在两个命名空间下都有定义，分别是 <code>android:background</code> 和 <code>tools:background</code>，如果直接调用 <code>attributeValue(&quot;background&quot;)</code>，你猜它会获取到哪个值？</p>
+<p>实际上，哪个定义排在前面，它就会获取哪个属性的值。</p>
+<p>对于不同命名空间的属性，我们可以通过以下方法进行获取：</p>
+<pre><code class="language-kotlin">fun parseDocument(document: Document) {
+    val rootElement = document.rootElement
+    val toolsNamespace = Namespace.get(&quot;tools&quot;, &quot;http://schemas.android.com/tools&quot;)
+    val androidNamespace = Namespace.get(&quot;android&quot;, &quot;http://schemas.android.com/apk/res/android&quot;)
+    val textView = rootElement.element(&quot;TextView&quot;)
+    val toolsBackground = textView.attributeValue(QName.get(&quot;background&quot;, toolsNamespace))
+    val androidBackground = textView.attributeValue(QName.get(&quot;background&quot;, androidNamespace))
+    // ...
+}
+</code></pre>
+<p>先传入前缀和其 <code>Uri</code> 构建对应的命名空间 <code>Namespace</code>，获取属性值时，我们不再简单粗暴地传入属性名，而是通过 <code>Namespace</code> 构建 <code>QName</code>，<code>QName</code> 是 XML 元素或属性的限定名称值，它能够帮助我们根据命名空间解析正确的值。</p>
+<p>对于一些相同标签的组，我们无法直接通过标签名直接获取到我们想要的值，可以一次性把这个组下所有的标签都获取到，再根据条件筛选。</p>
+<p>比如 Android 中用到的：</p>
+<pre><code class="language-xml">&lt;application xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
+    &lt;activity android:name=&quot;.MainActivity&quot; /&gt;
+    &lt;activity android:name=&quot;.SplashActivity&quot; /&gt;
+    &lt;activity android:name=&quot;.AboutActivity&quot; /&gt;
+&lt;/application&gt;
+</code></pre>
+<p>通过 <code>Element</code> 的 <code>elements()</code> 可以获取其所有的子节点。</p>
+<pre><code class="language-kotlin">fun parseDocument(document: Document) {
+    val rootElement = document.rootElement
+    val activities = rootElement.elements()
+    activities.forEach {
+        if (it.attribute(&quot;name&quot;).text.contains(&quot;MainActivity&quot;)) {
+            // ...
+        }
+    }
+}
+</code></pre>
+<p>获取所有属性也是一样的操作，调用 <code>attributes()</code> 即可，不再赘述。</p>
+<p>另外还可以通过 <code>elementIterator()</code> 和 <code>attributeIterator()</code> 获取迭代器，使用迭代器遍历来完成操作。</p>
+<p>以上就是使用 Dom4J 对 XML 的读操作，在这几个例子中我们可以发现，主要操作的几个对象无非就是 <code>Document</code>、<code>Element</code> 和 <code>Attribute</code>，接下来的写操作大同小异。</p>
+<pre><code class="language-kotlin">fun createDocument(): Document {
+    val document = DocumentHelper.createDocument()
+    val root = document.addElement(&quot;root&quot;)
+    val author = root.addElement(&quot;author&quot;)
+        .addAttribute(&quot;location&quot;, &quot;UK&quot;)
+        .addText(&quot;James Strachan&quot;)
+    return document
+}
+</code></pre>
+<p>节点、属性的添加与修改，都可以通过 <code>addElement()</code> 和 <code>addAttribute()</code> 来完成，需要注意的是，如果涉及到命名空间，依旧要借助 <code>QName</code>。</p>
+<p>为了方便日志打印或其他操作，可以将 <code>Document</code> 转为 XML 字符串：</p>
+<pre><code class="language-kotlin">fun convertToXml(document: Document) {
+    val text = document.asXML()
+    // ...
+}
+</code></pre>
+<p>作为脚本，最重要的当然是回写到文件：</p>
+<pre><code class="language-kotlin">fun write(document: Document) {
+    FileWriter(&quot;output.xml&quot;).use { 
+        val writer = XMLWriter(it)
+        writer.write(document)
+        writer.close()
+    }
+}
+</code></pre>
+<p>根据路径创建 <code>FileWriter</code>，再创建出 <code>XMLWriter</code> 并调用 <code>write()</code> 将 <code>Document</code> 写入到路径所对应的文件中，最后不要忘了调用 <code>close()</code>。</p>
+<p>除了写入到文件中外，还可以输出到控制台：</p>
+<pre><code class="language-kotlin">fun log(document: Document) {
+    val format = OutputFormat.createPrettyPrint()
+    val writer = XMLWriter(System.out, format)
+    writer.write(document)
+    writer.close()
+}
+</code></pre>
+<p>这里同时还创建了一个格式美化的 <code>OutputFormat</code>，创建 <code>XMLWriter</code> 不再借助 <code>FileWriter</code>，而是传入 <code>System.out</code>，相信任何一个 Java 开发者对这个都不陌生。</p>
+<p>以上就是 Dom4J 的常见用法，更详细的介绍可以查阅<a href="https://dom4j.github.io">官方文档</a>。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[使用 Fiddler Everywhere 在 Android 上抓包]]></title>
+        <id>https://LiarrDev.github.io/post/Capture-Traffic-on-Android-with-Fiddler-Everywhere/</id>
+        <link href="https://LiarrDev.github.io/post/Capture-Traffic-on-Android-with-Fiddler-Everywhere/">
+        </link>
+        <updated>2024-06-05T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>抓包是我们在开发中常用的调试手段，可以快速地帮助我们定位前后端的问题，虽然新版本的 Android Studio 已经配备了「Network Inspector」，但在某些场景或者特殊机型上仍不能很好胜任，所以往往需要借助一些第三方的工具进行抓包。</p>
+<p>常见的抓包工具有『Wireshark』、『Charles』和『Fiddler』等等，本次介绍使用『Fiddler Everywhere』在 Android 设备上抓包。</p>
+<p>『Fiddler Everywhere』是『Fiddler』的一个分支，支持 macOS、Windows 和 Linux。</p>
+<p>下载完成并登录，开始配置。</p>
+<p>在「Capture and Inspect Traffic」中选择「Remote Devices」，并选择 Android 设备：</p>
+<p><img src="https://LiarrDev.github.io/post-images/1717601188418.png" alt="Fiddler 主页" loading="lazy"><br>
+<img src="https://LiarrDev.github.io/post-images/1717601197473.png" alt="Fiddler 选择设备" loading="lazy"></p>
+<p>进入配置界面，按照步骤来。</p>
+<p>第一步，默认即可。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1717601227325.png" alt="Fiddler Config" loading="lazy"></figure>
+<p>第二步，下载 CA 证书。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1717601257838.png" alt="Fidder Download CA" loading="lazy"></figure>
+<p>确保手机和电脑连接同一网络，手机扫描二维码或者打开上面的链接，点击下载。</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1717601298856.png" alt="手机下载 CA" loading="lazy"></figure>
+<p>第三步，安装 CA 证书。</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1717601329045.png" alt="Fiddler Install CA" loading="lazy"></figure>
+<p>该设置的位置往往隐藏得比较深，而且不同手机不同版本都略有差异，可以参考我以下的位置。</p>
+<table>
+    <td><img src="https://liarrdev.github.io/post-images/1717601357503.png" /></td>
+    <td><img src="https://liarrdev.github.io/post-images/1717601374247.png" /></td>
+    <td><img src="https://liarrdev.github.io/post-images/1717601384727.png" /></td>
+    <td><img src="https://liarrdev.github.io/post-images/1717601396801.png" /></td>
+</table>
+<p>选择上一步下载的证书文件进行安装，可以给证书命名，方便我们辨认。</p>
+<table>
+    <td><img src="https://liarrdev.github.io/post-images/1717601614196.png" /></td>
+    <td><img src="https://liarrdev.github.io/post-images/1717601627805.png" /></td>
+</table>
+<p>安装完成后，可以在「用户凭据」中查看刚刚安装的证书。</p>
+<table>
+    <td><img src="https://liarrdev.github.io/post-images/1717601645854.png" /></td>
+    <td><img src="https://liarrdev.github.io/post-images/1717601653773.png" /></td>
+</table>
+<p>第四步，对 Wi-Fi 设置代理。</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1717601696727.png" alt="Fiddler Config Wi-Fi" loading="lazy"></figure>
+<p>参考上面提供的主机名和端口号，在手机上设置。</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1717601730654.png" alt="手机代理设置" loading="lazy"></figure>
+<p>第五步，测试连接。</p>
+<figure data-type="image" tabindex="7"><img src="https://LiarrDev.github.io/post-images/1717601752937.png" alt="Fiddler Test Conectivity" loading="lazy"></figure>
+<p>手机扫描二维码或直接访问上面的链接，页面提示连接成功。</p>
+<figure data-type="image" tabindex="8"><img src="https://LiarrDev.github.io/post-images/1717601809569.png" alt="手机连接代理成功" loading="lazy"></figure>
+<p>配置完成，下面可以开始抓包。</p>
+<figure data-type="image" tabindex="9"><img src="https://LiarrDev.github.io/post-images/1717601853644.png" alt="Fiddler 抓包" loading="lazy"></figure>
+<p>但需要注意的是，电脑上也需要信任证书才能对 HTTPS 进行抓包。</p>
+<figure data-type="image" tabindex="10"><img src="https://LiarrDev.github.io/post-images/1717601864762.png" alt="Fiddler 信任证书" loading="lazy"></figure>
+<p>记得抓包调试结束后，关闭第四步中对 Wi-Fi 设置的代理。</p>
+]]></content>
+    </entry>
+</feed>
