@@ -1,0 +1,740 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>原生 Android 和 React Native 交互 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="在之前的文章『「ZXing」实现 Android 扫描二维码』中提到，由于我在 React Native 中找不到可用的扫描二维码的第三方组件，所以被迫使用 Android 原生来实现该功能，那么就会出现一个新的问题，通过原生 Androi..." />
+    <meta name="keywords" content="React Native,Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1742312285406" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Communicate-with-React-Native-from-Android.jpeg');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2019-11-06"><i class="fa fa-calendar"></i><span class="lately">5 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Communicate-with-React-Native-from-Android/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Communicate-with-React-Native-from-Android/"> </span>
+              </a>
+              <span id="/Communicate-with-React-Native-from-Android/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-0 ctag-React-Native" aria-label="">React Native</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-1 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">原生 Android 和 React Native 交互</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>在之前的文章『<a href="https://liarrdev.github.io/post/Android-QR-Code-Scanning-with-ZXing/">「ZXing」实现 Android 扫描二维码</a>』中提到，由于我在 React Native 中找不到可用的扫描二维码的第三方组件，所以被迫使用 Android 原生来实现该功能，那么就会出现一个新的问题，通过原生 Android 扫码得到的数据，如何传给 React Native 进行处理呢？</p>
+<p>其实原生 Android 扫码后，继续由原生 Android 进行处理也是可以的，这样就避免了再次把数据回传的步骤，但是既然我使用的是 React Native，那么看重的就是其跨平台的特性，即既可以在 Android 系统中运行，也可以在 iOS 系统中运行。</p>
+<p>也就是说，如果我在 Android 中进行扫码后继续由原生 Android 做逻辑处理，那我同样需要在 iOS 开发的时候做一套类似的逻辑处理。这无疑是加大时间成本来做相同的事情，与代码复用性相悖了。</p>
+<p>所以，这就涉及到了原生 Android 和 React Native 交互的问题（如果以后我尝试做 iOS 开发的话会考虑原生 iOS 和 React Native 的交互）。</p>
+<p>话不多说，来看看如何实现。</p>
+<p>首先在项目中创建 <code>MyIntentModule</code> 类，并继承 <code>ReactContextBaseJavaModule</code>，这是原生 <code>Activity</code> 和 React 的交互模块。</p>
+<pre><code class="language-Java">/**
+ * 原生 Activity 与 React 交互模块
+ */
+public class MyIntentModule extends ReactContextBaseJavaModule {
+
+    public MyIntentModule(ReactApplicationContext reactContext) {
+        super(reactContext);
+    }
+
+    @Override
+    public String getName() {
+        return &quot;IntentMoudle&quot;;
+    }
+
+    @ReactMethod
+    public void startActivityFromJS(String name, String params) {
+        try {
+            Activity currentActivity = getCurrentActivity();
+            if (null != currentActivity) {
+                Class toActivity = Class.forName(name);
+                Intent intent = new Intent(currentActivity, toActivity);
+                intent.putExtra(&quot;params&quot;, params);
+                currentActivity.startActivity(intent);
+            }
+        } catch (Exception e) {
+            throw new JSApplicationIllegalArgumentException(&quot;Could not open Activity: &quot; + e.getMessage());
+        }
+    }
+
+    @ReactMethod
+    public void dataToJS(Callback successBack, Callback errorBack) {
+        try {
+            Activity currentActivity = getCurrentActivity();
+            String result = currentActivity.getIntent().getStringExtra(&quot;data&quot;);
+            if (TextUtils.isEmpty(result)) {
+                result = &quot;没有数据&quot;;
+            }
+            successBack.invoke(result);
+        } catch (Exception e) {
+            errorBack.invoke(e.getMessage());
+        }
+    }
+
+    @ReactMethod
+    public void startActivityForResult(String activityName, int requestCode, Callback successCallback, Callback erroCallback) {
+        try {
+            Activity currentActivity = getCurrentActivity();
+            if (null != currentActivity) {
+                Class aimActivity = Class.forName(activityName);
+                Intent intent = new Intent(currentActivity, aimActivity);
+                currentActivity.startActivityForResult(intent, requestCode);
+                String result = (String) myBlockingQueue.take();
+                successCallback.invoke(result);
+            }
+        } catch (Exception e) {
+            erroCallback.invoke(e.getMessage());
+            throw new JSApplicationIllegalArgumentException(&quot;Could not open the Activity: &quot; + e.getMessage());
+        }
+    }
+}
+</code></pre>
+<p>这里需要记住 <code>getName()</code> 方法中的命名名称，在 React Native 中调用需要用到，还要记得在相应的方法中添加 <code>@ReactMethod</code> 的注解，否则该方法将不被添加到 React Native 中。</p>
+<p>然后在项目中创建 <code>MyReactPackage</code> 类，实现 <code>ReactPackage</code> 接口暴露给 React Native 调用，在 <code>createNativeModules()</code> 里注册上一步添加的模块：</p>
+<pre><code class="language-Java">/**
+ * 注册模块
+ * 实现 ReactPackage 接口暴露给 React Native 调用
+ */
+public class MyReactPackage implements ReactPackage {
+
+    // 注册 MyIntentModule 添加的交互模块
+    @Override
+    public List&lt;NativeModule&gt; createNativeModules(ReactApplicationContext reactContext) {
+        return Arrays.&lt;NativeModule&gt;asList(new MyIntentModule(reactContext));
+    }
+
+    @Override
+    public List&lt;ViewManager&gt; createViewManagers(ReactApplicationContext reactContext) {
+        return Collections.emptyList();
+    }
+}
+</code></pre>
+<p>再在项目的 <code>MainApplication</code> 的 <code>getPackages()</code> 方法中注册 <code>MyReactPackage</code> 模块：</p>
+<pre><code class="language-Java">@Override
+protected List&lt;ReactPackage&gt; getPackages() {
+    return Arrays.&lt;ReactPackage&gt;asList(
+        new MainReactPackage(),
+        new MyReactPackage()      // 注册 MyReactPackage 模块
+    );
+}
+</code></pre>
+<p>这样在 Android 端的配置就基本完成了，你可能会问 <code>Activity</code> 呢？</p>
+<p>其实上文提到我是用在二维码功能上，所以就用『<a href="https://github.com/zxing/zxing">ZXing</a>』中的 <code>CaptureActivity</code> 来作为目标 <code>Activity</code>。</p>
+<p>接下来就是在 React Native 中的调用了：</p>
+<pre><code class="language-JavaScript">export default class FootBar extends Component {
+  _onPressScanBTN() {
+    NativeModules.IntentMoudle.startActivityForResult(&quot;com.google.zxing.activity.CaptureActivity&quot;, 100,
+      (successMsg) =&gt; {alert(successMsg)},
+      (erroMsg) =&gt; {alert(erroMsg)}
+    );
+  }
+  render() {
+    return (
+      &lt;View style={styles.container}&gt;
+        &lt;ImageBackground style={styles.footbarbg} source={require('./images/footbar/footbar_background.png')}&gt;
+          ...
+          &lt;TouchableOpacity onPress={this._onPressScanBTN}&gt;
+            &lt;Image style={styles.scanbtn} source={require('./images/footbar/scan_btn.png')} /&gt;
+          &lt;/TouchableOpacity&gt;
+          ...
+        &lt;/ImageBackground&gt;
+      &lt;/View&gt;
+    );
+  }
+}
+</code></pre>
+<p>我在这里就将扫描的结果返回并弹窗提醒，当然实际上我们是将回传的数据作其他操作的，这里只是作简单演示。</p>
+<p>效果如下：</p>
+<figure data-type="image" tabindex="1"><img src="https://camo.githubusercontent.com/61ae225363a3895a7cb6ecdaedc44e45977bc458/68747470733a2f2f73322e617831782e636f6d2f323031392f30332f30342f6b4f496f73552e676966" alt="效果" loading="lazy"></figure>
+<p>该 Demo 已上传至 Github，详情可<a href="https://github.com/LiarrDev/WaterProtector_ReactNative">👉戳此处👈</a>查看。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/printf-d-printf-d-d-1-2.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/printf-d-printf-d-d-1-2/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2019-11-27">2019-11-27</time>
+                  <h4 class="title white no-margin">printf(&#34;%d&#34;, printf(&#34;%d%d&#34;, 1, 2));</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Android-QR-Code-Scanning-with-ZXing.jpeg');"></div>
+                 <a href="https://LiarrDev.github.io/post/Android-QR-Code-Scanning-with-ZXing/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2019-10-09">2019-10-09</time>
+                  <h4 class="title white no-margin">『ZXing』实现 Android 扫描二维码</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/ViewPager2-Horizontal-Nested-Scroll/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/ViewPager2-Horizontal-Nested-Scroll.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-03-19">2025-03-19</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/ViewPager2-Horizontal-Nested-Scroll/">ViewPager2 横向嵌套滚动</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/ArkUI-Custom-Components-KeyCap/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/ArkUI-Custom-Components-KeyCap.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-02-11">2025-02-11</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/ArkUI-Custom-Components-KeyCap/">ArkUI 自定义组件：KeyCap 实践</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Design-Pattern-Factory/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Design-Pattern-Factory.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2024-12-27">2024-12-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Design-Pattern-Factory/">Design Pattern: Factory</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 140 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>
