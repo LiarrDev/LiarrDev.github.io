@@ -1,0 +1,1693 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://LiarrDev.github.io</id>
+    <title>Liarr&apos;s Studio</title>
+    <updated>2025-07-13T12:37:43.720Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://LiarrDev.github.io"/>
+    <link rel="self" href="https://LiarrDev.github.io/atom.xml"/>
+    <subtitle>温故而知新</subtitle>
+    <logo>https://LiarrDev.github.io/images/avatar.png</logo>
+    <icon>https://LiarrDev.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2025, Liarr&apos;s Studio</rights>
+    <entry>
+        <title type="html"><![CDATA[Design Pattern: Builder]]></title>
+        <id>https://LiarrDev.github.io/post/Design-Pattern-Builder/</id>
+        <link href="https://LiarrDev.github.io/post/Design-Pattern-Builder/">
+        </link>
+        <updated>2025-07-21T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>建造者模式（Builder Pattern，也叫生成器模式）是最常用的设计模式之一，它与之前介绍的『<a href="https://liarrdev.github.io/post/Design-Pattern-Singleton/">Design Pattern: Singleton</a>』和『<a href="https://liarrdev.github.io/post/Design-Pattern-Factory/">Design Pattern: Factory</a>』都属于创建类型的设计模式。</p>
+<p>它可以将复杂对象的构建过程抽象出来，使这个抽象过程的不同实现方法可以构造出不同表现（属性）的对象。</p>
+<p>在讲 Builder 模式实现之前，先看看之前我们构建复杂对象时是如何编写的。</p>
+<h1 id="构造器重载telescoping-constructor-anti-pattern">构造器重载（Telescoping Constructor anti-pattern）</h1>
+<pre><code class="language-java">public class Article {
+    private String title;
+    private String content;
+    private String author;
+    private Date date;
+    public Article(String title, String content) { ... }
+    public Article(String title, String content, String author) { ... }
+    public Article(String title, String content, Date date) { ... }
+    public Article(String title, String content, String author, Date date) { ... }
+}
+</code></pre>
+<p>通过在构造器中传递不同数量的参数，从而实现构建不同属性组合的对象。这种方法简单直观，但随着属性增加，构造器的参数组合呈指数级增长，你就很难记住参数的顺序以及在特定情况下你可能需要的特定构造函数，难以维护和理解。</p>
+<p>Kotlin 的出现倒是很大程度上解决了这个问题：</p>
+<pre><code class="language-kotlin">data class Article(
+    val title: String = &quot;&quot;,
+    val content: String = &quot;&quot;,
+    val author: String = &quot;&quot;,
+    val date: Date = Date()
+)
+</code></pre>
+<p>尽管如此，它在扩展性上还是稍有欠缺，比如同一属性不同类型的构造，这时候还是要回到构造函数重载的方案。</p>
+<pre><code class="language-kotlin">data class Article(
+    val title: String = &quot;&quot;,
+    val content: String = &quot;&quot;,
+    val author: String = &quot;&quot;,
+    val date: Date = Date()
+) {
+    constructor(
+        title: String = &quot;&quot;,
+        content: String = &quot;&quot;,
+        author: String = &quot;&quot;,
+        millis: Long = System.currentTimeMillis()
+    ) : this(title, content, author, Date(millis))
+}
+</code></pre>
+<h1 id="setter">Setter</h1>
+<p>Setter 方法可以很好地解决构造函数膨胀的问题，只需添加对应的重载方法即可：</p>
+<pre><code class="language-kotlin">class Article {
+    private var title: String = &quot;&quot;
+    private var content: String = &quot;&quot;
+    private var author: String = &quot;&quot;
+    private var date: Date = Date()
+    fun setTitle(title: String) { ... }
+    fun setContent(content: String) { ... }
+    fun setAuthor(author: String) { ... }
+    fun setDate(date: Date) { this.date = date }
+    fun setDate(millis: Long) { this.date = Date(millis) }
+}
+</code></pre>
+<p>使用 Setter 逐个设置属性的值，灵活性较强，但也可能导致对象在构建过程中处于不完整状态，可变性带来的线程安全性问题，无法保证对象的不变性。</p>
+<h1 id="建造者模式">建造者模式</h1>
+<p>建造者模式通过一个独立的 Builder 类负责构建对象，可以确保对象在构建时处于合法状态。</p>
+<p>建造者模式包含如下角色：</p>
+<ul>
+<li>Builder：抽象建造者</li>
+<li>ConcreteBuilder：具体建造者</li>
+<li>Director：指挥者</li>
+<li>Product：产品角色</li>
+</ul>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1752405338134.png" alt="" loading="lazy"></figure>
+<p>下面是一个简单的示例：</p>
+<pre><code class="language-kotlin">/** &quot;Product&quot; */
+data class Pizza(var dough: String = &quot;&quot;, var sauce: String = &quot;&quot;, var topping: String = &quot;&quot;)
+
+/** &quot;Abstract Builder&quot; */
+abstract class PizzaBuilder {
+    lateinit var pizza: Pizza
+        private set
+    fun createPizza() { pizza = Pizza() }
+    abstract fun buildDough()
+    abstract fun buildSauce()
+    abstract fun buildTopping()
+}
+
+/** &quot;Concrete Builder&quot; */
+class HawaiianPizzaBuilder : PizzaBuilder() {
+    override fun buildDough() {
+        pizza.dough = &quot;cross&quot;
+    }
+    override fun buildSauce() {
+        pizza.sauce = &quot;mild&quot;
+    }
+    override fun buildTopping() {
+        pizza.topping = &quot;ham + pineapple&quot;
+    }
+}
+
+/** &quot;Concrete Builder&quot; */
+class SpicyPizzaBuilder : PizzaBuilder() {
+    override fun buildDough() {
+        pizza.dough = &quot;pan baked&quot;
+    }
+    override fun buildSauce() {
+        pizza.sauce = &quot;hot&quot;
+    }
+    override fun buildTopping() {
+        pizza.topping = &quot;pepperoni + salami&quot;
+    }
+}
+
+/** &quot;Director&quot; */
+class Chef {
+    lateinit var pizzaBuilder: PizzaBuilder
+    fun getPizza() = pizzaBuilder.pizza
+    fun constructPizza() {
+        pizzaBuilder.createPizza()
+        pizzaBuilder.buildDough()
+        pizzaBuilder.buildSauce()
+        pizzaBuilder.buildTopping()
+    }
+}
+
+fun main() {
+    val chef = Chef()
+    val hawaiianBuilder = HawaiianPizzaBuilder()
+    val spicyPizzaBuilder = SpicyPizzaBuilder()
+    chef.pizzaBuilder = hawaiianBuilder
+    chef.constructPizza()
+    val pizza = chef.getPizza()
+}
+</code></pre>
+<p>这里构建了一个厨师做披萨了例子，<code>Chef</code> 并不会直接构建 <code>Pizza</code> 对象，因为这个过程很容易出错，而是根据菜谱，也就是 Builder 实例来制作，<code>PizzaBuilder</code> 是个抽象类，由子类来实现具体的制作过程中所需的材料，<code>Chef</code> 无须关心做这个披萨需要菠萝还是火腿，这个由 <code>PizzaBuilder</code> 构建，<code>Chef</code> 拿到菜谱，按照上面的步骤执行即可。</p>
+<p>以上这个就是建造者模式比较官方的例子。</p>
+<p>抽象的引入似乎很容易会与之前介绍的<a href="https://liarrdev.github.io/post/Design-Pattern-Factory/">工厂模式</a>混淆，<a href="https://liarrdev.github.io/post/Design-Pattern-Factory/">工厂模式</a>的目的是实现多态性，而建造者模式的目的是找到一种解决伸缩构造器反模式的方法，它使用一个构造器，逐步接收每个初始化参数，然后一次性返回所构造的对象。</p>
+<p>简单来说，两者都可以创建复杂的对象，主要区别是<a href="https://liarrdev.github.io/post/Design-Pattern-Factory/">工厂模式</a>着重于多个产品对象，且产品对象是立即返回的，而建造者模式着重于一步步构造一个复杂对象，产品在最后的一步返回。</p>
+<p>另一方面，虽然利用建造者模式可以创建出不同类型的产品，但是如果产品之间的差异巨大，则需要编写多个建造者类才能实现，如果这时结合<a href="https://liarrdev.github.io/post/Design-Pattern-Factory/">工厂模式</a>会是一个更好的选择。</p>
+<p>为了更好地理解建造者模式，下面是一个对于 Android 开发者来说更常见的例子，<a href="https://liarrdev.github.io/post/Enjoy-OkHttp-in-One-Shot/"><code>OkHttp</code></a> 网络请求库内部就大量应用了建造者模式，以创建 <code>Request</code> 为例：</p>
+<pre><code class="language-kotlin">object HttpUtils {
+    private val client = OkHttpClient()
+    fun doRequest(url: String) {
+        val request = Request.Builder().url(url).build()
+        client.newCall(request).enqueue(object : Callback {
+            ...
+        })
+    }
+}
+</code></pre>
+<p><code>Request</code> 的构造方法一共 5 个参数，还有其他成员变量，我们通过它的静态内部类 <code>Builder</code> 按需设置它的 <code>url</code> 和 <code>method</code> 等参数，最后调用 <code>build()</code> 方法，<code>Builder</code> 会自动帮我们构建 <code>Request</code> 对象。</p>
+<p>可以简单看看 <code>Request</code> 的源码：</p>
+<pre><code class="language-kotlin">class Request internal constructor(
+    @get:JvmName(&quot;url&quot;) val url: HttpUrl,
+    @get:JvmName(&quot;method&quot;) val method: String,
+    @get:JvmName(&quot;headers&quot;) val headers: Headers,
+    @get:JvmName(&quot;body&quot;) val body: RequestBody?,
+    internal val tags: Map&lt;Class&lt;*&gt;, Any&gt;
+) {
+    ...
+    open class Builder {
+        internal var url: HttpUrl? = null
+        internal var method: String
+        internal var headers: Headers.Builder
+        internal var body: RequestBody? = null
+        internal var tags: MutableMap&lt;Class&lt;*&gt;, Any&gt; = mutableMapOf()
+        ...
+        constructor() {
+            this.method = &quot;GET&quot;
+            this.headers = Headers.Builder()
+        }
+        open fun url(url: HttpUrl): Builder = apply {
+            this.url = url
+        }
+        open fun url(url: String): Builder {
+            val finalUrl: String = when {
+                url.startsWith(&quot;ws:&quot;, ignoreCase = true) -&gt; {
+                    &quot;http:${url.substring(3)}&quot;
+                }
+                url.startsWith(&quot;wss:&quot;, ignoreCase = true) -&gt; {
+                    &quot;https:${url.substring(4)}&quot;
+                }
+                else -&gt; url
+            }
+            return url(finalUrl.toHttpUrl())
+        }
+        open fun build(): Request {
+            return Request(
+                checkNotNull(url) { &quot;url == null&quot; },
+                method,
+                headers.build(),
+                body,
+                tags.toImmutableMap()
+            )
+        }
+    }
+}
+</code></pre>
+<p>我们设置的参数经过处理后首先存储在 <code>Builder</code> 中，调用 <code>build()</code> 方法创建 <code>Request</code> 对象时用其构建实例，如果我们没有配置则使用 <code>Builder</code> 中设定的默认值。</p>
+<p>在这里，<code>Builder</code> 同时扮演了上文中提到的 Builder、ConcreteBuilder 角色，在 Builder 模式中如果 ConcreteBuilder 只有一个，我们都可以使用这种写法，省略抽象，简化 Builder 模式的设计。</p>
+<p>同时，因为 <code>Builder</code> 里的每一个 Setter 方法都返回了 <code>Builder</code> 对象本身，所以我们在调用的时候就可以使用链式写法，更加简洁。</p>
+<p>在 Android SDK 中也时常可以见到建造者模式的身影，比如常用的 <code>AlertDialog</code>、<code>Notification</code> 等，由于其涉及到 UI 相关的处理逻辑，代码量较大，就不在这里展开了，可自行阅读源码理解。</p>
+<h1 id="优缺点">优缺点</h1>
+<h2 id="优点">优点</h2>
+<ul>
+<li>提高可读性和可维护性：通过使用建造者模式，代码的可读性和可维护性得到提高。建造者模式允许开发者在代码中清晰地看到对象的构建过程，从而更容易理解和修改代码。此外，可以使用链式调用，代码的组织结构更加清晰，易于阅读和编写。</li>
+<li>增强对象的不可变性：建造者模式通常与不可变对象（Immutable Objects）一起使用。通过使用建造者模式，可以在对象创建过程中设置所有必要的属性，并在对象构建完成后将其设置为不可变，从而确保对象的一致性和线程安全性，这是一种保护机制，也是建造者模式的特性。</li>
+<li>处理可选参数：某些对象可能具有许多可选参数，而不是所有参数都需要在每次创建对象时提供。使用建造者模式，可以通过提供一些设置方法来设置可选参数，而不是在构造函数中使用大量的参数。这使得代码更加简洁，避免了长参数列表的问题。</li>
+<li>更好的扩展性：可以通过扩展 <code>Builder</code> 类来支持新的构建步骤，或者通过引入不同的具体 <code>Builder</code> 类来构建不同的对象变种。</li>
+</ul>
+<h2 id="缺点">缺点</h2>
+<ul>
+<li>代码量增加：使用建造者模式通常会引入额外的代码，包括 <code>Builder</code> 类本身以及目标类中的 Setter 方法。</li>
+<li>可能导致过多的类：如果每个类都需要一个独立的建造者，可能会导致类的数量激增，增加了类的管理和维护的复杂性。</li>
+<li>对象状态分散：在建造者模式中，对象的状态可能分散在构造器和目标类中，这使得对象的状态分散，可能导致维护和修改代码更加困难。</li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Android TextView HTML 超文本跳转]]></title>
+        <id>https://LiarrDev.github.io/post/Handle-Android-Textview-Html-Hypertext-Action/</id>
+        <link href="https://LiarrDev.github.io/post/Handle-Android-Textview-Html-Hypertext-Action/">
+        </link>
+        <updated>2025-06-03T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>之前在『<a href="https://liarrdev.github.io/post/Change-the-Partial-Style-within-Android-TextView/">Android 改变 TextView 内局部样式</a>』中介绍过利用 HTML 标签来设置样式，使用时你可能会遇到超文本跳转的需求，很容易你就能想到给 HTML 字符串添加 <code>&lt;a&gt;</code> 标签：</p>
+<pre><code class="language-kotlin">class MainActivity : AppCompatActivity() {
+    // ...
+    override fun onCreate(savedInstanceState: Bundle?) {
+        // ...
+        val content = Html.fromHtml(
+            &quot;这是一个超链接：&lt;a href='https://google.com'&gt;Google&lt;/a&gt;&quot;,
+            Html.FROM_HTML_MODE_LEGACY
+        )
+        binding.textView.text = content
+    }
+}
+</code></pre>
+<p><code>TextView</code> 确实出现了超文本的显示效果，但是却不能够响应点击。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1745051421676.png" alt="TextView 超链接效果" loading="lazy"></figure>
+<p>我们还需要对其做进一步处理。这里同样用到了『<a href="https://liarrdev.github.io/post/Change-the-Partial-Style-within-Android-TextView/">Android 改变 TextView 内局部样式</a>』中介绍的另一种方式，也就是 <code>SpannableString</code>，代码如下：</p>
+<pre><code class="language-kotlin">class MainActivity : AppCompatActivity() {
+    // ...
+    override fun onCreate(savedInstanceState: Bundle?) {
+        // ...
+        val content = Html.fromHtml(
+            &quot;这是一个超链接：&lt;a href='https://google.com'&gt;Google&lt;/a&gt;&quot;,
+            Html.FROM_HTML_MODE_LEGACY
+        )
+        binding.textView.text = content
+        handleHtmlClick(binding.textView)
+    }
+    
+    private fun handleHtmlClick(textView: TextView) {
+        textView.movementMethod = LinkMovementMethod.getInstance()
+        val text = textView.text
+        if (text is Spannable) {
+            val end = text.length
+            val spans = text.getSpans(0, end, URLSpan::class.java)
+            val sb = SpannableStringBuilder(text)
+            sb.clearSpans()
+            for (span in spans) {
+                sb.setSpan(
+                    URLSpan(span.url),
+                    text.getSpanStart(span),
+                    text.getSpanEnd(span),
+                    Spanned.SPAN_EXCLUSIVE_INCLUSIVE
+                )
+            }
+            textView.text = sb
+        }
+    }
+}
+</code></pre>
+<p>通过 <code>Spanned.getSpans()</code> 方法提取到可点击的 <code>URLSpan</code>，并重新构造 <code>URLSpan</code> 再添加到 <code>SpannableString</code> 中即可。<code>URLSpan</code> 是 <code>ClickableSpan</code> 的实现，当点击其中设置了 Span 的文本时，<code>URLSpan</code> 将尝试通过启动带有 <code>Intent.ACTION_VIEW</code> 的 <code>Activity</code> 来打开 URL。</p>
+<p>上面代码的效果就是跳转到浏览器打开超链接。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1745051459860.gif" alt="超链接跳转" loading="lazy"></figure>
+<p>除了我们常见的网页超链接外，超文本其实还包含其他场景的应用，而上面说到 <code>URLSpan</code> 尝试通过启动带有 <code>Intent.ACTION_VIEW</code> 的 <code>Activity</code> 来打开 URL，这让我们很容易就想起之前介绍过的<a href="https://liarrdev.github.io/post/Android-Calling-Email-App-to-Send-Email/">发送邮件</a>。可以这么写：</p>
+<pre><code class="language-kotlin">class MainActivity : AppCompatActivity() {
+    // ...
+    override fun onCreate(savedInstanceState: Bundle?) {
+        // ...
+        val content = Html.fromHtml(
+            &quot;发邮件给 &lt;a href='mailto:foo@bar.com'&gt;foo@bar.com&lt;/a&gt;&quot;,
+            Html.FROM_HTML_MODE_LEGACY
+        )
+        binding.textView.text = content
+        handleHtmlClick(binding.textView)
+    }
+    
+    private fun handleHtmlClick(textView: TextView) {
+        textView.movementMethod = LinkMovementMethod.getInstance()
+        val text = textView.text
+        if (text is Spannable) {
+            val end = text.length
+            val spans = text.getSpans(0, end, URLSpan::class.java)
+            val sb = SpannableStringBuilder(text)
+            sb.clearSpans()
+            for (span in spans) {
+                sb.setSpan(
+                    URLSpan(span.url),
+                    text.getSpanStart(span),
+                    text.getSpanEnd(span),
+                    Spanned.SPAN_EXCLUSIVE_INCLUSIVE
+                )
+            }
+            textView.text = sb
+        }
+    }
+}
+</code></pre>
+<p>它也会直接拉起手机的邮件应用：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1745083125426.gif" alt="超文本跳转发送邮件" loading="lazy"></figure>
+<p>如果希望接管点击后的逻辑，我们可以自行实现 <code>ClickableSpan</code>：</p>
+<pre><code class="language-kotlin">class MainActivity : AppCompatActivity() {
+    // ...
+    override fun onCreate(savedInstanceState: Bundle?) {
+        // ...
+        val content = Html.fromHtml(
+            &quot;这是一个超链接：&lt;a href='https://google.com'&gt;Google&lt;/a&gt;&quot;,
+            Html.FROM_HTML_MODE_LEGACY
+        )
+        binding.textView.text = content
+        handleHtmlClick(binding.textView)
+    }
+    
+    private fun handleHtmlClick(textView: TextView) {
+        textView.movementMethod = LinkMovementMethod.getInstance()
+        val text = textView.text
+        if (text is Spannable) {
+            val end = text.length
+            val spans = text.getSpans(0, end, URLSpan::class.java)
+            val sb = SpannableStringBuilder(text)
+            sb.clearSpans()
+            for (span in spans) {
+                sb.setSpan(
+                    HypertextSpan(this, span.url),
+                    text.getSpanStart(span),
+                    text.getSpanEnd(span),
+                    Spanned.SPAN_EXCLUSIVE_INCLUSIVE
+                )
+            }
+            textView.text = sb
+        }
+    }
+}
+
+class HypertextSpan(private val context: Context, private val url: String) : ClickableSpan() {
+    override fun onClick(widget: View) {
+        // 处理点击逻辑
+    }
+}
+</code></pre>
+<p>我们构造一个 <code>HypertextSpan</code> 来接管点击逻辑，只需将上一步的 <code>URLSpan</code> 替换即可，构造方法中传入 <code>Context</code> 和 URL 可以方便我们处理判断及跳转。</p>
+<p>比如在应用内打开网页：</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1745051484830.gif" alt="应用内接管超链接处理" loading="lazy"></figure>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Android 调用邮箱客户端发送邮件]]></title>
+        <id>https://LiarrDev.github.io/post/Android-Calling-Email-App-to-Send-Email/</id>
+        <link href="https://LiarrDev.github.io/post/Android-Calling-Email-App-to-Send-Email/">
+        </link>
+        <updated>2025-04-23T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>做商业项目的时候，应用往往需要提供一些用户的反馈渠道，尽管现在有微信公众号、微博等等方便快捷的途径可以与应用开发者取得联系，但邮箱也是不可或缺的一种反馈途径。</p>
+<p>在应用开发中，我们时常会拉起邮箱应用来完成发送邮件的操作，同时还会自动帮用户填写部分信息，减少用户的操作步骤，今天就教大家在 Android 开发中如何实现这一操作。</p>
+<p>前提是手机需要安装并登录邮箱客户端，你可以使用一些邮箱服务商提供的官方应用，比如『Gmail』、『QQMail』等等，也可以使用手机内置的邮箱应用，具体配置操作可参考『<a href="https://liarrdev.github.io/post/Mastering-Smartphone-Built-in-Email-App/">用好手机系统自带的邮件客户端</a>』。</p>
+<p>最简单的场景，我们只需要给指定的官方邮箱发送一些文本内容，可以这么写：</p>
+<pre><code class="language-Kotlin">object EmailSender {
+    fun mailToOne(context: Context) {
+        val intent = Intent(Intent.ACTION_SENDTO, Uri.parse(&quot;mailto:foo@bar.com&quot;))
+        intent.putExtra(Intent.EXTRA_SUBJECT, &quot;这是主题&quot;)
+        intent.putExtra(Intent.EXTRA_TEXT, &quot;这是内容&quot;)
+        context.startActivity(intent);
+    }
+}
+</code></pre>
+<p>这里用到了 <code>Activity</code> 的隐式启动，首先需要把 <code>Intent</code> 的 <code>action</code> 设置为 <code>Intent.ACTION_SENDTO</code>，再将 <code>data</code> 设置为 <code>mailto:</code> 开头的 <code>Uri</code>，并在后面拼接邮箱地址，这样就只有邮箱应用才能够响应我们的 <code>Intent</code>。如果需要设置主题和内容，可以填充 <code>Intent.EXTRA_SUBJECT</code> 和 <code>Intent.EXTRA_TEXT</code> 这两个字段。</p>
+<p>效果如下：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1745255773750.gif" alt="发送给单一收件人" loading="lazy"></figure>
+<p>邮件不仅支持发送给单一收件人，我们可以指定多个收件人，还支持抄送、密送。</p>
+<pre><code class="language-Kotlin">object EmailSender {
+    fun mailToMultiple(context: Context) {
+        val intent = Intent(Intent.ACTION_SENDTO)
+        intent.setData(Uri.parse(&quot;mailto:&quot;))
+        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(&quot;foo@bar.com&quot;, &quot;bar@foo.com&quot;))
+        intent.putExtra(Intent.EXTRA_CC, arrayOf(&quot;cc@bar.com&quot;))     // 抄送
+        intent.putExtra(Intent.EXTRA_BCC, arrayOf(&quot;bcc@bar.com&quot;))   // 密送
+        intent.putExtra(Intent.EXTRA_SUBJECT, &quot;这是主题&quot;)
+        intent.putExtra(Intent.EXTRA_TEXT, &quot;这是内容&quot;)
+        context.startActivity(intent)
+    }
+}
+</code></pre>
+<p><code>action</code> 的配置与上文一致，但是 <code>data</code> 不需要拼接收件人的邮箱地址，而是改成在 <code>Intent.EXTRA_EMAIL</code> 字段传入，抄送和密送的邮箱地址则分别在 <code>Intent.EXTRA_CC</code> 和 <code>Intent.EXTRA_BCC</code> 字段传入，这三个字段都接收字符串类型的数组，也就意味着我们可以填充多个邮箱地址。</p>
+<p>效果如下：</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1745255801296.gif" alt="发送给多个收件人" loading="lazy"></figure>
+<p>邮件同时还能上传附件，我们可以这么写：</p>
+<pre><code class="language-Kotlin">object EmailSender {
+    fun mailAttachments(context: Context) {
+        val file = File(PathUtils.getInternalAppFilesPath(), &quot;screenshot.png&quot;)
+        val intent = Intent(Intent.ACTION_SEND_MULTIPLE)
+        intent.selector = Intent(Intent.ACTION_SENDTO, Uri.parse(&quot;mailto:&quot;))
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(&quot;foo@bar.com&quot;))
+        intent.putExtra(Intent.EXTRA_SUBJECT, &quot;这是主题&quot;)
+        intent.putExtra(Intent.EXTRA_STREAM, arrayListOf(UriUtils.file2Uri(file)))
+        context.startActivity(intent)
+    }
+}
+</code></pre>
+<p>这里将 <code>action</code> 改成 <code>Intent.ACTION_SEND_MULTIPLE</code>，如果仅仅是这样修改，除了邮箱应用外，许多应用都能够响应我们的 <code>Intent</code>，因此还需要调用 <code>setSelector()</code> 方法，为此 <code>Intent</code> 设置选择器。最后再向 <code>Intent.EXTRA_STREAM</code> 字段传入附件的 <code>Uri</code>，它也接收数组，意味着我们可以传输多个附件。</p>
+<p>效果如下：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1745255822369.gif" alt="发送附件" loading="lazy"></figure>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[ViewPager2 横向嵌套滚动]]></title>
+        <id>https://LiarrDev.github.io/post/ViewPager2-Horizontal-Nested-Scroll/</id>
+        <link href="https://LiarrDev.github.io/post/ViewPager2-Horizontal-Nested-Scroll/">
+        </link>
+        <updated>2025-03-18T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>之前『<a href="https://liarrdev.github.io/post/Tab-Switching-Effects-by-TabLayout-and-ViewPager2/">TabLayout &amp; ViewPager2 快速打造选项卡切换效果</a>]』一文介绍了如何实现一个简单的页面滑动切换效果，随着开发的深入，你可能会遇到 <code>ViewPager2</code> 嵌套滑动的问题，也就是当 <code>ViewPager2</code> 内有一个可以同方向滚动的 <code>View</code>，比如 <code>RecyclerView</code>，它并不能够按照我们的预期工作。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1742312093011.gif" alt="嵌套滚动异常" loading="lazy"></figure>
+<p>嵌套？之前我们用 <a href="https://liarrdev.github.io/post/Solve-the-Android-Nested-Scrolling-Problem-with-NestedScrollView/">NestedScrollView 解决 Android 嵌套滚动问题</a>，这次能不能依葫芦画瓢？</p>
+<p>很显然，并不适合。</p>
+<p>既然如此，我们能否通过修改 <code>ViewPager2</code> 的事件分发逻辑，使其根据我们的需要进行分发？</p>
+<p>很遗憾，<code>ViewPager2</code> 被标记为 <code>final</code>，我们无法继承修改。</p>
+<pre><code class="language-Java">public final class ViewPager2 extends ViewGroup {
+    ...
+}
+</code></pre>
+<p><code>RecyclerView</code> 总该不会被标记为 <code>final</code> 吧，我们重写 <code>RecyclerView</code> 是否行得通？</p>
+<p>我们换个角度思考这个问题，这次我们重写 <code>RecyclerView</code>，假如说下次我们需要往 <code>ViewPager2</code> 里嵌套一个 <code>ScrollView</code> 或者其他任意可滚动的 <code>View</code>，岂不是每一个都要重写？有没有一劳永逸的方法？</p>
+<p>其实可以单独自定义一个 <code>ViewGroup</code> 用于处理 <code>ViewPager2</code> 内的事件分发，当添加了需要处理嵌套滑动问题的 <code>View</code> 时，只需要在该 <code>View</code> 外面包一层我们自定义的 <code>ViewGroup</code>，就可以实现对嵌套滑动事件的处理。</p>
+<pre><code class="language-Kotlin">class ViewPager2NestedFrameLayout @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : FrameLayout(context, attrs) {
+
+    private val parentViewPager: ViewPager2?
+        get() {
+            var v: View? = parent as? View
+            while (v != null &amp;&amp; v !is ViewPager2) {
+                v = v.parent as? View
+            }
+            return v as? ViewPager2
+        }
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        when (ev?.action) {
+            MotionEvent.ACTION_DOWN -&gt; {
+                parentViewPager?.isUserInputEnabled = false
+            }
+
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -&gt; {
+                parentViewPager?.isUserInputEnabled = true
+            }
+        }
+        return super.dispatchTouchEvent(ev)
+    }
+}
+</code></pre>
+<p>我们继承 <code>FrameLayout</code> 来实现，一般情况下该 <code>ViewGroup</code> 仅会包裹我们需要嵌套滚动的 <code>View</code>，所以 <code>FrameLayout</code> 对原有代码的入侵性最小，同时性能也最优。</p>
+<p>这其中一个关键点是如何获取 <code>ViewPager2</code> 的实例，当然我们可以通过外部传入，但这样每次使用时都需要手动设置一遍，非常麻烦。于是这里采用另一种方式，通过 <code>View</code> 的 <code>getParent()</code> 方法获取其父 <code>View</code>，然后判断其是否为 <code>ViewPager2</code>，如果是则返回，否则继续向上查找。</p>
+<p>拿到 <code>ViewPager2</code> 的实例就好办了，当接收到 <code>ACTION_DOWN</code> 事件时，我们调用 <code>setUserInputEnabled()</code> 设置为 <code>false</code>，禁止 <code>ViewPager2</code> 滚动，当接收到 <code>ACTION_UP</code> 或 <code>ACTION_CANCEL</code> 事件时，我们设置为 <code>true</code>，允许 <code>ViewPager2</code> 滚动。</p>
+<p>使用方法正如我们前面所述，包裹在需要嵌套滑动的 <code>View</code> 外即可：</p>
+<pre><code class="language-XML">&lt;FrameLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    tools:context=&quot;.NestedFragment&quot;&gt;
+    ...
+    &lt;com.example.nested.ViewPager2NestedFrameLayout
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;wrap_content&quot;&gt;
+        &lt;androidx.recyclerview.widget.RecyclerView
+            android:id=&quot;@+id/recycler_view&quot;
+            android:layout_width=&quot;match_parent&quot;
+            android:layout_height=&quot;wrap_content&quot;
+            android:orientation=&quot;horizontal&quot;
+            app:layoutManager=&quot;androidx.recyclerview.widget.LinearLayoutManager&quot; /&gt;
+    &lt;/com.example.nested.ViewPager2NestedFrameLayout&gt;
+&lt;/FrameLayout&gt;
+</code></pre>
+<p>效果如下：</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1742312125905.gif" alt="嵌套滚动正常" loading="lazy"></figure>
+<p>正如我们所期望的那样工作，由于范围仅限制在该 <code>ViewGroup</code> 范围内，所以触摸该 <code>ViewGroup</code> 以外的区域仍能够使 <code>ViewPager2</code> 正常滑动。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[ArkUI 自定义组件：KeyCap 实践]]></title>
+        <id>https://LiarrDev.github.io/post/ArkUI-Custom-Components-KeyCap/</id>
+        <link href="https://LiarrDev.github.io/post/ArkUI-Custom-Components-KeyCap/">
+        </link>
+        <updated>2025-02-10T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>之前在『<a href="https://liarrdev.github.io/post/MOJiKana-Physical-Button-Motion-Effect/">「MOJiKana」中模仿实体按键的动效是如何实现的？</a>』一文中介绍了 Android 平台 View 体系以及 Compose 体系关于 <code>KeyCap</code> 的开发实践。文中我顺嘴提了一句 ArkUI 的实现方式，但并未给出实际代码，今天单独来讲下 ArkUI 中的实现方式。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1739113257377.gif" alt="KeyCap 效果" loading="lazy"></figure>
+<p>因为 Android 平台无论是 View 还是 Compose 默认情况下都不支持单独设置某一方向上的边框，所以我们采用两个图层叠加的方式来模拟。采用两个图层有个小缺陷，就是当两个图层之间的间隔过高时，视觉效果就不再像是一个实体按键了。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1739113300420.png" alt="KeyCap 间隔过高" loading="lazy"></figure>
+<p>当然，这既可以归咎为使用不当，也可以说是我设计的时候并没有兼容，其实只需要将底部图层的高度撑满整个父布局就可以解决这个问题。</p>
+<p>但是像 ArkUI 就可以使用单边 <code>border</code> 来规避这种问题。</p>
+<pre><code class="language-ts">@Component
+export struct KeyCap {
+  keyFlatColor: ResourceColor = Color.Transparent
+  keyShadowColor: ResourceColor = Color.Transparent
+  keyStroke: Length = 0
+  keyCapRadius: Length = 0
+  @BuilderParam child: () =&gt; void = this.customBuilder
+  @State private pressed: boolean = false
+
+  @Builder
+  customBuilder() {
+  }
+
+  build() {
+    RelativeContainer() {
+      Stack({ alignContent: Alignment.Center }) {
+        this.child()
+      }
+      .width('100%')
+      .backgroundColor(this.keyFlatColor)
+      .margin({ top: this.pressed ? this.keyStroke : 0 })
+      .borderRadius(this.keyCapRadius)
+      .borderColor(this.keyShadowColor)
+      .borderWidth({ bottom: this.pressed ? 0 : this.keyStroke })
+      .alignRules({
+        top: { anchor: '__container__', align: VerticalAlign.Top },
+        bottom: { anchor: '__container__', align: VerticalAlign.Bottom }
+      })
+    }.onTouch((event: TouchEvent) =&gt; {
+      if (event.type == TouchType.Down) {
+        this.pressed = true
+      } else if (event.type == TouchType.Up || event.type == TouchType.Cancel) {
+        this.pressed = false
+      }
+    })
+  }
+}
+</code></pre>
+<p>属性还是跟之前一样，可以看到这里少了一层组件，通过判断是否按压来调节底部边框宽度以及顶部边距，整体代码量又简洁了不少。</p>
+<p>虽说这种方式值的一夸，但众所周知，ArkUI 从不经夸。在自定义组件中，如果需要添加子组件，我们无法像 Compose 一样采用高阶函数，甚至由于系统组件无法查看具体实现，我们没办法模拟出这种闭包的写法，只能将子组件通过属性传递。</p>
+<p>子组件需要通过 <code>@BuilderParam</code> 传递，它用来承接 <code>@Builder</code> 函数，这意味着我们还需要单独写一个 <code>@Builder</code> 函数来实现子组件：</p>
+<pre><code class="language-ts">@Entry
+@Component
+struct MainPage {
+  Stack({ alignContent: Alignment.Center }) {
+    KeyCap({
+      keyFlatColor: Color.Brown,
+      keyShadowColor: Color.Orange,
+      keyStroke: 6,
+      keyCapRadius: 60,
+      child: this.keyCapChildBuilder
+    })
+      .width(120)
+      .height(54)
+      .onClick(() =&gt; {})
+  }
+  @Builder
+  keyCapChildBuilder() {
+    Text()  // 子组件实现
+  }
+}
+</code></pre>
+<p>这种设计非常蠢，仿佛 View Tree 层次缺失，不利于阅读。</p>
+<p>又能怎么样呢，甩甩手上的屎继续写呗。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Design Pattern: Factory]]></title>
+        <id>https://LiarrDev.github.io/post/Design-Pattern-Factory/</id>
+        <link href="https://LiarrDev.github.io/post/Design-Pattern-Factory/">
+        </link>
+        <updated>2024-12-26T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="前言">前言</h1>
+<p>工厂模式（Factory Pattern）是最常用的设计模式之一，它与之前介绍的『<a href="https://liarrdev.github.io/post/Design-Pattern-Singleton/">Design Pattern: Singleton</a>』都属于创建类型的设计模式。</p>
+<p>它在创建对象时提供了一种封装机制，将实际创建对象的代码与使用代码分离。在创建对象时不会对客户端暴露创建逻辑，而是使其创建过程延迟到子类进行，并且通过一个共同的接口来指向新创建的对象。它主要解决接口选择的问题。</p>
+<p>一般情况下，工厂模式有三种实现：简单工厂模式（Simple Factory）、工厂方法模式（Factory Method）、抽象工厂模式（Abstract Factory）。 这三种模式从上到下逐步抽象，不过值得一提的是，简单工厂模式并不在 GoF 23 种设计模式之列。</p>
+<p>下面我们逐一介绍这三种实现。</p>
+<h1 id="实现">实现</h1>
+<p>假设我们需要生产两款手机（以 Apple 和 Samsung 为例），在不使用设计模式的情况下，我们可能会这么写：</p>
+<pre><code class="language-kotlin">class Apple(val screen: String, val usb: String) {
+    fun hardware() = println(&quot;[Apple] screen: $screen, usb: $usb&quot;)
+}
+
+class Samsung(val screen: String, val usb: String) {
+    fun hardware() = println(&quot;[Samsung] screen: $screen, usb: $usb&quot;)
+}
+
+fun main() {
+    val apple = Apple(&quot;LCD&quot;, &quot;Lightning&quot;)
+    apple.hardware()
+    val samsung = Samsung(&quot;OLed&quot;, &quot;Type-C&quot;)
+    samsung.hardware()
+}
+</code></pre>
+<p>即由用户手动去创建实际的对象，在上面这个例子中，用户需要知道如何创建一台手机，需要知道什么手机使用什么屏幕和什么类型的 USB 插口，用户和手机的生产就耦合在一起了。</p>
+<p>为了降低耦合性，我们引入工厂模式，把手机的生产细节放到工厂里，用户无需关心这台手机使用什么屏幕和 USB 插口，直接调用工厂的创建方法，不必知道创建的细节。</p>
+<h2 id="simple-factory-简单工厂模式">Simple Factory 简单工厂模式</h2>
+<h3 id="简介">简介</h3>
+<p>简单工厂模式又叫作静态工厂方法模式（Static Factory Method）。它将对象的创建逻辑封装在一个工厂类中，客户端通过调用工厂类的静态方法来创建对象。</p>
+<p>简单工厂模式包含如下角色：</p>
+<ul>
+<li>Factory：工厂角色，负责实现创建所有实例的内部逻辑。</li>
+<li>AbstractProduct：抽象产品角色，是创建的所有对象的父类，负责描述所有实例的公共接口。</li>
+<li>Product：具体产品角色，即创建目标，所有创建的对象都是该角色。</li>
+</ul>
+<pre><code class="language-kotlin">abstract class Phone {
+    abstract fun hardware()
+}
+
+class Apple(val screen: String, val usb: String) : Phone() {
+    override fun hardware() = println(&quot;[Apple] screen: $screen, usb: $usb&quot;)
+}
+
+class Samsung(val screen: String, val usb: String) : Phone() {
+    override fun hardware() = println(&quot;[Samsung] screen: $screen, usb: $usb&quot;)
+}
+
+object PhoneFactory {
+    fun createPhone(type: String): Phone? {
+        return when (type) {
+            &quot;Apple&quot; -&gt; Apple(&quot;LCD&quot;, &quot;Lightning&quot;)
+            &quot;Samsung&quot; -&gt; Samsung(&quot;OLed&quot;, &quot;Type-C&quot;)
+            else -&gt; null
+        }
+    }
+}
+
+fun main() {
+    val apple: Phone? = PhoneFactory.createPhone(&quot;Apple&quot;)
+    apple?.hardware()
+    val samsung: Phone? = PhoneFactory.createPhone(&quot;Samsung&quot;)
+    samsung?.hardware()
+}
+</code></pre>
+<p>在这个例子中，<code>Phone</code> 就充当了抽象产品角色，<code>Apple</code> 和 <code>Samsung</code> 都是具体产品，工厂提供了静态方法用于创建具体产品，用户只需要传入手机的品牌即可获取手机实例。</p>
+<h3 id="优缺点">优缺点</h3>
+<ul>
+<li>优点：简单工厂模式提供专门的工厂类用于创建对象，实现了对象创建和使用的职责分离，客户端不需知道所创建的具体产品类的类名以及创建过程，只需要知道具体产品类所对应的参数即可。通过引入配置文件，可以在不修改任何客户端代码的情况下更换和增加新的具体产品类，在一定程度上提高了系统的灵活性。</li>
+<li>缺点：不符合设计模式的开闭原则（对扩展开放，对修改关闭），每次添加新的产品就需要修改工厂类。在产品类型较多时，有可能造成工厂逻辑过于复杂，不利于系统的扩展维护。</li>
+</ul>
+<h2 id="factory-method-工厂方法模式">Factory Method 工厂方法模式</h2>
+<h3 id="简介-2">简介</h3>
+<p>工厂方法模式又被称为虚拟构造子模式（Virtual Constructor）或者多态工厂模式（Polymorphic Factory）。工厂方法模式是目标是定义一个创建产品对象的工厂接口，将实际创建工作推迟到子类中。</p>
+<p>工厂方法模式包含如下角色：</p>
+<ul>
+<li>AbstractFactory：抽象工厂角色，与应用程序无关，主要在创建模式中规范和产品对应的工厂对象的标准化定义。</li>
+<li>Factory：具体工厂角色，和用户直接交互的具体实现，用户创建产品对象。</li>
+<li>AbstractProduct：抽象产品角色，是创建的所有对象的父类，负责描述所有实例的公共接口。</li>
+<li>Product：具体产品角色，即创建目标，所有创建的对象都是该角色。</li>
+</ul>
+<pre><code class="language-kotlin">abstract class Phone {
+    abstract fun hardware()
+}
+
+class Apple(val screen: String, val usb: String) : Phone() {
+    override fun hardware() = println(&quot;[Apple] screen: $screen, usb: $usb&quot;)
+}
+
+class Samsung(val screen: String, val usb: String) : Phone() {
+    override fun hardware() = println(&quot;[Samsung] screen: $screen, usb: $usb&quot;)
+}
+
+interface PhoneFactory {
+    fun createPhone(): Phone
+}
+
+class AppleFactory : PhoneFactory {
+    override fun createPhone(): Phone = Apple(&quot;LCD&quot;, &quot;Lightning&quot;)
+}
+
+class SamsungFactory : PhoneFactory {
+    override fun createPhone(): Phone = Samsung(&quot;OLed&quot;, &quot;Type-C&quot;)
+}
+
+fun main() {
+    val factory: PhoneFactory = AppleFactory()
+    val phone: Phone = factory.createPhone()
+    phone.hardware()
+}
+</code></pre>
+<p>工厂方法模式在简单工厂模式的基础上抽象了工厂类，即将具体的手机创建过程交给专门的工厂子类去完成。</p>
+<p>工厂方法模式之所以又被称为多态工厂模式，是因为所有的具体工厂类都具有同一抽象父类。</p>
+<h3 id="优缺点-2">优缺点</h3>
+<ul>
+<li>优点：最直接的优点就是在满足开闭原则的基础上实现功能的扩展，核心工厂类不再负责所有产品的构建，而是将具体的工作交给工厂子类实现，需要增加新产品时，无须修改已有的抽象或具体的工厂或产品，只要添加一个具体工厂和具体产品就可以。</li>
+<li>缺点：由于在添加新产品时需要编写新的产品类和工厂类，系统中类的个数将成对增加，在一定程度上增加了复杂度，有更多的类需要编译和运行，也会给系统带来一些额外开销。</li>
+</ul>
+<h2 id="abstract-factory-抽象工厂模式">Abstract Factory 抽象工厂模式</h2>
+<h3 id="简介-3">简介</h3>
+<p>抽象工厂模式是工厂方法模式的升级版本，工厂方法模式只生产一个等级的产品，而抽象工厂模式可生产多个等级的产品。</p>
+<p>为了更清晰地理解工厂方法模式，需要先引入两个概念：</p>
+<ul>
+<li>产品等级结构：产品等级结构即产品的继承结构，如一个抽象类是电视机，其子类有海尔电视机、海信电视机、索尼电视机，则抽象电视机与具体品牌的电视机之间构成了一个产品等级结构，抽象电视机是父类，而具体品牌的电视机是其子类。</li>
+<li>产品族：在抽象工厂模式中，产品族是指由同一个工厂生产的，位于不同产品等级结构中的一组产品，如海尔电器工厂生产的海尔电视机、海尔电冰箱，海尔电视机位于电视机产品等级结构中，海尔电冰箱位于电冰箱产品等级结构中。</li>
+</ul>
+<p>当系统所提供的工厂所需生产的具体产品并不是一个简单的对象，而是多个位于不同产品等级结构中属于不同类型的具体产品时需要使用抽象工厂模式。</p>
+<p>抽象工厂模式是所有形式的工厂模式中最为抽象和最具一般性的一种形态。</p>
+<p>抽象工厂模式与工厂方法模式最大的区别在于，工厂方法模式针对的是一个产品等级结构，而抽象工厂模式则需要面对多个产品等级结构，一个工厂等级结构可以负责多个不同产品等级结构中的产品对象的创建 。当一个工厂等级结构可以创建出分属于不同产品等级结构的一个产品族中的所有对象时，抽象工厂模式比工厂方法模式更为简单、有效率。</p>
+<p>抽象工厂模式包含如下角色：</p>
+<ul>
+<li>AbstractFactory：抽象工厂角色，与应用程序无关，主要在创建模式中规范和产品对应的工厂对象的标准化定义。</li>
+<li>Factory：具体工厂角色，用于生产不同的产品族。</li>
+<li>AbstractProduct：抽象产品角色，定义了产品的规范，描述了产品的共同主要特性和功能，抽象工厂模式有多个抽象产品。</li>
+<li>Product：具体产品角色，由专门的具体工厂来创建，具体产品和具体工厂之间往往一一对应。</li>
+</ul>
+<pre><code class="language-kotlin">interface Tablet {
+    fun play()
+}
+
+interface Earphone {
+    fun play()
+}
+
+class iPad : Tablet {
+    override fun play() = println(&quot;Apple iPad play game&quot;)
+}
+
+class Tab : Tablet {
+    override fun play() = println(&quot;Samsung Tab play game&quot;)
+}
+
+class AirPods : Earphone {
+    override fun play() = println(&quot;Apple AirPods play music&quot;)
+}
+
+class Buds : Earphone {
+    override fun play() = println(&quot;Samsung Buds play music&quot;)
+}
+
+interface Factory {
+    fun createTablet(): Tablet
+    fun createEarphone(): Earphone
+}
+
+class AppleFactory : Factory {
+    override fun createTablet(): Tablet = iPad()
+    override fun createEarphone(): Earphone = AirPods()
+}
+
+class SamsungFactory : Factory {
+    override fun createTablet(): Tablet = Tab()
+    override fun createEarphone(): Earphone = Buds()
+}
+
+fun main() {
+    val appleFactory: Factory = AppleFactory()
+    appleFactory.createTablet().play()
+    appleFactory.createEarphone().play()
+
+    val samsungFactory: Factory = SamsungFactory()
+    samsungFactory.createTablet().play()
+    samsungFactory.createEarphone().play()
+}
+</code></pre>
+<p>这里定义了平板和耳机两类产品，各为一个产品等级结构，Apple 和 Samsung 都生产这两类产品，所以旗下的产品可视为产品族</p>
+<p>抽象工厂可以通过多态，来动态设置不同的工厂，生产不同的产品，同时每个工厂中的产品又不属于同一个产品等级结构。</p>
+<h3 id="优缺点-3">优缺点</h3>
+<ul>
+<li>优点：可以在类的内部对产品族中相关联的多等级产品共同管理，而不必专门引入多个新的类来进行管理。增加新的具体工厂和产品族很方便，因为一个具体的工厂实现代表的是一个产品族，无须修改已有系统，符合开闭原则。</li>
+<li>缺点：开闭原则的倾斜性。增加新的工厂和产品族容易，增加新的产品等级结构却比较麻烦，这是因为在抽象工厂角色中规定了所有可能被创建的产品集合，要支持新种类的产品就意味着要对该接口进行扩展，而这将涉及到对抽象工厂角色及其所有子类的修改，显然会带来较大的不便。</li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[『MOJiKana』中模仿实体按键的动效是如何实现的？]]></title>
+        <id>https://LiarrDev.github.io/post/MOJiKana-Physical-Button-Motion-Effect/</id>
+        <link href="https://LiarrDev.github.io/post/MOJiKana-Physical-Button-Motion-Effect/">
+        </link>
+        <updated>2024-11-14T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>在『<a href="https://www.hugecore.net/mojikana">MOJiKana</a>』中你可以看到我们大量使用了模仿实体按键的按压动效：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1728828620081.gif" alt="模仿实体按键动效" loading="lazy"></figure>
+<p>一开始这种动效仅在五十音列表中使用到，我们只需在 <code>Adapter</code> 中对子项进行处理即可，随着版本的迭代，该动效开始广泛应用到其他按钮设计中，如果针对每个按钮都做这种动效处理，项目中会存在大量的冗余代码，不易于维护，所以我考虑将其封装成一个组件，让每个需要用到的地方都尽可能简单地接入。</p>
+<p>先来看看原理，如下图所示，我们只需要通过叠加两个图层，上面的图层采用较浅的颜色，下面的图层采用较深的颜色，并在上下两个图层的底部制造一个间距，即可在视觉上形成一个实体按键的效果。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1728828647053.png" alt="图层分解" loading="lazy"></figure>
+<p>当按钮被按下时，我们取消两个图层底部的间距，使底部的深色图层被覆盖隐藏，再给图层与父布局顶部添加同样的间距，就能够模仿出实体按键被按下的效果。</p>
+<p>使用两个图层其实是 Android 的能力限制，像 ArkUI 中我们实际上只采用一个图层，然后通过调整底部边框的宽度来实现的，尽管如此，实现思路大体一致。</p>
+<p>知道了原理，下面开始编码。</p>
+<p>考虑到需要封装成通用组件，我们把几个重要的属性提取出来：</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;resources&gt;
+    &lt;declare-styleable name=&quot;KeyCapLayout&quot;&gt;
+        &lt;attr name=&quot;keyCapFlatColor&quot; format=&quot;color&quot; /&gt;
+        &lt;attr name=&quot;keyCapShadowColor&quot; format=&quot;color&quot; /&gt;
+        &lt;attr name=&quot;keyStroke&quot; format=&quot;dimension&quot; /&gt;
+        &lt;attr name=&quot;keyCapRadius&quot; format=&quot;dimension&quot; /&gt;
+    &lt;/declare-styleable&gt;
+&lt;/resources&gt;
+</code></pre>
+<p>我把这个组件命名为 <code>KeyCapLayout</code>，因为它很像我们键盘中的键帽。<code>keyCapFlatColor</code> 表示的是按键表面的颜色，也就是原理中上面图层的颜色，<code>keyCapShadowColor</code> 表示的是按键的侧面阴影颜色，也就是原理中下面图层的颜色，<code>keyStroke</code> 表示的是按键的厚度，也可以理解为在机械键盘中我们常说的键程，<code>keyCapRadius</code> 表示的是按键的圆角半径，我这里没有区分上下两个图层的半径，而是采用同样的大小，读者可按需添加。</p>
+<p>接下来封装组件：</p>
+<pre><code class="language-Kotlin">class KeyCapLayout @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyle: Int = 0
+) : FrameLayout(context, attrs, defStyle) {
+
+    private val keyCapFlat: QMUIFrameLayout     // 键盘顶部
+    private val keyCapShadow: QMUIFrameLayout   // 键盘侧面
+    private val tagFlat = &quot;keyCapFlat&quot;
+    private val tagShadow = &quot;keyCapShadow&quot;
+    private var keystroke = 0                   // 键程
+
+    init {
+        val a = context.obtainStyledAttributes(attrs, R.styleable.KeyCapLayout)
+        val flat = a.getColor(R.styleable.KeyCapLayout_keyCapFlatColor, Color.YELLOW)
+        val shadow = a.getColor(R.styleable.KeyCapLayout_keyCapShadowColor, Color.GRAY)
+        keystroke = a.getDimension(R.styleable.KeyCapLayout_keyStroke, 4.dp.toFloat()).toInt()
+        val radius = a.getDimension(R.styleable.KeyCapLayout_keyCapRadius, 8.dp.toFloat()).toInt()
+        a.recycle()
+
+        keyCapFlat = QMUIFrameLayout(context).apply {
+            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+            tag = tagFlat
+        }
+        keyCapShadow = QMUIFrameLayout(context).apply {
+            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+            tag = tagShadow
+        }
+        setKeyCapFlatColor(flat)
+        setKeyCapShadowColor(shadow)
+        setKeyCapRadius(radius)
+        setKeyStroke(keystroke)
+        addView(keyCapShadow)
+        addView(keyCapFlat)
+    }
+
+    /**
+     * 设置键帽颜色
+     */
+    fun setKeyCapFlatColor(@ColorInt color: Int) {
+        keyCapFlat.setBackgroundColor(color)
+    }
+
+    /**
+     * 设置竖面阴影色
+     */
+    fun setKeyCapShadowColor(@ColorInt color: Int) {
+        keyCapShadow.setBackgroundColor(color)
+    }
+
+    /**
+     * 设置圆角
+     */
+    fun setKeyCapRadius(radius: Int) {
+        keyCapFlat.radius = radius
+        keyCapShadow.radius = radius
+    }
+
+    /**
+     * 设置键程
+     */
+    fun setKeyStroke(height: Int) {
+        val lp = keyCapFlat.layoutParams as LayoutParams
+        lp.setMargins(0, 0, 0, height)
+        keyCapFlat.layoutParams = lp
+    }
+
+    /**
+     * 处理按压
+     * @param press 是否按压
+     */
+    private fun handlePress(press: Boolean) {
+        val lpFlat = keyCapFlat.layoutParams as LayoutParams
+        val lpShadow = keyCapShadow.layoutParams as LayoutParams
+        if (press) {
+            lpFlat.setMargins(0, keystroke, 0, 0)
+            lpShadow.setMargins(0, keystroke, 0, 0)
+        } else {
+            lpFlat.setMargins(0, 0, 0, keystroke)
+            lpShadow.setMargins(0)
+        }
+        keyCapFlat.layoutParams = lpFlat
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        when (event?.action) {
+            MotionEvent.ACTION_DOWN -&gt; {
+                handlePress(true)
+            }
+
+            MotionEvent.ACTION_UP -&gt; {
+                handlePress(false)
+                performClick()
+            }
+
+            MotionEvent.ACTION_CANCEL -&gt; {
+                handlePress(false)
+            }
+        }
+        return true
+    }
+
+    override fun addView(child: View?) {
+        if (child?.tag == tagFlat || child?.tag == tagShadow) {
+            super.addView(child)
+        } else {
+            keyCapFlat.addView(child)
+        }
+    }
+
+    override fun addView(child: View?, index: Int) {
+        if (child?.tag == tagFlat || child?.tag == tagShadow) {
+            super.addView(child, index)
+        } else {
+            keyCapFlat.addView(child, index)
+        }
+    }
+
+    override fun addView(child: View?, params: ViewGroup.LayoutParams?) {
+        if (child?.tag == tagFlat || child?.tag == tagShadow) {
+            super.addView(child, params)
+        } else {
+            keyCapFlat.addView(child, params)
+        }
+    }
+
+    override fun addView(child: View?, index: Int, params: ViewGroup.LayoutParams?) {
+        if (child?.tag == tagFlat || child?.tag == tagShadow) {
+            super.addView(child, index, params)
+        } else {
+            keyCapFlat.addView(child, index, params)
+        }
+    }
+
+    override fun addView(child: View?, width: Int, height: Int) {
+        if (child?.tag == tagFlat || child?.tag == tagShadow) {
+            super.addView(child, width, height)
+        } else {
+            keyCapFlat.addView(child, width, height)
+        }
+    }
+}
+</code></pre>
+<p><code>KeyCapLayout</code> 继承自 <code>FrameLayout</code>，无论是简单的文字图片，或是复杂的自定义视图，都可以很方便地往里面添加。</p>
+<p>原理中提到的上下两个图层，为了方便圆角的设置，我采用了 <a href="https://github.com/Tencent/QMUI_Android">@Tencent/QMUI_Android</a> 这个库的 <code>QMUIFrameLayout</code> 来作容器，你也可以采用其他的圆角方案。</p>
+<p>写 XML 布局时，如果我们直接在 <code>KeyCapLayout</code> 中添加子视图，子视图默认会被插入到 <code>KeyCapLayout</code> 中，这样在处理按压效果时还需要额外处理子视图的上下偏移，如果我们能够将它插入到上图层中，它就仿佛印在按键表面一样，跟随图层上下偏移，所以我们重写 <code>addView()</code> 方法，将子视图添加到上图层中。</p>
+<p>因为我们首先需要调用 <code>addView()</code> 把上下两个图层添加到 <code>KeyCapLayout</code> 中，所以为了避免递归死循环，我们给上下图层分别配置 <code>Tag</code>，<code>addView()</code> 时判断不是这两个上下图层则添加到上图层中。</p>
+<p>按压效果就重写触摸事件 <code>onTouchEvent()</code> 处理，上面的原理已经介绍过了，不再重复。</p>
+<p>调用时只需包裹在我们的内容上即可：</p>
+<pre><code class="language-xml">&lt;com.example.banner.KeyCapLayout
+    android:layout_width=&quot;120dp&quot;
+    android:layout_height=&quot;56dp&quot;
+    app:keyCapFlatColor=&quot;#595959&quot;
+    app:keyCapRadius=&quot;56dp&quot;
+    app:keyCapShadowColor=&quot;#404040&quot;
+    app:keyStroke=&quot;6dp&quot;&gt;
+
+    &lt;TextView
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:layout_gravity=&quot;center&quot;
+        android:textStyle=&quot;bold&quot;
+        android:textColor=&quot;@color/white&quot;
+        android:textSize=&quot;18sp&quot;
+        android:text=&quot;Button&quot; /&gt;
+&lt;/com.example.banner.KeyCapLayout&gt;
+</code></pre>
+<p>点击事件也是直接调用 <code>KeyCapLayout</code> 的 <code>setOnClickListener()</code> 方法，我们在 <code>onTouchEvent()</code> 中处理了相关逻辑，当接收到 <code>MotionEvent.ACTION_UP</code> 事件时，会自动触发 <code>onClick()</code> 方法。</p>
+<p>『<a href="https://www.hugecore.net/mojikana">MOJiKana</a>』中同时也使用了 Jetpack Compose 技术，为了复用上面的代码，我不得不每次都使用 <code>AndroidView</code> 进行包裹，并在内部完成整个 <code>KeyCapLayout</code> 的创建、配置，还要创建它的子 <code>View</code> 再添加到其中。比如：</p>
+<pre><code class="language-Kotlin">@Preview
+@Composable
+private fun KeyCapLayoutPreview() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.White),
+        contentAlignment = Alignment.Center
+    ) {
+        AndroidView(factory = { context -&gt;
+            KeyCapLayout(context).apply {
+                layoutParams = ViewGroup.LayoutParams(SizeUtils.dp2px(120f), SizeUtils.dp2px(54f))
+                setKeyCapFlatColor(context.getColor(R.color.color_595959))
+                setKeyCapShadowColor(context.getColor(R.color.color_404040))
+                setKeyCapRadius(SizeUtils.dp2px(60f))
+                setKeyStroke(SizeUtils.dp2px(6f))
+                val imageView = ImageView(context).apply {
+                    layoutParams = ViewGroup.LayoutParams(SizeUtils.dp2px(24f), SizeUtils.dp2px(24f))
+                    setImageResource(R.drawable.ic_common_complete)
+                }
+                addView(
+                    imageView,
+                    FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT).apply { gravity = Gravity.CENTER }
+                )
+                setOnClickListener {
+                    // do something...
+                }
+            }
+        })
+    }
+}
+</code></pre>
+<p>随着项目中使用的场景逐渐增加，这种胶水代码也在慢慢膨胀。终于到了无法忍受之际，我又顺手搓了个 Compose 版本：</p>
+<pre><code class="language-Kotlin">@Composable
+fun KeyCap(
+    modifier: Modifier = Modifier,
+    keyFlatColor: Color = Color.Transparent,
+    keyShadowColor: Color = Color.Transparent,
+    keyStroke: Dp = 0.dp,
+    keyCapRadius: Dp = 0.dp,
+    content: @Composable BoxScope.() -&gt; Unit
+) {
+    var pressed by remember { mutableStateOf(false) }
+
+    Box(modifier = modifier.pointerInput(pressed) {
+        awaitPointerEventScope {
+            if (pressed) {
+                waitForUpOrCancellation()
+                pressed = false
+            } else {
+                awaitFirstDown(false)
+                pressed = true
+            }
+        }
+    }) {
+        Box(
+            modifier = Modifier
+                .padding(top = keyStroke)
+                .fillMaxSize()
+                .clip(RoundedCornerShape(size = keyCapRadius))
+                .background(keyShadowColor)
+        )
+        Box(
+            modifier = Modifier
+                .padding(
+                    top = if (pressed) keyStroke else 0.dp,
+                    bottom = if (pressed) 0.dp else keyStroke
+                )
+                .fillMaxSize()
+                .clip(RoundedCornerShape(size = keyCapRadius))
+                .background(color = keyFlatColor),
+            contentAlignment = Alignment.Center
+        ) {
+            content()
+        }
+    }
+}
+</code></pre>
+<p>属性依然是那几个属性，不再赘述。</p>
+<p>触摸事件在 <code>awaitPointerEventScope()</code> 内处理，使用一个状态来标记按钮是否被按下。</p>
+<p>得益于 Jetpack Compose 的声明式理念，无需再考虑上述原始 <code>View</code> 体系中 <code>addView()</code> 的问题，而是直接添加到对应的组件中即可。为了符合 Compose 的编写方式，可以直接参考其他组件的设计，在最后一个参数传入 <code>@Composable</code> 方法即可。</p>
+<p>使用方式也很简单：</p>
+<pre><code class="language-Kotlin">@Preview
+@Composable
+fun KeyCapPreview() {
+    val interactionSource = remember { MutableInteractionSource() }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.White),
+        contentAlignment = Alignment.Center
+    ) {
+        KeyCap(
+            keyFlatColor = colorResource(R.color.color_595959),
+            keyShadowColor = colorResource(R.color.color_404040),
+            keyStroke = 6.dp,
+            keyCapRadius = 60.dp,
+            modifier = Modifier
+                .size(120.dp, 54.dp)
+                .clickableWithoutRipple(interactionSource) {    // 去除默认的点击效果
+                    // do something...
+                }
+        ) {
+            Text(
+                text = stringResource(id = R.string.confirm),
+                color = Color.White
+            )
+        }
+    }
+}
+</code></pre>
+<p>需要留意的是，Compose 默认情况下会给组件添加一个点击的 Ripple 效果，因为我们是通过组合视图来实现，并且还有圆角，所以这个默认的点击效果反而会影响体验，要把它去除。</p>
+<p>去除点击效果的方法有很多种，Compose 官方也在后续的版本中做了更新，因为我目前使用的版本还比较低，所以我使用扩展方法来支持，其他实现方式可以自行搜索。</p>
+<pre><code class="language-Kotlin">fun Modifier.clickableWithoutRipple(
+    interactionSource: MutableInteractionSource,
+    onClick: () -&gt; Unit
+) = composed(
+    factory = {
+        this.then(
+            Modifier.clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = { onClick() }
+            )
+        )
+    }
+)
+</code></pre>
+<p>最后浅浅吐槽一下，虽然这个设计挺有意思，但是我个人觉得其实违反了透视原理。</p>
+<p>因为视觉上近大远小，所以按钮上的文字或图片按道理来说也应当被拉伸，左右两侧的延长线最终会在消失点相交。即使这个变换并不难实现，可是由于按钮的大小是动态配置的，导致变换的角度以及消失点就不太好确定，因此我们最终并没有实现这个效果。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[FastScroller & AlphabetIndexer 构建 Android 字母索引器]]></title>
+        <id>https://LiarrDev.github.io/post/Android-FastScroller-AlphabetIndexer/</id>
+        <link href="https://LiarrDev.github.io/post/Android-FastScroller-AlphabetIndexer/">
+        </link>
+        <updated>2024-10-10T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>之前我在『<a href="https://liarrdev.github.io/post/Wonderful-ArkUI-AlphabetIndexer/">ArkUI AlphabetIndexer 真香</a>』一文中提到，Android 平台也自带了一个 <code>AlphabetIndexer</code>，不少 Android 开发者都表示没见过这玩意儿。</p>
+<p>Android 中的字母索引器的 UI 其实应该叫 <code>FastScroller</code>，即「快速滑动块」，而 <code>AlphabetIndexer</code> 这个类也确实存在，只不过它是作为辅助类来处理逻辑，<code>FastScroller</code> 才是处理滑块的显示。 因为使用起来不方便又或者是样式不符合国人使用习惯等原因，在国内的 App 中都不常见，我们可以先看看它的效果：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1727108128429.gif" alt="FastScroller" loading="lazy"></figure>
+<p>今天就来聊聊怎么实现，虽然日常基本不会使用，就当涨涨见识。</p>
+<p>首先来看看布局，列表的子项就一个 <code>TextView</code>，没什么好说的。</p>
+<pre><code class="language-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;TextView xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    android:id=&quot;@+id/tv_contact&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    android:padding=&quot;16dp&quot;
+    android:textSize=&quot;16sp&quot;
+    android:textStyle=&quot;bold&quot; /&gt;
+</code></pre>
+<p>页面则使用一个 <code>ListView</code> 来做展示。</p>
+<pre><code class="language-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    android:orientation=&quot;vertical&quot;&gt;
+
+    &lt;com.google.android.material.appbar.MaterialToolbar
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:background=&quot;@android:color/holo_purple&quot;
+        app:title=&quot;Contacts&quot; /&gt;
+
+    &lt;ListView
+        android:id=&quot;@+id/list_view&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;match_parent&quot;
+        android:fastScrollEnabled=&quot;true&quot;
+        tools:listitem=&quot;@layout/item_contact&quot; /&gt;
+&lt;/LinearLayout&gt;
+</code></pre>
+<p>注意这里要配置 <code>android:fastScrollEnabled</code> 属性。</p>
+<p>不使用 <code>RecyclerView</code> 的原因是它还需要配置其他属性，相对来说更加复杂，后续后机会再单独介绍。</p>
+<p>接下来编写适配器：</p>
+<pre><code class="language-Kotlin">class ContactAdapter(
+    context: Context,
+    cursor: Cursor,
+    data: List&lt;Map&lt;String, String&gt;&gt;,
+    @LayoutRes resource: Int,
+    from: Array&lt;String&gt;,
+    @IdRes to: IntArray
+) : SimpleAdapter(context, data, resource, from, to), SectionIndexer {
+
+    private val indexer = AlphabetIndexer(cursor, 0, &quot;ABCDEFGHIJKLMNOPQRSTUVWXYZ&quot;)
+
+    override fun getSections(): Array&lt;Any&gt; {
+        return indexer.sections
+    }
+
+    override fun getPositionForSection(sectionIndex: Int): Int {
+        return indexer.getPositionForSection(sectionIndex)
+    }
+
+    override fun getSectionForPosition(position: Int): Int {
+        return indexer.getSectionForPosition(position)
+    }
+}
+</code></pre>
+<p>前面的布局中可以看到样式十分简单，所以这里直接继承 <code>SimpleAdapter</code>，同时实现 <code>SectionIndexer</code>，这里十分关键。</p>
+<p>构建 <code>AlphabetIndexer</code>，需要用到 <code>Cursor</code>，我们从上一层传入，并将 26 个字母作为索引。</p>
+<p><code>AlphabetIndexer</code> 本身也是 <code>SectionIndexer</code> 的子类，所以在我们实现的 <code>SectionIndexer</code> 的接口中调用 <code>AlphabetIndexer</code> 的对应方法返回。</p>
+<p>提到 <code>Cursor</code>，我们最先想到可以直接查询本地通讯录的数据，它会给我们返回一个 <code>Cursor</code> 对象，就不用我们手动封装数据源了：</p>
+<pre><code class="language-Kotlin">class MainActivity : AppCompatActivity() {
+
+    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(binding.root)
+        val cursor = contentResolver.query(
+            ContactsContract.Contacts.CONTENT_URI,
+            arrayOf(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY),
+            null,
+            null,
+            ContactsContract.Contacts.DISPLAY_NAME_PRIMARY
+        )
+        startManagingCursor(cursor)
+        cursor?.let {
+            val list = getData(it)
+            val adapter = ContactAdapter(
+                this,
+                it,
+                list,
+                R.layout.item_contact,
+                arrayOf(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY),
+                intArrayOf(R.id.tv_contact)
+            )
+            binding.listView.adapter = adapter
+        }
+    }
+
+    private fun getData(cursor: Cursor): List&lt;Map&lt;String, String&gt;&gt; {
+        val list = mutableListOf&lt;Map&lt;String, String&gt;&gt;()
+        if (cursor.moveToFirst()) {
+            do {
+                val column = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY)
+                val name = cursor.getString(column)
+                list.add(mapOf(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY to name))
+            } while (cursor.moveToNext())
+        }
+        return list
+    }
+}
+</code></pre>
+<p><code>Cursor</code> 数据取出 <code>ContactsContract.Contacts.DISPLAY_NAME_PRIMARY</code> 这一列用于组装子项，再将 <code>Cursor</code> 传入刚刚的 <code>ContactAdapter</code> 中构建 <code>AlphabetIndexer</code>。</p>
+<p>获取联系人还需要动态申请权限，这部分代码没有给出，自行处理即可。</p>
+<p>有些朋友敲完之后可能会发现侧边的索引器出不来，其实不是代码的问题，只是数据量不够导致的，你可以配置 <code>android:fastScrollAlwaysVisible</code> 属性让它保持显示：</p>
+<pre><code class="language-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;LinearLayout ...&gt;
+    ...
+    &lt;ListView ...
+        android:fastScrollAlwaysVisible=&quot;true&quot;
+        android:fastScrollEnabled=&quot;true&quot; /&gt;
+&lt;/LinearLayout&gt;
+</code></pre>
+<p>如果不配置该属性，默认情况下只有当内容大于 4 页时，<code>ListView</code> 才会显示索引器，我们可以在源码中得出这个结论。</p>
+<p><code>ListView</code> 的父类 <code>AbsListView</code> 的构造方法中有 <code>android:fastScrollEnabled</code> 这个属性的配置：</p>
+<pre><code class="language-Java">public abstract class AbsListView extends AdapterView&lt;ListAdapter&gt; implements TextWatcher,
+        ViewTreeObserver.OnGlobalLayoutListener, Filter.FilterListener,
+        ViewTreeObserver.OnTouchModeChangeListener,
+        RemoteViewsAdapter.RemoteAdapterConnectionCallback {
+    
+    @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.P, trackingBug = 123768941)
+    private FastScroller mFastScroll;
+    
+    public AbsListView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        ...
+        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.AbsListView, defStyleAttr, defStyleRes);
+        setFastScrollEnabled(a.getBoolean(R.styleable.AbsListView_fastScrollEnabled, false));
+        setFastScrollStyle(a.getResourceId(R.styleable.AbsListView_fastScrollStyle, 0));
+        setFastScrollAlwaysVisible(a.getBoolean(R.styleable.AbsListView_fastScrollAlwaysVisible, false));
+        ...
+    }
+    
+    public void setFastScrollEnabled(final boolean enabled) {
+        if (mFastScrollEnabled != enabled) {
+            mFastScrollEnabled = enabled;
+            if (isOwnerThread()) {
+                setFastScrollerEnabledUiThread(enabled);
+            } else {
+                post(new Runnable() {
+                    @Override
+                    public void run() {
+                        setFastScrollerEnabledUiThread(enabled);
+                    }
+                });
+            }
+        }
+    }
+
+    private void setFastScrollerEnabledUiThread(boolean enabled) {
+        if (mFastScroll != null) {
+            mFastScroll.setEnabled(enabled);
+        } else if (enabled) {
+            mFastScroll = new FastScroller(this, mFastScrollStyle);
+            mFastScroll.setEnabled(true);
+        }
+        resolvePadding();
+        if (mFastScroll != null) {
+            mFastScroll.updateLayout();
+        }
+    }
+}
+</code></pre>
+<p>可以看到 <code>ListView</code> 的快速滑动块是通过 <code>FastScroller</code> 类实现的，接下来看看 <code>FastScroller</code> 的创建流程：</p>
+<pre><code class="language-java">/**
+ * Helper class for AbsListView to draw and control the Fast Scroll thumb
+ */
+class FastScroller {
+    /** Minimum number of pages to justify showing a fast scroll thumb. */
+    private static final int MIN_PAGES = 4;
+
+    /**
+     * @return Whether the fast scroll thumb is enabled.
+     */
+    public boolean isEnabled() {
+        return mEnabled &amp;&amp; (mLongList || mAlwaysShow);
+    }
+    
+    /**
+     * Called when one of the variables affecting enabled state changes.
+     *
+     * @param peekIfEnabled whether the thumb should peek, if enabled
+     */
+    private void onStateDependencyChanged(boolean peekIfEnabled) {
+        if (isEnabled()) {
+            if (isAlwaysShowEnabled()) {
+                setState(STATE_VISIBLE);
+            } else if (mState == STATE_VISIBLE) {
+                postAutoHide();
+            } else if (peekIfEnabled) {
+                setState(STATE_VISIBLE);
+                postAutoHide();
+            }
+        } else {
+            stop();
+        }
+        mList.resolvePadding();
+    }
+
+    private void updateLongList(int childCount, int itemCount) {
+        final boolean longList = childCount &gt; 0 &amp;&amp; itemCount / childCount &gt;= MIN_PAGES;
+        if (mLongList != longList) {
+            mLongList = longList;
+            onStateDependencyChanged(false);
+        }
+    }
+    ...
+}
+</code></pre>
+<p>不难理解，当开启 <code>android:fastScrollEnabled</code> 配置时，有两种条件可以显示快速滑动块，一是长列表，二是 <code>android:fastScrollAlwaysVisible</code> 也为 <code>true</code>，长列表的判断条件是数据量大于等于 <code>MIN_PAGES</code>，即 <code>4</code> 页。</p>
+<p>以上就是 Android 字母索引的简单实现，关于自定义等其他用法就不展开介绍了，毕竟使用率不高，以后有机会再聊。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[浅析 EPUB 结构]]></title>
+        <id>https://LiarrDev.github.io/post/EPUB-Structure/</id>
+        <link href="https://LiarrDev.github.io/post/EPUB-Structure/">
+        </link>
+        <updated>2024-09-28T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="什么是-epub">什么是 EPUB</h1>
+<p>EPUB（Electronic Publication）是一种电子图书标准，由国际数字出版论坛（IDPF）提出，属于一种可以“自动重新排版”的内容；也就是文字内容可以根据阅读设备的特性，以最适于阅读的方式显示。它的文件扩展名为 <code>.epub</code>。</p>
+<h1 id="epub-的组成">EPUB 的组成</h1>
+<p>EPUB 文件内部使用了 XHTML 或 DTBook（一种由 <strong>DAISY Consortium</strong> 提出的 XML 标准）来展现文字，并以 ZIP 压缩格式来打包文件内容。因此我们可以通过解压缩的方式来了解 EPUB 的构成。</p>
+<p>下面这个是我从某电子书网站下载的两个 EPUB 文件解压图：</p>
+<p><img src="https://LiarrDev.github.io/post-images/1717944900149.png" alt="EPUB 目录结构 1" loading="lazy"><br>
+<img src="https://LiarrDev.github.io/post-images/1717944909348.png" alt="EPUB 目录结构 2" loading="lazy"></p>
+<p>EPUB 的标准和规范一直在迭代，目录也有所差异，但文件组成是大同小异的，下面将逐一介绍各文件的作用。</p>
+<h2 id="mimetype">MIMETYPE</h2>
+<p>它的文件名就是 <code>mimetype</code>，无文件扩展名，用于描述 EPUB 的 <a href="https://liarrdev.github.io/post/Verify-File-Types-with-Media-Type-in-Java/">MIME</a>，所以它的内容只有一行：</p>
+<pre><code>application/epub+zip
+</code></pre>
+<h2 id="meta-inf">META-INF</h2>
+<p>用于存放特定文件，默认情况下里面只有一个 <code>container.xml</code> 文件，用于描述 OPF 的存放位置。由于 EPUB 的制作差异，<code>META-INF</code> 文件夹还可能包含数字签名和加密信息等文件，Java 开发者对这个目录应该不陌生。</p>
+<p><code>container.xml</code> 文件如下：</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;container version=&quot;1.0&quot; xmlns=&quot;urn:oasis:names:tc:opendocument:xmlns:container&quot;&gt;
+   &lt;rootfiles&gt;
+      &lt;rootfile full-path=&quot;content.opf&quot; media-type=&quot;application/oebps-package+xml&quot;/&gt;
+   &lt;/rootfiles&gt;
+&lt;/container&gt;
+</code></pre>
+<p>该文件是必定存在的，它相当于是 EPUB 系统的指路牌。</p>
+<h2 id="opf">OPF</h2>
+<p>OPF 文件是 EPUB 规范中最复杂的元数据，它用来定义 OPS 一系列内容组合到一起的机制。</p>
+<p>常用的文件名是 <code>content.opf</code>，当然也可以是其他，但文件扩展名必须是 <code>.opf</code>，它内部其实是一个标准的 XML，下面是一个例子。</p>
+<pre><code class="language-xml">&lt;?xml version='1.0' encoding='utf-8'?&gt;
+&lt;package xmlns=&quot;http://www.idpf.org/2007/opf&quot; version=&quot;2.0&quot; unique-identifier=&quot;uuid_id&quot;&gt;
+    &lt;metadata xmlns:opf=&quot;http://www.idpf.org/2007/opf&quot; xmlns:dc=&quot;http://purl.org/dc/elements/1.1/&quot;&gt;
+        &lt;dc:title&gt;不连续杀人事件&lt;/dc:title&gt;
+        &lt;dc:creator&gt;坂口安吾&lt;/dc:creator&gt;
+        &lt;dc:description&gt;不连续杀人事件&lt;/dc:description&gt;
+        &lt;dc:language&gt;zh-cn&lt;/dc:language&gt;
+        &lt;dc:date&gt;&lt;/dc:date&gt;
+        &lt;dc:contributor&gt;COAY.COM [http://www.coay.com]&lt;/dc:contributor&gt;
+        &lt;dc:publisher&gt;COAY.COM&lt;/dc:publisher&gt;
+        &lt;dc:identifier id=&quot;uuid_id&quot; opf:scheme=&quot;uuid&quot;&gt;8337&lt;/dc:identifier&gt;
+        &lt;dc:subject&gt;不连续杀人事件&lt;/dc:subject&gt;
+    &lt;/metadata&gt;
+    &lt;manifest&gt;
+        &lt;item href=&quot;article_381876.html&quot; id=&quot;id381876&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381877.html&quot; id=&quot;id381877&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381878.html&quot; id=&quot;id381878&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381879.html&quot; id=&quot;id381879&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381880.html&quot; id=&quot;id381880&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381881.html&quot; id=&quot;id381881&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381882.html&quot; id=&quot;id381882&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381883.html&quot; id=&quot;id381883&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381884.html&quot; id=&quot;id381884&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381885.html&quot; id=&quot;id381885&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381886.html&quot; id=&quot;id381886&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381887.html&quot; id=&quot;id381887&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;catalog.html&quot; id=&quot;catalog&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;cover.jpg&quot; id=&quot;cover&quot; media-type=&quot;image/jpeg&quot;/&gt;
+        &lt;item href=&quot;coay.jpg&quot; id=&quot;ad&quot; media-type=&quot;image/jpeg&quot;/&gt;
+        &lt;item href=&quot;stylesheet.css&quot; id=&quot;css&quot; media-type=&quot;text/css&quot;/&gt;
+        &lt;item href=&quot;titlepage.xhtml&quot; id=&quot;titlepage&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;page.xhtml&quot; id=&quot;page&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;toc.ncx&quot; media-type=&quot;application/x-dtbncx+xml&quot; id=&quot;ncx&quot;/&gt;
+    &lt;/manifest&gt;
+    &lt;spine toc=&quot;ncx&quot;&gt;
+        &lt;itemref idref=&quot;titlepage&quot;/&gt;
+        &lt;itemref idref=&quot;page&quot;/&gt;
+        &lt;itemref idref=&quot;catalog&quot;/&gt;
+        &lt;itemref idref=&quot;id381876&quot;/&gt;
+        &lt;itemref idref=&quot;id381877&quot;/&gt;
+        &lt;itemref idref=&quot;id381878&quot;/&gt;
+        &lt;itemref idref=&quot;id381879&quot;/&gt;
+        &lt;itemref idref=&quot;id381880&quot;/&gt;
+        &lt;itemref idref=&quot;id381881&quot;/&gt;
+        &lt;itemref idref=&quot;id381882&quot;/&gt;
+        &lt;itemref idref=&quot;id381883&quot;/&gt;
+        &lt;itemref idref=&quot;id381884&quot;/&gt;
+        &lt;itemref idref=&quot;id381885&quot;/&gt;
+        &lt;itemref idref=&quot;id381886&quot;/&gt;
+        &lt;itemref idref=&quot;id381887&quot;/&gt;
+        &lt;itemref idref=&quot;page&quot;/&gt;
+    &lt;/spine&gt;
+    &lt;guide&gt;
+        &lt;reference href=&quot;titlepage.xhtml&quot; type=&quot;cover&quot; title=&quot;封面&quot;/&gt;
+        &lt;reference href=&quot;catalog.html&quot; type=&quot;toc&quot; title=&quot;目录&quot;/&gt;
+    &lt;/guide&gt;
+&lt;/package&gt;
+</code></pre>
+<p>它由四个部分组成：</p>
+<ul>
+<li><code>&lt;metadata&gt;</code>：元数据信息。包含书名、作者、出版社等信息，其中 <code>&lt;dc:title&gt;</code> 和 <code>&lt;dc:identifier&gt;</code> 这两个数据是必须的。按照 EPUB 规范，<code>&lt;dc:identifier&gt;</code> 由数字图书的创建者定义，必须唯一，对于图书出版商来说，这个字段一般包括 ISBN 或者 Library of Congress 编号。</li>
+<li><code>&lt;manifest&gt;</code>：文件列表。列出电子书中包含的资源文件（HTML、CSS、NCX、图片等），它的每一子项都包含了文件 ID、相对路径以及媒体类型。</li>
+<li><code>&lt;spine&gt;</code>：文档线性阅读顺序。其中 <code>toc</code> 属性指向 <code>&lt;manifest&gt;</code> 中 <code>.ncx</code> 文件的 <code>id</code>，子项的 <code>idref</code> 属性同样指向 <code>&lt;manifest&gt;</code> 中的文件 <code>id</code>。</li>
+<li><code>&lt;guide&gt;</code>：电子书指引页。比如封面、目录、序言等，通过 <code>href</code> 属性指向文件路径。</li>
+</ul>
+<h2 id="ncx">NCX</h2>
+<p>NCX 定义了数字图书的目录表，复杂的图书中，目录表通常采用层次结构，包括嵌套的内容、章节等。</p>
+<p>它的文件名通常是 <code>toc.ncx</code>，是一个逻辑目录，内部也是一个标准的 XML，下面是一个例子。</p>
+<pre><code class="language-xml">&lt;?xml version='1.0' encoding='utf-8'?&gt;
+&lt;ncx xmlns=&quot;http://www.daisy.org/z3986/2005/ncx/&quot; version=&quot;2005-1&quot;&gt;
+    &lt;head&gt;
+        &lt;meta name=&quot;dtb:uid&quot; content=&quot;coay_8337&quot;/&gt;
+        &lt;meta name=&quot;dtb:depth&quot; content=&quot;2&quot;/&gt;
+        &lt;meta name=&quot;dtb:generator&quot; content=&quot;COAY.COM [http://www.coay.com]&quot;/&gt;
+        &lt;meta name=&quot;dtb:totalPageCount&quot; content=&quot;0&quot;/&gt;
+        &lt;meta name=&quot;dtb:maxPageNumber&quot; content=&quot;0&quot;/&gt;
+    &lt;/head&gt;
+    &lt;docTitle&gt;&lt;text&gt;不连续杀人事件&lt;/text&gt;&lt;/docTitle&gt;
+    &lt;docAuthor&gt;&lt;text&gt;坂口安吾&lt;/text&gt;&lt;/docAuthor&gt;
+    &lt;navMap&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381876&quot; playOrder=&quot;1&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第一章 丑恶万分的人际关系（1）&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381876.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381877&quot; playOrder=&quot;2&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第一章 丑恶万分的人际关系（2）&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381877.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381878&quot; playOrder=&quot;3&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第二章 意外的访客&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381878.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381879&quot; playOrder=&quot;4&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第三章 不速之客&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381879.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381880&quot; playOrder=&quot;5&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第四章 第一位被害者&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381880.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381881&quot; playOrder=&quot;6&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第五章 猫 铃（1）&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381881.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381882&quot; playOrder=&quot;7&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第五章 猫 铃（2）&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381882.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381883&quot; playOrder=&quot;8&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第六章 第二桩案件&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381883.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381884&quot; playOrder=&quot;9&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第七章 身为侦探小说迷的老政客&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381884.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381885&quot; playOrder=&quot;10&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第八章 唯一的不在场证明&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381885.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381886&quot; playOrder=&quot;11&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第九章 火葬归途&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381886.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381887&quot; playOrder=&quot;12&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第十章 疯子大集合&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381887.html&quot;/&gt;
+        &lt;/navPoint&gt;
+    &lt;/navMap&gt;
+&lt;/ncx&gt;
+</code></pre>
+<p>它有如下几个部分组成：</p>
+<ul>
+<li><code>&lt;head&gt;</code>：该标签内主要包含四个 <code>&lt;meta&gt;</code> 元素：
+<ul>
+<li><code>dtb:uid</code>：数字图书唯一 ID。一般和 OPF 中的 <code>&lt;dc:identifier&gt;</code> 对应。</li>
+<li><code>dtb:depth</code>：反映目录表中的层次深度。</li>
+<li><code>dtb:totalPageCount</code>：仅用于纸质图书，保留 <code>0</code> 即可。</li>
+<li><code>dtb:maxPageNumber</code>：仅用于纸质图书，保留 <code>0</code> 即可。</li>
+</ul>
+</li>
+<li><code>&lt;docTitle&gt;</code>：图书标题。一般和 OPF 中的 <code>&lt;dc:title&gt;</code> 对应。</li>
+<li><code>&lt;docAuthor&gt;</code>：图书作者。一般和 OPF 中的 <code>&lt;dc:creator&gt;</code> 对应。</li>
+<li><code>&lt;navMap&gt;</code>：图书目录。包含多个 <code>&lt;navPoint&gt;</code>，内部又包含下列元素：
+<ul>
+<li><code>playOrder</code>：文档阅读顺序。和 OPF 中 <code>&lt;spine&gt;</code> 的子项顺序相同。</li>
+<li><code>&lt;navLabel&gt;</code>：章节标题。</li>
+<li><code>&lt;content&gt;</code>：指向文件路径。和 OPF 中 <code>&lt;manifest&gt;</code> 子项配置的路径一致。</li>
+</ul>
+</li>
+</ul>
+<h2 id="资源文件">资源文件</h2>
+<p>除了上面介绍的几个重要文件外，剩下的几乎都是资源文件。包括 HTML/XHTML、CSS、JPG、PNG、SVG 等等。HTML/XHTML 则是书籍的内容，里面会引用 CSS 和图片等。</p>
+<p>这些文件没有明确的路径要求（事实上除了 <code>mimetype</code> 和 <code>container.xml</code> 两个文件有明确的要求外，其他文件都没有明确的路径要求），这也是为什么文章开头的两个 EPUB 目录会相差这么大。</p>
+<h2 id="opf-spine-和-ncx-navmap-的区别">OPF <code>&lt;spine&gt;</code> 和 NCX <code>&lt;navMap&gt;</code> 的区别</h2>
+<p>两个文件都描述了文档的顺序和内容，这很容易混淆。</p>
+<p>OPF <code>&lt;spine&gt;</code> 描述了书中各个章节是如何实际连接起来的，比方说翻过第一章最后一页就到第二章第一页。</p>
+<p>NCX <code>&lt;navMap&gt;</code> 在图书一开始描述目录。目录肯定会包含书中主要的章节，但是还可能包含没有单独分页的小节。</p>
+<p>NCX 包含的 <code>&lt;navPoint&gt;</code> 元素通常比 OPF <code>&lt;spine&gt;</code> 中的 <code>itemref</code> 元素多。一般情况下，<code>&lt;spine&gt;</code> 中的所有项都会出现在 NCX 中，但 NCX 可能更详细。</p>
+<h1 id="开发">开发</h1>
+<p>基于以上知识，你完全可以自行构建一本 EPUB 电子书了。所以在此我不打算介绍 EPUB 的制作流程。</p>
+<p>简单说一下 EPUB 阅读器的制作。</p>
+<p>由上面的介绍得知，EPUB 内容是依靠 HTML/XHTML 渲染的，以 Android 为例，我们就可以借助 <code>WebView</code> 加载。</p>
+<p>首先需要解压 EPUB 文件，取出 <code>META-INF</code> 中的 <code>container.xml</code> 文件，解析获取 OPF 文件路径，再取出 OPF 文件进行解析，获取元数据、资源、阅读顺序等信息，最后将 HTML/XHTML 按顺序交给 <code>WebView</code> 加载。</p>
+<p>因为上面介绍的配置文件基本都是 XML，你可以借助之前介绍的 <a href="https://liarrdev.github.io/post/Enjoy-Dom4J-in-One-Shot/">Dom4J</a> 完成解析。</p>
+<p>如果需要交互功能，可以向 <code>WebView</code> 中注入 JavaScript 来完成。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[ArkUI AlphabetIndexer 真香]]></title>
+        <id>https://LiarrDev.github.io/post/Wonderful-ArkUI-AlphabetIndexer/</id>
+        <link href="https://LiarrDev.github.io/post/Wonderful-ArkUI-AlphabetIndexer/">
+        </link>
+        <updated>2024-09-19T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>最近在为公司开发 HarmonyOS NEXT 的应用，对 HarmonyOS NEXT 有所了解的朋友应该知道，它与当前市面上所搭载的 HarmonyOS 系统的手机不同，现在市面上的 HarmonyOS 仍基于 Android 平台，应用也大多数是基于 Java/Kotlin 开发，而即将发布的 HarmonyOS NEXT 版本，将不再兼容原有的 Android 应用，而是使用一套基于 ArkTS 的开发框架 ArkUI。</p>
+<p>在开发期间我也深深地感受到，与同为声明式 UI 框架的 Jetpack Compose 相比，ArkUI 仍旧十分难用，一部分是 ArkTS 这个语言与 Kotlin 的差距，一部分是 ArkUI 设计者在开发时考虑的场景欠缺，一部分是代码编辑器 DevEco Studio 功能不完善，当然还有一部分是我对 ArkUI/ArkTS 的不熟悉。</p>
+<p>尽管每天开发时都在口吐莲花，但我不得不说，ArkUI 确实有一个组件我得吹爆它，就是 <code>AlphabetIndexer</code>，翻译过来叫字母索引器，夸它的原因也很简单，虽然 Android 中也有 <code>AlphabetIndexer</code>，可是它仅提供了一些基础接口，具体逻辑还需要自己实现，虽然扩展性高，不过对于相同的效果，我们往往会选择自己手搓或者使用三方库。</p>
+<p>对于不知道 <code>AlphabetIndexer</code> 是什么的朋友，我先上个效果图：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1726156739937.gif" alt="AlphabetIndexer" loading="lazy"></figure>
+<p>右边的可以点击滑动的就是 <code>AlphabetIndexer</code>，当列表数据非常多时，它能够快速帮我们定位到需要寻找的数据附近，在通讯录中也很常见。</p>
+<p>废话了这么久，开整。</p>
+<p>首先定义好我们的数据类，数据有两种格式，一种是分类标题字母 <code>RegionAlphabet</code>，只需包含一个 <code>string</code> 类型的字段；一种是数据详情 <code>RegionDetail</code>，需要包含一个 <code>string</code> 类型的名称和一个 <code>number</code> 类型的区码。</p>
+<pre><code class="language-TypeScript">export class RegionAlphabet {
+  alphabet: string = &quot;&quot;;
+
+  constructor(alphabet: string) {
+    this.alphabet = alphabet
+  }
+}
+
+export class RegionDetail {
+  region: string = &quot;&quot;;
+  code: number = 0;
+}
+
+export type BaseRegion = RegionAlphabet | RegionDetail
+</code></pre>
+<p>另外还定义了一个 <code>BaseRegion</code> 类型关联这两种数据类，方便我们后面的数据处理。</p>
+<pre><code class="language-TypeScript">export class RegionViewModel {
+  static alphabets: string[] = [
+    &quot;热&quot;, &quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;, &quot;F&quot;, &quot;G&quot;, &quot;H&quot;, &quot;I&quot;,
+    &quot;J&quot;, &quot;K&quot;, &quot;L&quot;, &quot;M&quot;, &quot;N&quot;, &quot;O&quot;, &quot;P&quot;, &quot;Q&quot;, &quot;R&quot;, &quot;S&quot;,
+    &quot;T&quot;, &quot;U&quot;, &quot;V&quot;, &quot;W&quot;, &quot;X&quot;, &quot;Y&quot;, &quot;Z&quot;
+  ]
+  static hotRegions: RegionDetail[] = [
+    { &quot;region&quot;: &quot;中国大陆&quot;, &quot;code&quot;: 86 },
+    { &quot;region&quot;: &quot;中国香港&quot;, &quot;code&quot;: 852 },
+    { &quot;region&quot;: &quot;中国澳门&quot;, &quot;code&quot;: 853 },
+    { &quot;region&quot;: &quot;中国台湾&quot;, &quot;code&quot;: 886 },
+    { &quot;region&quot;: &quot;美国&quot;, &quot;code&quot;: 1 },
+    { &quot;region&quot;: &quot;日本&quot;, &quot;code&quot;: 81 }
+  ]
+  private static regions: RegionDetail[] = [
+    { &quot;region&quot;: &quot;阿富汗&quot;, &quot;code&quot;: 93 },
+    { &quot;region&quot;: &quot;阿尔巴尼亚&quot;, &quot;code&quot;: 355 },
+    { &quot;region&quot;: &quot;阿尔及利亚&quot;, &quot;code&quot;: 213 },
+    { &quot;region&quot;: &quot;美属萨摩亚&quot;, &quot;code&quot;: 1684 },
+    { &quot;region&quot;: &quot;安道尔&quot;, &quot;code&quot;: 376 },
+    { &quot;region&quot;: &quot;安哥拉&quot;, &quot;code&quot;: 244 },
+    ...
+}
+</code></pre>
+<p>这里有 3 个数据源，首先是我们 <code>AlphabetIndexer</code> 用到的字母索引列表，除了常规的 26 个字母，我们还会在前面放置常用的标签，减少用户的操作步骤。第二个数据源就是常用的数据，第三个类型是总数据，这部分数据太多，我只截取小部分数据示例，读者知道是这种格式即可。</p>
+<p>我们还需要将数据源统一成一个数组暴露出去，处理一下数据：</p>
+<pre><code class="language-TypeScript">export class RegionViewModel {
+  ...
+  static getRegions(): BaseRegion[] {
+    let groupBy = RegionViewModel.regions.sort((a, b) =&gt; {
+      let pinyinA: string = pinyin4js.convertToPinyinString(a.region, '', pinyin4js.WITHOUT_TONE)
+      let pinyinB: string = pinyin4js.convertToPinyinString(b.region, '', pinyin4js.WITHOUT_TONE)
+      if (pinyinA &lt; pinyinB) {
+        return -1
+      } else if (pinyinA &gt; pinyinB) {
+        return 1
+      } else {
+        return 0
+      }
+    }).reduce((acc, curr) =&gt; {
+      let firstLetter: string = pinyin4js.convertToPinyinString(curr.region, '', pinyin4js.WITHOUT_TONE)
+        .charAt(0)
+        .toUpperCase();
+      (acc[firstLetter] ??= []).push(curr);
+      return acc;
+    }, {} as Record&lt;string, RegionDetail[]&gt;)
+
+    let list: BaseRegion[] = []
+    list.push(new RegionAlphabet(&quot;热门&quot;))
+    list.push(...RegionViewModel.hotRegions)
+    Object.keys(groupBy).forEach(key =&gt; {
+      list.push(new RegionAlphabet(key))
+      list.push(...groupBy[key])
+    })
+    return list
+  }
+}
+</code></pre>
+<p>这里使用了一个官方库 <a href="https://ohpm.openharmony.cn/#/cn/detail/@ohos%2Fpinyin4js">@ohos/pinyin4js</a>，用来将汉字转为拼音，需要先提前安装：</p>
+<pre><code class="language-shell">➜   ohpm install @ohos/pinyin4js
+</code></pre>
+<p>上面的代码虽然有点长，但做的事情不多。首先是将数组内的 <code>RegionDetail</code> 元素按照 <code>region</code> 属性转为拼音的顺序进行排序，然后按照其拼音首字母进行分组，这样就可以与我们定义的拼音索引对应，最后再按组顺序插入到列表中，返回结果。</p>
+<p>需要注意一个坑的地方，由于 ArkTS 的语言特性，<code>RegionDetail</code> 数据是通过对象转换而来的，而不是 <code>new</code> 出来的实例，所以实际插入到数组中是一个 <code>Object</code>，而不是 <code>RegionDetail</code>，在后面使用时需要留意。</p>
+<p>数据准备完毕，开始写界面。</p>
+<pre><code class="language-TypeScript">@Entry
+@Component
+struct RegionPage {
+  @State private selectedIndex: number = 0
+  @State private regions: BaseRegion[] = RegionViewModel.getRegions()
+  private scroller: Scroller = new Scroller()
+
+  build() {
+    Column() {
+      Toolbar({ title: 'Region' })
+      Stack({ alignContent: Alignment.End }) {
+        List({ scroller: this.scroller }) {
+          ForEach(this.regions, (item: BaseRegion) =&gt; {
+            ListItem() {
+              if (item instanceof RegionAlphabet) {
+                Text(item.alphabet).fontColor(Color.Gray).fontSize(12).height(32)
+              } else {
+                Row() {
+                  Text((item as RegionDetail).region).fontWeight(FontWeight.Bold).fontSize(16).layoutWeight(1)
+                  Text(`+${(item as RegionDetail).code}`).fontSize(16).fontColor(Color.Gray)
+                }
+                .height($r('sys.float.titlebar_default_height'))
+                .alignItems(VerticalAlign.Center)
+                .onClick(() =&gt; router.back({ url: Routers.LOGIN_PAGE, params: { regionCode: (item as RegionDetail).code } }))
+              }
+            }.padding({ left: 24, right: 44 })
+          })
+        }.onScrollIndex(index =&gt; {
+          let item = this.regions[index]
+          if (item instanceof RegionAlphabet) {
+            this.selectedIndex = RegionViewModel.alphabets.indexOf(item.alphabet)
+          } else {
+            if (index &lt; RegionViewModel.hotRegions.length + 1) {
+              this.selectedIndex = 0
+              return
+            }
+            let region = (item as RegionDetail).region
+            let alphabet: string = pinyin4js.convertToPinyinString(region, '', pinyin4js.WITHOUT_TONE)
+              .charAt(0)
+              .toUpperCase()
+            this.selectedIndex = RegionViewModel.alphabets.indexOf(alphabet)
+          }
+        })
+
+        AlphabetIndexer({ arrayValue: RegionViewModel.alphabets, selected: 0 })
+          .selected(this.selectedIndex)
+          .height('100%')
+          .onSelect(index =&gt; {
+            if (index == 0) {
+              this.scroller.scrollToIndex(0)
+              return
+            }
+            let letter = RegionViewModel.alphabets[index]
+            let position = this.regions.findIndex(value =&gt; (value as RegionAlphabet).alphabet == letter)
+            if (position &gt; 0) {
+              this.scroller.scrollToIndex(position)
+            }
+          })
+      }
+    }
+    .height('100%')
+    .width('100%')
+  }
+}
+</code></pre>
+<p>界面的布局就不展开介绍了，需要关注一点是列表数据项的判断，上文提到，<code>RegionDetail</code> 在数组内仅仅是一个 <code>Object</code>，所以不能像 <code>RegionAlphabet</code> 那样通过 <code>instanceof</code> 来判断，只能筛选完 <code>RegionAlphabet</code> 之后再通过 <code>as</code> 来强转，你也可以使用其他写法来规避这个问题。</p>
+<p>重点看下关联逻辑。</p>
+<p><code>List</code> 中需要传入一个 <code>Scroller</code>，后续在 <code>AlphabetIndexer</code> 中可以用来控制滚动，同时 <code>List</code> 在滚动时也需要通知 <code>AlphabetIndexer</code> 刷新状态，所以需要一个变量 <code>selectedIndex</code> 来记录选中的索引。</p>
+<p>当 <code>List</code> 滚动时会通过 <code>onScrollIndex()</code> 回调监听。如果当前可见的第一个列表项数据是 <code>RegionAlphabet</code> 时，<code>AlphabetIndexer</code> 选中的就是 <code>RegionAlphabet</code> 对应在索引数据源的下标；如果当前可见的第一个列表项数据不是 <code>RegionAlphabet</code>，判断该项在数组中的位置是否小于 <code>hotRegions</code> 的长度加 <code>1</code>（加 <code>1</code> 是因为需要加上第一个 <code>RegionAlphabet</code>），是的话直接将 <code>AlphabetIndexer</code> 选中的下标置 <code>0</code>，如果不是的话，将数据项强转为 <code>RegionDetail</code>，取出其 <code>region</code> 字段的拼音首字母，选中该字母在索引数据源的下标即可。</p>
+<p>使用 <code>AlphabetIndexer</code> 选中时会通过 <code>onSelect()</code>回调监听。当选中下标为 <code>0</code> 的项时，直接将 <code>List</code> 滚到顶部；否则获取选中的字母，滚动到对应的 <code>RegionAlphabet</code> 所在的位置。</p>
+<p>整个流程就是这么简单，虽然 <code>AlphabetIndexer</code> 在项目中的使用率不高，但这个组件的出现确实方便了我们开发，样式也符合我们的常见场景，Android 开发者实名羡慕。</p>
+]]></content>
+    </entry>
+</feed>
