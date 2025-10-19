@@ -1,0 +1,1616 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://LiarrDev.github.io</id>
+    <title>Liarr&apos;s Studio</title>
+    <updated>2025-10-19T09:51:25.950Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://LiarrDev.github.io"/>
+    <link rel="self" href="https://LiarrDev.github.io/atom.xml"/>
+    <subtitle>温故而知新</subtitle>
+    <logo>https://LiarrDev.github.io/images/avatar.png</logo>
+    <icon>https://LiarrDev.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2025, Liarr&apos;s Studio</rights>
+    <entry>
+        <title type="html"><![CDATA[如何追踪 Android 依赖来源]]></title>
+        <id>https://LiarrDev.github.io/post/How-to-Trace-Android-Dependency-Sources/</id>
+        <link href="https://LiarrDev.github.io/post/How-to-Trace-Android-Dependency-Sources/">
+        </link>
+        <updated>2025-10-28T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>相信在日常开发中你已经发现，当我们添加某个库的依赖时，它会帮助我们同步它所依赖的库，比如我们常用的网络请求库 <a href="https://square.github.io/okhttp">OkHttp</a> 就依赖了 <a href="https://square.github.io/okio">Okio</a>，但我们依赖 <a href="https://square.github.io/okhttp">OkHttp</a> 时并不需要把 <a href="https://square.github.io/okio">Okio</a> 的依赖也添加进去，这是由 POM 声明的。</p>
+<p>这种方案能够帮助我们屏蔽掉一些多余的信息，降低上手门槛，但有时候却不利于追踪。</p>
+<h1 id="追踪-aar-jar-依赖">追踪 AAR / JAR 依赖</h1>
+<p>好在 Android 官方已经帮我们准备好一个 Gradle 任务用于分析项目中的依赖关系，我们只需要一行命令就可以查询。</p>
+<pre><code class="language-bash">➜   ./gradlew app:dependencies
+</code></pre>
+<p>控制台中会输出整个项目的依赖树：</p>
+<pre><code class="language-bash">+--- androidx.appcompat:appcompat:1.7.1
+|    +--- androidx.activity:activity:1.8.0 -&gt; 1.10.1
+|    |    +--- androidx.annotation:annotation:1.8.1
+|    |    |    \--- androidx.annotation:annotation-jvm:1.8.1
+|    |    |         \--- org.jetbrains.kotlin:kotlin-stdlib:1.7.10 -&gt; 1.8.22
+|    |    |              +--- org.jetbrains.kotlin:kotlin-stdlib-common:1.8.22
+|    |    |              \--- org.jetbrains:annotations:13.0 -&gt; 23.0.0
+|    |    +--- androidx.core:core-ktx:1.13.0
+|    |    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    |    +--- androidx.core:core:1.13.0
+|    |    |    |    +--- androidx.annotation:annotation:1.6.0 -&gt; 1.8.1 (*)
+|    |    |    |    +--- androidx.annotation:annotation-experimental:1.4.0
+|    |    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.7.10 -&gt; 1.8.22 (*)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-runtime:2.6.2
+|    |    |    |    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    |    |    |    +--- androidx.arch.core:core-common:2.2.0
+|    |    |    |    |    |    \--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-common:2.6.2
+|    |    |    |    |    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    |    |    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.8.10 -&gt; 1.8.22 (*)
+|    |    |    |    |    |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4 -&gt; 1.7.3
+|    |    |    |    |    |    |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3
+|    |    |    |    |    |    |    |    \--- org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.7.3
+|    |    |    |    |    |    |    |         +--- org.jetbrains:annotations:23.0.0
+|    |    |    |    |    |    |    |         +--- org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.7.3
+|    |    |    |    |    |    |    |         |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3 (c)
+|    |    |    |    |    |    |    |         |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.7.3 (c)
+|    |    |    |    |    |    |    |         |    \--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3 (c)
+|    |    |    |    |    |    |    |         +--- org.jetbrains.kotlin:kotlin-stdlib-common:1.8.20 -&gt; 1.8.22
+|    |    |    |    |    |    |    |         \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.20 -&gt; 1.8.22
+|    |    |    |    |    |    |    |              +--- org.jetbrains.kotlin:kotlin-stdlib:1.8.22 (*)
+|    |    |    |    |    |    |    |              \--- org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22
+|    |    |    |    |    |    |    |                   \--- org.jetbrains.kotlin:kotlin-stdlib:1.8.22 (*)
+|    |    |    |    |    |    |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.7.3 (*)
+|    |    |    |    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.20 -&gt; 1.8.22 (*)
+|    |    |    |    |    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.6.2 (c)
+|    |    |    |    |    |    +--- androidx.lifecycle:lifecycle-runtime:2.6.2 (c)
+|    |    |    |    |    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.6.2 (c)
+|    |    |    |    |    |    +--- androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2 (c)
+|    |    |    |    |    |    \--- androidx.lifecycle:lifecycle-livedata:2.6.2 (c)
+|    |    |    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.8.10 -&gt; 1.8.22 (*)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-common:2.6.2 (c)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.6.2 (c)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.6.2 (c)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2 (c)
+|    |    |    |    |    \--- androidx.lifecycle:lifecycle-livedata:2.6.2 (c)
+|    |    |    |    +--- androidx.versionedparcelable:versionedparcelable:1.1.1
+|    |    |    |    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    |    |    |    \--- androidx.collection:collection:1.0.0 -&gt; 1.1.0
+|    |    |    |    |         \--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.8.22 (*)
+|    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.8.22 (*)
+|    |    +--- androidx.core:core-viewtree:1.0.0
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib -&gt; 1.8.22 (*)
+|    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.8.22 (c)
+|    |    +--- androidx.lifecycle:lifecycle-common:2.6.1 -&gt; 2.6.2 (*)
+|    |    +--- androidx.lifecycle:lifecycle-runtime:2.6.1 -&gt; 2.6.2 (*)
+|    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.6.1 -&gt; 2.6.2
+|    |    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.8.10 -&gt; 1.8.22 (*)
+|    |    |    +--- androidx.lifecycle:lifecycle-common:2.6.2 (c)
+|    |    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.6.2 (c)
+|    |    |    +--- androidx.lifecycle:lifecycle-runtime:2.6.2 (c)
+|    |    |    +--- androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2 (c)
+|    |    |    \--- androidx.lifecycle:lifecycle-livedata:2.6.2 (c)
+|    |    +--- androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.1 -&gt; 2.6.2
+|    |    |    +--- androidx.annotation:annotation:1.0.0 -&gt; 1.8.1 (*)
+|    |    |    +--- androidx.core:core-ktx:1.2.0 -&gt; 1.13.0 (*)
+|    |    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.6.2
+|    |    |    |    +--- androidx.lifecycle:lifecycle-common:2.6.2 (*)
+|    |    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.8.10 -&gt; 1.8.22 (*)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-common:2.6.2 (c)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-runtime:2.6.2 (c)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.6.2 (c)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2 (c)
+|    |    |    |    \--- androidx.lifecycle:lifecycle-livedata:2.6.2 (c)
+|    |    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.6.2 (*)
+|    |    |    +--- androidx.savedstate:savedstate:1.2.1
+|    |    |    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.8.10 -&gt; 1.8.22 (*)
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.8.10 -&gt; 1.8.22 (*)
+|    |    |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4 -&gt; 1.7.3 (*)
+|    |    |    +--- androidx.lifecycle:lifecycle-common:2.6.2 (c)
+|    |    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.6.2 (c)
+|    |    |    +--- androidx.lifecycle:lifecycle-runtime:2.6.2 (c)
+|    |    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.6.2 (c)
+|    |    |    \--- androidx.lifecycle:lifecycle-livedata:2.6.2 (c)
+|    |    +--- androidx.savedstate:savedstate:1.2.1 (*)
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib -&gt; 1.8.22 (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.8.22 (c)
+|    +--- androidx.annotation:annotation:1.3.0 -&gt; 1.8.1 (*)
+|    +--- androidx.appcompat:appcompat-resources:1.7.1
+|    |    +--- androidx.annotation:annotation:1.2.0 -&gt; 1.8.1 (*)
+|    |    +--- androidx.core:core:1.6.0 -&gt; 1.13.0 (*)
+|    |    +--- androidx.vectordrawable:vectordrawable:1.1.0
+|    |    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    |    +--- androidx.core:core:1.1.0 -&gt; 1.13.0 (*)
+|    |    |    \--- androidx.collection:collection:1.1.0 (*)
+|    |    +--- androidx.vectordrawable:vectordrawable-animated:1.1.0
+|    |    |    +--- androidx.vectordrawable:vectordrawable:1.1.0 (*)
+|    |    |    +--- androidx.interpolator:interpolator:1.0.0
+|    |    |    |    \--- androidx.annotation:annotation:1.0.0 -&gt; 1.8.1 (*)
+|    |    |    \--- androidx.collection:collection:1.1.0 (*)
+|    |    \--- androidx.appcompat:appcompat:1.7.1 (c)
+|    +--- androidx.core:core:1.13.0 (*)
+|    +--- androidx.cursoradapter:cursoradapter:1.0.0
+|    |    \--- androidx.annotation:annotation:1.0.0 -&gt; 1.8.1 (*)
+|    +--- androidx.drawerlayout:drawerlayout:1.0.0 -&gt; 1.1.1
+|    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    +--- androidx.core:core:1.2.0 -&gt; 1.13.0 (*)
+|    |    \--- androidx.customview:customview:1.1.0
+|    |         +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |         \--- androidx.core:core:1.3.0 -&gt; 1.13.0 (*)
+|    +--- androidx.fragment:fragment:1.5.4
+|    |    +--- androidx.activity:activity:1.5.1 -&gt; 1.10.1 (*)
+|    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    +--- androidx.annotation:annotation-experimental:1.0.0 -&gt; 1.4.0 (*)
+|    |    +--- androidx.collection:collection:1.1.0 (*)
+|    |    +--- androidx.core:core-ktx:1.2.0 -&gt; 1.13.0 (*)
+|    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.5.1 -&gt; 2.6.2 (*)
+|    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.5.1 -&gt; 2.6.2 (*)
+|    |    +--- androidx.lifecycle:lifecycle-viewmodel-savedstate:2.5.1 -&gt; 2.6.2 (*)
+|    |    +--- androidx.loader:loader:1.0.0
+|    |    |    +--- androidx.annotation:annotation:1.0.0 -&gt; 1.8.1 (*)
+|    |    |    +--- androidx.core:core:1.0.0 -&gt; 1.13.0 (*)
+|    |    |    +--- androidx.lifecycle:lifecycle-livedata:2.0.0 -&gt; 2.6.2
+|    |    |    |    +--- androidx.arch.core:core-runtime:2.1.0 -&gt; 2.2.0
+|    |    |    |    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    |    |    |    \--- androidx.arch.core:core-common:2.2.0 (*)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.6.2 (*)
+|    |    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.8.10 -&gt; 1.8.22 (*)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-common:2.6.2 (c)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.6.2 (c)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-runtime:2.6.2 (c)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.6.2 (c)
+|    |    |    |    \--- androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2 (c)
+|    |    |    \--- androidx.lifecycle:lifecycle-viewmodel:2.0.0 -&gt; 2.6.2 (*)
+|    |    +--- androidx.savedstate:savedstate:1.2.0 -&gt; 1.2.1 (*)
+|    |    +--- androidx.viewpager:viewpager:1.0.0
+|    |    |    +--- androidx.annotation:annotation:1.0.0 -&gt; 1.8.1 (*)
+|    |    |    +--- androidx.core:core:1.0.0 -&gt; 1.13.0 (*)
+|    |    |    \--- androidx.customview:customview:1.0.0 -&gt; 1.1.0 (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.6.21 -&gt; 1.8.22 (*)
+|    +--- androidx.savedstate:savedstate:1.2.1 (*)
+|    \--- androidx.appcompat:appcompat-resources:1.7.1 (c)
++--- com.google.android.material:material:1.12.0
+|    +--- androidx.activity:activity:1.8.0 -&gt; 1.10.1 (*)
+|    +--- androidx.annotation:annotation:1.2.0 -&gt; 1.8.1 (*)
+|    +--- androidx.appcompat:appcompat:1.6.1 -&gt; 1.7.1 (*)
+|    +--- androidx.cardview:cardview:1.0.0
+|    |    \--- androidx.annotation:annotation:1.0.0 -&gt; 1.8.1 (*)
+|    +--- androidx.coordinatorlayout:coordinatorlayout:1.1.0
+|    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    +--- androidx.core:core:1.1.0 -&gt; 1.13.0 (*)
+|    |    +--- androidx.customview:customview:1.0.0 -&gt; 1.1.0 (*)
+|    |    \--- androidx.collection:collection:1.0.0 -&gt; 1.1.0 (*)
+|    +--- androidx.constraintlayout:constraintlayout:2.0.1 -&gt; 2.2.1
+|    +--- androidx.core:core:1.6.0 -&gt; 1.13.0 (*)
+|    +--- androidx.drawerlayout:drawerlayout:1.1.1 (*)
+|    +--- androidx.dynamicanimation:dynamicanimation:1.0.0
+|    |    +--- androidx.core:core:1.0.0 -&gt; 1.13.0 (*)
+|    |    +--- androidx.collection:collection:1.0.0 -&gt; 1.1.0 (*)
+|    |    \--- androidx.legacy:legacy-support-core-utils:1.0.0
+|    |         +--- androidx.annotation:annotation:1.0.0 -&gt; 1.8.1 (*)
+|    |         +--- androidx.core:core:1.0.0 -&gt; 1.13.0 (*)
+|    |         +--- androidx.documentfile:documentfile:1.0.0
+|    |         |    \--- androidx.annotation:annotation:1.0.0 -&gt; 1.8.1 (*)
+|    |         +--- androidx.loader:loader:1.0.0 (*)
+|    |         +--- androidx.localbroadcastmanager:localbroadcastmanager:1.0.0
+|    |         |    \--- androidx.annotation:annotation:1.0.0 -&gt; 1.8.1 (*)
+|    |         \--- androidx.print:print:1.0.0
+|    |              \--- androidx.annotation:annotation:1.0.0 -&gt; 1.8.1 (*)
+|    +--- androidx.annotation:annotation-experimental:1.0.0 -&gt; 1.4.0 (*)
+|    +--- androidx.fragment:fragment:1.2.5 -&gt; 1.5.4 (*)
+|    +--- androidx.lifecycle:lifecycle-runtime:2.0.0 -&gt; 2.6.2 (*)
+|    +--- androidx.recyclerview:recyclerview:1.0.0 -&gt; 1.1.0
+|    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    +--- androidx.core:core:1.1.0 -&gt; 1.13.0 (*)
+|    |    +--- androidx.customview:customview:1.0.0 -&gt; 1.1.0 (*)
+|    |    \--- androidx.collection:collection:1.0.0 -&gt; 1.1.0 (*)
+|    +--- androidx.resourceinspection:resourceinspection-annotation:1.0.1
+|    +--- androidx.transition:transition:1.5.0
+|    |    +--- androidx.annotation:annotation:1.2.0 -&gt; 1.8.1 (*)
+|    |    \--- androidx.core:core:1.13.0 (*)
+|    +--- androidx.vectordrawable:vectordrawable:1.1.0 (*)
+|    \--- androidx.viewpager2:viewpager2:1.0.0
+|         +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|         +--- androidx.fragment:fragment:1.1.0 -&gt; 1.5.4 (*)
+|         +--- androidx.recyclerview:recyclerview:1.1.0 (*)
+|         +--- androidx.core:core:1.1.0 -&gt; 1.13.0 (*)
+|         \--- androidx.collection:collection:1.1.0 (*)
++--- androidx.activity:activity:1.10.1 (*)
++--- androidx.constraintlayout:constraintlayout:2.2.1
+</code></pre>
+<h1 id="追踪-so-依赖">追踪 SO 依赖</h1>
+<p>在添加的 AAR 依赖中还可能存在 SO 库，这追踪起来就相对麻烦一些，相信近期适配 Android 16KB Page Size 的小伙伴可能深有体会。</p>
+<p>我目前没找到官方有类似的任务供我们一键调用，所以写了个任务：</p>
+<pre><code class="language-Groovy">def variantName = &quot;dokitDebug&quot;
+def soName = &quot;librtmp-jni.so&quot;
+android.applicationVariants.all { variant -&gt;
+    if (variant.name != variantName) return   // 只处理你关心的变体
+    tasks.register(&quot;findSoOwner${variant.name.capitalize()}&quot;) {
+        group = &quot;verification&quot;
+        description = &quot;查找 ${soName} 来自哪个 AAR&quot;
+        def artifacts = variant.runtimeConfiguration.incoming.artifacts
+        doLast {
+            artifacts.artifacts.each { artifact -&gt;
+                def file = artifact.file
+                if (file.name.endsWith(&quot;.aar&quot;)) {
+                    new java.util.zip.ZipFile(file).withCloseable { zf -&gt;
+                        zf.entries().each { entry -&gt;
+                            if (entry.name.endsWith(soName)) {
+                                println &quot;Found ${soName} in ${artifact.id.componentIdentifier} (${file.name})&quot;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+</code></pre>
+<p>将最开始的两个变量要修改为自己实际项目中的内容，比如我这里就在一个名为 <code>dokitDebug</code> 的变体下查询 <code>librtmp-jni.so</code> 这个 SO 的来源，只需在终端中执行命令：</p>
+<pre><code class="language-bash">➜   ./gradlew :app:findSoOwner
+</code></pre>
+<p>就可以得到以下输出：</p>
+<pre><code class="language-bash">&gt; Task :app:findSoOwnerDokitDebug
+Found librtmp-jni.so in io.antmedia:rtmp-client:3.2.0 (rtmp-client-3.2.0.aar)
+Found librtmp-jni.so in io.antmedia:rtmp-client:3.2.0 (rtmp-client-3.2.0.aar)
+Found librtmp-jni.so in io.antmedia:rtmp-client:3.2.0 (rtmp-client-3.2.0.aar)
+Found librtmp-jni.so in io.antmedia:rtmp-client:3.2.0 (rtmp-client-3.2.0.aar)
+</code></pre>
+<p>我们可以在结果中看到查找的 SO 库来源于哪个依赖，结果可能会输出多次。</p>
+<p>查询到的依赖也许并不是你自己添加的，这时候只需再使用上一节提到的命令打印依赖树，就可以追踪到根依赖了。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[用 DataStore 将你拉出 SharedPreferences 泥潭]]></title>
+        <id>https://LiarrDev.github.io/post/DataStore-Pull-You-Out-of-SharedPreferences-Quagmire/</id>
+        <link href="https://LiarrDev.github.io/post/DataStore-Pull-You-Out-of-SharedPreferences-Quagmire/">
+        </link>
+        <updated>2025-09-16T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="简介">简介</h1>
+<p>DataStore 是一种数据存储解决方案，允许您使用 <a href="https://liarrdev.github.io/post/Protocol-Buffers-Usage-on-Android">ProtoBuf</a> 存储键值对或类型化对象，由 Android 官方在 2020 年推出，并在 2021 年正式发布的库，旨在替代服役多年的 SharedPreferences。</p>
+<h1 id="sharedpreferences-的缺陷">SharedPreferences 的缺陷</h1>
+<ul>
+<li>文件数据的读取加锁，如果 SharedPreferences 文件未被加载或解析到内存中，读写操作都需要等待，可能会对 UI 线程流畅度造成一定影响，甚至ANR.</li>
+<li>在保存数据时，无论是 <code>commit()</code> 还是 <code>apply()</code> 都有可能引发 ANR 问题。</li>
+<li>没有错误提示机制。</li>
+</ul>
+<h1 id="datastore-的优点">DataStore 的优点</h1>
+<ul>
+<li>基于 Flow 实现，保证主线程的安全性。</li>
+<li>以事务方式处理更新数据。</li>
+<li>可以监听到操作成功或者失败结果。</li>
+<li>多进程使用。</li>
+</ul>
+<h1 id="preferences-datastore-和-proto-datastore">Preferences DataStore 和 Proto DataStore</h1>
+<p>DataStore 提供两种不同的实现：Preferences DataStore 和 Proto DataStore。</p>
+<ul>
+<li>Preferences DataStore 使用键存储和访问数据。此实现不需要预定义的架构，也不确保类型安全。</li>
+<li>Proto DataStore 将数据作为自定义数据类型的实例进行存储。此实现要求您使用 <a href="https://liarrdev.github.io/post/Protocol-Buffers-Usage-on-Android">ProtoBuf</a> 来定义架构，但可以确保类型安全。</li>
+</ul>
+<h1 id="preferences-datastore">Preferences DataStore</h1>
+<p>Preferences DataStore 用于存储键值对，相当于 SharedPreferences 的改良版。</p>
+<pre><code class="language-kotlin">dependencies {
+    implementation(&quot;androidx.datastore:datastore-preferences:1.1.0&quot;)
+}
+</code></pre>
+<p>实例：</p>
+<pre><code class="language-kotlin">// At the top level of your kotlin file:
+val Context.dataStore: DataStore&lt;Preferences&gt; by preferencesDataStore(name = &quot;settings&quot;)
+</code></pre>
+<p>读取：</p>
+<pre><code class="language-kotlin">val EXAMPLE_COUNTER = intPreferencesKey(&quot;example_counter&quot;)
+val exampleCounterFlow: Flow&lt;Int&gt; = context.dataStore.data.map { preferences -&gt;
+    // No type safety.
+    preferences[EXAMPLE_COUNTER] ?: 0
+}
+</code></pre>
+<p>支持的类型基本与 SharedPreferences 一致。</p>
+<p>写入：</p>
+<pre><code class="language-kotlin">suspend fun incrementCounter() {
+    context.dataStore.edit { settings -&gt;
+        val currentCounterValue = settings[EXAMPLE_COUNTER] ?: 0
+        settings[EXAMPLE_COUNTER] = currentCounterValue + 1
+    }
+}
+</code></pre>
+<p>转换块中的所有代码均被视为单个事务。</p>
+<h1 id="proto-datastore">Proto DataStore</h1>
+<p>Proto DataStore 用于存储类型化对象，相当于 SharedPreferences 的升级版。它使用了 <a href="https://liarrdev.github.io/post/Protocol-Buffers-Usage-on-Android">Protocol Buffers</a>。</p>
+<pre><code class="language-kotlin">dependencies {
+    implementation(&quot;androidx.datastore:datastore:1.1.0&quot;)
+}
+</code></pre>
+<p>在 <code>app/src/main/proto/</code> 目录下预定义：</p>
+<pre><code class="language-protobuf">// Settings.proto
+syntax = &quot;proto3&quot;;
+
+option java_package = &quot;com.example.application&quot;;
+option java_multiple_files = true;
+
+message Settings {
+  int32 example_counter = 1;
+}
+</code></pre>
+<p>用于告知 DataStore 如何读取和写入数据的序列化器：</p>
+<pre><code class="language-kotlin">object SettingsSerializer : Serializer&lt;Settings&gt; {
+
+    override val defaultValue: Settings = Settings.getDefaultInstance()
+
+    override suspend fun readFrom(input: InputStream): Settings {
+        try {
+            return Settings.parseFrom(input)
+        } catch (e: InvalidProtocolBufferException) {
+            throw CorruptionException(&quot;Cannot read proto.&quot;, e)
+        }
+    }
+
+    override suspend fun writeTo(t: Settings, output: OutputStream) = t.writeTo(output)
+}
+</code></pre>
+<p>实例：</p>
+<pre><code class="language-kotlin">// At the top level of your kotlin file:
+val Context.settingsDataStore: DataStore&lt;Settings&gt; by dataStore(
+    fileName = &quot;settings.pb&quot;,
+    serializer = SettingsSerializer
+)
+</code></pre>
+<p>读取：</p>
+<pre><code class="language-kotlin">val exampleCounterFlow: Flow&lt;Int&gt; = context.settingsDataStore.data.map { settings -&gt;
+    // The exampleCounter property is generated from the proto schema.
+    settings.exampleCounter
+}
+</code></pre>
+<p>写入：</p>
+<pre><code class="language-kotlin">suspend fun incrementCounter() {
+    context.settingsDataStore.updateData {
+        it.toBuilder()
+            .setExampleCounter(it.exampleCounter + 1)
+            .build()
+    }
+}
+</code></pre>
+<p>同样以事务方式更新数据。</p>
+<h1 id="从-sharedpreferences-中迁移">从 SharedPreferences 中迁移</h1>
+<pre><code class="language-kotlin">private val Context.migrationDataStore: DataStore&lt;Preferences&gt; by preferencesDataStore(
+    name = PREF_FILE_NAME,
+    produceMigrations = {
+        listOf(SharedPreferencesMigration(it, PREF_FILE_NAME))
+    }
+)
+</code></pre>
+<p>数据的迁移在创建 DataStore 的过程中自动完成，迁移完成后，原 SharedPreferences 的 XML 文件会被删除。</p>
+<h1 id="对比-mmkv">对比 MMKV</h1>
+<p>MMKV 是微信团队开源的基于 mmap 内存映射的 Key-Value 组件，底层序列化与反序列化同样使用 <a href="https://liarrdev.github.io/post/Protocol-Buffers-Usage-on-Android">ProtoBuf</a>，性能高，稳定性强。</p>
+<p>虽然 MMKV 的初衷并不是替代 SharedPreferences，但是同样作为 Key-Value 组件，大多数人都将 MMKV 视为 SharedPreferences 的替代品。</p>
+<p>官方文档中也对 MMKV 和 SharedPreferences 的性能进行了对比：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1757255479084.png" alt="MMKV vs SP" loading="lazy"></figure>
+<p>事实上，MMKV 并不是任何时候都更强。由于内存映射这种方案是自行管理一块独立的内存，所以它在尺寸的伸缩上面就比较受限，这就导致它在写大一点的数据时，速度会慢。</p>
+<p>另一方面，该写入耗时对于正常开发来说并非特别重要，界面的流畅度更在意主线程的耗时，而 SharedPreferences 本身也提供了异步写入的 API，所以它们都足够快了。但 MMKV 的诞生场景决定了，它更在意同步处理机制下的耗时。</p>
+<p>MMKV 还有一个缺陷——丢数据。操作系统在往磁盘写数据的过程中发生意外都会导致文件损坏，这种问题不可避免。MMKV 虽然由于底层机制的原因，在程序崩溃的时候不会影响数据往磁盘的写入，但断电关机之类的操作系统级别的崩溃，MMKV 就没办法了，文件照样会损坏。</p>
+<p>对于这种文件损坏，SharedPreferences 和 DataStore 的应对方式是在每次写入新数据之前都对现有文件做一次自动备份，这样在发生了意外出现了文件损坏之后，它们就会把备份的数据恢复过来。</p>
+<p>而 MMKV，没有这种自动的备份和恢复，那么当文件发生了损坏，数据就丢了，之前保存的各种信息只能被重置。据官方统计，<a href="https://github.com/Tencent/MMKV/wiki/design#%E6%95%B0%E6%8D%AE%E6%9C%89%E6%95%88%E6%80%A7">iOS 微信平均约有 70 万日次的数据校验不通过</a>。</p>
+<p>因此 MMKV 更适合同步高频写入非重要信息的场景。</p>
+<h1 id="参考内容">参考内容</h1>
+<ul>
+<li><a href="https://developer.android.google.cn/topic/libraries/architecture/datastore">应用架构：数据层 - DataStore - Android 开发者 | App architecture | Android Developers</a></li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[在 Android 中使用 Protocol Buffers]]></title>
+        <id>https://LiarrDev.github.io/post/Protocol-Buffers-Usage-on-Android/</id>
+        <link href="https://LiarrDev.github.io/post/Protocol-Buffers-Usage-on-Android/">
+        </link>
+        <updated>2025-08-24T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="简介">简介</h1>
+<p>Protocol Buffers（简称 Protobuf）是 Google 开发的一种独立于语言和平台的结构化数据序列化可扩展机制。它与 JSON 类似，只是体积更小、速度更快，而且能生成本地语言绑定。您只需定义一次数据的结构化方式，然后就可以使用特殊生成的源代码，使用各种语言轻松地将结构化数据写入各种数据流或从各种数据流中读取结构化数据。</p>
+<p>Google 提供了多种语言的实现，每一种实现都包含了相应语言的编译器以及库文件。由于它是一种二进制的格式，比使用 XML 进行数据交换快许多（体积小 3～10 倍，速度快 20～100 倍）。作为一种效率和兼容性都很优秀的二进制数据传输格式，可以用于诸如网络传输、配置文件、数据存储等诸多领域。</p>
+<p>它有一个非常棒的特性，即“向后”兼容性好，人们不必破坏已部署的、依靠“老”数据格式的程序就可以对数据结构进行升级。这样您的程序就可以不必担心因为消息结构的改变而造成的大规模的代码重构或者迁移的问题。因为添加新的消息中的 field 并不会引起已经发布的程序的任何改变。</p>
+<p>Protobuf 与 XML 和 JSON 相比也有不足之处。由于 XML 和 JSON 具有某种程度上的自解释性，它可以被人直接读取编辑，在这一点上 Protobuf 不行，它以二进制的方式存储。</p>
+<h1 id="语法">语法</h1>
+<pre><code class="language-ProtoBuf">syntax = &quot;proto3&quot;;
+
+message SearchRequest {
+  string query = 1;
+  int32 page_number = 2;
+  int32 results_per_page = 3;
+}
+</code></pre>
+<ul>
+<li>第一行说明使用的是 proto3 语法：如果不这样做，Protobuf 编译器会认为使用的是 proto2。这必须是文件中第一行非空、非注释的内容。</li>
+<li>SearchRequest 报文定义指定了三个字段（名称/值对），每个字段代表一条要包含在此类报文中的数据。每个字段都有名称和类型。</li>
+<li>须为信息定义中的每个字段赋予一个介于 <code>1</code> 到 <code>536,870,911</code>（<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mn>2</mn><mn>29</mn></msup><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">2^{29} -1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.897438em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span><span class="mord mtight">9</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span>）之间的数字，在该报文中必须唯一，编号 <code>19,000</code> 至 <code>19,999</code> 保留给 Protocol Buffers 实现。</li>
+<li>不能使用任何先前保留的编号。更改字段编号相当于删除该字段，然后创建一个类型相同但编号不同的新字段。删除字段定义时必须保留已删除的字段编号，如果不保留字段编号，开发人员将来有可能重新使用该编号。</li>
+</ul>
+<h1 id="使用">使用</h1>
+<p><code>libs.versions.toml</code> 定义版本：</p>
+<pre><code class="language-TOML">[libraries]
+protobuf-protoc = { group = &quot;com.google.protobuf&quot;, name = &quot;protoc&quot;, version.ref = &quot;protobuf&quot; }
+protobuf-javalite = { group = &quot;com.google.protobuf&quot;, name = &quot;protobuf-javalite&quot;, version.ref = &quot;protobuf&quot; }
+
+[plugins]
+googleProtobuf = { id = &quot;com.google.protobuf&quot;, version.ref = &quot;protobufPlugin&quot; }
+</code></pre>
+<p>项目的 <code>build.gradle.kts</code>：</p>
+<pre><code class="language-kotlin">plugins {
+    // ...
+    alias(libs.plugins.googleProtobuf) apply false
+}
+</code></pre>
+<p>app 的 <code>build.gradle.kts</code>：</p>
+<pre><code class="language-kotlin">import com.google.protobuf.gradle.proto
+
+plugins {
+    // ...
+    alias(libs.plugins.googleProtobuf)
+}
+
+android {
+    //...
+    sourceSets {
+        getByName(&quot;main&quot;).java.srcDir(&quot;src/main/java&quot;)
+        getByName(&quot;main&quot;).proto {
+            srcDir(&quot;src/main/proto&quot;)
+            include(&quot;**/*.proto&quot;)
+        }
+    }
+}
+protobuf {
+    protoc { 
+        artifact = libs.protoc.get().toString()
+    }
+    plugins {
+        generateProtoTasks {
+            all().forEach {
+                it.builtins {
+                    create(&quot;java&quot;) {
+                        option(&quot;lite&quot;)
+                    }
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    // ...
+    implementation(libs.protobuf.protoc)
+    implementation(libs.protobuf.javalite)
+}
+</code></pre>
+<p>混淆配置：</p>
+<pre><code>-keep class * extends com.google.protobuf.GeneratedMessageLite { *; }
+</code></pre>
+<p>在 <code>app/src/main/proto</code> 目录中创建 proto 文件：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1755443506237.png" alt="Proto File" loading="lazy"></figure>
+<p>内容如下：</p>
+<pre><code class="language-ProtoBuf">syntax = &quot;proto3&quot;;  // 声明 proto 协议版本
+package com.example.proto;  // 定义 Protobuf 自动生成类的包名
+option java_package = &quot;com.example.proto&quot;;  // Java 类所在的包名
+option java_outer_classname= &quot;SearchRequestProto&quot;;  // 定义 Protobuf 自动生成类的类名
+
+message SearchRequest {
+  string query = 1;
+  int32 page_number = 2;
+  int32 results_per_page = 3;
+}
+</code></pre>
+<p>Build 项目，会在 <code>app/build/generated/source/proto</code> 中生成对应的 Java 文件：</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1755443529830.png" alt="Generated Java File" loading="lazy"></figure>
+<p>生成的 Java 文件内容太长，就不贴在这里了，但是结构简单，无非就是一堆 Getter 和 Setter 以及一些解析方法，相信你也可以轻易读懂。</p>
+<p>接下来就可以在代码中调用它：</p>
+<pre><code class="language-kotlin">@Test
+fun proto() {
+    // 序列化
+    val request = SearchRequestProto.SearchRequest.newBuilder()
+        .setQuery(&quot;Proto&quot;)
+        .setPageNumber(1)
+        .setResultsPerPage(10)
+        .build()
+    val bytes = request.toByteArray()
+
+    // 反序列化
+    try {
+        val result = SearchRequestProto.SearchRequest.parseFrom(bytes)
+        val query = result.query
+        val pageNumber = result.pageNumber
+        val resultPerPage = result.resultsPerPage
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+}
+</code></pre>
+<p>序列化利用的是 <a href="https://liarrdev.github.io/post/Design-Pattern-Builder">Builder 模式</a>，构建成一个 <code>SearchRequest</code> 对象后，再将其转换成 <code>ByteArray</code>。反序列化则利用 <code>parseFrom()</code> 方法将 <code>ByteArray</code> 或者 <code>InputStream</code> 转成 <code>SearchRequest</code> 对象，<code>parseFrom()</code> 方法就是在上方生成的 Java 文件中自动帮我们插入的方法。</p>
+<h1 id="参考内容">参考内容</h1>
+<ul>
+<li><a href="https://protobuf.dev/programming-guides/proto3/">Language Guide (proto 3) | Protocol Buffers Documentation</a></li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Design Pattern: Builder]]></title>
+        <id>https://LiarrDev.github.io/post/Design-Pattern-Builder/</id>
+        <link href="https://LiarrDev.github.io/post/Design-Pattern-Builder/">
+        </link>
+        <updated>2025-07-22T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>建造者模式（Builder Pattern，也叫生成器模式）是最常用的设计模式之一，它与之前介绍的『<a href="https://liarrdev.github.io/post/Design-Pattern-Singleton/">Design Pattern: Singleton</a>』和『<a href="https://liarrdev.github.io/post/Design-Pattern-Factory/">Design Pattern: Factory</a>』都属于创建类型的设计模式。</p>
+<p>它可以将复杂对象的构建过程抽象出来，使这个抽象过程的不同实现方法可以构造出不同表现（属性）的对象。</p>
+<p>在讲 Builder 模式实现之前，先看看之前我们构建复杂对象时是如何编写的。</p>
+<h1 id="构造器重载telescoping-constructor-anti-pattern">构造器重载（Telescoping Constructor anti-pattern）</h1>
+<pre><code class="language-java">public class Article {
+    private String title;
+    private String content;
+    private String author;
+    private Date date;
+    public Article(String title, String content) { ... }
+    public Article(String title, String content, String author) { ... }
+    public Article(String title, String content, Date date) { ... }
+    public Article(String title, String content, String author, Date date) { ... }
+}
+</code></pre>
+<p>通过在构造器中传递不同数量的参数，从而实现构建不同属性组合的对象。这种方法简单直观，但随着属性增加，构造器的参数组合呈指数级增长，你就很难记住参数的顺序以及在特定情况下你可能需要的特定构造函数，难以维护和理解。</p>
+<p>Kotlin 的出现倒是很大程度上解决了这个问题：</p>
+<pre><code class="language-kotlin">data class Article(
+    val title: String = &quot;&quot;,
+    val content: String = &quot;&quot;,
+    val author: String = &quot;&quot;,
+    val date: Date = Date()
+)
+</code></pre>
+<p>尽管如此，它在扩展性上还是稍有欠缺，比如同一属性不同类型的构造，这时候还是要回到构造函数重载的方案。</p>
+<pre><code class="language-kotlin">data class Article(
+    val title: String = &quot;&quot;,
+    val content: String = &quot;&quot;,
+    val author: String = &quot;&quot;,
+    val date: Date = Date()
+) {
+    constructor(
+        title: String = &quot;&quot;,
+        content: String = &quot;&quot;,
+        author: String = &quot;&quot;,
+        millis: Long = System.currentTimeMillis()
+    ) : this(title, content, author, Date(millis))
+}
+</code></pre>
+<h1 id="setter">Setter</h1>
+<p>Setter 方法可以很好地解决构造函数膨胀的问题，只需添加对应的重载方法即可：</p>
+<pre><code class="language-kotlin">class Article {
+    private var title: String = &quot;&quot;
+    private var content: String = &quot;&quot;
+    private var author: String = &quot;&quot;
+    private var date: Date = Date()
+    fun setTitle(title: String) { ... }
+    fun setContent(content: String) { ... }
+    fun setAuthor(author: String) { ... }
+    fun setDate(date: Date) { this.date = date }
+    fun setDate(millis: Long) { this.date = Date(millis) }
+}
+</code></pre>
+<p>使用 Setter 逐个设置属性的值，灵活性较强，但也可能导致对象在构建过程中处于不完整状态，可变性带来的线程安全性问题，无法保证对象的不变性。</p>
+<h1 id="建造者模式">建造者模式</h1>
+<p>建造者模式通过一个独立的 Builder 类负责构建对象，可以确保对象在构建时处于合法状态。</p>
+<p>建造者模式包含如下角色：</p>
+<ul>
+<li>Builder：抽象建造者</li>
+<li>ConcreteBuilder：具体建造者</li>
+<li>Director：指挥者</li>
+<li>Product：产品角色</li>
+</ul>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1752405338134.png" alt="" loading="lazy"></figure>
+<p>下面是一个简单的示例：</p>
+<pre><code class="language-kotlin">/** &quot;Product&quot; */
+data class Pizza(var dough: String = &quot;&quot;, var sauce: String = &quot;&quot;, var topping: String = &quot;&quot;)
+
+/** &quot;Abstract Builder&quot; */
+abstract class PizzaBuilder {
+    lateinit var pizza: Pizza
+        private set
+    fun createPizza() { pizza = Pizza() }
+    abstract fun buildDough()
+    abstract fun buildSauce()
+    abstract fun buildTopping()
+}
+
+/** &quot;Concrete Builder&quot; */
+class HawaiianPizzaBuilder : PizzaBuilder() {
+    override fun buildDough() {
+        pizza.dough = &quot;cross&quot;
+    }
+    override fun buildSauce() {
+        pizza.sauce = &quot;mild&quot;
+    }
+    override fun buildTopping() {
+        pizza.topping = &quot;ham + pineapple&quot;
+    }
+}
+
+/** &quot;Concrete Builder&quot; */
+class SpicyPizzaBuilder : PizzaBuilder() {
+    override fun buildDough() {
+        pizza.dough = &quot;pan baked&quot;
+    }
+    override fun buildSauce() {
+        pizza.sauce = &quot;hot&quot;
+    }
+    override fun buildTopping() {
+        pizza.topping = &quot;pepperoni + salami&quot;
+    }
+}
+
+/** &quot;Director&quot; */
+class Chef {
+    lateinit var pizzaBuilder: PizzaBuilder
+    fun getPizza() = pizzaBuilder.pizza
+    fun constructPizza() {
+        pizzaBuilder.createPizza()
+        pizzaBuilder.buildDough()
+        pizzaBuilder.buildSauce()
+        pizzaBuilder.buildTopping()
+    }
+}
+
+fun main() {
+    val chef = Chef()
+    val hawaiianBuilder = HawaiianPizzaBuilder()
+    val spicyPizzaBuilder = SpicyPizzaBuilder()
+    chef.pizzaBuilder = hawaiianBuilder
+    chef.constructPizza()
+    val pizza = chef.getPizza()
+}
+</code></pre>
+<p>这里构建了一个厨师做披萨了例子，<code>Chef</code> 并不会直接构建 <code>Pizza</code> 对象，因为这个过程很容易出错，而是根据菜谱，也就是 Builder 实例来制作，<code>PizzaBuilder</code> 是个抽象类，由子类来实现具体的制作过程中所需的材料，<code>Chef</code> 无须关心做这个披萨需要菠萝还是火腿，这个由 <code>PizzaBuilder</code> 构建，<code>Chef</code> 拿到菜谱，按照上面的步骤执行即可。</p>
+<p>以上这个就是建造者模式比较官方的例子。</p>
+<p>抽象的引入似乎很容易会与之前介绍的<a href="https://liarrdev.github.io/post/Design-Pattern-Factory/">工厂模式</a>混淆，<a href="https://liarrdev.github.io/post/Design-Pattern-Factory/">工厂模式</a>的目的是实现多态性，而建造者模式的目的是找到一种解决伸缩构造器反模式的方法，它使用一个构造器，逐步接收每个初始化参数，然后一次性返回所构造的对象。</p>
+<p>简单来说，两者都可以创建复杂的对象，主要区别是<a href="https://liarrdev.github.io/post/Design-Pattern-Factory/">工厂模式</a>着重于多个产品对象，且产品对象是立即返回的，而建造者模式着重于一步步构造一个复杂对象，产品在最后的一步返回。</p>
+<p>另一方面，虽然利用建造者模式可以创建出不同类型的产品，但是如果产品之间的差异巨大，则需要编写多个建造者类才能实现，如果这时结合<a href="https://liarrdev.github.io/post/Design-Pattern-Factory/">工厂模式</a>会是一个更好的选择。</p>
+<p>为了更好地理解建造者模式，下面是一个对于 Android 开发者来说更常见的例子，<a href="https://liarrdev.github.io/post/Enjoy-OkHttp-in-One-Shot/"><code>OkHttp</code></a> 网络请求库内部就大量应用了建造者模式，以创建 <code>Request</code> 为例：</p>
+<pre><code class="language-kotlin">object HttpUtils {
+    private val client = OkHttpClient()
+    fun doRequest(url: String) {
+        val request = Request.Builder().url(url).build()
+        client.newCall(request).enqueue(object : Callback {
+            ...
+        })
+    }
+}
+</code></pre>
+<p><code>Request</code> 的构造方法一共 5 个参数，还有其他成员变量，我们通过它的静态内部类 <code>Builder</code> 按需设置它的 <code>url</code> 和 <code>method</code> 等参数，最后调用 <code>build()</code> 方法，<code>Builder</code> 会自动帮我们构建 <code>Request</code> 对象。</p>
+<p>可以简单看看 <code>Request</code> 的源码：</p>
+<pre><code class="language-kotlin">class Request internal constructor(
+    @get:JvmName(&quot;url&quot;) val url: HttpUrl,
+    @get:JvmName(&quot;method&quot;) val method: String,
+    @get:JvmName(&quot;headers&quot;) val headers: Headers,
+    @get:JvmName(&quot;body&quot;) val body: RequestBody?,
+    internal val tags: Map&lt;Class&lt;*&gt;, Any&gt;
+) {
+    ...
+    open class Builder {
+        internal var url: HttpUrl? = null
+        internal var method: String
+        internal var headers: Headers.Builder
+        internal var body: RequestBody? = null
+        internal var tags: MutableMap&lt;Class&lt;*&gt;, Any&gt; = mutableMapOf()
+        ...
+        constructor() {
+            this.method = &quot;GET&quot;
+            this.headers = Headers.Builder()
+        }
+        open fun url(url: HttpUrl): Builder = apply {
+            this.url = url
+        }
+        open fun url(url: String): Builder {
+            val finalUrl: String = when {
+                url.startsWith(&quot;ws:&quot;, ignoreCase = true) -&gt; {
+                    &quot;http:${url.substring(3)}&quot;
+                }
+                url.startsWith(&quot;wss:&quot;, ignoreCase = true) -&gt; {
+                    &quot;https:${url.substring(4)}&quot;
+                }
+                else -&gt; url
+            }
+            return url(finalUrl.toHttpUrl())
+        }
+        open fun build(): Request {
+            return Request(
+                checkNotNull(url) { &quot;url == null&quot; },
+                method,
+                headers.build(),
+                body,
+                tags.toImmutableMap()
+            )
+        }
+    }
+}
+</code></pre>
+<p>我们设置的参数经过处理后首先存储在 <code>Builder</code> 中，调用 <code>build()</code> 方法创建 <code>Request</code> 对象时用其构建实例，如果我们没有配置则使用 <code>Builder</code> 中设定的默认值。</p>
+<p>在这里，<code>Builder</code> 同时扮演了上文中提到的 Builder、ConcreteBuilder 角色，在 Builder 模式中如果 ConcreteBuilder 只有一个，我们都可以使用这种写法，省略抽象，简化 Builder 模式的设计。</p>
+<p>同时，因为 <code>Builder</code> 里的每一个 Setter 方法都返回了 <code>Builder</code> 对象本身，所以我们在调用的时候就可以使用链式写法，更加简洁。</p>
+<p>在 Android SDK 中也时常可以见到建造者模式的身影，比如常用的 <code>AlertDialog</code>、<code>Notification</code> 等，由于其涉及到 UI 相关的处理逻辑，代码量较大，就不在这里展开了，可自行阅读源码理解。</p>
+<h1 id="优缺点">优缺点</h1>
+<h2 id="优点">优点</h2>
+<ul>
+<li>提高可读性和可维护性：通过使用建造者模式，代码的可读性和可维护性得到提高。建造者模式允许开发者在代码中清晰地看到对象的构建过程，从而更容易理解和修改代码。此外，可以使用链式调用，代码的组织结构更加清晰，易于阅读和编写。</li>
+<li>增强对象的不可变性：建造者模式通常与不可变对象（Immutable Objects）一起使用。通过使用建造者模式，可以在对象创建过程中设置所有必要的属性，并在对象构建完成后将其设置为不可变，从而确保对象的一致性和线程安全性，这是一种保护机制，也是建造者模式的特性。</li>
+<li>处理可选参数：某些对象可能具有许多可选参数，而不是所有参数都需要在每次创建对象时提供。使用建造者模式，可以通过提供一些设置方法来设置可选参数，而不是在构造函数中使用大量的参数。这使得代码更加简洁，避免了长参数列表的问题。</li>
+<li>更好的扩展性：可以通过扩展 <code>Builder</code> 类来支持新的构建步骤，或者通过引入不同的具体 <code>Builder</code> 类来构建不同的对象变种。</li>
+</ul>
+<h2 id="缺点">缺点</h2>
+<ul>
+<li>代码量增加：使用建造者模式通常会引入额外的代码，包括 <code>Builder</code> 类本身以及目标类中的 Setter 方法。</li>
+<li>可能导致过多的类：如果每个类都需要一个独立的建造者，可能会导致类的数量激增，增加了类的管理和维护的复杂性。</li>
+<li>对象状态分散：在建造者模式中，对象的状态可能分散在构造器和目标类中，这使得对象的状态分散，可能导致维护和修改代码更加困难。</li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Android TextView HTML 超文本跳转]]></title>
+        <id>https://LiarrDev.github.io/post/Handle-Android-Textview-Html-Hypertext-Action/</id>
+        <link href="https://LiarrDev.github.io/post/Handle-Android-Textview-Html-Hypertext-Action/">
+        </link>
+        <updated>2025-06-03T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>之前在『<a href="https://liarrdev.github.io/post/Change-the-Partial-Style-within-Android-TextView/">Android 改变 TextView 内局部样式</a>』中介绍过利用 HTML 标签来设置样式，使用时你可能会遇到超文本跳转的需求，很容易你就能想到给 HTML 字符串添加 <code>&lt;a&gt;</code> 标签：</p>
+<pre><code class="language-kotlin">class MainActivity : AppCompatActivity() {
+    // ...
+    override fun onCreate(savedInstanceState: Bundle?) {
+        // ...
+        val content = Html.fromHtml(
+            &quot;这是一个超链接：&lt;a href='https://google.com'&gt;Google&lt;/a&gt;&quot;,
+            Html.FROM_HTML_MODE_LEGACY
+        )
+        binding.textView.text = content
+    }
+}
+</code></pre>
+<p><code>TextView</code> 确实出现了超文本的显示效果，但是却不能够响应点击。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1745051421676.png" alt="TextView 超链接效果" loading="lazy"></figure>
+<p>我们还需要对其做进一步处理。这里同样用到了『<a href="https://liarrdev.github.io/post/Change-the-Partial-Style-within-Android-TextView/">Android 改变 TextView 内局部样式</a>』中介绍的另一种方式，也就是 <code>SpannableString</code>，代码如下：</p>
+<pre><code class="language-kotlin">class MainActivity : AppCompatActivity() {
+    // ...
+    override fun onCreate(savedInstanceState: Bundle?) {
+        // ...
+        val content = Html.fromHtml(
+            &quot;这是一个超链接：&lt;a href='https://google.com'&gt;Google&lt;/a&gt;&quot;,
+            Html.FROM_HTML_MODE_LEGACY
+        )
+        binding.textView.text = content
+        handleHtmlClick(binding.textView)
+    }
+    
+    private fun handleHtmlClick(textView: TextView) {
+        textView.movementMethod = LinkMovementMethod.getInstance()
+        val text = textView.text
+        if (text is Spannable) {
+            val end = text.length
+            val spans = text.getSpans(0, end, URLSpan::class.java)
+            val sb = SpannableStringBuilder(text)
+            sb.clearSpans()
+            for (span in spans) {
+                sb.setSpan(
+                    URLSpan(span.url),
+                    text.getSpanStart(span),
+                    text.getSpanEnd(span),
+                    Spanned.SPAN_EXCLUSIVE_INCLUSIVE
+                )
+            }
+            textView.text = sb
+        }
+    }
+}
+</code></pre>
+<p>通过 <code>Spanned.getSpans()</code> 方法提取到可点击的 <code>URLSpan</code>，并重新构造 <code>URLSpan</code> 再添加到 <code>SpannableString</code> 中即可。<code>URLSpan</code> 是 <code>ClickableSpan</code> 的实现，当点击其中设置了 Span 的文本时，<code>URLSpan</code> 将尝试通过启动带有 <code>Intent.ACTION_VIEW</code> 的 <code>Activity</code> 来打开 URL。</p>
+<p>上面代码的效果就是跳转到浏览器打开超链接。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1745051459860.gif" alt="超链接跳转" loading="lazy"></figure>
+<p>除了我们常见的网页超链接外，超文本其实还包含其他场景的应用，而上面说到 <code>URLSpan</code> 尝试通过启动带有 <code>Intent.ACTION_VIEW</code> 的 <code>Activity</code> 来打开 URL，这让我们很容易就想起之前介绍过的<a href="https://liarrdev.github.io/post/Android-Calling-Email-App-to-Send-Email/">发送邮件</a>。可以这么写：</p>
+<pre><code class="language-kotlin">class MainActivity : AppCompatActivity() {
+    // ...
+    override fun onCreate(savedInstanceState: Bundle?) {
+        // ...
+        val content = Html.fromHtml(
+            &quot;发邮件给 &lt;a href='mailto:foo@bar.com'&gt;foo@bar.com&lt;/a&gt;&quot;,
+            Html.FROM_HTML_MODE_LEGACY
+        )
+        binding.textView.text = content
+        handleHtmlClick(binding.textView)
+    }
+    
+    private fun handleHtmlClick(textView: TextView) {
+        textView.movementMethod = LinkMovementMethod.getInstance()
+        val text = textView.text
+        if (text is Spannable) {
+            val end = text.length
+            val spans = text.getSpans(0, end, URLSpan::class.java)
+            val sb = SpannableStringBuilder(text)
+            sb.clearSpans()
+            for (span in spans) {
+                sb.setSpan(
+                    URLSpan(span.url),
+                    text.getSpanStart(span),
+                    text.getSpanEnd(span),
+                    Spanned.SPAN_EXCLUSIVE_INCLUSIVE
+                )
+            }
+            textView.text = sb
+        }
+    }
+}
+</code></pre>
+<p>它也会直接拉起手机的邮件应用：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1745083125426.gif" alt="超文本跳转发送邮件" loading="lazy"></figure>
+<p>如果希望接管点击后的逻辑，我们可以自行实现 <code>ClickableSpan</code>：</p>
+<pre><code class="language-kotlin">class MainActivity : AppCompatActivity() {
+    // ...
+    override fun onCreate(savedInstanceState: Bundle?) {
+        // ...
+        val content = Html.fromHtml(
+            &quot;这是一个超链接：&lt;a href='https://google.com'&gt;Google&lt;/a&gt;&quot;,
+            Html.FROM_HTML_MODE_LEGACY
+        )
+        binding.textView.text = content
+        handleHtmlClick(binding.textView)
+    }
+    
+    private fun handleHtmlClick(textView: TextView) {
+        textView.movementMethod = LinkMovementMethod.getInstance()
+        val text = textView.text
+        if (text is Spannable) {
+            val end = text.length
+            val spans = text.getSpans(0, end, URLSpan::class.java)
+            val sb = SpannableStringBuilder(text)
+            sb.clearSpans()
+            for (span in spans) {
+                sb.setSpan(
+                    HypertextSpan(this, span.url),
+                    text.getSpanStart(span),
+                    text.getSpanEnd(span),
+                    Spanned.SPAN_EXCLUSIVE_INCLUSIVE
+                )
+            }
+            textView.text = sb
+        }
+    }
+}
+
+class HypertextSpan(private val context: Context, private val url: String) : ClickableSpan() {
+    override fun onClick(widget: View) {
+        // 处理点击逻辑
+    }
+}
+</code></pre>
+<p>我们构造一个 <code>HypertextSpan</code> 来接管点击逻辑，只需将上一步的 <code>URLSpan</code> 替换即可，构造方法中传入 <code>Context</code> 和 URL 可以方便我们处理判断及跳转。</p>
+<p>比如在应用内打开网页：</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1745051484830.gif" alt="应用内接管超链接处理" loading="lazy"></figure>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Android 调用邮箱客户端发送邮件]]></title>
+        <id>https://LiarrDev.github.io/post/Android-Calling-Email-App-to-Send-Email/</id>
+        <link href="https://LiarrDev.github.io/post/Android-Calling-Email-App-to-Send-Email/">
+        </link>
+        <updated>2025-04-23T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>做商业项目的时候，应用往往需要提供一些用户的反馈渠道，尽管现在有微信公众号、微博等等方便快捷的途径可以与应用开发者取得联系，但邮箱也是不可或缺的一种反馈途径。</p>
+<p>在应用开发中，我们时常会拉起邮箱应用来完成发送邮件的操作，同时还会自动帮用户填写部分信息，减少用户的操作步骤，今天就教大家在 Android 开发中如何实现这一操作。</p>
+<p>前提是手机需要安装并登录邮箱客户端，你可以使用一些邮箱服务商提供的官方应用，比如『Gmail』、『QQMail』等等，也可以使用手机内置的邮箱应用，具体配置操作可参考『<a href="https://liarrdev.github.io/post/Mastering-Smartphone-Built-in-Email-App/">用好手机系统自带的邮件客户端</a>』。</p>
+<p>最简单的场景，我们只需要给指定的官方邮箱发送一些文本内容，可以这么写：</p>
+<pre><code class="language-Kotlin">object EmailSender {
+    fun mailToOne(context: Context) {
+        val intent = Intent(Intent.ACTION_SENDTO, Uri.parse(&quot;mailto:foo@bar.com&quot;))
+        intent.putExtra(Intent.EXTRA_SUBJECT, &quot;这是主题&quot;)
+        intent.putExtra(Intent.EXTRA_TEXT, &quot;这是内容&quot;)
+        context.startActivity(intent);
+    }
+}
+</code></pre>
+<p>这里用到了 <code>Activity</code> 的隐式启动，首先需要把 <code>Intent</code> 的 <code>action</code> 设置为 <code>Intent.ACTION_SENDTO</code>，再将 <code>data</code> 设置为 <code>mailto:</code> 开头的 <code>Uri</code>，并在后面拼接邮箱地址，这样就只有邮箱应用才能够响应我们的 <code>Intent</code>。如果需要设置主题和内容，可以填充 <code>Intent.EXTRA_SUBJECT</code> 和 <code>Intent.EXTRA_TEXT</code> 这两个字段。</p>
+<p>效果如下：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1745255773750.gif" alt="发送给单一收件人" loading="lazy"></figure>
+<p>邮件不仅支持发送给单一收件人，我们可以指定多个收件人，还支持抄送、密送。</p>
+<pre><code class="language-Kotlin">object EmailSender {
+    fun mailToMultiple(context: Context) {
+        val intent = Intent(Intent.ACTION_SENDTO)
+        intent.setData(Uri.parse(&quot;mailto:&quot;))
+        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(&quot;foo@bar.com&quot;, &quot;bar@foo.com&quot;))
+        intent.putExtra(Intent.EXTRA_CC, arrayOf(&quot;cc@bar.com&quot;))     // 抄送
+        intent.putExtra(Intent.EXTRA_BCC, arrayOf(&quot;bcc@bar.com&quot;))   // 密送
+        intent.putExtra(Intent.EXTRA_SUBJECT, &quot;这是主题&quot;)
+        intent.putExtra(Intent.EXTRA_TEXT, &quot;这是内容&quot;)
+        context.startActivity(intent)
+    }
+}
+</code></pre>
+<p><code>action</code> 的配置与上文一致，但是 <code>data</code> 不需要拼接收件人的邮箱地址，而是改成在 <code>Intent.EXTRA_EMAIL</code> 字段传入，抄送和密送的邮箱地址则分别在 <code>Intent.EXTRA_CC</code> 和 <code>Intent.EXTRA_BCC</code> 字段传入，这三个字段都接收字符串类型的数组，也就意味着我们可以填充多个邮箱地址。</p>
+<p>效果如下：</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1745255801296.gif" alt="发送给多个收件人" loading="lazy"></figure>
+<p>邮件同时还能上传附件，我们可以这么写：</p>
+<pre><code class="language-Kotlin">object EmailSender {
+    fun mailAttachments(context: Context) {
+        val file = File(PathUtils.getInternalAppFilesPath(), &quot;screenshot.png&quot;)
+        val intent = Intent(Intent.ACTION_SEND_MULTIPLE)
+        intent.selector = Intent(Intent.ACTION_SENDTO, Uri.parse(&quot;mailto:&quot;))
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(&quot;foo@bar.com&quot;))
+        intent.putExtra(Intent.EXTRA_SUBJECT, &quot;这是主题&quot;)
+        intent.putExtra(Intent.EXTRA_STREAM, arrayListOf(UriUtils.file2Uri(file)))
+        context.startActivity(intent)
+    }
+}
+</code></pre>
+<p>这里将 <code>action</code> 改成 <code>Intent.ACTION_SEND_MULTIPLE</code>，如果仅仅是这样修改，除了邮箱应用外，许多应用都能够响应我们的 <code>Intent</code>，因此还需要调用 <code>setSelector()</code> 方法，为此 <code>Intent</code> 设置选择器。最后再向 <code>Intent.EXTRA_STREAM</code> 字段传入附件的 <code>Uri</code>，它也接收数组，意味着我们可以传输多个附件。</p>
+<p>效果如下：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1745255822369.gif" alt="发送附件" loading="lazy"></figure>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[ViewPager2 横向嵌套滚动]]></title>
+        <id>https://LiarrDev.github.io/post/ViewPager2-Horizontal-Nested-Scroll/</id>
+        <link href="https://LiarrDev.github.io/post/ViewPager2-Horizontal-Nested-Scroll/">
+        </link>
+        <updated>2025-03-18T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>之前『<a href="https://liarrdev.github.io/post/Tab-Switching-Effects-by-TabLayout-and-ViewPager2/">TabLayout &amp; ViewPager2 快速打造选项卡切换效果</a>]』一文介绍了如何实现一个简单的页面滑动切换效果，随着开发的深入，你可能会遇到 <code>ViewPager2</code> 嵌套滑动的问题，也就是当 <code>ViewPager2</code> 内有一个可以同方向滚动的 <code>View</code>，比如 <code>RecyclerView</code>，它并不能够按照我们的预期工作。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1742312093011.gif" alt="嵌套滚动异常" loading="lazy"></figure>
+<p>嵌套？之前我们用 <a href="https://liarrdev.github.io/post/Solve-the-Android-Nested-Scrolling-Problem-with-NestedScrollView/">NestedScrollView 解决 Android 嵌套滚动问题</a>，这次能不能依葫芦画瓢？</p>
+<p>很显然，并不适合。</p>
+<p>既然如此，我们能否通过修改 <code>ViewPager2</code> 的事件分发逻辑，使其根据我们的需要进行分发？</p>
+<p>很遗憾，<code>ViewPager2</code> 被标记为 <code>final</code>，我们无法继承修改。</p>
+<pre><code class="language-Java">public final class ViewPager2 extends ViewGroup {
+    ...
+}
+</code></pre>
+<p><code>RecyclerView</code> 总该不会被标记为 <code>final</code> 吧，我们重写 <code>RecyclerView</code> 是否行得通？</p>
+<p>我们换个角度思考这个问题，这次我们重写 <code>RecyclerView</code>，假如说下次我们需要往 <code>ViewPager2</code> 里嵌套一个 <code>ScrollView</code> 或者其他任意可滚动的 <code>View</code>，岂不是每一个都要重写？有没有一劳永逸的方法？</p>
+<p>其实可以单独自定义一个 <code>ViewGroup</code> 用于处理 <code>ViewPager2</code> 内的事件分发，当添加了需要处理嵌套滑动问题的 <code>View</code> 时，只需要在该 <code>View</code> 外面包一层我们自定义的 <code>ViewGroup</code>，就可以实现对嵌套滑动事件的处理。</p>
+<pre><code class="language-Kotlin">class ViewPager2NestedFrameLayout @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : FrameLayout(context, attrs) {
+
+    private val parentViewPager: ViewPager2?
+        get() {
+            var v: View? = parent as? View
+            while (v != null &amp;&amp; v !is ViewPager2) {
+                v = v.parent as? View
+            }
+            return v as? ViewPager2
+        }
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        when (ev?.action) {
+            MotionEvent.ACTION_DOWN -&gt; {
+                parentViewPager?.isUserInputEnabled = false
+            }
+
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -&gt; {
+                parentViewPager?.isUserInputEnabled = true
+            }
+        }
+        return super.dispatchTouchEvent(ev)
+    }
+}
+</code></pre>
+<p>我们继承 <code>FrameLayout</code> 来实现，一般情况下该 <code>ViewGroup</code> 仅会包裹我们需要嵌套滚动的 <code>View</code>，所以 <code>FrameLayout</code> 对原有代码的入侵性最小，同时性能也最优。</p>
+<p>这其中一个关键点是如何获取 <code>ViewPager2</code> 的实例，当然我们可以通过外部传入，但这样每次使用时都需要手动设置一遍，非常麻烦。于是这里采用另一种方式，通过 <code>View</code> 的 <code>getParent()</code> 方法获取其父 <code>View</code>，然后判断其是否为 <code>ViewPager2</code>，如果是则返回，否则继续向上查找。</p>
+<p>拿到 <code>ViewPager2</code> 的实例就好办了，当接收到 <code>ACTION_DOWN</code> 事件时，我们调用 <code>setUserInputEnabled()</code> 设置为 <code>false</code>，禁止 <code>ViewPager2</code> 滚动，当接收到 <code>ACTION_UP</code> 或 <code>ACTION_CANCEL</code> 事件时，我们设置为 <code>true</code>，允许 <code>ViewPager2</code> 滚动。</p>
+<p>使用方法正如我们前面所述，包裹在需要嵌套滑动的 <code>View</code> 外即可：</p>
+<pre><code class="language-XML">&lt;FrameLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    tools:context=&quot;.NestedFragment&quot;&gt;
+    ...
+    &lt;com.example.nested.ViewPager2NestedFrameLayout
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;wrap_content&quot;&gt;
+        &lt;androidx.recyclerview.widget.RecyclerView
+            android:id=&quot;@+id/recycler_view&quot;
+            android:layout_width=&quot;match_parent&quot;
+            android:layout_height=&quot;wrap_content&quot;
+            android:orientation=&quot;horizontal&quot;
+            app:layoutManager=&quot;androidx.recyclerview.widget.LinearLayoutManager&quot; /&gt;
+    &lt;/com.example.nested.ViewPager2NestedFrameLayout&gt;
+&lt;/FrameLayout&gt;
+</code></pre>
+<p>效果如下：</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1742312125905.gif" alt="嵌套滚动正常" loading="lazy"></figure>
+<p>正如我们所期望的那样工作，由于范围仅限制在该 <code>ViewGroup</code> 范围内，所以触摸该 <code>ViewGroup</code> 以外的区域仍能够使 <code>ViewPager2</code> 正常滑动。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[ArkUI 自定义组件：KeyCap 实践]]></title>
+        <id>https://LiarrDev.github.io/post/ArkUI-Custom-Components-KeyCap/</id>
+        <link href="https://LiarrDev.github.io/post/ArkUI-Custom-Components-KeyCap/">
+        </link>
+        <updated>2025-02-10T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>之前在『<a href="https://liarrdev.github.io/post/MOJiKana-Physical-Button-Motion-Effect/">「MOJiKana」中模仿实体按键的动效是如何实现的？</a>』一文中介绍了 Android 平台 View 体系以及 Compose 体系关于 <code>KeyCap</code> 的开发实践。文中我顺嘴提了一句 ArkUI 的实现方式，但并未给出实际代码，今天单独来讲下 ArkUI 中的实现方式。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1739113257377.gif" alt="KeyCap 效果" loading="lazy"></figure>
+<p>因为 Android 平台无论是 View 还是 Compose 默认情况下都不支持单独设置某一方向上的边框，所以我们采用两个图层叠加的方式来模拟。采用两个图层有个小缺陷，就是当两个图层之间的间隔过高时，视觉效果就不再像是一个实体按键了。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1739113300420.png" alt="KeyCap 间隔过高" loading="lazy"></figure>
+<p>当然，这既可以归咎为使用不当，也可以说是我设计的时候并没有兼容，其实只需要将底部图层的高度撑满整个父布局就可以解决这个问题。</p>
+<p>但是像 ArkUI 就可以使用单边 <code>border</code> 来规避这种问题。</p>
+<pre><code class="language-ts">@Component
+export struct KeyCap {
+  keyFlatColor: ResourceColor = Color.Transparent
+  keyShadowColor: ResourceColor = Color.Transparent
+  keyStroke: Length = 0
+  keyCapRadius: Length = 0
+  @BuilderParam child: () =&gt; void = this.customBuilder
+  @State private pressed: boolean = false
+
+  @Builder
+  customBuilder() {
+  }
+
+  build() {
+    RelativeContainer() {
+      Stack({ alignContent: Alignment.Center }) {
+        this.child()
+      }
+      .width('100%')
+      .backgroundColor(this.keyFlatColor)
+      .margin({ top: this.pressed ? this.keyStroke : 0 })
+      .borderRadius(this.keyCapRadius)
+      .borderColor(this.keyShadowColor)
+      .borderWidth({ bottom: this.pressed ? 0 : this.keyStroke })
+      .alignRules({
+        top: { anchor: '__container__', align: VerticalAlign.Top },
+        bottom: { anchor: '__container__', align: VerticalAlign.Bottom }
+      })
+    }.onTouch((event: TouchEvent) =&gt; {
+      if (event.type == TouchType.Down) {
+        this.pressed = true
+      } else if (event.type == TouchType.Up || event.type == TouchType.Cancel) {
+        this.pressed = false
+      }
+    })
+  }
+}
+</code></pre>
+<p>属性还是跟之前一样，可以看到这里少了一层组件，通过判断是否按压来调节底部边框宽度以及顶部边距，整体代码量又简洁了不少。</p>
+<p>虽说这种方式值的一夸，但众所周知，ArkUI 从不经夸。在自定义组件中，如果需要添加子组件，我们无法像 Compose 一样采用高阶函数，甚至由于系统组件无法查看具体实现，我们没办法模拟出这种闭包的写法，只能将子组件通过属性传递。</p>
+<p>子组件需要通过 <code>@BuilderParam</code> 传递，它用来承接 <code>@Builder</code> 函数，这意味着我们还需要单独写一个 <code>@Builder</code> 函数来实现子组件：</p>
+<pre><code class="language-ts">@Entry
+@Component
+struct MainPage {
+  Stack({ alignContent: Alignment.Center }) {
+    KeyCap({
+      keyFlatColor: Color.Brown,
+      keyShadowColor: Color.Orange,
+      keyStroke: 6,
+      keyCapRadius: 60,
+      child: this.keyCapChildBuilder
+    })
+      .width(120)
+      .height(54)
+      .onClick(() =&gt; {})
+  }
+  @Builder
+  keyCapChildBuilder() {
+    Text()  // 子组件实现
+  }
+}
+</code></pre>
+<p>这种设计非常蠢，仿佛 View Tree 层次缺失，不利于阅读。</p>
+<p>又能怎么样呢，甩甩手上的屎继续写呗。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Design Pattern: Factory]]></title>
+        <id>https://LiarrDev.github.io/post/Design-Pattern-Factory/</id>
+        <link href="https://LiarrDev.github.io/post/Design-Pattern-Factory/">
+        </link>
+        <updated>2024-12-26T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="前言">前言</h1>
+<p>工厂模式（Factory Pattern）是最常用的设计模式之一，它与之前介绍的『<a href="https://liarrdev.github.io/post/Design-Pattern-Singleton/">Design Pattern: Singleton</a>』都属于创建类型的设计模式。</p>
+<p>它在创建对象时提供了一种封装机制，将实际创建对象的代码与使用代码分离。在创建对象时不会对客户端暴露创建逻辑，而是使其创建过程延迟到子类进行，并且通过一个共同的接口来指向新创建的对象。它主要解决接口选择的问题。</p>
+<p>一般情况下，工厂模式有三种实现：简单工厂模式（Simple Factory）、工厂方法模式（Factory Method）、抽象工厂模式（Abstract Factory）。 这三种模式从上到下逐步抽象，不过值得一提的是，简单工厂模式并不在 GoF 23 种设计模式之列。</p>
+<p>下面我们逐一介绍这三种实现。</p>
+<h1 id="实现">实现</h1>
+<p>假设我们需要生产两款手机（以 Apple 和 Samsung 为例），在不使用设计模式的情况下，我们可能会这么写：</p>
+<pre><code class="language-kotlin">class Apple(val screen: String, val usb: String) {
+    fun hardware() = println(&quot;[Apple] screen: $screen, usb: $usb&quot;)
+}
+
+class Samsung(val screen: String, val usb: String) {
+    fun hardware() = println(&quot;[Samsung] screen: $screen, usb: $usb&quot;)
+}
+
+fun main() {
+    val apple = Apple(&quot;LCD&quot;, &quot;Lightning&quot;)
+    apple.hardware()
+    val samsung = Samsung(&quot;OLed&quot;, &quot;Type-C&quot;)
+    samsung.hardware()
+}
+</code></pre>
+<p>即由用户手动去创建实际的对象，在上面这个例子中，用户需要知道如何创建一台手机，需要知道什么手机使用什么屏幕和什么类型的 USB 插口，用户和手机的生产就耦合在一起了。</p>
+<p>为了降低耦合性，我们引入工厂模式，把手机的生产细节放到工厂里，用户无需关心这台手机使用什么屏幕和 USB 插口，直接调用工厂的创建方法，不必知道创建的细节。</p>
+<h2 id="simple-factory-简单工厂模式">Simple Factory 简单工厂模式</h2>
+<h3 id="简介">简介</h3>
+<p>简单工厂模式又叫作静态工厂方法模式（Static Factory Method）。它将对象的创建逻辑封装在一个工厂类中，客户端通过调用工厂类的静态方法来创建对象。</p>
+<p>简单工厂模式包含如下角色：</p>
+<ul>
+<li>Factory：工厂角色，负责实现创建所有实例的内部逻辑。</li>
+<li>AbstractProduct：抽象产品角色，是创建的所有对象的父类，负责描述所有实例的公共接口。</li>
+<li>Product：具体产品角色，即创建目标，所有创建的对象都是该角色。</li>
+</ul>
+<pre><code class="language-kotlin">abstract class Phone {
+    abstract fun hardware()
+}
+
+class Apple(val screen: String, val usb: String) : Phone() {
+    override fun hardware() = println(&quot;[Apple] screen: $screen, usb: $usb&quot;)
+}
+
+class Samsung(val screen: String, val usb: String) : Phone() {
+    override fun hardware() = println(&quot;[Samsung] screen: $screen, usb: $usb&quot;)
+}
+
+object PhoneFactory {
+    fun createPhone(type: String): Phone? {
+        return when (type) {
+            &quot;Apple&quot; -&gt; Apple(&quot;LCD&quot;, &quot;Lightning&quot;)
+            &quot;Samsung&quot; -&gt; Samsung(&quot;OLed&quot;, &quot;Type-C&quot;)
+            else -&gt; null
+        }
+    }
+}
+
+fun main() {
+    val apple: Phone? = PhoneFactory.createPhone(&quot;Apple&quot;)
+    apple?.hardware()
+    val samsung: Phone? = PhoneFactory.createPhone(&quot;Samsung&quot;)
+    samsung?.hardware()
+}
+</code></pre>
+<p>在这个例子中，<code>Phone</code> 就充当了抽象产品角色，<code>Apple</code> 和 <code>Samsung</code> 都是具体产品，工厂提供了静态方法用于创建具体产品，用户只需要传入手机的品牌即可获取手机实例。</p>
+<h3 id="优缺点">优缺点</h3>
+<ul>
+<li>优点：简单工厂模式提供专门的工厂类用于创建对象，实现了对象创建和使用的职责分离，客户端不需知道所创建的具体产品类的类名以及创建过程，只需要知道具体产品类所对应的参数即可。通过引入配置文件，可以在不修改任何客户端代码的情况下更换和增加新的具体产品类，在一定程度上提高了系统的灵活性。</li>
+<li>缺点：不符合设计模式的开闭原则（对扩展开放，对修改关闭），每次添加新的产品就需要修改工厂类。在产品类型较多时，有可能造成工厂逻辑过于复杂，不利于系统的扩展维护。</li>
+</ul>
+<h2 id="factory-method-工厂方法模式">Factory Method 工厂方法模式</h2>
+<h3 id="简介-2">简介</h3>
+<p>工厂方法模式又被称为虚拟构造子模式（Virtual Constructor）或者多态工厂模式（Polymorphic Factory）。工厂方法模式是目标是定义一个创建产品对象的工厂接口，将实际创建工作推迟到子类中。</p>
+<p>工厂方法模式包含如下角色：</p>
+<ul>
+<li>AbstractFactory：抽象工厂角色，与应用程序无关，主要在创建模式中规范和产品对应的工厂对象的标准化定义。</li>
+<li>Factory：具体工厂角色，和用户直接交互的具体实现，用户创建产品对象。</li>
+<li>AbstractProduct：抽象产品角色，是创建的所有对象的父类，负责描述所有实例的公共接口。</li>
+<li>Product：具体产品角色，即创建目标，所有创建的对象都是该角色。</li>
+</ul>
+<pre><code class="language-kotlin">abstract class Phone {
+    abstract fun hardware()
+}
+
+class Apple(val screen: String, val usb: String) : Phone() {
+    override fun hardware() = println(&quot;[Apple] screen: $screen, usb: $usb&quot;)
+}
+
+class Samsung(val screen: String, val usb: String) : Phone() {
+    override fun hardware() = println(&quot;[Samsung] screen: $screen, usb: $usb&quot;)
+}
+
+interface PhoneFactory {
+    fun createPhone(): Phone
+}
+
+class AppleFactory : PhoneFactory {
+    override fun createPhone(): Phone = Apple(&quot;LCD&quot;, &quot;Lightning&quot;)
+}
+
+class SamsungFactory : PhoneFactory {
+    override fun createPhone(): Phone = Samsung(&quot;OLed&quot;, &quot;Type-C&quot;)
+}
+
+fun main() {
+    val factory: PhoneFactory = AppleFactory()
+    val phone: Phone = factory.createPhone()
+    phone.hardware()
+}
+</code></pre>
+<p>工厂方法模式在简单工厂模式的基础上抽象了工厂类，即将具体的手机创建过程交给专门的工厂子类去完成。</p>
+<p>工厂方法模式之所以又被称为多态工厂模式，是因为所有的具体工厂类都具有同一抽象父类。</p>
+<h3 id="优缺点-2">优缺点</h3>
+<ul>
+<li>优点：最直接的优点就是在满足开闭原则的基础上实现功能的扩展，核心工厂类不再负责所有产品的构建，而是将具体的工作交给工厂子类实现，需要增加新产品时，无须修改已有的抽象或具体的工厂或产品，只要添加一个具体工厂和具体产品就可以。</li>
+<li>缺点：由于在添加新产品时需要编写新的产品类和工厂类，系统中类的个数将成对增加，在一定程度上增加了复杂度，有更多的类需要编译和运行，也会给系统带来一些额外开销。</li>
+</ul>
+<h2 id="abstract-factory-抽象工厂模式">Abstract Factory 抽象工厂模式</h2>
+<h3 id="简介-3">简介</h3>
+<p>抽象工厂模式是工厂方法模式的升级版本，工厂方法模式只生产一个等级的产品，而抽象工厂模式可生产多个等级的产品。</p>
+<p>为了更清晰地理解工厂方法模式，需要先引入两个概念：</p>
+<ul>
+<li>产品等级结构：产品等级结构即产品的继承结构，如一个抽象类是电视机，其子类有海尔电视机、海信电视机、索尼电视机，则抽象电视机与具体品牌的电视机之间构成了一个产品等级结构，抽象电视机是父类，而具体品牌的电视机是其子类。</li>
+<li>产品族：在抽象工厂模式中，产品族是指由同一个工厂生产的，位于不同产品等级结构中的一组产品，如海尔电器工厂生产的海尔电视机、海尔电冰箱，海尔电视机位于电视机产品等级结构中，海尔电冰箱位于电冰箱产品等级结构中。</li>
+</ul>
+<p>当系统所提供的工厂所需生产的具体产品并不是一个简单的对象，而是多个位于不同产品等级结构中属于不同类型的具体产品时需要使用抽象工厂模式。</p>
+<p>抽象工厂模式是所有形式的工厂模式中最为抽象和最具一般性的一种形态。</p>
+<p>抽象工厂模式与工厂方法模式最大的区别在于，工厂方法模式针对的是一个产品等级结构，而抽象工厂模式则需要面对多个产品等级结构，一个工厂等级结构可以负责多个不同产品等级结构中的产品对象的创建 。当一个工厂等级结构可以创建出分属于不同产品等级结构的一个产品族中的所有对象时，抽象工厂模式比工厂方法模式更为简单、有效率。</p>
+<p>抽象工厂模式包含如下角色：</p>
+<ul>
+<li>AbstractFactory：抽象工厂角色，与应用程序无关，主要在创建模式中规范和产品对应的工厂对象的标准化定义。</li>
+<li>Factory：具体工厂角色，用于生产不同的产品族。</li>
+<li>AbstractProduct：抽象产品角色，定义了产品的规范，描述了产品的共同主要特性和功能，抽象工厂模式有多个抽象产品。</li>
+<li>Product：具体产品角色，由专门的具体工厂来创建，具体产品和具体工厂之间往往一一对应。</li>
+</ul>
+<pre><code class="language-kotlin">interface Tablet {
+    fun play()
+}
+
+interface Earphone {
+    fun play()
+}
+
+class iPad : Tablet {
+    override fun play() = println(&quot;Apple iPad play game&quot;)
+}
+
+class Tab : Tablet {
+    override fun play() = println(&quot;Samsung Tab play game&quot;)
+}
+
+class AirPods : Earphone {
+    override fun play() = println(&quot;Apple AirPods play music&quot;)
+}
+
+class Buds : Earphone {
+    override fun play() = println(&quot;Samsung Buds play music&quot;)
+}
+
+interface Factory {
+    fun createTablet(): Tablet
+    fun createEarphone(): Earphone
+}
+
+class AppleFactory : Factory {
+    override fun createTablet(): Tablet = iPad()
+    override fun createEarphone(): Earphone = AirPods()
+}
+
+class SamsungFactory : Factory {
+    override fun createTablet(): Tablet = Tab()
+    override fun createEarphone(): Earphone = Buds()
+}
+
+fun main() {
+    val appleFactory: Factory = AppleFactory()
+    appleFactory.createTablet().play()
+    appleFactory.createEarphone().play()
+
+    val samsungFactory: Factory = SamsungFactory()
+    samsungFactory.createTablet().play()
+    samsungFactory.createEarphone().play()
+}
+</code></pre>
+<p>这里定义了平板和耳机两类产品，各为一个产品等级结构，Apple 和 Samsung 都生产这两类产品，所以旗下的产品可视为产品族</p>
+<p>抽象工厂可以通过多态，来动态设置不同的工厂，生产不同的产品，同时每个工厂中的产品又不属于同一个产品等级结构。</p>
+<h3 id="优缺点-3">优缺点</h3>
+<ul>
+<li>优点：可以在类的内部对产品族中相关联的多等级产品共同管理，而不必专门引入多个新的类来进行管理。增加新的具体工厂和产品族很方便，因为一个具体的工厂实现代表的是一个产品族，无须修改已有系统，符合开闭原则。</li>
+<li>缺点：开闭原则的倾斜性。增加新的工厂和产品族容易，增加新的产品等级结构却比较麻烦，这是因为在抽象工厂角色中规定了所有可能被创建的产品集合，要支持新种类的产品就意味着要对该接口进行扩展，而这将涉及到对抽象工厂角色及其所有子类的修改，显然会带来较大的不便。</li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[『MOJiKana』中模仿实体按键的动效是如何实现的？]]></title>
+        <id>https://LiarrDev.github.io/post/MOJiKana-Physical-Button-Motion-Effect/</id>
+        <link href="https://LiarrDev.github.io/post/MOJiKana-Physical-Button-Motion-Effect/">
+        </link>
+        <updated>2024-11-14T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>在『<a href="https://www.hugecore.net/mojikana">MOJiKana</a>』中你可以看到我们大量使用了模仿实体按键的按压动效：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1728828620081.gif" alt="模仿实体按键动效" loading="lazy"></figure>
+<p>一开始这种动效仅在五十音列表中使用到，我们只需在 <code>Adapter</code> 中对子项进行处理即可，随着版本的迭代，该动效开始广泛应用到其他按钮设计中，如果针对每个按钮都做这种动效处理，项目中会存在大量的冗余代码，不易于维护，所以我考虑将其封装成一个组件，让每个需要用到的地方都尽可能简单地接入。</p>
+<p>先来看看原理，如下图所示，我们只需要通过叠加两个图层，上面的图层采用较浅的颜色，下面的图层采用较深的颜色，并在上下两个图层的底部制造一个间距，即可在视觉上形成一个实体按键的效果。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1728828647053.png" alt="图层分解" loading="lazy"></figure>
+<p>当按钮被按下时，我们取消两个图层底部的间距，使底部的深色图层被覆盖隐藏，再给图层与父布局顶部添加同样的间距，就能够模仿出实体按键被按下的效果。</p>
+<p>使用两个图层其实是 Android 的能力限制，像 ArkUI 中我们实际上只采用一个图层，然后通过调整底部边框的宽度来实现的，尽管如此，实现思路大体一致。</p>
+<p>知道了原理，下面开始编码。</p>
+<p>考虑到需要封装成通用组件，我们把几个重要的属性提取出来：</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;resources&gt;
+    &lt;declare-styleable name=&quot;KeyCapLayout&quot;&gt;
+        &lt;attr name=&quot;keyCapFlatColor&quot; format=&quot;color&quot; /&gt;
+        &lt;attr name=&quot;keyCapShadowColor&quot; format=&quot;color&quot; /&gt;
+        &lt;attr name=&quot;keyStroke&quot; format=&quot;dimension&quot; /&gt;
+        &lt;attr name=&quot;keyCapRadius&quot; format=&quot;dimension&quot; /&gt;
+    &lt;/declare-styleable&gt;
+&lt;/resources&gt;
+</code></pre>
+<p>我把这个组件命名为 <code>KeyCapLayout</code>，因为它很像我们键盘中的键帽。<code>keyCapFlatColor</code> 表示的是按键表面的颜色，也就是原理中上面图层的颜色，<code>keyCapShadowColor</code> 表示的是按键的侧面阴影颜色，也就是原理中下面图层的颜色，<code>keyStroke</code> 表示的是按键的厚度，也可以理解为在机械键盘中我们常说的键程，<code>keyCapRadius</code> 表示的是按键的圆角半径，我这里没有区分上下两个图层的半径，而是采用同样的大小，读者可按需添加。</p>
+<p>接下来封装组件：</p>
+<pre><code class="language-Kotlin">class KeyCapLayout @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyle: Int = 0
+) : FrameLayout(context, attrs, defStyle) {
+
+    private val keyCapFlat: QMUIFrameLayout     // 键盘顶部
+    private val keyCapShadow: QMUIFrameLayout   // 键盘侧面
+    private val tagFlat = &quot;keyCapFlat&quot;
+    private val tagShadow = &quot;keyCapShadow&quot;
+    private var keystroke = 0                   // 键程
+
+    init {
+        val a = context.obtainStyledAttributes(attrs, R.styleable.KeyCapLayout)
+        val flat = a.getColor(R.styleable.KeyCapLayout_keyCapFlatColor, Color.YELLOW)
+        val shadow = a.getColor(R.styleable.KeyCapLayout_keyCapShadowColor, Color.GRAY)
+        keystroke = a.getDimension(R.styleable.KeyCapLayout_keyStroke, 4.dp.toFloat()).toInt()
+        val radius = a.getDimension(R.styleable.KeyCapLayout_keyCapRadius, 8.dp.toFloat()).toInt()
+        a.recycle()
+
+        keyCapFlat = QMUIFrameLayout(context).apply {
+            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+            tag = tagFlat
+        }
+        keyCapShadow = QMUIFrameLayout(context).apply {
+            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+            tag = tagShadow
+        }
+        setKeyCapFlatColor(flat)
+        setKeyCapShadowColor(shadow)
+        setKeyCapRadius(radius)
+        setKeyStroke(keystroke)
+        addView(keyCapShadow)
+        addView(keyCapFlat)
+    }
+
+    /**
+     * 设置键帽颜色
+     */
+    fun setKeyCapFlatColor(@ColorInt color: Int) {
+        keyCapFlat.setBackgroundColor(color)
+    }
+
+    /**
+     * 设置竖面阴影色
+     */
+    fun setKeyCapShadowColor(@ColorInt color: Int) {
+        keyCapShadow.setBackgroundColor(color)
+    }
+
+    /**
+     * 设置圆角
+     */
+    fun setKeyCapRadius(radius: Int) {
+        keyCapFlat.radius = radius
+        keyCapShadow.radius = radius
+    }
+
+    /**
+     * 设置键程
+     */
+    fun setKeyStroke(height: Int) {
+        val lp = keyCapFlat.layoutParams as LayoutParams
+        lp.setMargins(0, 0, 0, height)
+        keyCapFlat.layoutParams = lp
+    }
+
+    /**
+     * 处理按压
+     * @param press 是否按压
+     */
+    private fun handlePress(press: Boolean) {
+        val lpFlat = keyCapFlat.layoutParams as LayoutParams
+        val lpShadow = keyCapShadow.layoutParams as LayoutParams
+        if (press) {
+            lpFlat.setMargins(0, keystroke, 0, 0)
+            lpShadow.setMargins(0, keystroke, 0, 0)
+        } else {
+            lpFlat.setMargins(0, 0, 0, keystroke)
+            lpShadow.setMargins(0)
+        }
+        keyCapFlat.layoutParams = lpFlat
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        when (event?.action) {
+            MotionEvent.ACTION_DOWN -&gt; {
+                handlePress(true)
+            }
+
+            MotionEvent.ACTION_UP -&gt; {
+                handlePress(false)
+                performClick()
+            }
+
+            MotionEvent.ACTION_CANCEL -&gt; {
+                handlePress(false)
+            }
+        }
+        return true
+    }
+
+    override fun addView(child: View?) {
+        if (child?.tag == tagFlat || child?.tag == tagShadow) {
+            super.addView(child)
+        } else {
+            keyCapFlat.addView(child)
+        }
+    }
+
+    override fun addView(child: View?, index: Int) {
+        if (child?.tag == tagFlat || child?.tag == tagShadow) {
+            super.addView(child, index)
+        } else {
+            keyCapFlat.addView(child, index)
+        }
+    }
+
+    override fun addView(child: View?, params: ViewGroup.LayoutParams?) {
+        if (child?.tag == tagFlat || child?.tag == tagShadow) {
+            super.addView(child, params)
+        } else {
+            keyCapFlat.addView(child, params)
+        }
+    }
+
+    override fun addView(child: View?, index: Int, params: ViewGroup.LayoutParams?) {
+        if (child?.tag == tagFlat || child?.tag == tagShadow) {
+            super.addView(child, index, params)
+        } else {
+            keyCapFlat.addView(child, index, params)
+        }
+    }
+
+    override fun addView(child: View?, width: Int, height: Int) {
+        if (child?.tag == tagFlat || child?.tag == tagShadow) {
+            super.addView(child, width, height)
+        } else {
+            keyCapFlat.addView(child, width, height)
+        }
+    }
+}
+</code></pre>
+<p><code>KeyCapLayout</code> 继承自 <code>FrameLayout</code>，无论是简单的文字图片，或是复杂的自定义视图，都可以很方便地往里面添加。</p>
+<p>原理中提到的上下两个图层，为了方便圆角的设置，我采用了 <a href="https://github.com/Tencent/QMUI_Android">@Tencent/QMUI_Android</a> 这个库的 <code>QMUIFrameLayout</code> 来作容器，你也可以采用其他的圆角方案。</p>
+<p>写 XML 布局时，如果我们直接在 <code>KeyCapLayout</code> 中添加子视图，子视图默认会被插入到 <code>KeyCapLayout</code> 中，这样在处理按压效果时还需要额外处理子视图的上下偏移，如果我们能够将它插入到上图层中，它就仿佛印在按键表面一样，跟随图层上下偏移，所以我们重写 <code>addView()</code> 方法，将子视图添加到上图层中。</p>
+<p>因为我们首先需要调用 <code>addView()</code> 把上下两个图层添加到 <code>KeyCapLayout</code> 中，所以为了避免递归死循环，我们给上下图层分别配置 <code>Tag</code>，<code>addView()</code> 时判断不是这两个上下图层则添加到上图层中。</p>
+<p>按压效果就重写触摸事件 <code>onTouchEvent()</code> 处理，上面的原理已经介绍过了，不再重复。</p>
+<p>调用时只需包裹在我们的内容上即可：</p>
+<pre><code class="language-xml">&lt;com.example.banner.KeyCapLayout
+    android:layout_width=&quot;120dp&quot;
+    android:layout_height=&quot;56dp&quot;
+    app:keyCapFlatColor=&quot;#595959&quot;
+    app:keyCapRadius=&quot;56dp&quot;
+    app:keyCapShadowColor=&quot;#404040&quot;
+    app:keyStroke=&quot;6dp&quot;&gt;
+
+    &lt;TextView
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:layout_gravity=&quot;center&quot;
+        android:textStyle=&quot;bold&quot;
+        android:textColor=&quot;@color/white&quot;
+        android:textSize=&quot;18sp&quot;
+        android:text=&quot;Button&quot; /&gt;
+&lt;/com.example.banner.KeyCapLayout&gt;
+</code></pre>
+<p>点击事件也是直接调用 <code>KeyCapLayout</code> 的 <code>setOnClickListener()</code> 方法，我们在 <code>onTouchEvent()</code> 中处理了相关逻辑，当接收到 <code>MotionEvent.ACTION_UP</code> 事件时，会自动触发 <code>onClick()</code> 方法。</p>
+<p>『<a href="https://www.hugecore.net/mojikana">MOJiKana</a>』中同时也使用了 Jetpack Compose 技术，为了复用上面的代码，我不得不每次都使用 <code>AndroidView</code> 进行包裹，并在内部完成整个 <code>KeyCapLayout</code> 的创建、配置，还要创建它的子 <code>View</code> 再添加到其中。比如：</p>
+<pre><code class="language-Kotlin">@Preview
+@Composable
+private fun KeyCapLayoutPreview() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.White),
+        contentAlignment = Alignment.Center
+    ) {
+        AndroidView(factory = { context -&gt;
+            KeyCapLayout(context).apply {
+                layoutParams = ViewGroup.LayoutParams(SizeUtils.dp2px(120f), SizeUtils.dp2px(54f))
+                setKeyCapFlatColor(context.getColor(R.color.color_595959))
+                setKeyCapShadowColor(context.getColor(R.color.color_404040))
+                setKeyCapRadius(SizeUtils.dp2px(60f))
+                setKeyStroke(SizeUtils.dp2px(6f))
+                val imageView = ImageView(context).apply {
+                    layoutParams = ViewGroup.LayoutParams(SizeUtils.dp2px(24f), SizeUtils.dp2px(24f))
+                    setImageResource(R.drawable.ic_common_complete)
+                }
+                addView(
+                    imageView,
+                    FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT).apply { gravity = Gravity.CENTER }
+                )
+                setOnClickListener {
+                    // do something...
+                }
+            }
+        })
+    }
+}
+</code></pre>
+<p>随着项目中使用的场景逐渐增加，这种胶水代码也在慢慢膨胀。终于到了无法忍受之际，我又顺手搓了个 Compose 版本：</p>
+<pre><code class="language-Kotlin">@Composable
+fun KeyCap(
+    modifier: Modifier = Modifier,
+    keyFlatColor: Color = Color.Transparent,
+    keyShadowColor: Color = Color.Transparent,
+    keyStroke: Dp = 0.dp,
+    keyCapRadius: Dp = 0.dp,
+    content: @Composable BoxScope.() -&gt; Unit
+) {
+    var pressed by remember { mutableStateOf(false) }
+
+    Box(modifier = modifier.pointerInput(pressed) {
+        awaitPointerEventScope {
+            if (pressed) {
+                waitForUpOrCancellation()
+                pressed = false
+            } else {
+                awaitFirstDown(false)
+                pressed = true
+            }
+        }
+    }) {
+        Box(
+            modifier = Modifier
+                .padding(top = keyStroke)
+                .fillMaxSize()
+                .clip(RoundedCornerShape(size = keyCapRadius))
+                .background(keyShadowColor)
+        )
+        Box(
+            modifier = Modifier
+                .padding(
+                    top = if (pressed) keyStroke else 0.dp,
+                    bottom = if (pressed) 0.dp else keyStroke
+                )
+                .fillMaxSize()
+                .clip(RoundedCornerShape(size = keyCapRadius))
+                .background(color = keyFlatColor),
+            contentAlignment = Alignment.Center
+        ) {
+            content()
+        }
+    }
+}
+</code></pre>
+<p>属性依然是那几个属性，不再赘述。</p>
+<p>触摸事件在 <code>awaitPointerEventScope()</code> 内处理，使用一个状态来标记按钮是否被按下。</p>
+<p>得益于 Jetpack Compose 的声明式理念，无需再考虑上述原始 <code>View</code> 体系中 <code>addView()</code> 的问题，而是直接添加到对应的组件中即可。为了符合 Compose 的编写方式，可以直接参考其他组件的设计，在最后一个参数传入 <code>@Composable</code> 方法即可。</p>
+<p>使用方式也很简单：</p>
+<pre><code class="language-Kotlin">@Preview
+@Composable
+fun KeyCapPreview() {
+    val interactionSource = remember { MutableInteractionSource() }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.White),
+        contentAlignment = Alignment.Center
+    ) {
+        KeyCap(
+            keyFlatColor = colorResource(R.color.color_595959),
+            keyShadowColor = colorResource(R.color.color_404040),
+            keyStroke = 6.dp,
+            keyCapRadius = 60.dp,
+            modifier = Modifier
+                .size(120.dp, 54.dp)
+                .clickableWithoutRipple(interactionSource) {    // 去除默认的点击效果
+                    // do something...
+                }
+        ) {
+            Text(
+                text = stringResource(id = R.string.confirm),
+                color = Color.White
+            )
+        }
+    }
+}
+</code></pre>
+<p>需要留意的是，Compose 默认情况下会给组件添加一个点击的 Ripple 效果，因为我们是通过组合视图来实现，并且还有圆角，所以这个默认的点击效果反而会影响体验，要把它去除。</p>
+<p>去除点击效果的方法有很多种，Compose 官方也在后续的版本中做了更新，因为我目前使用的版本还比较低，所以我使用扩展方法来支持，其他实现方式可以自行搜索。</p>
+<pre><code class="language-Kotlin">fun Modifier.clickableWithoutRipple(
+    interactionSource: MutableInteractionSource,
+    onClick: () -&gt; Unit
+) = composed(
+    factory = {
+        this.then(
+            Modifier.clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = { onClick() }
+            )
+        )
+    }
+)
+</code></pre>
+<p>最后浅浅吐槽一下，虽然这个设计挺有意思，但是我个人觉得其实违反了透视原理。</p>
+<p>因为视觉上近大远小，所以按钮上的文字或图片按道理来说也应当被拉伸，左右两侧的延长线最终会在消失点相交。即使这个变换并不难实现，可是由于按钮的大小是动态配置的，导致变换的角度以及消失点就不太好确定，因此我们最终并没有实现这个效果。</p>
+]]></content>
+    </entry>
+</feed>
