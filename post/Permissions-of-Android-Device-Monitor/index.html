@@ -1,0 +1,697 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Android Device Monitor 权限笔记 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="读《第一行代码——Android（第 2 版）》的时候遇到了这样一个问题，在数据持久化方法之文件存储的章节，代码通过 Context 类中提供的 openFileInput() 和 openFileOutput() 方法以及 Java 的各..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Permissions-of-Android-Device-Monitor.jpg');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2018-07-29"><i class="fa fa-calendar"></i><span class="lately">8 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Permissions-of-Android-Device-Monitor/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Permissions-of-Android-Device-Monitor/"> </span>
+              </a>
+              <span id="/Permissions-of-Android-Device-Monitor/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">Android Device Monitor 权限笔记</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>读《第一行代码——Android（第 2 版）》的时候遇到了这样一个问题，在数据持久化方法之文件存储的章节，代码通过 <code>Context</code> 类中提供的 <code>openFileInput()</code> 和 <code>openFileOutput()</code> 方法以及 Java 的各种流来进行读写操作。</p>
+<p>然后系统会在 <code>/data/data/&lt;package name&gt;/files/</code> 目录下创建一个名为「data」的文件，我们可以通过『Android Studio』中的『Android Device Monitor』去查看。</p>
+<p>那么问题来了，与书上的介绍不同，我所使用的『Android Studio』并没有『Android Device Monitor』，难道是我打开的方式不对？</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1562232511521.jpg" alt="Android Studio Tools" loading="lazy"></figure>
+<p>我的「Tools」里根本就没有『Android Device Monitor』啊！</p>
+<p>后来从 <a href="https://developer.android.com/studio/profile/monitor">Google 官方文档</a>得知，自『Android Studio』Version 3.0 开始就已弃用了『Android Device Monitor』。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1562232581239.jpg" alt="Google's Docs" loading="lazy"></figure>
+<blockquote>
+<p>However, most components of the Android Device Monitor are deprecated in favor of updated tools available in Android Studio 3.0 and higher.<br>
+但是，大多数 Android Device Monitor 组件已弃用，以支持『Android Studio』Version 3.0 和更高版本中提供的更新工具。</p>
+</blockquote>
+<p>那没有『Android Device Monitor』，要怎么继续下一步呢？</p>
+<p>其实进入 Android SDK 的目录看一下可以发现，即使弃用，但 SDK 里面还是提供了『Android Device Monitor』。</p>
+<p>可以在命令行中进入 <code>/AndroidSDK/tools/</code> 目录，然后输入 <code>monitor</code> 即可打开。</p>
+<p>也可以直接进入到该目录双击文件「monitor.bat」打开。</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1562232658145.jpg" alt="monitor.bat" loading="lazy"></figure>
+<p>本以为打开『Android Device Monitor』就可以继续后面的学习了，这未免也太顺利？</p>
+<p>按照步骤，我需要进入「File Explorer」标签页到 <code>/data/data/&lt;package name&gt;/files/</code> 目录下去寻找这个名为「data」的文件，但是却发现 <code>/data/</code> 目录根本打不开。</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1562232752626.jpg" alt="Could not open the data file" loading="lazy"></figure>
+<p>又进入了知识的盲区，赶紧去补了补课。</p>
+<p>可以看到，<code>/data</code> 文件夹的 <code>Permissions</code> 是 <code>drwxrwx--x</code>，这是什么意思？相信学过 Linux 的同学就非常清楚了。因为 Android 的底层是 Linux，所以每个文件夹都是有权限控制的。</p>
+<p>具体是什么意思？</p>
+<p>这一个字符串一共有 10 个字符，第一个字符表示的是文件类型。<code>d</code> 表示是文件夹，<code>l</code> 表示连接文件，<code>-</code> 表示文件。</p>
+<p>后面 9 个字符又可以分为三个元组，每 3 个字符为一个元组。第一个组表示文件所有者（<code>user</code>）的权限，第二个组表示同组用户（<code>group</code>）的权限，第三个组表示所有其他用户（<code>other</code>）的权限。</p>
+<p>元组内字符的顺序是 <code>rwx</code>。</p>
+<blockquote>
+<p>r ：read，可读<br>
+w ：write，可写<br>
+x ：execute，可执行<br>
+- ：无该权限</p>
+</blockquote>
+<p>所以，<code>drwxrwx--x</code> 的意思是，没有 <code>r</code> 和 <code>w</code>，说明 <code>/data</code> 文件夹对其他人来说是不可读不可写的。因此我们则需要修改其对应的权限。</p>
+<p>需要用到的是 Android SDK 中的 <code>adb</code>。</p>
+<p><code>adb</code> 在 <code>/AndroidSDK/platform-tools/</code> 目录下，但是我们不能够通过双击来运行它。</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1562232841099.jpg" alt="adb.exe" loading="lazy"></figure>
+<p>而是需要将 <code>/AndroidSDK/platform-tools/</code> 这个目录添加到环境变量，执行下一步。</p>
+<p>接着直接在 <code>CMD</code> 中输入命令：</p>
+<pre><code class="language-Bash">➜   adb shell
+</code></pre>
+<p>然后按照下图命令继续操作。</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1562232850136.jpg" alt="adb shell" loading="lazy"></figure>
+<p>解释一下这几个命令：</p>
+<blockquote>
+<p>adb shell ：打开 adb 外壳程序<br>
+su ：切换为超级管理员，即获取 root 权限，只有 root 权限才能修改文件的访问权限<br>
+chmod &lt;权限&gt; &lt;文件夹&gt; ：为文件夹设置权限</p>
+</blockquote>
+<p>还需要提的是，<code>#</code> 是超级管理员的意思，也就是说可以访问模拟器中的一切数据，而 <code>$</code> 则表示是普通管理员，输入 <code>su</code> 命令的作用就是切换成超级管理员。</p>
+<p>命令的前面两项好理解，关于文件夹权限，这一堆 <code>chmod 777</code> 又是什么意思？</p>
+<p>是把对应的文件或文件夹的访问权限的后 9 位设置成 <code>rwxrwxrwx</code>，<code>777</code> 就三个二进制 <code>111</code>, 合起来就是 <code>111111111</code>（9 个 <code>1</code>），即相当于把后 9 位访问权限都置 <code>1</code>，于是就成了 <code>rwxrwxrwx</code>，即所有用户都具有该文件的全部访问权限。</p>
+<p>按道理到这里就已经获取了权限可以访问对应的文件了，但事情并没有我想象中的那么顺利，文件夹依旧打不开…</p>
+<p>我就纳闷了…</p>
+<p>不知怎么的突然有个想法，手机可以通过获取 <code>root</code> 权限然后在『RE文件管理器』中查看本地数据库，那么我可不可以直接 <code>root</code> 呢，虽然上面的 <code>su</code> 也是获取 <code>root</code> 权限。</p>
+<p>抱着试一试的心态，我在 <code>CMD</code> 中输入了：</p>
+<pre><code class="language-Bash">➜   adb root
+</code></pre>
+<p>结果，文件夹就真的畅通无阻的被我打开了…</p>
+<figure data-type="image" tabindex="7"><img src="https://LiarrDev.github.io/post-images/1562232918269.jpg" alt="打开了 data 文件夹" loading="lazy"></figure>
+<p>事实上，使用 <code>adb root</code> 并没有修改其 <code>rwx</code> 权限，它只是获取了最高级的操作权，可以看到在执行了 <code>adb root</code> 后，<code>adb shell</code> 中的 <code>$</code> 就已经变成 <code>#</code> 了，无需执行 <code>su</code>。</p>
+<p>如果从一开始就执行 <code>adb root</code> 的话，<code>adb shell</code> 中的相关操作则无需执行，也可以查看到 <code>/data/</code> 目录下的文件。</p>
+<p>其他关于『Android Device Monitor』基本可以通过「Reset Perspective」操作或重启解决。</p>
+<p>还需要提醒的是，『Android Device Monitor』在『Android Studio』Version 3.1 中已弃用，并在『Android Studio』Version 3.2 中移除了，并提供了新的功能来替代。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Enjoy-OkHttp-in-One-Shot.jpg');"></div>
+                 <a href="https://LiarrDev.github.io/post/Enjoy-OkHttp-in-One-Shot/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2018-08-26">2018-08-26</time>
+                  <h4 class="title white no-margin">一次实战爱上『OkHttp』</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Set-up-React-Native-Development-Environment-on-Windows.jpg');"></div>
+                 <a href="https://LiarrDev.github.io/post/Set-up-React-Native-Development-Environment-on-Windows/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2018-04-15">2018-04-15</time>
+                  <h4 class="title white no-margin">Windows 平台 React Native 开发环境搭建笔记</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

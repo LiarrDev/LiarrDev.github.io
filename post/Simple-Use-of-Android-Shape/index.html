@@ -1,0 +1,788 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Android Shape 的简单使用 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="在原生 Android 开发中，许多控件默认都是方方正正的，而我个人也比较喜欢这种设计，因为 Google 的 Material Design 就是从纸片中提炼出来的。
+
+但是近年来 Material Design 的发展，似乎更加往大圆角..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Simple-Use-of-Android-Shape.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2020-05-10"><i class="fa fa-calendar"></i><span class="lately">6 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Simple-Use-of-Android-Shape/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Simple-Use-of-Android-Shape/"> </span>
+              </a>
+              <span id="/Simple-Use-of-Android-Shape/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">Android Shape 的简单使用</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>在原生 Android 开发中，许多控件默认都是方方正正的，而我个人也比较喜欢这种设计，因为 Google 的 Material Design 就是从纸片中提炼出来的。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1588865751139.png" alt="默认的 Button 样式" loading="lazy"></figure>
+<p>但是近年来 Material Design 的发展，似乎更加往大圆角的方向靠拢了。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1588865778506.png" alt="Material Design 的大圆角" loading="lazy"></figure>
+<p>Android 的原生控件中是不支持直接设置类似 Radius 的属性，所以又得另辟蹊径了。</p>
+<h1 id="shape-attr">Shape Attr</h1>
+<p>可以通过一个 XML 资源文件来定义，属性参考如下：</p>
+<h2 id="shape-形状">shape （形状）</h2>
+<p>最外层标签，用于定义控件的形状。</p>
+<pre><code class="language-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;shape xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    android:shape=&quot;ring&quot;
+    android:dither=&quot;false&quot;
+    android:innerRadius=&quot;16dp&quot;
+    android:innerRadiusRatio=&quot;8&quot;
+    android:thickness=&quot;8dp&quot;
+    android:thicknessRatio=&quot;8&quot;
+    android:tint=&quot;@color/colorAccent&quot;
+    android:tintMode=&quot;add&quot;
+    android:useLevel=&quot;false&quot;&gt;
+    ...
+&lt;/shape&gt;
+</code></pre>
+<p>属性比较多，听我一一道来。</p>
+<p><code>android:shape</code> 是控件的形状，默认为矩形 <code>rectangle</code>，其他可选值还有椭圆 <code>oval</code>、线 <code>line</code> 和 环 <code>ring</code>。</p>
+<p><code>android:dither</code> 用于指定在位图的像素配置与屏幕不同时（例如：ARGB_8888 位图和 RGB_565 屏幕）是否启用位图的抖动，默认值 <code>true</code>，当值为 <code>false</code> 时则停用抖动。</p>
+<p><code>android:innerRadius</code> 是内环半径；<code>android:innerRadius</code> 是内环厚度比，即环的宽度比表示内环半径，默认为 <code>3</code>，可被 <code>android:innerRadius</code> 的值覆盖。<code>android:thickness</code> 是环的厚度，<code>android:thicknessRatio</code> 是环的厚度比，即环的宽度比表示环的厚度，默认为 <code>9</code>，可被 <code>android:thicknessRatio</code> 的值覆盖。这四个属性只有当形状为 <code>ring</code> 的时候才有效。</p>
+<p><code>android:tint</code> 用于着色，这个我们在其他控件也有用到。</p>
+<p><code>android:tintMode</code> 是着色类型，有 <code>add</code>、<code>multiply</code>、<code>screen</code>、<code>src_atop</code>、<code>src_in</code> 和 <code>src_over</code> 六个可选值，这里不细说。</p>
+<p><code>android:useLevel</code> 这个属性比较特殊，是个布尔类型，默认值为 <code>false</code>，一般情况下不需要修改它，为 <code>true</code> 时可在 <code>LevelListDrawable</code> 使用。</p>
+<h2 id="corners-圆角">corners （圆角）</h2>
+<blockquote>
+<p>Creates rounded corners for the shape. Applies only when the shape is a rectangle.</p>
+</blockquote>
+<p>用于定义控件的圆角属性，仅可用于矩形 Shape。</p>
+<pre><code class="language-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;shape xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
+    &lt;corners
+        android:radius=&quot;8dp&quot;
+        android:topLeftRadius=&quot;8dp&quot;
+        android:topRightRadius=&quot;8dp&quot;
+        android:bottomLeftRadius=&quot;8dp&quot;
+        android:bottomRightRadius=&quot;8dp&quot; /&gt;
+&lt;/shape&gt;
+</code></pre>
+<p>这个比较简单，不过多解释。</p>
+<h2 id="solid-填充">solid （填充）</h2>
+<blockquote>
+<p>A solid color to fill the shape.</p>
+</blockquote>
+<p>用于定义控件的填充颜色。</p>
+<pre><code class="language-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;shape xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
+    &lt;solid android:color=&quot;@color/colorAccent&quot; /&gt;
+&lt;/shape&gt;
+</code></pre>
+<p>有且仅有颜色这一属性。</p>
+<h2 id="gradient-渐变">gradient （渐变）</h2>
+<blockquote>
+<p>Specifies a gradient color for the shape.</p>
+</blockquote>
+<p>用于定义控件的渐变色及渐变样式等。</p>
+<pre><code class="language-XML">&lt;shape xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
+    &lt;gradient
+        android:type=&quot;radial&quot;
+        android:angle=&quot;90&quot;
+        android:startColor=&quot;@color/colorPrimaryDark&quot;
+        android:centerColor=&quot;@color/colorAccent&quot;
+        android:endColor=&quot;@color/colorPrimary&quot;
+        android:centerX=&quot;50%&quot;
+        android:centerY=&quot;50%&quot;
+        android:gradientRadius=&quot;8dp&quot;
+        android:useLevel=&quot;false&quot; /&gt;
+&lt;/shape&gt;
+</code></pre>
+<p>这个相对比较复杂，分组来说。</p>
+<p><code>android:type</code> 是渐变的样式，有三个可选值，线性渐变 <code>linear</code> 是默认值，另外还有放射渐变 <code>radial</code> 和扫描渐变 <code>sweep</code>。</p>
+<p><code>android:angle</code> 是渐变角度，须为 45 的整倍数，其中 0 为从左到右，90 为从上到下。</p>
+<p><code>android:startColor</code>、<code>android:centerColor</code> 和 <code>android:endColor</code> 分别是渐变的起始点、中间点和结束点颜色，但你可以按需设置，因为其支持两色渐变和三色渐变，即当选择两色渐变时，<code>android:centerColor</code> 可以不用填写。</p>
+<p><code>android:centerX</code> 和 <code>android:centerY</code> 是渐变中心点 X 和 Y 的相对位置，取值范围为 0~1。</p>
+<p><code>android:gradientRadius</code> 是渐变的半径，只有当渐变类型为 <code>radial</code> 时才有效。</p>
+<p><code>android:useLevel</code> 这个属性比较特殊，是个布尔类型，默认值为 <code>false</code>，一般情况下不需要修改它，而使用 <code>LevelListDrawable</code> 时就要设置其为 <code>true</code>。</p>
+<h2 id="stroke-描边">stroke （描边）</h2>
+<blockquote>
+<p>A stroke line for the shape.</p>
+</blockquote>
+<p>用于定义控件的描边属性。</p>
+<pre><code class="language-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;shape xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
+    &lt;stroke
+        android:width=&quot;8dp&quot;
+        android:color=&quot;@color/colorAccent&quot;
+        android:dashWidth=&quot;8dp&quot;
+        android:dashGap=&quot;8dp&quot; /&gt;
+&lt;/shape&gt;
+</code></pre>
+<p><code>android:width</code> 是描边的宽度。<code>android:color</code> 是描边的颜色。</p>
+<p>一般情况下描边为实线，如果想设置虚线，则需要另外两个属性，<code>android:dashWidth</code> 是指虚线段的长度，<code>android:dashGap</code> 是指虚线段间隔的长度。</p>
+<h2 id="padding-边距">padding （边距）</h2>
+<blockquote>
+<p>Padding to apply to the containing View element (this pads the position of the View content, not the shape).</p>
+</blockquote>
+<p>用于定义控件的边距属性。</p>
+<pre><code class="language-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;shape xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
+    &lt;padding
+        android:bottom=&quot;4dp&quot;
+        android:left=&quot;4dp&quot;
+        android:right=&quot;4dp&quot;
+        android:top=&quot;4dp&quot; /&gt;
+&lt;/shape&gt;
+</code></pre>
+<p>这个也比较简单，不过多解释。</p>
+<h2 id="size-大小">size （大小）</h2>
+<blockquote>
+<p>The size of the shape.</p>
+</blockquote>
+<p>用于定义控件的尺寸属性。</p>
+<pre><code class="language-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;shape xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
+    &lt;size
+        android:width=&quot;128dp&quot;
+        android:height=&quot;128dp&quot; /&gt;
+&lt;/shape&gt;
+</code></pre>
+<p>同样比较简单，不过多解释。</p>
+<h1 id="usage">Usage</h1>
+<p>用法也不复杂，在「drawable」文件夹中新建一个 XML 资源文件，将上面的属性按照需要进行组合即可。</p>
+<p>比如，我建一个「button_shape.xml」，用来定义 <code>Button</code> 控件的形状。</p>
+<pre><code class="language-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;shape xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    android:shape=&quot;rectangle&quot;&gt;
+    &lt;solid android:color=&quot;@color/colorAccent&quot; /&gt;
+    &lt;corners
+        android:topLeftRadius=&quot;5dp&quot;
+        android:topRightRadius=&quot;10dp&quot;
+        android:bottomLeftRadius=&quot;15dp&quot;
+        android:bottomRightRadius=&quot;0dp&quot; /&gt;
+&lt;/shape&gt;
+</code></pre>
+<p>代码并不难理解，形状为矩形，颜色设定为主题色，为四个圆角半径设定为 不同的值。</p>
+<p>然后使用其在控件属性中设置为 <code>android:background</code>：</p>
+<pre><code class="language-XML">&lt;Button
+    android:layout_width=&quot;128dp&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    android:background=&quot;@drawable/button_shape&quot;
+    android:text=&quot;Button&quot; /&gt;
+</code></pre>
+<p>效果如下：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1588865825282.png" alt="不一样的圆角" loading="lazy"></figure>
+<p>其实 Shape 的可配置属性并没有很复杂，所以学起来也不会很难上手，但是却足够我们使用。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Space-between-Navigationicon-and-Title-in-Toolbar.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Space-between-Navigationicon-and-Title-in-Toolbar/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2020-05-20">2020-05-20</time>
+                  <h4 class="title white no-margin">Toolbar NavigationIcon &amp; Title 迷之间距</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Android-CountDownTimer.jpeg');"></div>
+                 <a href="https://LiarrDev.github.io/post/Android-CountDownTimer/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2020-05-01">2020-05-01</time>
+                  <h4 class="title white no-margin">Android CountDownTimer 实现倒计时</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

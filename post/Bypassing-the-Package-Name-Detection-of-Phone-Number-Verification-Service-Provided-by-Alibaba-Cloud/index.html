@@ -1,0 +1,1049 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>绕过阿里云本机号码一键登录的包名检测机制 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="现在越来越多的 App 开始支持本机号码一键登录的功能了，通过和运营商合作，获取到当前使用网络的手机卡号码，进行登录流程，能够减少用户的操作步骤，提高转化率。
+
+    
+    
+
+众所周知，国内现在主流通讯运营商有三家，分别是中国移动、..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Bypassing-the-Package-Name-Detection-of-Phone-Number-Verification-Service-Provided-by-Alibaba-Cloud.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2021-09-18"><i class="fa fa-calendar"></i><span class="lately">4 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Bypassing-the-Package-Name-Detection-of-Phone-Number-Verification-Service-Provided-by-Alibaba-Cloud/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Bypassing-the-Package-Name-Detection-of-Phone-Number-Verification-Service-Provided-by-Alibaba-Cloud/"> </span>
+              </a>
+              <span id="/Bypassing-the-Package-Name-Detection-of-Phone-Number-Verification-Service-Provided-by-Alibaba-Cloud/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">绕过阿里云本机号码一键登录的包名检测机制</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>现在越来越多的 App 开始支持本机号码一键登录的功能了，通过和运营商合作，获取到当前使用网络的手机卡号码，进行登录流程，能够减少用户的操作步骤，提高转化率。</p>
+<table>
+    <td><img src="https://liarrdev.github.io/post-images/1631892836741.png"/></td>
+    <td><img src="https://liarrdev.github.io/post-images/1631892842209.png"/></td>
+</table>
+<p>众所周知，国内现在主流通讯运营商有三家，分别是中国移动、中国联通和中国电信。</p>
+<p>这就意味着，对接三家运营商就有三套对接流程，要对接三次 SDK，但，正如所有的聚合服务所需，总会产生聚合这三家运营商一键登录服务的 SDK 供大家使用。</p>
+<p>阿里云作为国内数字经济基础设施比较完善的代表，往往会作为许多企业的首选。我所在的企业，自然也是选择了它。</p>
+<p>文前预警，本文需配合阿里云本机号码一键登录文档一同食用，建议先按照文档和官方提供的 Demo 先接一遍了解流程。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1631893637172.jpg" alt="阿里云" loading="lazy"></figure>
+<p>接入阿里云本机号码一键登录服务首先要到阿里云后台申请参数，申请参数需要提供应用的包名和签名，然后阿里云会为我们生成一个密钥。</p>
+<p>之前的文章有提到过，我目前从事游戏行业，国内游戏行乱象大家都知道，马甲包遍地都是，拥有不同包名的马甲包如果想要都接入本机号码一键登录功能的话，就得申请多套不同的参数，这大大增加了对接成本。</p>
+<p>那么，我们能不能绕过阿里云对包名的检测，让多个马甲包都共用同一套参数呢？</p>
+<p>来试试看。</p>
+<p>我这里拿阿里云官方 Demo 提供的参数进行演示，实际项目按需修改。</p>
+<pre><code class="language-Java">public class AliParameter {
+
+    // 阿里云官方 Demo 里的包名，替换为申请参数时填写的包名
+    public static String AUTH_PACKAGE_NAME = &quot;com.aliqin.mytel&quot;;
+
+    // 阿里云官方 Demo 里的密钥，替换为申请的密钥，理论上密钥应当放在服务端
+    public static String AUTH_KEY = &quot;7KHffk2Cn1j17+QVA2zbJfdDteDSUDspB/s+FUoAhyXmQ/wueAQBcpMDOVLrp5lt5BDIGxDrCuTBZk7TcR4CxAQvHnJUPIaCI5dscbBFqHgHVI8Yoy0nYwsFo8Gyd2RZ6MbUAZr3lsnPQsA+UW1MZY9EP94x0TrXmwEJkU5xJgmOJfCSekYWHP5xNc0as/aWkTmNrjFyb5//93cAMwQllH0FFEFF+GEd7XMvm6ap/g4BD8676+z29MbePXPjoY6u3VrNTMkksQHW1EolxJkw+9Sa5pDsdOrQjXBz056J79PpNAFlTvPMZw==&quot;;
+    
+    // 三大运营商的协议地址
+    public static String PHONE_AUTH_YIDONG_CONTRACT = &quot;https://wap.cmpassport.com/resources/html/contract.html&quot;;
+    public static String PHONE_AUTH_LIANTONG_CONTRACT = &quot;https://ms.zzx9.cn/html/oauth/protocol2.html&quot;;
+    public static String PHONE_AUTH_DIANXIN_CONTRACT = &quot;https://e.189.cn/sdk/agreement/content.do?type=main&amp;appKey=&amp;hidetop=true&quot;;
+}
+</code></pre>
+<p>记得签名也要配置，参考之前『<a href="https://liarrdev.github.io/post/Auto-Signing-with-Gradle-in-Android-Studio/">「Android Studio」用 Gradle 实现自动签名</a>』一文：</p>
+<pre><code class="language-Groovy">android {
+    ...
+    signingConfigs {        // 阿里云官方 Demo 里的签名，应用中应替换为申请参数时填写的签名
+        config {
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+            storeFile file('sig-adaptation/debug/debug.keystore')
+            storePassword 'android'
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.config
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
+            signingConfig signingConfigs.config
+        }
+    }
+}
+</code></pre>
+<p>首先需要了解阿里云本机号码一键登录 SDK 是如何检测包名的，很简单，跟我们获取包名的操作类似，通过调用 <code>Context</code> 的 <code>getPackageName()</code> 来获取，再与服务端校验。</p>
+<p><code>Context</code> 如何获取，看初始化就可以，大多数 SDK 的初始化操作都是为了获取 <code>Context</code> 对象，而幸运的是，阿里云本机号码一键登录 SDK 并没有使用 App Startup 这些新技术，而是让对接方手动调用：</p>
+<pre><code class="language-Java">/**
+ * 获取号码认证服务实例，此实例为单例，获取多次为同⼀对象
+ * @param context Android上下⽂
+ * @param tokenListener 需要实现的获取token回调
+ * @return PhoneNumberAuthHelper
+ */
+public static PhoneNumberAuthHelper getInstance(Context context, TokenResultListener tokenListener)
+</code></pre>
+<p>这就简单许多了，假如我们能够自定义一个 <code>Context</code> 传给本机号码一键登录的 SDK，使得 SDK 在获取包名时，返回我们申请参数的包名而不是实际包名，就能够绕过它的检测机制了。</p>
+<p><code>Context</code> 是一个抽象类，而在 Android 中对 <code>Context</code> 的实现非常多，但往往继承越深，代码也就越复杂，根据开发经验，继承自 <code>Context</code> 的 <code>Application</code> 对于获取这种全局的东西往往会比其他组件要稍微方便一些，所以可以自定义一个 <code>Application</code> 来实现我们的需求。</p>
+<pre><code class="language-Java">public class AliApplication extends Application {
+    public AliApplication(Context realContext) {
+        try {
+            Method method = Application.class.getDeclaredMethod(&quot;attach&quot;, Context.class);
+            method.setAccessible(true);
+            method.invoke(this, realContext);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+<p>因为这个 <code>Application</code> 我们只用来欺骗阿里云本机号码一键登录 SDK，所以不会在 <code>AndroidManifest</code> 中注册它，那么这个 <code>Application</code> 的一些初始化方法就不能得到执行。</p>
+<p>所以需要采用反射获取，并使用 <code>invoke()</code> 执行实例对应的方法。</p>
+<p>当我们把这个 <code>Application</code> 对象传给 SDK 后，包名和签名都会由这个 <code>Application</code> 来提供。</p>
+<p>先来看签名，因为我们的签名不需要改变，所以只需要将应用本身的签名回传即可。</p>
+<p>写一个获取应用签名的方法：</p>
+<pre><code class="language-Java">public static Signature[] getSignatures(PackageManager manager, String packageName) {
+    try {
+        PackageInfo packageInfo = manager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES);
+        return packageInfo.signatures;
+    } catch (PackageManager.NameNotFoundException e) {
+        e.printStackTrace();
+    }
+    return null;
+}
+</code></pre>
+<p>这时候你应该发现，获取应用签名需要提供一个 <code>PackageManager</code> 对象，阿里云本机号码一键登录 SDK 也是如此，那就得再向它提供一个自定义的 <code>PackageManager</code> 了。</p>
+<pre><code class="language-Java">public class AliPackageManager extends PackageManager {
+    private final PackageManager packageManager;
+    private final String realPackageName;
+    private Signature[] sSignature;
+
+    public AliPackageManager(PackageManager packageManager, String realPackageName) {
+        this.packageManager = packageManager;
+        this.realPackageName = realPackageName;
+    }
+
+    @Override
+    public PackageInfo getPackageInfo(@NonNull String packageName, int flags) throws NameNotFoundException {
+        PackageInfo packageInfo = packageManager.getPackageInfo(realPackageName, flags);
+        packageInfo.signatures = getSignature();
+        packageInfo.packageName = AliParameter.AUTH_PACKAGE_NAME;
+        return packageInfo;
+    }
+
+    private Signature[] getSignature() {
+        if (sSignature != null) {
+            return sSignature;
+        }
+        sSignature = SignatureUtil.getSignatures(packageManager, realPackageName);
+        return sSignature;
+    }
+    ...
+}
+</code></pre>
+<p><code>PackageManager</code> 也是一个抽象类，需要实现很多个方法，但这些方法大多数我们都用不上，所以可以忽略，只将 <code>getPackageInfo()</code> 方法实现即可，主要就是封装包名与签名。</p>
+<p>接下来就要在 <code>AliApplication</code> 中调用：</p>
+<pre><code class="language-Java">public class AliApplication extends Application {
+    ...
+    @Override
+    public PackageManager getPackageManager() {
+        return new AliPackageManager(super.getPackageManager(), super.getPackageName());
+    }
+}
+</code></pre>
+<p>这个时候调用：</p>
+<pre><code class="language-Java">AliApplication application = new AliApplication(context);
+PhoneNumberAuthHelper mPhoneNumberAuthHelper = PhoneNumberAuthHelper.getInstance(application, tokenResultListener);
+mPhoneNumberAuthHelper.setAuthSDKInfo(AliParameter.AUTH_KEY);
+mPhoneNumberAuthHelper.getReporter().setLoggerEnable(true);
+mPhoneNumberAuthHelper.checkEnvAvailable(PhoneNumberAuthHelper.SERVICE_TYPE_AUTH);
+</code></pre>
+<p>你就发现，应用崩溃了…</p>
+<p>实际上还漏了一个方法：</p>
+<pre><code class="language-Java">public class AliApplication extends Application {
+    ...
+    @Override
+    public Context getApplicationContext() {
+        return this;
+    }
+}
+</code></pre>
+<p>你可能会有疑惑，为什么不需要重写 <code>Application</code> 的 <code>getPackageName()</code>。只不过 SDK 似乎都是通过 <code>PackageManager</code> 来获取的，实际上你重写也没有问题。</p>
+<p>再运行，你会发现，应用没有崩溃，但是却没有拉起授权页，SDK 回调了以下错误：</p>
+<pre><code class="language-JSON">{
+    &quot;code&quot;:&quot;600002&quot;,
+    &quot;msg&quot;:&quot;唤起授权页失败&quot;,
+    ...
+}
+</code></pre>
+<p>这个错误信息你查文档的话并没有什么作用，但是它能够告诉我们签名和包名都已获取正确了，也就是上面的步骤操作正确。</p>
+<p>接下来就要开始对 SDK 进行魔改了。</p>
+<p>在进行这一步之前，我必须要提个醒，阿里云提供的接入文档中有相关服务声明：</p>
+<blockquote>
+<p>注意：</p>
+<ol>
+<li>
+<p>一键登录或注册需用户确认授权方可使用，开发者不得通过任何技术手段跳过或模拟此步骤，否则我方有权停止服务并追究相关法律责任。</p>
+</li>
+<li>
+<p>登录按钮文字描述必须包含“登录”或“注册”等文字，不得诱导用户授权。</p>
+</li>
+<li>
+<p>对于接入移动认证SDK并上线的应用，我方会对上线的应用授权页面做审查，如果有出现未按要求弹出或设计授权页面的，将关闭应用的一键登录或注册服务。</p>
+</li>
+</ol>
+</blockquote>
+<p>以下内容仅作学习交流，如产生任何责任由应用的开发者承担。</p>
+<p>回到正题，魔改的话要从哪里入手？</p>
+<p>不难注意到接入流程要我们手动注册三个 <code>Activity</code>，很明显，<code>LoginAuthActivity</code> 就是我们的目标，而且你也发现有两个 <code>LoginAuthActivity</code>。</p>
+<p>另一方面，我们无法正常唤起授权页，证明唤起的流程也需要修改。</p>
+<p>这两个问题合在一起思考，我们能不能在修改唤起流程的时候，将两个 <code>LoginAuthActivity</code> 合并，即无论是移动、联通还是电信，都只唤起同一个 <code>LoginAuthActivity</code>，因为同样的功能分两个页面我实在想不到原因。</p>
+<p>想要篡改，首先就得弄清楚流程，先反编译看看代码。</p>
+<p>根据包名可以定位到是「phoneNumber-L-AuthSDK.arr」这个库里面的，解压拿到 Jar 包丢进之前在『<a href="https://liarrdev.github.io/post/Getting-Started-with-Android-Decompilation/">Android 反编译入门指南</a>』一文中提到的工具『JADX』里面就可以了，但反编译后我瞬间就懵了，阿里云对这个 SDK 做了混淆，并且还有一些方法写在了 SO 库中，大大增加了我们修改的难度。</p>
+<p>通过代码搜索，最终定位到唤起流程在一个混淆名为 <code>d</code> 的类中：</p>
+<pre><code class="language-Java">public class d {
+    ...
+    public void a(long j2, String str, String str2, ResultCodeProcessor resultCodeProcessor, e eVar) {
+        ...
+        try {
+            ...
+            Intent intent = new Intent(this.c, LoginAuthActivity.class);
+            intent.putExtra(Constant.LOGIN_ACTIVITY_NUMBER, str);
+            intent.putExtra(Constant.LOGIN_ACTIVITY_VENDOR_KEY, str2);
+            intent.putExtra(Constant.LOGIN_ACTIVITY_UI_MANAGER_ID, this.j);
+            intent.putExtra(Constant.START_TIME, System.currentTimeMillis());
+            ...
+            if (f().getAuthPageActIn() == null || f().getActivityOut() == null) {
+                if (activity != null) {
+                    activity.startActivityForResult(intent, 1);
+                } else {
+                    intent.addFlags(268435456);
+                    this.c.startActivity(intent);
+                }
+            } else if (activity != null) {
+                ...
+                if (TextUtils.isEmpty(authPageActIn) || TextUtils.isEmpty(activityOut)) {
+                    SupportJarUtils.startActivityForResult(activity, intent, 1, (String) null, (String) null);
+                } else {
+                    SupportJarUtils.startActivityForResult(activity, intent, 1, authPageActIn, activityOut);
+                }
+            } else {
+                intent.addFlags(268435456);
+                this.c.startActivity(intent);
+            }
+            ...
+        } catch (Exception e2) {
+            ...
+        } catch (Throwable th) {
+            ...
+        }
+    }
+}
+</code></pre>
+<p>中间那一堆判断我也不知道它有啥用，干脆直接去掉：</p>
+<pre><code class="language-Java">public class d {
+    ...
+    public void a(long l, String number, String vendor, ResultCodeProcessor resultCodeProcessor, com.mobile.auth.gatewayauth.e eVar) {
+        try {
+            this.t = l;
+            Application application = ReflectionUtils.getApplication();
+            if (application != null) {
+                application.registerActivityLifecycleCallbacks(this.v);
+            }
+    
+            Activity activity = ReflectionUtils.getActivity();
+            Intent intent = new Intent(activity, LoginAuthActivity.class);
+            intent.putExtra(&quot;isAli&quot;, true);
+            intent.putExtra(&quot;number&quot;, number);
+            intent.putExtra(&quot;vendor&quot;, vendor);
+            intent.putExtra(&quot;ui_manager_id&quot;, this.j);
+            intent.putExtra(&quot;startTime&quot;, System.currentTimeMillis());
+            this.a(resultCodeProcessor);
+            b.put(this.j, this);
+    
+            activity.startActivityForResult(intent, AliParameter.ACTIVITY_REQUEST_CODE);
+    
+            if (eVar != null) {
+                eVar.a(vendor, number);
+            }
+        } catch (Throwable throwable) {
+            com.mobile.auth.gatewayauth.a.a(throwable);
+        }
+    }
+}
+</code></pre>
+<p>不管三七二十一，反正 <code>Intent</code> 封装好了，那就直接拉起 <code>LoginAuthActivity</code> 吧，为了更好的处理回调，这里通过 <code>startActivityForResult()</code> 拉起。</p>
+<p>然后处理 <code>LoginAuthActivity</code>，对于 <code>Activity</code> 一般先看 <code>onCreate()</code> 方法：</p>
+<pre><code class="language-Java">@AuthNumber
+public class LoginAuthActivity extends Activity {
+    ...
+    public native void onCreate(Bundle bundle);
+}
+</code></pre>
+<p>可惜的是，<code>LoginAuthActivity</code> 直接把 <code>onCreate()</code> 写在了 SO 库中，所以我们不能直接修改，不要紧，幸好还有别的生命周期：</p>
+<pre><code class="language-Java">@AuthNumber
+public class LoginAuthActivity extends Activity {
+    ...
+    public void onResume() {
+        try {
+            super.onResume();
+        } catch (Throwable th) {
+            a.a(th);
+        }
+    }
+}
+</code></pre>
+<p>可以看到 SDK 里的 <code>onResume()</code> 并没有做什么操作。</p>
+<p>首先我们需要写一个自己的界面来处理登录回调，我这里就用一个 <code>TextView</code> 来显示手机号码，一个 <code>Button</code> 来点击登录，还有一个 <code>TextView</code> 用来显示运营商协议，太简单我就不写了。</p>
+<p>因为 SDK 本来就有授权页，所以我们要覆盖它，可以通过 <code>LayoutInflater</code> 来操作：</p>
+<pre><code class="language-Java">@AuthNumber
+public class LoginAuthActivity extends Activity {
+    ...
+    public void onResume() {
+        super.onResume();
+        ViewGroup viewGroup = (ViewGroup) findViewById(android.R.id.content);
+        View view = LayoutInflater.from(this).inflate(R.layout.activity_login_auth, null);
+        viewGroup.addView(view);
+        TextView tvPhone = (TextView) view.findViewById(R.id.tv_phone);
+        tvPhone.setText(mNumberPhone);
+        view.findViewById(R.id.btn_auth).setOnClickListener(v -&gt; {
+            onLogin();
+        });
+        TextView tvContract = (TextView) view.findViewById(R.id.tv_contract);
+        String url = &quot;&quot;;
+        if (mSlogan.contains(&quot;移动&quot;)) {
+            tvContract.setText(&quot;中国移动认证服务条款&quot;);
+            url = AliParameter.PHONE_AUTH_YIDONG_CONTRACT;
+        } else if (mSlogan.contains(&quot;联通&quot;)) {
+            tvContract.setText(&quot;中国联通认证服务条款&quot;);
+            url = AliParameter.PHONE_AUTH_LIANTONG_CONTRACT;
+        } else if (mSlogan.contains(&quot;电信&quot;)) {
+            tvContract.setText(&quot;天翼账号服务与隐私协议&quot;);
+            url = AliParameter.PHONE_AUTH_DIANXIN_CONTRACT;
+        } else {
+            tvContract.setVisibility(View.GONE);
+        }
+        Uri uri = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        tvContract.setOnClickListener(v -&gt; startActivity(intent));
+    }
+    
+    public void onLogin() {
+        boolean access$400 = LoginAuthActivity.access$400(this);
+        LoginAuthActivity.access$200(this).a(LoginAuthActivity.access$100(this), true, access$400);
+        showLoadingDialog();
+        LoginAuthActivity.access$700(this).a(&quot;LoginAuthActivity&quot;, &quot;; PhoneNumberAuthHelper2 = &quot;, String.valueOf(LoginAuthActivity.access$200(this)));
+        LoginAuthActivity.access$200(this).b(LoginAuthActivity.access$200(this).a());
+    }
+    
+    public void showLoadingDialog() {
+        LoginAuthActivity.access$000(LoginAuthActivity.this).setClickable(true);
+        access$200(this).a((TokenResultListener) new MyTokenResultListener(this));
+    }
+}
+</code></pre>
+<p>手机号码实际上展示的是掩码，和文章开头的各家应用截图一致。运营商协议则根据 <code>mSlogan</code> 这个字段处理一下，三大运营商的协议我已经把链接抓下来了，跳转到浏览器打开就可以。</p>
+<p>按钮点击响应执行登录事件，并回调给 <code>TokenResultListener</code>。</p>
+<p>可以发现，这里的 <code>TokenResultListener</code> 和前面初始化的 <code>TokenResultListener</code> 并不是同一个，因为初始化的那个 <code>TokenResultListener</code> 我没有想到优雅的办法传递过来。</p>
+<p>看看授权完成的 <code>TokenResultListener</code> 回调处理：</p>
+<pre><code class="language-Java">public class MyTokenResultListener implements TokenResultListener {
+
+    private final LoginAuthActivity mLoginAuthActivity;
+
+    public MyTokenResultListener(LoginAuthActivity activity) {
+        this.mLoginAuthActivity = activity;
+    }
+
+    @Override
+    public void onTokenSuccess(String value) {
+        TokenRet tokenRet = TokenRet.fromJson(value);
+        if (tokenRet.getCode().equals(ResultCode.CODE_SUCCESS)) {
+            doLogin(tokenRet.getToken());
+        }
+    }
+
+    @Override
+    public void onTokenFailed(String value) {
+        TokenRet tokenRet = TokenRet.fromJson(value);
+        LogUtil.e(&quot;onTokenFailed TokenRet Msg: &quot; + tokenRet.getMsg());
+    }
+    
+    private void doLogin(String authToken) {
+        // 请求服务端完成登录操作
+        ...
+        mLoginAuthActivity.setResult(Activity.RESULT_OK);
+        mLoginAuthActivity.finish();
+    }
+}
+</code></pre>
+<p>这个 <code>onTokenSuccess()</code> 只需处理获取 <code>Token</code> 的 <code>Code</code> 即可，解析对应的 <code>Token</code>，并回传给服务端，完成登录流程，可以参考文档提供的流程图。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1631893774749.png" alt="阿里云一键登录的系统交互流程" loading="lazy"></figure>
+<p>己方服务端登录成功后，再销毁 <code>LoginAuthActivity</code>，不要忘了将结果告知拉起授权页的 <code>Activity</code>，也不要忘了在拉起授权页的 <code>Activity</code> 处理结果：</p>
+<pre><code class="language-Java">@Override
+protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (requestCode == AliParameter.ACTIVITY_REQUEST_CODE &amp;&amp; resultCode == RESULT_OK) {
+        // 登录完成
+    }
+}
+</code></pre>
+<p>最后再看看一开始初始化时的 <code>TokenResultListener</code>：</p>
+<pre><code class="language-Java">TokenResultListener tokenResultListener = new TokenResultListener() {
+    @Override
+    public void onTokenSuccess(String s) {
+        TokenRet tokenRet = TokenRet.fromJson(s);
+        switch (tokenRet.getCode()) {
+            case ResultCode.CODE_ERROR_ENV_CHECK_SUCCESS:
+                // 支持使用本机号码一键登录
+                mPhoneNumberAuthHelper.getLoginToken(application, 5000);
+                break;
+            case ResultCode.CODE_START_AUTHPAGE_SUCCESS:
+                // 唤起授权页成功
+                break;
+            case ResultCode.CODE_SUCCESS:
+                // 实际上并不会走这里回调
+                break;
+        }
+    }
+
+    @Override
+    public void onTokenFailed(String s) {
+        TokenRet tokenRet = TokenRet.fromJson(s);
+        if (ResultCode.CODE_ERROR_USER_CANCEL.equals(tokenRet.getCode())) {     
+            // 用户手动取消登录
+        }
+    }
+};
+</code></pre>
+<p>修改完之后，我们要将原来「phoneNumber-L-AuthSDK.arr」这个库文件重新导入，因为重写了 <code>LoginAuthActivity</code> 和 <code>d</code> 两个类，所以需要把库文件中对应的 CLASS 文件删除掉。</p>
+<p>之前『<a href="https://liarrdev.github.io/post/How-to-Import-AAR-in-Android-Studio/">「Android Studio」如何导入 AAR 包</a>』一文提到，AAR 是以 Zip 格式构建的，所以可以直接通过压缩工具打开将其删除，也可以改用文章中提到的 JAR 的方式接入，解压后将资源放到对应的目录即可，由『<a href="https://liarrdev.github.io/post/How-to-Import-JAR-in-Android-Studio/">「Android Studio」如何导入 JAR 包</a>』一文可知，JAR 也是以 Zip 格式构建的，所以同样也可以用压缩软件打开并删除掉对应的 CLASS 文件。</p>
+<p>而我们所修改的 <code>LoginAuthActivity</code> 和 <code>d</code>，则根据原来 SDK 内的包名，放到项目中对应的包目录下即可。</p>
+<p>最终运行效果如下：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1631893873462.gif" alt="最终运行效果" loading="lazy"></figure>
+<p>关于后面魔改 SDK 的相关代码，文章讲的比较简单，所以我写了个 Demo 放在 Github，需要的话可以参考<a href="https://github.com/LiarrDev/AliPhoneAuthHack">我的 Demo</a> 进行修改。</p>
+<hr>
+<h1 id="参考内容">参考内容</h1>
+<ul>
+<li><a href="https://help.aliyun.com/document_detail/117608.html">接入概述 - 号码认证服务 - 阿里云</a></li>
+<li><a href="https://help.aliyun.com/document_detail/144231.html">Android客户端接入 - 号码认证服务 - 阿里云</a></li>
+</ul>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Double-Click-the-BACK-Key-to-Exit-on-Android .png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Double-Click-the-BACK-Key-to-Exit-on-Android /" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2021-10-06">2021-10-06</time>
+                  <h4 class="title white no-margin">Android 实现双击 Back 键退出应用</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Getting-Started-with-Android-Decompilation.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Getting-Started-with-Android-Decompilation/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2021-09-02">2021-09-02</time>
+                  <h4 class="title white no-margin">Android 反编译入门指南</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

@@ -1,0 +1,773 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Java String 长度限制 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="在学习和开发过程中，我们经常会讨论 short、int 和 long 这些基本数据类型的取值范围，但是对于 String 类型我们好像很少注意它的“取值范围”。
+那么，对于 String 类型，它到底有没有长度限制？
+其实 String 类..." />
+    <meta name="keywords" content="Java" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Length-Limitation-on-Java-String.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2022-11-21"><i class="fa fa-calendar"></i><span class="lately">3 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Length-Limitation-on-Java-String/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Length-Limitation-on-Java-String/"> </span>
+              </a>
+              <span id="/Length-Limitation-on-Java-String/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-0 ctag-Java" aria-label="">Java</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">Java String 长度限制</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>在学习和开发过程中，我们经常会讨论 <code>short</code>、<code>int</code> 和 <code>long</code> 这些基本数据类型的取值范围，但是对于 <code>String</code> 类型我们好像很少注意它的“取值范围”。</p>
+<p>那么，对于 <code>String</code> 类型，它到底有没有长度限制？</p>
+<p>其实 <code>String</code> 类型的对象，他们是有长度限制的，<code>String</code> 对象并不能存储无限长度的字符串。关于 <code>String</code> 的长度限制要从编译时限制和运行时限制两方面考虑。</p>
+<h1 id="编译期限制">编译期限制</h1>
+<p>有 JVM 虚拟机相关知识的同学肯定知道，定义的字符串常量会被放入方法区的常量池中。</p>
+<p><code>String</code> 长度之所以会受限制，是因 JVM 规范对常量池有所限制。常量池中的每一种数据项都有自己的类型，<code>CONSTANT_String_info</code> 用于表示 <code>String</code> 类型的常量对象，结构如下：</p>
+<pre><code>CONSTANT_String_info {
+    u1 tag;
+    u2 string_index;
+}
+</code></pre>
+<p>其中，<code>string_index</code> 项的值必须是对常量池的有效索引，常量池在该索引处的项必须是 <code>CONSTANT_Utf8_info</code> 结构，表示一组 Unicode 码点序列，这组 Unicode 码点序列最终会被初始化一个 <code>String</code> 对象。</p>
+<p>即 Java 中的 UTF-8 编码的 Unicode 字符串在常量池中以 <code>CONSTANT_Utf8_info</code> 类型表示，结构如下：</p>
+<pre><code>CONSTANT_Utf8_info {
+    u1 tag;
+    u2 length;
+    u1 bytes[length];
+}
+</code></pre>
+<p>长度为 <code>length</code> 的那个 <code>bytes</code> 数组就是真正存储常量数据的地方，而 <code>length</code> 就是数组可以存储的最大字节数。<code>length</code> 的类型是 <code>u2</code>，<code>u2</code> 表示两个字节的无符号数，即无符号的 16 位整数，因此理论上允许的的最大长度是 <code>2^16-1</code>，所以上面 <code>byte</code> 数组的最大长度可以是 65535。</p>
+<p>但是当你企图生成一个长度为 65535 的字符串时，编译依然会失败，而生成一个长度为 65534 的字符串却编译成功，这似乎与上面的结论不符。</p>
+<p>其实，这是 Javac 编译器的额外限制。在 Javac 的源代码中可以找到以下方法：</p>
+<pre><code class="language-Java">public class Gen extends JCTree.Visitor {
+    ...
+    /** Check a constant value and report if it is a string that is too large. */
+    private void checkStringConstant(DiagnosticPosition pos, Object constValue) {
+        if (nerrs != 0 || // only complain about a long string once
+            constValue == null ||
+            !(constValue instanceof String) ||
+            ((String)constValue).length() &lt; PoolWriter.MAX_STRING_LENGTH)
+            return;
+        log.error(pos, Errors.LimitString);
+        nerrs++;
+    }
+}
+</code></pre>
+<p>还有一个最重要的常量：</p>
+<pre><code class="language-Java">public class PoolWriter {
+
+    /** Max number of char in a string constant. */
+    public static final int MAX_STRING_LENGTH = 0xFFFF;
+    
+    ...
+}
+</code></pre>
+<p><code>0xFFFF</code> 就是十进制的 65535。</p>
+<p>代码中可以看出，当参数类型为 <code>String</code>，并且长度大于等于 65535 的时候，就会导致编译失败。</p>
+<p>这里需要重点强调下的是，<code>String</code> 的限制并不是对字符串长度的限制，而是对字符串底层存储的限制，也就是字节长度的限制。</p>
+<p>举个例子，Java 中的字符常量都是使用 UTF-8 编码的，UTF-8 编码使用 1~4 个字节来表示具体的 Unicode 字符。所以有的字符占用一个字节，而我们平时所用的大部分中文都需要 3 个字节来存储，另外还有的汉字需要 4 个字节存储。</p>
+<pre><code class="language-Java">// 65534 个字母“d”，编译通过
+String s1 = &quot;dd..d&quot;;
+
+// 21845 个中文“自”，编译通过
+String s2 = &quot;自自...自&quot;;
+
+// 1 个英文字母“d”加上 21845 个中文“自”，编译失败
+String s3 = &quot;d自自...自&quot;;
+</code></pre>
+<p>对于 <code>s1</code>，1 个字母 <code>d</code> 的 UTF-8 编码占用 1 个字节，65534 个字母占用 65534 个字节，长度是 65534，也没超过 Javac 的限制，所以可以编译通过。</p>
+<p>对于 <code>s2</code>，1 个中文占用 3 个字节，21845 个正好占用 65535 个字节，而且字符串长度是 21845，并没有超过 Javac 对长度的限制，所以可以编译通过。</p>
+<p>对于 <code>s3</code>，1 个英文字母 <code>d</code> 加上 21845 个中文占用 65536 个字节，超过了限制，编译失败。</p>
+<p>回到一开始，<code>u2</code> 类型能表达的最大值是 65535，长度 65535 的字符串在 Javac 下报错了是受到了 Javac 编译器的限制，如果你先将长度为 65534 的字符串用 Javac 编译，再在生成的 CLASS 文件中手动添加一个字符，是可以得到长度为 65535 的结果。</p>
+<p>另外，使用『Eclipse』编译超过 65534 长度的字符串不报错，是因为『Eclipse』有自己的 Java 编译器，『Eclipse』使用自己的编译器，主要原因是 JDT 核心具有渐进式编译的能力，这意味着它会逐步编译代码中的更改，这也是『Eclipse』不需要编译按钮的原因，因为它会在检测到更改时自动编译。但 Oracle 的 JDK 不支持增量编译。</p>
+<h1 id="运行时限制">运行时限制</h1>
+<p><code>String</code> 运行时的限制主要体现在 <code>String</code> 的构造函数上：</p>
+<pre><code class="language-Java">public final class String implements Serializable, Comparable&lt;String&gt;, CharSequence {
+    /**
+     * Allocates a new {@code String} that contains characters from a subarray
+     * of the character array argument. The {@code offset} argument is the
+     * index of the first character of the subarray and the {@code count}
+     * argument specifies the length of the subarray. The contents of the
+     * subarray are copied; subsequent modification of the character array does
+     * not affect the newly created string.
+     *
+     * @param value  Array that is the source of characters
+     * @param offset The initial offset
+     * @param count  The length
+     * @throws IndexOutOfBoundsException If the {@code offset} and {@code count} arguments index characters outside the bounds of the {@code value} array
+     */
+    public String(char value[], int offset, int count) {
+        if (offset &lt; 0) {
+            throw new StringIndexOutOfBoundsException(offset);
+        }
+        if (count &lt;= 0) {
+            if (count &lt; 0) {
+                throw new StringIndexOutOfBoundsException(count);
+            }
+            if (offset &lt;= value.length) {
+                this.value = &quot;&quot;.value;
+                return;
+            }
+        }
+        // Note: offset or count might be near -1&gt;&gt;&gt;1.
+        if (offset &gt; value.length - count) {
+            throw new StringIndexOutOfBoundsException(offset + count);
+        }
+        this.value = Arrays.copyOfRange(value, offset, offset + count);
+    }
+}
+</code></pre>
+<p><code>count</code> 值就是字符串的最大长度，在 Java 中 <code>int</code> 的最大长度是 <code>2^31-1</code>。所以在运行时，<code>String</code> 的最大长度是 <code>2^31-1</code>。</p>
+<p>但是这个也是理论上的长度，实际的长度还要跟 JVM 的内存相关，最大的字符串会占用 <code>(2^31-1)*2*16/8/1024/1024/1024</code> 的内存（<code>char</code> 在 Java 中占 <code>2</code> 个字节，<code>16</code> 指 16-bit Unicodecharacter 即 <code>u2</code>，<code>8</code> 指 <code>Bit</code> 转 <code>Byte</code>，<code>1024</code> 指 <code>KB</code>、<code>MB</code> 和 <code>GB</code> 的单位转换）。</p>
+<p>所以在最坏的情况下，一个最大的字符串要占用 4GB 的内存，如果虚拟机不能分配这么多内存的话，会直接报错的。</p>
+<p>以上源码是基于 Java 8 的，Java 9 以后对 <code>String</code> 的存储进行了优化。底层不再使用 <code>char[]</code> 数组存储字符串，而是使用 <code>byte[]</code> 数组，对于 LATIN1 字符的字符串可以节省一倍的内存空间：</p>
+<pre><code class="language-Java">public final class String implements Serializable, Comparable&lt;String&gt;, CharSequence {
+    ...
+    
+    public String(char[] value, int offset, int count) {
+        this(value, offset, count, rangeCheck(value, offset, count));
+    }
+    
+    String(char[] value, int off, int len, Void sig) {
+        if (len == 0) {
+            this.value = &quot;&quot;.value;
+            this.coder = &quot;&quot;.coder;
+        } else {
+            if (COMPACT_STRINGS) {
+                byte[] val = StringUTF16.compress(value, off, len);
+                if (val != null) {
+                    this.value = val;
+                    this.coder = 0;
+                    return;
+                }
+            }
+            this.coder = 1;
+            this.value = StringUTF16.toBytes(value, off, len);
+        }
+    }
+}
+</code></pre>
+<h1 id="简单总结">简单总结</h1>
+<p><code>String</code> 的长度是有限制的。</p>
+<ul>
+<li>编译期的限制：字符串的 UTF-8 编码值的字节数不能超过 65535，字符串的长度不能超过 65534；</li>
+<li>运行时限制：字符串的长度不能超过 <code>2^31-1</code>，占用的内存数不能超过虚拟机能够提供的最大值。</li>
+</ul>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Get-Selection-Text-in-Android-WebView.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Get-Selection-Text-in-Android-WebView/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2023-01-20">2023-01-20</time>
+                  <h4 class="title white no-margin">Android 获取 WebView 选中文本</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Lets-Party-Like-its-1995.jpg');"></div>
+                 <a href="https://LiarrDev.github.io/post/Lets-Party-Like-its-1995/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2022-10-24">2022-10-24</time>
+                  <h4 class="title white no-margin">Let&#39;s party like it&#39;s 1995!</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

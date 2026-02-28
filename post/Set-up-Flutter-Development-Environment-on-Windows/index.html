@@ -1,0 +1,757 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Windows 平台 Flutter 开发环境搭建笔记 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="最近闲来无事，想看看 Flutter。
+Flutter 的背景就不过多介绍了，它最直接对标的跨平台移动应用程序框架就是 Facebook 旗下的 React Native。今天介绍的是 Flutter 在 Windows 中的开发环境搭建，..." />
+    <meta name="keywords" content="Flutter,Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Set-up-Flutter-Development-Environment-on-Windows.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2022-04-20"><i class="fa fa-calendar"></i><span class="lately">4 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Set-up-Flutter-Development-Environment-on-Windows/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Set-up-Flutter-Development-Environment-on-Windows/"> </span>
+              </a>
+              <span id="/Set-up-Flutter-Development-Environment-on-Windows/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-0 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-1 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">Windows 平台 Flutter 开发环境搭建笔记</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>最近闲来无事，想看看 Flutter。</p>
+<p>Flutter 的背景就不过多介绍了，它最直接对标的跨平台移动应用程序框架就是 Facebook 旗下的 React Native。今天介绍的是 Flutter 在 Windows 中的开发环境搭建，如果想了解 React Native 的环境搭建，可以参考之前的『<a href="https://liarrdev.github.io/post/Set-up-React-Native-Development-Environment-on-Windows/">Windows 平台 React Native 开发环境搭建笔记</a>』。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/Set-up-Flutter-Development-Environment-on-Windows.png" alt="" loading="lazy"></figure>
+<p>下面进入正题。</p>
+<p>注：撰文时 Flutter 的版本为 <code>2.10.4</code>。</p>
+<h1 id="准备">准备</h1>
+<h2 id="flutter-sdk">Flutter SDK</h2>
+<p>前往官网下载即可。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1650303275344.png" alt="Flutter 官网" loading="lazy"></figure>
+<p>官方提供了 Windows、macOS、Linux 和 Chrome OS 四个平台的开发套件。</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1650303302708.png" alt="支持平台" loading="lazy"></figure>
+<p>同时还考虑到中国开发者的特殊情况，贴心地标注了「Using Flutter in China」。</p>
+<p>将下载好的压缩包解压到你想要安装的路径。注意：路径不能包含特殊字符，且不要安装到如 <code>C:/Program Files/</code> 等高权限路径。</p>
+<p>接下来，将 <code>./flutter/bin</code> 目录添加到环境变量：</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1650303339593.png" alt="添加 Flutter 到环境变量" loading="lazy"></figure>
+<p>因为一些 Flutter 命令需要联网获取数据，由于众所周知的原因，在国内直接访问很可能不会成功，不过没关系，Google 为国内开发者搭建了临时镜像。你可以将如下环境变量加入到用户环境变量中：</p>
+<pre><code class="language-Bash">➜   export PUB_HOSTED_URL=https://pub.flutter-io.cn
+➜   export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn
+</code></pre>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1650303392115.png" alt="添加临时镜像到环境变量" loading="lazy"></figure>
+<p>官方文档到这里就会让你执行 Flutter 命令，但我不建议这么做，我们可以先把开发的 IDE 也装上。</p>
+<h2 id="android-studio">Android Studio</h2>
+<p>官方支持使用『Android Studio』、『IntelliJ IDEA』和『Visual Studio Code』等 IDE 来开发，由于我本身就是 Android 开发者，所以还是继续用『Android Studio』就好。</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1650303440290.png" alt="Android Studio 官网" loading="lazy"></figure>
+<p>建议使用最新版。</p>
+<p>『Android Studio』可以很方便地帮我们下载所需的 Android SDK，减少手动配置的麻烦。</p>
+<p>同时，你还需要在『Android Studio』中安装 Flutter 插件：</p>
+<figure data-type="image" tabindex="7"><img src="https://LiarrDev.github.io/post-images/1650303476336.png" alt="安装 Flutter 和 Dart 插件" loading="lazy"></figure>
+<p>在插件市场中搜索安装即可，安装 Flutter 插件的同时，它会帮你自动安装 Dart 插件。</p>
+<h1 id="初始化环境">初始化环境</h1>
+<p>在『CMD』或者『Powershell』中运行以下命令：</p>
+<pre><code class="language-Bash">➜   flutter doctor
+</code></pre>
+<p>注意，目前 Flutter 不支持像『Git Bash』这样的第三方 Shell。</p>
+<p>上述命令会检查你的现有环境，并将检测结果以报告形式呈现出来。仔细阅读它显示的内容，检查是否有尚未安装的软件或是有其他的步骤需要完成（通常会以<strong>粗体</strong>呈现）。</p>
+<p>比如我执行完，会得到如下结果：</p>
+<figure data-type="image" tabindex="8"><img src="https://LiarrDev.github.io/post-images/1650303534481.png" alt="运行  检测结果" loading="lazy"></figure>
+<p>可以看到，目前 Flutter SDK、『Android Studio』和『IntelliJ IDEA』我是安装完成的，同时也连接了设备。</p>
+<p>然后看未配置的项。</p>
+<p>「Android toolchain」一项提示 <code>cmdline-tools component is missing</code>，同时它还提供了一个安装命令给我们。我们不需要参考它的命令，直接打开『Android Studio』的「SDK Manager」，安装「Android SDK Command-line Tools」即可。</p>
+<figure data-type="image" tabindex="9"><img src="https://LiarrDev.github.io/post-images/1650303591234.png" alt="安装 Android SDK Command-line Tools" loading="lazy"></figure>
+<p>「Android toolchain」一项同时还提示 <code>Android license status unknown</code>。出现该提示的原因是，在使用 Flutter 前，你必须同意 Android SDK 平台的协议，执行以下命令进行协议确认：</p>
+<pre><code class="language-Bash">➜   flutter doctor --android-licenses
+</code></pre>
+<p>接下来看到提示『Chrome』和『Visual Studio』未安装，因为 Flutter 不仅支持移动端（Android 和 iOS）的跨平台开发，同时也支持桌面平台（Windows、macOS、Linux）和 Web 平台的开发，所以会报出该错误，不过由于我目前仅需要开发 Android 和 iOS 的跨平台移动应用，所以这两项缺失并不会对我造成影响，无需理会。</p>
+<p>最后一项「HTTP Host Availability」提示连接 <code>https://maven.google.com/</code> 超时，这是因为众所周知的原因国内无法访问到该域名，解决的方法也有很多种。</p>
+<p>我参考的是『Android Studio』内的处理方式，目前『Android Studio』内部「SDK Update Sites」使用的都是 <code>https://dl.google.com/</code> 这个域名，日常使用没有问题，证明这个域名是可通的。</p>
+<figure data-type="image" tabindex="10"><img src="https://LiarrDev.github.io/post-images/1650303656471.png" alt="Android Studio 内使用的镜像" loading="lazy"></figure>
+<p>那我也可以将 Flutter 的下载切到这个源上。在 Flutter SDK 安装目录中打开 <code>./packages/flutter_tools/lib/src/http_host_validator.dart</code> 文件，将 <code>https://maven.google.com/</code> 修改为 <code>https://dl.google.com/dl/android/maven2/</code> 并保存，然后删除 <code>./bin/cache</code> 文件夹。实际上国内镜像源也很多，你可以切到其他镜像源上，比如阿里云等。</p>
+<p>问题解决完了，接下来重新执行 <code>flutter doctor</code>。</p>
+<figure data-type="image" tabindex="11"><img src="https://LiarrDev.github.io/post-images/1650303700906.png" alt="修复完成后的检测结果" loading="lazy"></figure>
+<p>可以看到上面的问题都正确处理了。</p>
+<h1 id="建立项目">建立项目</h1>
+<p>上面的配置没问题后，就可以创建项目了，『Android Studio』支持直接创建 Flutter 项目。</p>
+<figure data-type="image" tabindex="12"><img src="https://LiarrDev.github.io/post-images/1650303734416.png" alt="Android Studio 创建 Flutter 项目" loading="lazy"></figure>
+<p>初次创建可能需要配置 Flutter SDK 的路径。</p>
+<figure data-type="image" tabindex="13"><img src="https://LiarrDev.github.io/post-images/1650303769746.png" alt="配置 Flutter SDK 路径" loading="lazy"></figure>
+<p>简单填写一下项目的信息，就可以创建了。</p>
+<figure data-type="image" tabindex="14"><img src="https://LiarrDev.github.io/post-images/1650303801126.png" alt="填写项目信息" loading="lazy"></figure>
+<p>这里有一个需要注意的点，就是项目名称不能使用大写，这是与常规 Android 项目不一致的地方，只能使用小写字母以及下划线，否则会提示错误。</p>
+<figure data-type="image" tabindex="15"><img src="https://LiarrDev.github.io/post-images/1650303839052.png" alt="命名错误提示" loading="lazy"></figure>
+<p>创建成功之后你可以在上方工具栏中选择你的设备运行项目。</p>
+<figure data-type="image" tabindex="16"><img src="https://LiarrDev.github.io/post-images/1650303875054.png" alt="运行项目按钮" loading="lazy"></figure>
+<p>我初次运行的时候，报了以下错误：</p>
+<pre><code class="language-Bash">FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:stripDebugDebugSymbols'.
+&gt; NDK at D:\AndroidSDK\ndk-bundle did not have a source.properties file
+</code></pre>
+<p>大概意思就是 NDK 没有正确配置，我尝试在 <code>/android/local.properties</code> 文件中添加 NDK 的路径，并没有奏效。</p>
+<p>需要前往 <code>/android/app/build.gradle</code> 中修改：</p>
+<pre><code class="language-Groovy">android {
+    ...
+    defaultConfig {
+        ...
+        ndkVersion = &quot;22.0.6917172&quot;
+    }
+}
+</code></pre>
+<p>添加 NDK 的版本即可，这个 NDK 版本可以从本地获取，打开 Android SDK 目录，在 <code>./ndk</code> 文件夹下可以找到以版本号命名的文件夹。</p>
+<figure data-type="image" tabindex="17"><img src="https://LiarrDev.github.io/post-images/1650303922752.png" alt="NDK 目录" loading="lazy"></figure>
+<p>比如我这里有两个，我就复制最新的填上去。</p>
+<p>假如你本地没有 NDK，可以前往『Android Studio』的「SDK Manager」中下载。</p>
+<p>添加了 NDK 版本信息后，就可以运行了，Flutter 相比原 Android 项目有一个不同，就是修改 <code>build.gradle</code> 文件不需要手动 Sync。</p>
+<p>运行效果如下：</p>
+<figure data-type="image" tabindex="18"><img src="https://LiarrDev.github.io/post-images/1650303953614.png" alt="Demo 运行效果" loading="lazy"></figure>
+<p>Flutter 的默认 Demo 不是「Hello World」，而是一个计数器，通过点击右下方的 <code>FloatingActionButton</code> 来对屏幕中间的数进行自增。</p>
+<h1 id="hot-reload">Hot Reload</h1>
+<p>我们还可以体验一下 Flutter 的 Hot Reload 功能。</p>
+<p>打开 <code>./lib/main.dart</code> 文件，整个页面的代码就在这个文件中，<code>MyApp</code> 代码如下：</p>
+<pre><code class="language-Dart">class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+  
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+    );
+  }
+}
+</code></pre>
+<p>可以看到默认设置的主题色为 <code>Colors.blue</code>，我们将其修改为 <code>Colors.green</code>，然后保存文件（快捷键不用我教吧）或者点击工具栏上的闪电状 Hot Reload 按钮：</p>
+<figure data-type="image" tabindex="19"><img src="https://LiarrDev.github.io/post-images/1650303986159.png" alt="Hot Reload 按钮" loading="lazy"></figure>
+<p>应用不需要重启，直接就改变了颜色：</p>
+<figure data-type="image" tabindex="20"><img src="https://LiarrDev.github.io/post-images/1650304010245.gif" alt="Hot Reload 效果" loading="lazy"></figure>
+<h1 id="总结">总结</h1>
+<p>不难看出，相比 <a href="https://liarrdev.github.io/post/Set-up-React-Native-Development-Environment-on-Windows/">React Native 的开发环境搭建</a>，Flutter 要轻松许多，这是好事，避免许多开发者在搭建环境的时候就劝退情况。</p>
+<p>目前看来，Flutter 推广的门槛在于 Dart 语言。</p>
+<p>不管怎么样，我依然看好 Flutter 的生态。</p>
+<h1 id="参考内容">参考内容</h1>
+<ul>
+<li><a href="https://flutter.dev">Flutter - Build apps for any screen</a></li>
+<li><a href="https://flutter.cn">Flutter 中文开发者网站 | Flutter —— 为所有屏幕构建精美应用</a></li>
+</ul>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Design-Pattern-Singleton.jpg');"></div>
+                 <a href="https://LiarrDev.github.io/post/Design-Pattern-Singleton/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2022-04-29">2022-04-29</time>
+                  <h4 class="title white no-margin">Design Pattern: Singleton Pattern</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Access-Join-QQ-Group-Component-in-Android.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Access-Join-QQ-Group-Component-in-Android/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2022-04-12">2022-04-12</time>
+                  <h4 class="title white no-margin">Android 接入 QQ 加群组件</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

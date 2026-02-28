@@ -1,0 +1,780 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Android 利用 Glide 获取图片的实际尺寸 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="最近有个群友提了一个挺有意思的问题，当使用 Glide 加载图片时，假如不设置 ImageView 的宽高，会出现显示不可控的情况。
+什么意思呢？我们来复现一下他的情况。
+这位群友为我们提供了一张表情包图片：
+
+要不是我们是正儿八经的学术讨..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Get-the-Actual-Size-of-Image-with-Glide-in-Android.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2020-10-19"><i class="fa fa-calendar"></i><span class="lately">5 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Get-the-Actual-Size-of-Image-with-Glide-in-Android/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Get-the-Actual-Size-of-Image-with-Glide-in-Android/"> </span>
+              </a>
+              <span id="/Get-the-Actual-Size-of-Image-with-Glide-in-Android/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">Android 利用 Glide 获取图片的实际尺寸</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>最近有个群友提了一个挺有意思的问题，当使用 <code>Glide</code> 加载图片时，假如不设置 <code>ImageView</code> 的宽高，会出现显示不可控的情况。</p>
+<p>什么意思呢？我们来复现一下他的情况。</p>
+<p>这位群友为我们提供了一张表情包图片：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1602950836616.jpg" alt="Sticker" loading="lazy"></figure>
+<p>要不是我们是正儿八经的学术讨论群，可能这位群友已经被锤死了…</p>
+<p>当然，这个表情包是使用一个 URL 提供的，实际上只是相当于模拟从后端获取图片时的场景，因为一般这种情况后端是不会特意将图片尺寸提供给我们的，其实你也可以将图片放在 Assets Folder 中，同样能够复现，但别放在 <code>/res/drawable</code> 或者 <code>/res/mipmap</code> 文件夹内，因为系统会根据屏幕分辨率对其进行缩放。</p>
+<p>我先把这张图片下载下来，看一下它的实际尺寸：</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1602950877328.png" alt="图片尺寸信息" loading="lazy"></figure>
+<p>可以看到这张图片的尺寸为 100 × 97 像素，并不大，我们在项目中实际加载看看。</p>
+<p>首先随便写一个简单的布局用于加载这张图片：</p>
+<pre><code class="language-XML">&lt;androidx.constraintlayout.widget.ConstraintLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    android:background=&quot;@android:color/background_dark&quot;
+    tools:context=&quot;.MainActivity&quot;&gt;
+    &lt;ImageView
+        android:id=&quot;@+id/image&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        app:layout_constraintBottom_toBottomOf=&quot;parent&quot;
+        app:layout_constraintLeft_toLeftOf=&quot;parent&quot;
+        app:layout_constraintRight_toRightOf=&quot;parent&quot;
+        app:layout_constraintTop_toTopOf=&quot;parent&quot; /&gt;
+&lt;/androidx.constraintlayout.widget.ConstraintLayout&gt;
+</code></pre>
+<p>因为『Android Studio』新建项目时默认就采用了约束布局，那我这里就不做修改了，让 <code>ImageView</code> 置于屏幕的中央，因为群友提到不设置宽高，所以这里宽高我都定为 <code>wrap_content</code>，另外由于表情包是白底的，所以我给了一个深色的背景以更好的看出其显示边界。</p>
+<p>为了对比，我要采用两种加载方式，一种是原生 API 的加载，另一种就是 <code>Glide</code>。</p>
+<p>原生加载方式不复杂，通过 URL 获取流并将其解码为 <code>Bitmap</code> 即可：</p>
+<pre><code class="language-Java">public class MainActivity extends AppCompatActivity {
+
+    String url = &quot;http://wx4.sinaimg.cn/bmiddle/b64da6adly1gjbwvv4es7j202s02p0sk.jpg&quot;;
+    
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        ...
+        final ImageView imageView = findViewById(R.id.sticker);
+        new Thread(() -&gt; {
+            try {
+                final Bitmap bitmap = BitmapFactory.decodeStream(new URL(url).openStream());
+                runOnUiThread(() -&gt; imageView.setImageBitmap(bitmap));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+}
+</code></pre>
+<p>需要注意的是由于我们是加载网络图片，尽管我们并没有显式的写出网络请求的代码，它实际上是做了网络请求的，所以我们不能在主线程中执行，而将图片加载到 <code>ImageView</code> 时是 UI 操作，又需要切回到主线程。</p>
+<p><code>Glide</code> 的加载方式更加简单，之前『<a href="https://liarrdev.github.io/post/Enjoy-Glide-in-One-Shot">一次实战爱上「Glide」</a>』一文也做了详细的介绍，而且因为 <code>Glide</code> 内部已经帮我们做了处理，所以我们不再需要关心线程的问题了，一行代码搞定：</p>
+<pre><code class="language-Java">public class MainActivity extends AppCompatActivity {
+
+    String url = &quot;http://wx4.sinaimg.cn/bmiddle/b64da6adly1gjbwvv4es7j202s02p0sk.jpg&quot;;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        ...
+        final ImageView imageView = findViewById(R.id.sticker);
+        Glide.with(this).load(url).into(imageView);
+    }
+}
+</code></pre>
+<p>结果的确如群友所说，<code>Glide</code> 加载的图片显示的并不是实际尺寸：</p>
+<table>
+    <tr  align="center">
+        <td> 图片实际大小 </td>
+        <td> Glide 加载出来的大小 </td>
+    </tr>
+    <tr>
+        <td><img src="https://liarrdev.github.io/post-images/1602950923549.png"/></td>
+        <td><img src="https://liarrdev.github.io/post-images/1602950946934.png"/></td>
+    </tr>
+</table>
+<p>我们监听一下 <code>Glide</code> 加载出来的尺寸：</p>
+<pre><code class="language-Java">Glide.with(this)
+        .asBitmap()
+        .load(url)
+        .listener(new RequestListener&lt;Bitmap&gt;() {
+            @Override
+            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target&lt;Bitmap&gt; target, boolean isFirstResource) {
+                return false;
+            }
+            @Override
+            public boolean onResourceReady(Bitmap resource, Object model, Target&lt;Bitmap&gt; target, DataSource dataSource, boolean isFirstResource) {
+                int width = resource.getWidth();
+                int height = resource.getHeight();
+                Log.d(TAG, &quot;Width: &quot; + width);
+                Log.d(TAG, &quot;Height: &quot; + height);
+                return false;
+            }
+        })
+        .into(imageView);
+</code></pre>
+<p>好家伙，加载的尺寸为 2139 × 2075 像素，这明显不对劲呀。其实这并不是图片的尺寸大小，而是加载图片后的 <code>ImageView</code> 的大小，也就是图片显示时的大小。</p>
+<p>那我们能否获取到图片的实际尺寸呢？</p>
+<p>当然可以。</p>
+<pre><code class="language-Java">Glide.with(this)
+        .asBitmap()
+        .load(url)
+        .into(new SimpleTarget&lt;Bitmap&gt;() {
+            @Override
+            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition&lt;? super Bitmap&gt; transition) {
+                int realWidth = resource.getWidth();
+                int realHeight = resource.getHeight();
+                Log.d(TAG, &quot;Real Width: &quot; + realWidth);
+                Log.d(TAG, &quot;Real Height: &quot; + realHeight);
+            }
+        });
+</code></pre>
+<p>这里获取到的尺寸就是实际的 100 × 97 像素了。</p>
+<p>然后你可能会发现，这个获取实际尺寸的方法是在 <code>into()</code> 里面的，那没有把 <code>ImageView</code> 实例传进去，它不能够加载我们的图片啊。</p>
+<p>其实我们只需要用回最原始的方法即可：</p>
+<pre><code class="language-Java">Glide.with(this)
+        .asBitmap()
+        .load(url)
+        .into(new SimpleTarget&lt;Bitmap&gt;() {
+            @Override
+            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition&lt;? super Bitmap&gt; transition) {
+                imageView.setImageBitmap(resource);
+            }
+        });
+</code></pre>
+<p>当然你不嫌麻烦的话也可以用 <code>Glide</code> 重新加载一遍：</p>
+<pre><code class="language-Java">Glide.with(this)
+        .asBitmap()
+        .load(url)
+        .into(new SimpleTarget&lt;Bitmap&gt;() {
+            @Override
+            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition&lt;? super Bitmap&gt; transition) {
+                Glide.with(imageView)
+                        .load(resource)
+                        .override(resource.getWidth(), resource.getHeight())
+                        .into(imageView);
+            }
+        });
+</code></pre>
+<p>说实话这种应用场景我至今还没有遇到过，总感觉 <code>ImageView</code> 不确定尺寸的话很容易会产生屏幕适配问题。</p>
+<p>但转念一想，在微信聊天界面的表情包似乎是可以根据图片尺寸显示的，应该存在一个阈值，当表情包的尺寸大于等于这个阈值时，按照这个阈值缩放显示，当表情包的尺寸小于这个阈值时，就按照实际大小显示。</p>
+<p>由于上面的场景我们只处理了小图加载的问题，因此上面的方法不能够直接应用到项目中，否则加载大图的时候也会产生不可控，更甚的是大图还容易造成 OOM。</p>
+<p>而另一种场景，一些 App 有省流模式的功能，可以只显示文字而不加载图片，但是其显示的占位图和实际图片的宽高是一致的，这种就不能使用上面的方法来处理了，因为使用了上面的方法就会去请求图片，也就达不到省流的目的，理论上应由后端将图片的尺寸返回，再由客户端生成占位图。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Android-Non-Editable-EditText.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Android-Non-Editable-EditText/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2020-10-29">2020-10-29</time>
+                  <h4 class="title white no-margin">Android 不可编辑的 EditText</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Android-Rating-Bar.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Android-Rating-Bar/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2020-10-09">2020-10-09</time>
+                  <h4 class="title white no-margin">Android 星级评分条</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

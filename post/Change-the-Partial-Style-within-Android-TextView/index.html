@@ -1,0 +1,707 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Android 改变 TextView 内局部样式 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="Android 开发中经常会有对 TextView 的局部文字样式做单独处理的需求，比如针对某些文字进行加粗或是改变颜色等等。
+这种处理在 Web 开发中十分简单，HTML 的标签能够很方便的进行调整。但是在 Android 开发中，却要稍..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Change-the-Partial-Style-within-Android-TextView.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2020-08-30"><i class="fa fa-calendar"></i><span class="lately">6 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Change-the-Partial-Style-within-Android-TextView/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Change-the-Partial-Style-within-Android-TextView/"> </span>
+              </a>
+              <span id="/Change-the-Partial-Style-within-Android-TextView/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">Android 改变 TextView 内局部样式</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>Android 开发中经常会有对 <code>TextView</code> 的局部文字样式做单独处理的需求，比如针对某些文字进行加粗或是改变颜色等等。</p>
+<p>这种处理在 Web 开发中十分简单，HTML 的标签能够很方便的进行调整。但是在 Android 开发中，却要稍微麻烦一些，我们来看几种处理方式。</p>
+<h1 id="多-textview-拼接">多 <code>TextView</code> 拼接</h1>
+<p>利用多个 <code>TextView</code> 拼接的方式，我们可以针对不同的 <code>TextView</code> 样式进行调整，这种方法似乎跟 HTML 标签有点类似，但实际上却相去甚远。</p>
+<p>当你有多个不连续的文字需要使用同一种样式的时候，你就需要建立多个具有相同样式的 <code>TextView</code>，从而对同一个句子或段落形成割裂感。</p>
+<p>另一方面，你甚至还需要处理好每一个 <code>TextView</code> 的 Padding 以及 Margin 边距属性以及适当的换行等，否则 UI 就会乱得惨不忍睹。</p>
+<p>总体来说，多 <code>TextView</code> 拼接来处理同一段文字是非常不推荐的方法。</p>
+<h1 id="利用-html-标签设置样式">利用 HTML 标签设置样式</h1>
+<p>既然 HTML 在处理这种需求有极大的优势，那么我们能不能使用类似的处理方式呢？</p>
+<p>Android SDK 中其实为我们提供了直接解析 HTML 的方法，所以只要将字符串包装成 HTML 代码即可实现局部样式修改，比如：</p>
+<pre><code class="language-Java">TextView textView = findViewById(R.id.sign_up_link);
+textView.setText(Html.fromHtml(&quot;No account yet? &lt;font color='#FFFFFF'&gt;&lt;big&gt;Create one&lt;/big&gt;&lt;/font&gt;.&quot;));
+</code></pre>
+<p>利用 <code>Html.fromHtml()</code> 方法可以将字符串解析成 HTML 样式，再像平时一样使用的 <code>setText()</code> 方法即可把文字加载到 <code>TextView</code> 中去。</p>
+<p>效果如下：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1562395231027.png" alt="载入 HTML 效果图" loading="lazy"></figure>
+<p>可以看到，底部的那行小字对后半句做了加粗以及颜色调整。</p>
+<p>利用 HTML 设置样式十分方便，解决了多 <code>TextView</code> 拼接的割裂感，但它依然存在问题。</p>
+<p>你可以看到我的示例代码中使用了 <code>&lt;big&gt;</code> 标签来设置字体的大小，其实在常规的 HTML 代码中，我更加倾向于使用 <code>&lt;font&gt;</code> 标签的 <code>size</code> 属性来进行调整，因为可以减少标签嵌套。</p>
+<p>但是我在这里使用 <code>&lt;big&gt;</code> 标签的原因是，<code>Html.fromHtml()</code> 方法无法解析 <code>size</code> 属性，我们可以看看源码：</p>
+<pre><code class="language-Java">public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+    handleStartTag(localName, attributes);
+}
+
+private void handleStartTag(String tag, Attributes attributes) {
+    if (...) {
+        ...
+    } else if (...) {
+        ...
+    } else if (tag.equalsIgnoreCase(&quot;font&quot;)) {
+        startFont(mSpannableStringBuilder, attributes);
+    } else if (...) {
+        ...
+    }
+}
+
+private void startFont(Editable text, Attributes attributes) {
+    String color = attributes.getValue(&quot;&quot;, &quot;color&quot;);
+    String face = attributes.getValue(&quot;&quot;, &quot;face&quot;);
+    if (!TextUtils.isEmpty(color)) {
+        int c = getHtmlColor(color);
+        if (c != -1) {
+            start(text, new Foreground(c | 0xFF000000));
+        }
+    }
+    if (!TextUtils.isEmpty(face)) {
+        start(text, new Font(face));
+    }
+}
+</code></pre>
+<p>可以看到，对于 <code>&lt;font&gt;</code> 标签，只解析 <code>color</code> 和 <code>face</code> 两个属性，其他属性比如刚提到的 <code>size</code> 并没有进行解析，自然也就不可以通过其设置字体大小了。</p>
+<p>这里仅仅拿了 <code>&lt;font&gt;</code> 标签进行举例，其他标签也有类似的情况，也就是说 Android 的 <code>Html.fromHtml()</code> 方法并没有办法对所有的 HTML 样式进行解析。</p>
+<h1 id="利用-spannablestring-设置样式">利用 <code>SpannableString</code> 设置样式</h1>
+<p>其实 Android SDK 也为我们提供了修改 <code>TextView</code> 局部样式的方法，利用 <code>SpannableString</code> 也可以实现类似的功能：</p>
+<pre><code class="language-Java">SpannableString spannableString = new SpannableString(&quot;Hello World!&quot;);
+BackgroundColorSpan backgroundColorSpan = new BackgroundColorSpan(Color.RED);
+spannableString.setSpan(backgroundColorSpan, 0, 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+TextView textView = findViewById(R.id.tv);
+textView.setText(spannableString);
+</code></pre>
+<p>这是 <code>TextView</code> 的 Span 样式类，首先在 <code>SpannableString</code> 对象中传入要显示的内容，调用 <code>setSpan()</code> 方法实现字符串各种风格的显示。</p>
+<p><code>setSpan()</code> 方法有 4 个参数。第一个参数表示格式，可以是前景色、背景色等，这里指定其背景色为红色；第二个参数是格式开始的 Index；第三个参数是格式结束的 Index；第四个参数是一个常量，有以下 4 个值：</p>
+<ul>
+<li><code>Spannable.SPAN_INCLUSIVE_EXCLUSIVE</code>：前面包括，后面不包括。即在文本前插入新文本会应用该样式，而在文本后插入新文本不会应用该样式。</li>
+<li><code>Spannable.SPAN_INCLUSIVE_INCLUSIVE</code>：前面包括，后面包括。即在文本前插入新文本会应用该样式，在文本后插入新文本也会应用该样式。</li>
+<li><code>Spannable.SPAN_EXCLUSIVE_EXCLUSIVE</code>：前面不包括，后面不包括。即在文本前插入新文本不会应用该样式，在文本后插入新文本也不会应用该样式。</li>
+<li><code>Spannable.SPAN_EXCLUSIVE_INCLUSIVE</code>：前面不包括，后面包括。即在文本前插入新文本不会应用该样式，而在文本后插入新文本会应用该样式。</li>
+</ul>
+<p>最后也是调用 <code>TextView</code> 的 <code>setText()</code> 方法把这个 <code>SpannableString</code> 对象设置进去，效果如下：</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1562395276673.png" alt="Span 样式修改背景颜色" loading="lazy"></figure>
+<p>使用 <code>SpannableString</code> 不仅可以设置局部样式，还支持设置局部点击事件，这点比利用 HTML 标签设置样式更加灵活。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Customize-a-Android-LogUtil.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Customize-a-Android-LogUtil/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2020-09-09">2020-09-09</time>
+                  <h4 class="title white no-margin">定制 Android 日志工具</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/DownloadModel-Designed-by-renzhenming.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/DownloadModel-Designed-by-renzhenming/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2020-08-20">2020-08-20</time>
+                  <h4 class="title white no-margin">@任振铭 的 DownloadModel</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

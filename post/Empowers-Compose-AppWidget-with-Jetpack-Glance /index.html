@@ -1,0 +1,936 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title> Jetpack Glance 助力 Compose AppWidget 开发 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="背景
+之前『为 Android 应用构建 Widget』一文介绍过在 Android 中 Widget 的开发流程，文中的示例是基于『Android Studio』提供的默认模版，也就是 RemoteViews 来构建的，当时的文章反响不错..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2026-02-02"><i class="fa fa-calendar"></i><span class="lately">1 个月前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> </span>
+              </a>
+              <span id="/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold"> Jetpack Glance 助力 Compose AppWidget 开发</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <h1 id="背景">背景</h1>
+<p>之前『<a href="https://liarrdev.github.io/post/Building-Widgets-for-Android-Apps/">为 Android 应用构建 Widget</a>』一文介绍过在 Android 中 Widget 的开发流程，文中的示例是基于『Android Studio』提供的默认模版，也就是 <code>RemoteViews</code> 来构建的，当时的文章反响不错，也引发了不少读者的讨论，其中有不少读者期待在 Jetpack Compose 中使用更加优雅的解决方案，今天它来了。</p>
+<p>Google 开发了一个构建在 Jetpack Compose Runtime 之上的框架，名为 Glance，帮助你用更少的代码快速构建响应式 Widget。</p>
+<p>事先声明，得益于 Android 良好的兼容方案，之前的 <code>RemoteViews</code> 依然可用，不必为其是否需要迁移感到焦虑。</p>
+<h1 id="实践">实践</h1>
+<h2 id="基本配置">基本配置</h2>
+<p>『Android Studio』的默认创建模版<a href="https://liarrdev.github.io/post/Building-Widgets-for-Android-Apps/">之前的文章</a>中已经介绍过了，它与 Glance 的配置大相径庭，所以本次我们将手动完成配置。</p>
+<p>首先确保当前项目的 Compose 环境已经配置完成，Compose 的配置流程本文不再赘述，读者可以自行搜索。</p>
+<p>接下来添加依赖：</p>
+<pre><code class="language-groovy">dependencies {
+   // For AppWidgets support
+   implementation &quot;androidx.glance:glance-appwidget:1.1.1&quot;
+   // For interop APIs with Material 3
+   implementation &quot;androidx.glance:glance-material3:1.1.1&quot;
+   // For interop APIs with Material 2
+   implementation &quot;androidx.glance:glance-material:1.1.1&quot;
+}
+</code></pre>
+<p>按需添加即可，需要注意的是，Glance 的版本和当前 Compose 的版本也是有关联的，如果不兼容可能会编译出错，修改版本号为对应的版本即可。</p>
+<p>然后编写一个继承自 <code>GlanceAppWidget</code> 的类，我们的 Widget 样式将在这里渲染：</p>
+<pre><code class="language-Kotlin">class MyAppWidget : GlanceAppWidget() {
+    override suspend fun provideGlance(context: Context, id: GlanceId) {
+        provideContent {
+            GlanceTheme {
+                MyContent()
+            }
+        }
+    }
+
+    @Composable
+    private fun MyContent() {
+        ...
+    }
+}
+</code></pre>
+<p>实现 <code>provideGlance()</code> 方法，并在 <code>provideContent()</code> 内创建你的 Compose 视图。</p>
+<p>有几点需要注意：</p>
+<ul>
+<li><code>provideGlance()</code> 方法运行在主线程，所以耗时操作建议使用协程处理。</li>
+<li>虽然表面上看它是使用 Compose 编写 UI，但实际上 Glance 内部重新构建了一套与 Jetpack Compose 类似的组件库，注意不要导错包。</li>
+</ul>
+<p>Glance 只支持 <a href="https://developer.android.google.cn/reference/kotlin/androidx/glance/layout/package-summary#box"><code>Box</code></a>、<a href="https://developer.android.google.cn/reference/kotlin/androidx/glance/layout/package-summary#column"><code>Column</code></a>、<a href="https://developer.android.google.cn/reference/kotlin/androidx/glance/layout/package-summary#row"><code>Row</code></a>、<a href="https://developer.android.google.cn/reference/kotlin/androidx/glance/layout/package-summary#spacer"><code>Spacer</code></a>、<a href="https://developer.android.google.cn/reference/kotlin/androidx/glance/text/package-summary#text"><code>Text</code></a>、<a href="https://developer.android.google.cn/reference/kotlin/androidx/glance/package-summary#button"><code>Button</code></a>、<a href="https://developer.android.google.cn/reference/kotlin/androidx/glance/package-summary#image"><code>Image</code></a>、<a href="https://developer.android.google.cn/reference/kotlin/androidx/glance/appwidget/lazy/package-summary#lazycolumn"><code>LazyColumn</code></a>、<a href="https://developer.android.google.cn/reference/kotlin/androidx/glance/appwidget/components/package-summary#scaffold"><code>Scaffold</code></a> 等，尽管随着版本更新还拓展了一些其他的组件，但仍与 <code>RemoteViews</code> 的限制大同小异，事实上，Glance 只是提供了 Compose-Style 的写法，它依然会翻译成 <code>RemoteViews</code> 可用的方案。</p>
+<p>如果期望 Glance 能够突破组件限制的可以劝退了😂。</p>
+<p>继续创建一个 <code>GlanceAppWidgetReceiver</code> 用于获取刚刚的 <code>GlanceAppWidget</code>：</p>
+<pre><code class="language-kotlin">class MyAppWidgetReceiver : GlanceAppWidgetReceiver() {
+    override val glanceAppWidget = MyAppWidget()
+}
+</code></pre>
+<p>看到这个名字相信你已经察觉到了，我们之前传统的构建方式也需要注册一个广播，扒开它的神秘面纱瞅一眼：</p>
+<pre><code class="language-kotlin">abstract class GlanceAppWidgetReceiver : AppWidgetProvider() {
+    ...
+    abstract val glanceAppWidget: GlanceAppWidget
+}
+</code></pre>
+<p>好家伙，还是基于原来的 <code>AppWidgetProvider</code> 封装的。</p>
+<p>Glance 注册还需要一个 <code>AppWidgetProviderInfo</code> 元数据，这也是老演员了，需要留意的是，Glance 没有默认的初始布局，你可以使用它内部定义的：</p>
+<pre><code class="language-XML">&lt;appwidget-provider
+    ...
+    android:initialLayout=&quot;@layout/glance_default_loading_layout&quot; /&gt;
+</code></pre>
+<p>最后就是在 <code>AndroidManifest.xml</code> 中注册了，同之前一样：</p>
+<pre><code class="language-XML">&lt;manifest ...&gt;
+    &lt;application ...&gt;
+    ...
+    &lt;receiver
+        android:name=&quot;.widget.MyAppWidgetReceiver&quot;
+        android:exported=&quot;false&quot;&gt;
+        &lt;intent-filter&gt;
+            &lt;action android:name=&quot;android.appwidget.action.APPWIDGET_UPDATE&quot; /&gt;
+        &lt;/intent-filter&gt;
+        &lt;meta-data
+            android:name=&quot;android.appwidget.provider&quot;
+            android:resource=&quot;@xml/my_app_widget_info&quot; /&gt;
+        &lt;/receiver&gt;
+    &lt;/application&gt;
+&lt;/manifest&gt;
+</code></pre>
+<h2 id="更新-widget">更新 Widget</h2>
+<p>Glance 官方文档中关于更新 Widget 的内容我认为描述得不够详细，它只告诉你调用 <code>updateAll()</code> 方法即可：</p>
+<pre><code class="language-kotlin">object MyAppWidgetManager {
+    fun updateAll(context: Context) {
+        GlobalScope.launch {
+            MyAppWidget().updateAll(context)
+        }
+    }
+}
+</code></pre>
+<p>又或者调用 <code>update()</code>：</p>
+<pre><code class="language-kotlin">object MyAppWidgetManager {
+    fun updateAll(context: Context) {
+        GlobalScope.launch {
+            val manager = GlanceAppWidgetManager(context)
+            val widget = MyAppWidget()
+            val glanceIds = manager.getGlanceIds(widget.javaClass)
+            glanceIds.forEach { glanceId -&gt;
+                widget.update(context, glanceId)
+            }
+        }
+    }
+}
+</code></pre>
+<p>由于这两个方法都使用 <code>suspend</code> 修饰，所以建议在非主线程中调用。</p>
+<p>如果使用传统开发 Widget 的思维，调用这个方法 Widget 便会执行刷新，但是实际效果却并不能正确执行，请不要认为在任何时候调用这个方法会触发 <code>provideGlance()</code>。</p>
+<p>因为 <code>GlanceAppWidget</code> 的更新是通过状态管理的，比如官方的例子：</p>
+<pre><code class="language-kotlin">class DestinationAppWidget : GlanceAppWidget() {
+    ...
+    @Composable
+    fun MyContent() {
+        val repository = remember { DestinationsRepository.getInstance() }
+        val destinations by repository.destinations.collectAsState(State.Loading)
+
+        when (destinations) {
+            is State.Loading -&gt; {
+                // show loading content
+            }
+            is State.Error -&gt; {
+                // show widget error content
+            }
+            is State.Completed -&gt; {
+                // show the list of destinations
+            }
+        }
+    }
+}
+</code></pre>
+<p>但我们野生开发却很少使用这种状态，比如直接从 <code>SharedPreferences</code> 里面读取值来展示：</p>
+<pre><code class="language-kotlin">class MyAppWidget : GlanceAppWidget() {
+    override suspend fun provideGlance(context: Context, id: GlanceId) {
+        provideContent {
+            val foo = fetchFromPreferences()
+            GlanceTheme {
+                if (foo != null) {
+                    MyContent(foo)
+                } else {
+                    DefaultContent()
+                }
+            }
+        }
+    }
+    @Composable
+    private fun MyContent(foo: Foo) {
+        ...
+    }
+    @Composable
+    private fun DefaultContent() {
+        ...
+    }
+}
+</code></pre>
+<p>这种写法会导致调用 <code>update()</code> 判断不到状态的变更，导致不会刷新，当然野生写法也可以手动给它搞一个状态：</p>
+<pre><code class="language-kotlin">object MyAppWidgetManager {
+    const val KEY_NOW = &quot;now&quot;
+    fun updateAll(context: Context) {
+        GlobalScope.launch {
+            val glanceIds = GlanceAppWidgetManager(context).getGlanceIds(MyAppWidget::class.java)
+            glanceIds.forEach { id -&gt;
+                updateAppWidgetState(context, id) {
+                    it[longPreferencesKey(KEY_NOW)] = System.currentTimeMillis()    // 设置状态
+                }
+                MyAppWidget().update(context, id)
+            }
+        }
+    }
+}
+</code></pre>
+<p>每次调用 <code>update()</code> 方法前，都更新一次 Widget 的状态，即可刷新：</p>
+<pre><code class="language-kotlin">class MyAppWidget : GlanceAppWidget() {
+    override suspend fun provideGlance(context: Context, id: GlanceId) {
+        provideContent {
+            val now = currentState&lt;Preferences&gt;()[longPreferencesKey(MyAppWidgetManager.KEY_NOW)]   // 读取状态
+            val foo = fetchFromPreferences()
+            GlanceTheme {
+                if (foo != null) {
+                    MyContent(foo)
+                } else {
+                    DefaultContent()
+                }
+            }
+        }
+    }
+    ...
+}
+</code></pre>
+<h2 id="从-widget-中启动应用">从 Widget 中启动应用</h2>
+<p>我们知道，Widget 运行在远程进程中，在之前的 <code>RemoteViews</code> 方案，我们通过 <code>PendingIntents</code> 来启动应用，而 Glance 提供了更优雅的实现方案。</p>
+<pre><code class="language-Kotlin">class MyAppWidget : GlanceAppWidget() {
+    ...
+    @Composable
+    private fun MyContent() {
+        Column {
+            Button(text = &quot;Home&quot;, onClick = actionStartActivity&lt;MainActivity&gt;())
+            Text(text = &quot;Settings&quot;, modifier = GlanceModifier.clickable(actionStartActivity&lt;SettingsActivity&gt;()))
+        }
+    }
+}
+</code></pre>
+<p>Glance 通过 <code>Action</code> 来简化处理用户互动的流程，<code>Action</code> 是一个接口，在不同的启动场景中有不同的实现。</p>
+<p>在需要启动 <code>Activity</code> 时，我们只需要调用 <code>actionStartActivity()</code> 方法指定目标 <code>Activity</code> 即可，该方法会返回一个 <code>StartActivityAction</code>，<code>StartActivityAction</code> 也是一个接口，传递不同的参数由 <code>StartActivityClassAction</code>、<code>StartActivityComponentAction</code>、<code>StartActivityIntentAction</code> 等具体实现。</p>
+<p><code>Button</code> 可以通过 <code>onClick</code> 接收 <code>Action</code>，其他 <code>@Composable</code> 也可以通过 <code>GlanceModifier.clickable()</code> 接收 <code>Action</code>。</p>
+<p>启动的时候需要传递参数怎么办，我们看到 <code>actionStartActivity()</code> 方法有个 <code>Bundle</code> 参数，千万不要被迷惑了！</p>
+<pre><code class="language-kotlin">@ExperimentalGlanceApi
+inline fun &lt;reified T : Activity&gt; actionStartActivity(
+    parameters: ActionParameters = actionParametersOf(),
+    activityOptions: Bundle? = null,
+): Action = actionStartActivity(T::class.java, parameters, activityOptions)
+
+@ExperimentalGlanceApi
+fun &lt;T : Activity&gt; actionStartActivity(
+    activity: Class&lt;T&gt;,
+    parameters: ActionParameters = actionParametersOf(),
+    activityOptions: Bundle? = null,
+): Action = StartActivityClassAction(activity, parameters, activityOptions)
+</code></pre>
+<p>启动 <code>Activity</code> 所需的参数并不是在这个 <code>Bundle</code> 中传递的，而是通过 <code>ActionParameters</code> 传递的。尽管 <code>ActionParameters</code> 和 <code>Bundle</code> 一样底层实现都是 <code>Map</code>，但不同于 <code>Bundle</code> 的键是 <code>String</code> 类型，<code>ActionParameters</code> 的键是再做了一层封装的 <code>ActionParameters.Key</code>，这意味着我们需要再做一层转换，好处是不怕传递到错误的类型。</p>
+<pre><code class="language-kotlin">private val destinationKey = ActionParameters.Key&lt;String&gt;(NavigationActivity.KEY_DESTINATION)
+class MyAppWidget : GlanceAppWidget() {
+    ...
+    @Composable
+    private fun MyContent() {
+        Button(
+            text = &quot;Home&quot;, 
+            onClick = actionStartActivity&lt;NavigationActivity&gt;(actionParametersOf(destinationKey to &quot;home&quot;))
+        )
+    }
+}
+</code></pre>
+<p><code>ActionParameters.Key</code> 中的泛型指定为要传递的值的类型，然后传入我们 <code>Activity</code> 中定义的键名构造实例。通过 <code>actionParametersOf()</code> 构造 <code>ActionParameters</code> 对象，它内部可以填充多组 <code>Pair</code> 对应我们要传递的参数。将构建好的 <code>ActionParameters</code> 对象传递给 <code>actionStartActivity()</code> 方法即可。</p>
+<p>目标 <code>Activity</code> 无需做多余的修改，还是使用 <code>getIntent()</code> 读取：</p>
+<pre><code class="language-kotlin">class NavigationActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val destination = intent.getStringExtra(KEY_DESTINATION)
+        ...
+    }
+    companion object {
+        const val KEY_DESTINATION = &quot;destination&quot;
+    }
+}
+</code></pre>
+<p>其他的操作比如启动 <code>Service</code> 或者发送广播同样是通过 <code>Action</code> 来实现，自定义操作也是如此，大同小异，参照文档即可，这里不再赘述。</p>
+<h2 id="remoteviews-兜底"><code>RemoteViews</code> 兜底</h2>
+<p>在某些情况下，可能需要使用 XML 和 <code>RemoteViews</code> 来提供视图。比如已经在不使用 Glance 的情况下实现了某项功能，或者该功能在当前 Glance API 尚未提供或无法使用。对于这种情况 Glance 提供了 <code>AndroidRemoteViews</code>，这是一个互操作性 API。不难看出，它提供了与 Compose 中 <code>AndroidView</code> 类似的功能。</p>
+<p><code>AndroidRemoteViews</code> 允许将 <code>RemoteViews</code> 与其他 <code>@Composable</code> 搭配使用：</p>
+<pre><code class="language-kotlin">class MyAppWidget : GlanceAppWidget() {
+    ...
+    @Composable
+    private fun MyContent() {
+        val packageName = LocalContext.current.packageName
+        Column(modifier = GlanceModifier.fillMaxSize()) {
+            Text(&quot;Isn't that cool?&quot;)
+            AndroidRemoteViews(RemoteViews(packageName, R.layout.example_layout))
+        }
+    }
+}
+</code></pre>
+<p>将 <code>@Composable</code> 放在 <code>AndroidRemoteViews</code> 同样可行：</p>
+<pre><code class="language-kotlin">class MyAppWidget : GlanceAppWidget() {
+    ...
+    @Composable
+    private fun MyContent() {
+        val packageName = LocalContext.current.packageName
+        AndroidRemoteViews(
+            remoteViews = RemoteViews(packageName, R.layout.my_container_view),
+            containerViewId = R.id.example_view
+        ) {
+            Column(modifier = GlanceModifier.fillMaxSize()) {
+                Text(&quot;My title&quot;)
+                Text(&quot;Maybe a long content...&quot;)
+            }
+        }
+    }
+}
+</code></pre>
+<p>要注意的是这里需要传递布局和容器 ID，意味着这个容器必须是 <code>ViewGroup</code>，同时该 <code>ViewGroup</code> 内的所有子 <code>View</code> 都将被移除，取而代之的是在此 <code>AndroidRemoteViews</code> 中填充的内容。不要忘记，提供的 <code>ViewGroup</code> 必须受 <code>RemoteViews</code> 支持。</p>
+<h1 id="写在最后">写在最后</h1>
+<p>这篇文章虽然主要是介绍 Glance，但实际上是对『<a href="https://liarrdev.github.io/post/Building-Widgets-for-Android-Apps/">为 Android 应用构建 Widget</a>』一文的补充，因为 Glance 仍是对传统实现 Widget 的封装，提供了 Compose-Style 的写法，并不会超脱原有 Widget 的限制。</p>
+<p>Glance 是一个很新的库，目前还在实验阶段，但已基本可用，而且它和 Compose 的结合非常紧密，使用起来非常方便。如果你正在使用 Compose，那么不妨尝试一下 Glance，相信你会爱上它的。</p>
+<p>不过我需要在这里打个预防针，经过我们实际在企业项目的验证，目前 Glance 在 vivo 设备上会出现一个 <code>IllegalStateException</code>。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1768730036222.png" alt="Firebase 崩溃记录" loading="lazy"></figure>
+<p>堆栈信息如下：</p>
+<pre><code>Fatal Exception: java.lang.IllegalStateException: Broadcast already finished
+       at android.content.BroadcastReceiver$PendingResult.sendFinished(BroadcastReceiver.java:283)
+       at android.content.BroadcastReceiver$PendingResult$1.run(BroadcastReceiver.java:256)
+       at android.app.QueuedWork.processPendingWork(QueuedWork.java:265)
+       at android.app.QueuedWork.-$$Nest$smprocessPendingWork()
+       at android.app.QueuedWork$QueuedWorkHandler.handleMessage(QueuedWork.java:285)
+       at android.os.Handler.dispatchMessage(Handler.java:106)
+       at android.os.Looper.loopOnce(Looper.java:223)
+       at android.os.Looper.loop(Looper.java:324)
+       at android.os.HandlerThread.run(HandlerThread.java:67)
+</code></pre>
+<p>我追踪到<a href="https://issuetracker.google.com/issues/257513022">在 Google IssueTracker 上从 2022 年开始就有这个问题</a>，并且至今仍未被修复，尚不明确到底是 Glance 的 Bug 还是 vivo OriginOS 的锅。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1768730081261.png" alt="Crash with Glance" loading="lazy"></figure>
+<h1 id="参考内容">参考内容</h1>
+<ul>
+<li><a href="https://developer.android.google.cn/develop/ui/compose/glance">Jetpack Glance | Jetpack Compose | Android Developers</a></li>
+<li><a href="https://developer.android.google.cn/reference/kotlin/androidx/glance/layout/package-summary">androidx.glance.layout | Android Developers</a></li>
+<li><a href="https://stackoverflow.com/questions/77088363/android-jetpack-glance-1-0-0-problems-updating-widget">Android Jetpack Glance 1.0.0 : problems updating widget - Stack Overflow</a></li>
+<li><a href="https://medium.com/@Xiryl/unlock-the-secret-real-time-updates-for-glance-widgets-on-android-6907d0e06fa9">Unlock the Secret: Real-Time Updates for Glance Widgets on Android! | by Fabio Chiarani | Medium</a></li>
+</ul>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2026-02-27">2026-02-27</time>
+                  <h4 class="title white no-margin">使用 mp3agic 读写 MP3 的 ID3 标签</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2025-12-29">2025-12-29</time>
+                  <h4 class="title white no-margin">HarmonyOS ArkWeb 有线调试</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

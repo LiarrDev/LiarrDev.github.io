@@ -1,0 +1,957 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>『MOJiKana』中模仿实体按键的动效是如何实现的？ | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="在『MOJiKana』中你可以看到我们大量使用了模仿实体按键的按压动效：
+
+一开始这种动效仅在五十音列表中使用到，我们只需在 Adapter 中对子项进行处理即可，随着版本的迭代，该动效开始广泛应用到其他按钮设计中，如果针对每个按钮都做这种..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/MOJiKana-Physical-Button-Motion-Effect.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2024-11-15"><i class="fa fa-calendar"></i><span class="lately">1 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/MOJiKana-Physical-Button-Motion-Effect/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/MOJiKana-Physical-Button-Motion-Effect/"> </span>
+              </a>
+              <span id="/MOJiKana-Physical-Button-Motion-Effect/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">『MOJiKana』中模仿实体按键的动效是如何实现的？</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>在『<a href="https://www.hugecore.net/mojikana">MOJiKana</a>』中你可以看到我们大量使用了模仿实体按键的按压动效：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1728828620081.gif" alt="模仿实体按键动效" loading="lazy"></figure>
+<p>一开始这种动效仅在五十音列表中使用到，我们只需在 <code>Adapter</code> 中对子项进行处理即可，随着版本的迭代，该动效开始广泛应用到其他按钮设计中，如果针对每个按钮都做这种动效处理，项目中会存在大量的冗余代码，不易于维护，所以我考虑将其封装成一个组件，让每个需要用到的地方都尽可能简单地接入。</p>
+<p>先来看看原理，如下图所示，我们只需要通过叠加两个图层，上面的图层采用较浅的颜色，下面的图层采用较深的颜色，并在上下两个图层的底部制造一个间距，即可在视觉上形成一个实体按键的效果。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1728828647053.png" alt="图层分解" loading="lazy"></figure>
+<p>当按钮被按下时，我们取消两个图层底部的间距，使底部的深色图层被覆盖隐藏，再给图层与父布局顶部添加同样的间距，就能够模仿出实体按键被按下的效果。</p>
+<p>使用两个图层其实是 Android 的能力限制，像 ArkUI 中我们实际上只采用一个图层，然后通过调整底部边框的宽度来实现的，尽管如此，实现思路大体一致。</p>
+<p>知道了原理，下面开始编码。</p>
+<p>考虑到需要封装成通用组件，我们把几个重要的属性提取出来：</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;resources&gt;
+    &lt;declare-styleable name=&quot;KeyCapLayout&quot;&gt;
+        &lt;attr name=&quot;keyCapFlatColor&quot; format=&quot;color&quot; /&gt;
+        &lt;attr name=&quot;keyCapShadowColor&quot; format=&quot;color&quot; /&gt;
+        &lt;attr name=&quot;keyStroke&quot; format=&quot;dimension&quot; /&gt;
+        &lt;attr name=&quot;keyCapRadius&quot; format=&quot;dimension&quot; /&gt;
+    &lt;/declare-styleable&gt;
+&lt;/resources&gt;
+</code></pre>
+<p>我把这个组件命名为 <code>KeyCapLayout</code>，因为它很像我们键盘中的键帽。<code>keyCapFlatColor</code> 表示的是按键表面的颜色，也就是原理中上面图层的颜色，<code>keyCapShadowColor</code> 表示的是按键的侧面阴影颜色，也就是原理中下面图层的颜色，<code>keyStroke</code> 表示的是按键的厚度，也可以理解为在机械键盘中我们常说的键程，<code>keyCapRadius</code> 表示的是按键的圆角半径，我这里没有区分上下两个图层的半径，而是采用同样的大小，读者可按需添加。</p>
+<p>接下来封装组件：</p>
+<pre><code class="language-Kotlin">class KeyCapLayout @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyle: Int = 0
+) : FrameLayout(context, attrs, defStyle) {
+
+    private val keyCapFlat: QMUIFrameLayout     // 键盘顶部
+    private val keyCapShadow: QMUIFrameLayout   // 键盘侧面
+    private val tagFlat = &quot;keyCapFlat&quot;
+    private val tagShadow = &quot;keyCapShadow&quot;
+    private var keystroke = 0                   // 键程
+
+    init {
+        val a = context.obtainStyledAttributes(attrs, R.styleable.KeyCapLayout)
+        val flat = a.getColor(R.styleable.KeyCapLayout_keyCapFlatColor, Color.YELLOW)
+        val shadow = a.getColor(R.styleable.KeyCapLayout_keyCapShadowColor, Color.GRAY)
+        keystroke = a.getDimension(R.styleable.KeyCapLayout_keyStroke, 4.dp.toFloat()).toInt()
+        val radius = a.getDimension(R.styleable.KeyCapLayout_keyCapRadius, 8.dp.toFloat()).toInt()
+        a.recycle()
+
+        keyCapFlat = QMUIFrameLayout(context).apply {
+            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+            tag = tagFlat
+        }
+        keyCapShadow = QMUIFrameLayout(context).apply {
+            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+            tag = tagShadow
+        }
+        setKeyCapFlatColor(flat)
+        setKeyCapShadowColor(shadow)
+        setKeyCapRadius(radius)
+        setKeyStroke(keystroke)
+        addView(keyCapShadow)
+        addView(keyCapFlat)
+    }
+
+    /**
+     * 设置键帽颜色
+     */
+    fun setKeyCapFlatColor(@ColorInt color: Int) {
+        keyCapFlat.setBackgroundColor(color)
+    }
+
+    /**
+     * 设置竖面阴影色
+     */
+    fun setKeyCapShadowColor(@ColorInt color: Int) {
+        keyCapShadow.setBackgroundColor(color)
+    }
+
+    /**
+     * 设置圆角
+     */
+    fun setKeyCapRadius(radius: Int) {
+        keyCapFlat.radius = radius
+        keyCapShadow.radius = radius
+    }
+
+    /**
+     * 设置键程
+     */
+    fun setKeyStroke(height: Int) {
+        val lp = keyCapFlat.layoutParams as LayoutParams
+        lp.setMargins(0, 0, 0, height)
+        keyCapFlat.layoutParams = lp
+    }
+
+    /**
+     * 处理按压
+     * @param press 是否按压
+     */
+    private fun handlePress(press: Boolean) {
+        val lpFlat = keyCapFlat.layoutParams as LayoutParams
+        val lpShadow = keyCapShadow.layoutParams as LayoutParams
+        if (press) {
+            lpFlat.setMargins(0, keystroke, 0, 0)
+            lpShadow.setMargins(0, keystroke, 0, 0)
+        } else {
+            lpFlat.setMargins(0, 0, 0, keystroke)
+            lpShadow.setMargins(0)
+        }
+        keyCapFlat.layoutParams = lpFlat
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        when (event?.action) {
+            MotionEvent.ACTION_DOWN -&gt; {
+                handlePress(true)
+            }
+
+            MotionEvent.ACTION_UP -&gt; {
+                handlePress(false)
+                performClick()
+            }
+
+            MotionEvent.ACTION_CANCEL -&gt; {
+                handlePress(false)
+            }
+        }
+        return true
+    }
+
+    override fun addView(child: View?) {
+        if (child?.tag == tagFlat || child?.tag == tagShadow) {
+            super.addView(child)
+        } else {
+            keyCapFlat.addView(child)
+        }
+    }
+
+    override fun addView(child: View?, index: Int) {
+        if (child?.tag == tagFlat || child?.tag == tagShadow) {
+            super.addView(child, index)
+        } else {
+            keyCapFlat.addView(child, index)
+        }
+    }
+
+    override fun addView(child: View?, params: ViewGroup.LayoutParams?) {
+        if (child?.tag == tagFlat || child?.tag == tagShadow) {
+            super.addView(child, params)
+        } else {
+            keyCapFlat.addView(child, params)
+        }
+    }
+
+    override fun addView(child: View?, index: Int, params: ViewGroup.LayoutParams?) {
+        if (child?.tag == tagFlat || child?.tag == tagShadow) {
+            super.addView(child, index, params)
+        } else {
+            keyCapFlat.addView(child, index, params)
+        }
+    }
+
+    override fun addView(child: View?, width: Int, height: Int) {
+        if (child?.tag == tagFlat || child?.tag == tagShadow) {
+            super.addView(child, width, height)
+        } else {
+            keyCapFlat.addView(child, width, height)
+        }
+    }
+}
+</code></pre>
+<p><code>KeyCapLayout</code> 继承自 <code>FrameLayout</code>，无论是简单的文字图片，或是复杂的自定义视图，都可以很方便地往里面添加。</p>
+<p>原理中提到的上下两个图层，为了方便圆角的设置，我采用了 <a href="https://github.com/Tencent/QMUI_Android">@Tencent/QMUI_Android</a> 这个库的 <code>QMUIFrameLayout</code> 来作容器，你也可以采用其他的圆角方案。</p>
+<p>写 XML 布局时，如果我们直接在 <code>KeyCapLayout</code> 中添加子视图，子视图默认会被插入到 <code>KeyCapLayout</code> 中，这样在处理按压效果时还需要额外处理子视图的上下偏移，如果我们能够将它插入到上图层中，它就仿佛印在按键表面一样，跟随图层上下偏移，所以我们重写 <code>addView()</code> 方法，将子视图添加到上图层中。</p>
+<p>因为我们首先需要调用 <code>addView()</code> 把上下两个图层添加到 <code>KeyCapLayout</code> 中，所以为了避免递归死循环，我们给上下图层分别配置 <code>Tag</code>，<code>addView()</code> 时判断不是这两个上下图层则添加到上图层中。</p>
+<p>按压效果就重写触摸事件 <code>onTouchEvent()</code> 处理，上面的原理已经介绍过了，不再重复。</p>
+<p>调用时只需包裹在我们的内容上即可：</p>
+<pre><code class="language-xml">&lt;com.example.banner.KeyCapLayout
+    android:layout_width=&quot;120dp&quot;
+    android:layout_height=&quot;56dp&quot;
+    app:keyCapFlatColor=&quot;#595959&quot;
+    app:keyCapRadius=&quot;56dp&quot;
+    app:keyCapShadowColor=&quot;#404040&quot;
+    app:keyStroke=&quot;6dp&quot;&gt;
+
+    &lt;TextView
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:layout_gravity=&quot;center&quot;
+        android:textStyle=&quot;bold&quot;
+        android:textColor=&quot;@color/white&quot;
+        android:textSize=&quot;18sp&quot;
+        android:text=&quot;Button&quot; /&gt;
+&lt;/com.example.banner.KeyCapLayout&gt;
+</code></pre>
+<p>点击事件也是直接调用 <code>KeyCapLayout</code> 的 <code>setOnClickListener()</code> 方法，我们在 <code>onTouchEvent()</code> 中处理了相关逻辑，当接收到 <code>MotionEvent.ACTION_UP</code> 事件时，会自动触发 <code>onClick()</code> 方法。</p>
+<p>『<a href="https://www.hugecore.net/mojikana">MOJiKana</a>』中同时也使用了 Jetpack Compose 技术，为了复用上面的代码，我不得不每次都使用 <code>AndroidView</code> 进行包裹，并在内部完成整个 <code>KeyCapLayout</code> 的创建、配置，还要创建它的子 <code>View</code> 再添加到其中。比如：</p>
+<pre><code class="language-Kotlin">@Preview
+@Composable
+private fun KeyCapLayoutPreview() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.White),
+        contentAlignment = Alignment.Center
+    ) {
+        AndroidView(factory = { context -&gt;
+            KeyCapLayout(context).apply {
+                layoutParams = ViewGroup.LayoutParams(SizeUtils.dp2px(120f), SizeUtils.dp2px(54f))
+                setKeyCapFlatColor(context.getColor(R.color.color_595959))
+                setKeyCapShadowColor(context.getColor(R.color.color_404040))
+                setKeyCapRadius(SizeUtils.dp2px(60f))
+                setKeyStroke(SizeUtils.dp2px(6f))
+                val imageView = ImageView(context).apply {
+                    layoutParams = ViewGroup.LayoutParams(SizeUtils.dp2px(24f), SizeUtils.dp2px(24f))
+                    setImageResource(R.drawable.ic_common_complete)
+                }
+                addView(
+                    imageView,
+                    FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT).apply { gravity = Gravity.CENTER }
+                )
+                setOnClickListener {
+                    // do something...
+                }
+            }
+        })
+    }
+}
+</code></pre>
+<p>随着项目中使用的场景逐渐增加，这种胶水代码也在慢慢膨胀。终于到了无法忍受之际，我又顺手搓了个 Compose 版本：</p>
+<pre><code class="language-Kotlin">@Composable
+fun KeyCap(
+    modifier: Modifier = Modifier,
+    keyFlatColor: Color = Color.Transparent,
+    keyShadowColor: Color = Color.Transparent,
+    keyStroke: Dp = 0.dp,
+    keyCapRadius: Dp = 0.dp,
+    content: @Composable BoxScope.() -&gt; Unit
+) {
+    var pressed by remember { mutableStateOf(false) }
+
+    Box(modifier = modifier.pointerInput(pressed) {
+        awaitPointerEventScope {
+            if (pressed) {
+                waitForUpOrCancellation()
+                pressed = false
+            } else {
+                awaitFirstDown(false)
+                pressed = true
+            }
+        }
+    }) {
+        Box(
+            modifier = Modifier
+                .padding(top = keyStroke)
+                .fillMaxSize()
+                .clip(RoundedCornerShape(size = keyCapRadius))
+                .background(keyShadowColor)
+        )
+        Box(
+            modifier = Modifier
+                .padding(
+                    top = if (pressed) keyStroke else 0.dp,
+                    bottom = if (pressed) 0.dp else keyStroke
+                )
+                .fillMaxSize()
+                .clip(RoundedCornerShape(size = keyCapRadius))
+                .background(color = keyFlatColor),
+            contentAlignment = Alignment.Center
+        ) {
+            content()
+        }
+    }
+}
+</code></pre>
+<p>属性依然是那几个属性，不再赘述。</p>
+<p>触摸事件在 <code>awaitPointerEventScope()</code> 内处理，使用一个状态来标记按钮是否被按下。</p>
+<p>得益于 Jetpack Compose 的声明式理念，无需再考虑上述原始 <code>View</code> 体系中 <code>addView()</code> 的问题，而是直接添加到对应的组件中即可。为了符合 Compose 的编写方式，可以直接参考其他组件的设计，在最后一个参数传入 <code>@Composable</code> 方法即可。</p>
+<p>使用方式也很简单：</p>
+<pre><code class="language-Kotlin">@Preview
+@Composable
+fun KeyCapPreview() {
+    val interactionSource = remember { MutableInteractionSource() }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.White),
+        contentAlignment = Alignment.Center
+    ) {
+        KeyCap(
+            keyFlatColor = colorResource(R.color.color_595959),
+            keyShadowColor = colorResource(R.color.color_404040),
+            keyStroke = 6.dp,
+            keyCapRadius = 60.dp,
+            modifier = Modifier
+                .size(120.dp, 54.dp)
+                .clickableWithoutRipple(interactionSource) {    // 去除默认的点击效果
+                    // do something...
+                }
+        ) {
+            Text(
+                text = stringResource(id = R.string.confirm),
+                color = Color.White
+            )
+        }
+    }
+}
+</code></pre>
+<p>需要留意的是，Compose 默认情况下会给组件添加一个点击的 Ripple 效果，因为我们是通过组合视图来实现，并且还有圆角，所以这个默认的点击效果反而会影响体验，要把它去除。</p>
+<p>去除点击效果的方法有很多种，Compose 官方也在后续的版本中做了更新，因为我目前使用的版本还比较低，所以我使用扩展方法来支持，其他实现方式可以自行搜索。</p>
+<pre><code class="language-Kotlin">fun Modifier.clickableWithoutRipple(
+    interactionSource: MutableInteractionSource,
+    onClick: () -&gt; Unit
+) = composed(
+    factory = {
+        this.then(
+            Modifier.clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = { onClick() }
+            )
+        )
+    }
+)
+</code></pre>
+<p>最后浅浅吐槽一下，虽然这个设计挺有意思，但是我个人觉得其实违反了透视原理。</p>
+<p>因为视觉上近大远小，所以按钮上的文字或图片按道理来说也应当被拉伸，左右两侧的延长线最终会在消失点相交。即使这个变换并不难实现，可是由于按钮的大小是动态配置的，导致变换的角度以及消失点就不太好确定，因此我们最终并没有实现这个效果。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Design-Pattern-Factory.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Design-Pattern-Factory/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2024-12-27">2024-12-27</time>
+                  <h4 class="title white no-margin">Design Pattern: Factory</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Android-FastScroller-AlphabetIndexer.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Android-FastScroller-AlphabetIndexer/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2024-10-11">2024-10-11</time>
+                  <h4 class="title white no-margin">FastScroller &amp; AlphabetIndexer 构建 Android 字母索引器</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

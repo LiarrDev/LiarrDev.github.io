@@ -1,0 +1,769 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>为什么 Html.fromHtml() 不能解析 RGB 色值 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="游戏 SDK 需要接入一个类似公告板的需求，大概样子长这样：
+
+可以看到，中间的内容字体是有不同样式的，之前『Android 改变 TextView 内局部样式』也介绍过如何实现类似的功能。这里由于内容本身也是从服务端获取的，所以服务端生成..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Why-FromHtml-Method-cannot-Parse-RGB-Color.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2022-06-29"><i class="fa fa-calendar"></i><span class="lately">4 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Why-FromHtml-Method-cannot-Parse-RGB-Color/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Why-FromHtml-Method-cannot-Parse-RGB-Color/"> </span>
+              </a>
+              <span id="/Why-FromHtml-Method-cannot-Parse-RGB-Color/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">为什么 Html.fromHtml() 不能解析 RGB 色值</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>游戏 SDK 需要接入一个类似公告板的需求，大概样子长这样：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1655568217445.png" alt="示例图" loading="lazy"></figure>
+<p>可以看到，中间的内容字体是有不同样式的，之前『<a href="https://liarrdev.github.io/post/Change-the-Partial-Style-within-Android-TextView/">Android 改变 TextView 内局部样式</a>』也介绍过如何实现类似的功能。这里由于内容本身也是从服务端获取的，所以服务端生成 HTML 格式文本，客户端再使用 <code>Html.fromHtml()</code> 来解析会比较合适。</p>
+<p>不过不知道是服务端富文本插件原因还是其他什么原因，生成过来的富文本格式是这样的：</p>
+<pre><code class="language-HTML">点击&lt;span style=&quot;color: rgb(0, 255, 0)&quot;&gt;【大厅】&lt;/span&gt;-左下角...
+</code></pre>
+<p>但是实际上这个 RGB 颜色属性是不生效的，除非指定为具体的颜色名称：</p>
+<pre><code class="language-HTML">点击&lt;span style=&quot;color: green&quot;&gt;【大厅】&lt;/span&gt;-左下角...
+</code></pre>
+<p>或者使用十六进制格式：</p>
+<pre><code class="language-HTML">点击&lt;span style=&quot;color: #00FF00&quot;&gt;【大厅】&lt;/span&gt;-左下角...
+</code></pre>
+<p>这里主要是用到 <code>&lt;span&gt;</code> 标签，所以进到对应的解析源码查看：</p>
+<pre><code class="language-Java">class HtmlToSpannedConverter implements ContentHandler {
+    ...
+    private void handleStartTag(String tag, Attributes attributes) {
+        if (...) {
+            ...
+        } else if (tag.equalsIgnoreCase(&quot;span&quot;)) {
+            startCssStyle(mSpannableStringBuilder, attributes);
+        } else if (...) {
+            ...
+        }
+    }
+
+    private void startCssStyle(Editable text, Attributes attributes) {
+        String style = attributes.getValue(&quot;&quot;, &quot;style&quot;);
+        if (style != null) {
+            Matcher m = getForegroundColorPattern().matcher(style);
+            if (m.find()) {
+                int c = getHtmlColor(m.group(1));
+                if (c != -1) {
+                    start(text, new Foreground(c | 0xFF000000));
+                }
+            }
+            ...
+        }
+    }
+}
+</code></pre>
+<p><code>HtmlToSpannedConverter</code> 不是 <code>Html</code> 的内部类，但却写在了 <code>Html.java</code> 文件中，它在 <code>Html.fromHtml()</code> 方法内部被创建。</p>
+<p>HTML 的解析对大家来说都没什么难度，跟普通的 XML 解析相似，无非就是先后解析出节点的标签、属性和值，所以我们从标签的解析着手。</p>
+<p>首先进入 <code>&lt;span&gt;</code> 标签的分支，判断是否有 <code>style</code> 属性，有的话执行下面的解析。</p>
+<p><code>getForegroundColorPattern()</code> 就是匹配的颜色：</p>
+<pre><code class="language-Java">class HtmlToSpannedConverter implements ContentHandler {
+    ...
+    private static Pattern getForegroundColorPattern() {
+        if (sForegroundColorPattern == null) {
+            sForegroundColorPattern = Pattern.compile(&quot;(?:\\s+|\\A)color\\s*:\\s*(\\S*)\\b&quot;);
+        }
+        return sForegroundColorPattern;
+    }
+}
+</code></pre>
+<p>如果匹配上了，就进入 <code>getHtmlColor()</code> 方法：</p>
+<pre><code class="language-Java">class HtmlToSpannedConverter implements ContentHandler {
+    ...
+    private int getHtmlColor(String color) {
+        ...
+        // If |color| is the name of a color, pass it to Color to convert it. Otherwise,
+        // it may start with &quot;#&quot;, &quot;0&quot;, &quot;0x&quot;, &quot;+&quot;, or a digit. All of these cases are
+        // handled below by XmlUtils. (Note that parseColor accepts colors starting
+        // with &quot;#&quot;, but it treats them differently from XmlUtils.)
+        if (Character.isLetter(color.charAt(0))) {
+            try {
+                return Color.parseColor(color);
+            } catch (IllegalArgumentException e) {
+                return -1;
+            }
+        }
+        try {
+            return XmlUtils.convertValueToInt(color, -1);
+        } catch (NumberFormatException nfe) {
+            return -1;
+        }
+    }
+}
+</code></pre>
+<p>这里的注释十分清晰，如果传进来的参数是一个颜色名称，那么它将交给 <code>Color</code> 类进行转换；否则，它大概率会以 <code>#</code>、<code>0</code>、<code>0x</code>、<code>+</code> 或数字开头，交给 <code>XmlUtils</code> 处理。</p>
+<p>它的判断条件十分简单粗暴，传进来的参数是一个字符串，假如其第一个字符是字母的话，它就将其作为颜色名称来转换，比如 <code>green</code> 就符合条件。</p>
+<p>也正是因为这个原因，我们返回的 RGB 色值是 <code>rgb(0, 255, 0)</code>，第一个字符也是字母，被扯进这个判断中去了。</p>
+<p>再到 <code>Color</code> 类看看接下去的步骤：</p>
+<pre><code class="language-Java">public class Color {
+    ...
+    @ColorInt
+    public static int parseColor(@Size(min=1) String colorString) {
+        if (colorString.charAt(0) == '#') {
+            ...
+        } else {
+            Integer color = sColorNameMap.get(colorString.toLowerCase(Locale.ROOT));
+            if (color != null) {
+                return color;
+            }
+        }
+        throw new IllegalArgumentException(&quot;Unknown color&quot;);
+    }
+}
+</code></pre>
+<p>先判断传入字符串的首个字符是否为 <code>#</code>，由于上一步已经做了过滤，所以这一步必然是 <code>false</code>，走下面的 <code>else</code> 分支。也就是从 <code>sColorNameMap</code> 这个 <code>Map</code> 里面根据颜色名称查找对应的色值，接下来看看系统默认定义了哪些色值：</p>
+<pre><code class="language-Java">public class Color {
+    ...
+    private static final HashMap&lt;String, Integer&gt; sColorNameMap;
+    static {
+        sColorNameMap = new HashMap&lt;&gt;();
+        sColorNameMap.put(&quot;black&quot;, BLACK);
+        sColorNameMap.put(&quot;darkgray&quot;, DKGRAY);
+        sColorNameMap.put(&quot;gray&quot;, GRAY);
+        sColorNameMap.put(&quot;lightgray&quot;, LTGRAY);
+        sColorNameMap.put(&quot;white&quot;, WHITE);
+        sColorNameMap.put(&quot;red&quot;, RED);
+        sColorNameMap.put(&quot;green&quot;, GREEN);
+        sColorNameMap.put(&quot;blue&quot;, BLUE);
+        sColorNameMap.put(&quot;yellow&quot;, YELLOW);
+        sColorNameMap.put(&quot;cyan&quot;, CYAN);
+        sColorNameMap.put(&quot;magenta&quot;, MAGENTA);
+        sColorNameMap.put(&quot;aqua&quot;, 0xFF00FFFF);
+        sColorNameMap.put(&quot;fuchsia&quot;, 0xFFFF00FF);
+        sColorNameMap.put(&quot;darkgrey&quot;, DKGRAY);
+        sColorNameMap.put(&quot;grey&quot;, GRAY);
+        sColorNameMap.put(&quot;lightgrey&quot;, LTGRAY);
+        sColorNameMap.put(&quot;lime&quot;, 0xFF00FF00);
+        sColorNameMap.put(&quot;maroon&quot;, 0xFF800000);
+        sColorNameMap.put(&quot;navy&quot;, 0xFF000080);
+        sColorNameMap.put(&quot;olive&quot;, 0xFF808000);
+        sColorNameMap.put(&quot;purple&quot;, 0xFF800080);
+        sColorNameMap.put(&quot;silver&quot;, 0xFFC0C0C0);
+        sColorNameMap.put(&quot;teal&quot;, 0xFF008080);
+    }
+}
+</code></pre>
+<p>很明显，不会有我们传进来的 <code>rgb(0, 255, 0)</code>，所以会返回 <code>null</code>，同时抛出异常。</p>
+<p>这就是为什么 <code>Html.fromHtml()</code> 不能解析 RBG 格式颜色的原因。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Java-Map-Traversal.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Java-Map-Traversal/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2022-08-10">2022-08-10</time>
+                  <h4 class="title white no-margin">Java 对 Map 进行遍历</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/MVN-Repository.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/MVN-Repository/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2022-06-15">2022-06-15</time>
+                  <h4 class="title white no-margin">MVN Repository</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

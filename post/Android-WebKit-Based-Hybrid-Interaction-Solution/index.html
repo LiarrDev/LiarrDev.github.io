@@ -1,0 +1,786 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Android 基于 WebKit 的 Hybrid 交互方案 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="背景
+之前『Android WebView 和 JavaScript 交互』一文介绍了普遍 Hybrid 开发场景下 Android 和 JavaScript 的通信方式，相信绝大多数项目都是使用这种方式进行交互的，但是这种方案存在一些安全..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Android-WebKit-Based-Hybrid-Interaction-Solution.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2025-11-24"><i class="fa fa-calendar"></i><span class="lately">3 个月前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Android-WebKit-Based-Hybrid-Interaction-Solution/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Android-WebKit-Based-Hybrid-Interaction-Solution/"> </span>
+              </a>
+              <span id="/Android-WebKit-Based-Hybrid-Interaction-Solution/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">Android 基于 WebKit 的 Hybrid 交互方案</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <h1 id="背景">背景</h1>
+<p>之前『<a href="https://liarrdev.github.io/post/Interactin-with-JavaScript-in-Android-WebView">Android WebView 和 JavaScript 交互</a>』一文介绍了普遍 Hybrid 开发场景下 Android 和 JavaScript 的通信方式，相信绝大多数项目都是使用这种方式进行交互的，但是这种方案存在一些安全和性能问题。</p>
+<p>而 JetPack 给我们带来的 WebKit 库提供了一种新的交互方案。</p>
+<h1 id="导入依赖">导入依赖</h1>
+<pre><code class="language-kts">dependencies {
+    implementation(&quot;androidx.webkit:webkit:1.14.0&quot;)
+}
+</code></pre>
+<h1 id="android-向-javascript-发送消息">Android 向 JavaScript 发送消息</h1>
+<p>Android 端代码如下：</p>
+<pre><code class="language-Kotlin">class MainActivity : AppCompatActivity() {
+    ...
+    private fun postMessage(msg: String) {
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.POST_WEB_MESSAGE)) {
+            WebViewCompat.postWebMessage(
+                binding.webview,
+                WebMessageCompat(msg),
+                HOST.toUri()
+            )
+        }
+    }
+    companion object {
+        const val HOST = &quot;http://192.168.1.108:5500&quot;
+    }
+}
+</code></pre>
+<p>先判断 <code>WebView</code> 是否支持此方式发送消息，然后调用 <code>WebViewCompat</code> 的 <code>postWebMessage()</code> 发送，该函数接收 3 个参数，第一个是 <code>WebView</code>，不用赘述，第二个是消息的包装类 <code>WebMessageCompat</code>，我们传一个 <code>String</code> 类型的消息即可，第三个参数用于限制哪个站源可以接收我们的消息，一般情况下我们传自有的域名，不限制的话也可以使用通配符 <code>&quot;*&quot;</code> 代替。</p>
+<p>在 H5 端使用以下方法监听：</p>
+<pre><code class="language-html">&lt;html&gt;
+    &lt;script type=&quot;text/javascript&quot;&gt;
+        ...
+        window.addEventListener(&quot;message&quot;, function (event) {
+            console.log(&quot;收到消息:&quot;, event.data)
+        }, false)
+    &lt;/script&gt;
+    ...
+&lt;/html&gt;
+</code></pre>
+<p>除了简单的 <code>String</code> 类型，它还支持字节流，这在文件传输中十分有用。</p>
+<p>修改 Android 端代码如下：</p>
+<pre><code class="language-kotlin">class MainActivity : AppCompatActivity() {
+    ...
+    private fun postArrayBuffer(arrayBuffer: ByteArray) {
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.POST_WEB_MESSAGE)) {
+            if (WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_ARRAY_BUFFER)) {
+                WebViewCompat.postWebMessage(
+                    binding.webview,
+                    WebMessageCompat(arrayBuffer),
+                    HOST.toUri()
+                )
+            }
+        }
+    }
+    companion object {
+        const val HOST = &quot;http://192.168.1.108:5500&quot;
+    }
+}
+</code></pre>
+<p>需要注意，发送字节流需要判断是否支持 <code>WebViewFeature.WEB_MESSAGE_ARRAY_BUFFER</code>。</p>
+<p>假如传送一个图片，H5 端监听后可以解析：</p>
+<pre><code class="language-html">&lt;html&gt;
+    &lt;script type=&quot;text/javascript&quot;&gt;
+        ...
+        window.addEventListener(&quot;message&quot;, function (event) {
+            ...
+            if (data instanceof ArrayBuffer) {
+                const blob = new Blob([data], { type: &quot;image/png&quot; });
+                const url = URL.createObjectURL(blob);
+                const img = new Image();
+                img.src = url;
+                document.body.appendChild(img);
+            }
+        }, false)
+    &lt;/script&gt;
+    ...
+&lt;/html&gt;
+</code></pre>
+<h1 id="javascript-向-android-端发送消息">JavaScript 向 Android 端发送消息</h1>
+<p>Android 端设置监听：</p>
+<pre><code class="language-kotlin">class MainActivity : AppCompatActivity() {
+    ...
+    private fun addWebMessageListener() {
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER)) {
+            WebViewCompat.addWebMessageListener(binding.webview, &quot;Android&quot;, setOf(HOST)) { view, message, sourceOrigin, isMainFrame, replyProxy -&gt;
+                Log.e(&quot;moji&quot;, &quot;Android 端收到消息：${message.data}&quot;)
+                // 收到消息后可以回复
+                replyProxy.postMessage(&quot;got the message @ ${System.currentTimeMillis()}&quot;)
+            }
+        }
+    }
+    companion object {
+        const val HOST = &quot;http://192.168.1.108:5500&quot;
+    }
+}
+</code></pre>
+<p>首先同样需要判断是否支持监听，然后调用 <code>WebViewCompat</code> 的 <code>addWebMessageListener()</code> 方法添加监听，该函数接收 4 个参数，第一个是 <code>WebView</code>，不用赘述，第二个是注入 JS 对象的名称，这里命名为 <code>Android</code>，下面会用到，第三个参数用来指定哪些站源会注入这个对象，第四个参数就是回调接口。</p>
+<p>收到消息我们可以调用 <code>JavaScriptReplyProxy</code> 对象的 <code>postMessage()</code> 给 H5 端发个回复。</p>
+<p>然后 H5 端就可以发送消息了：</p>
+<pre><code class="language-html">&lt;html&gt;
+    &lt;script type=&quot;text/javascript&quot;&gt;
+        ...
+        function postMessage(message) {
+            if (typeof Android !== &quot;undefined&quot;) {
+                Android.postMessage(message);
+                // 接收来自客户端的回复
+                Android.onmessage = function (event) {
+                    console.log(&quot;Android.onmessage received: &quot;, event);
+                }
+            }
+        }
+    &lt;/script&gt;
+    ...
+&lt;/html&gt;
+</code></pre>
+<p>其中 <code>Android</code> 就是上方我们注入对象的名称，调用 <code>postMessage()</code> 发送消息即可，假如 Android 端提供了回复，那么可以用 <code>onmessage</code> 来监听。</p>
+<p>同样支持字节流，Android 端修改如下：</p>
+<pre><code class="language-kotlin">class MainActivity : AppCompatActivity() {
+    ...
+    private fun addWebMessageListener() {
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER)) {
+            WebViewCompat.addWebMessageListener(binding.webview, &quot;Android&quot;, setOf(HOST)) { view, message, sourceOrigin, isMainFrame, replyProxy -&gt;
+                if (message.type == WebMessageCompat.TYPE_ARRAY_BUFFER) {
+                    val imageData = message.arrayBuffer
+                    ...
+                }
+            }
+        }
+    }
+    companion object {
+        const val HOST = &quot;http://192.168.1.108:5500&quot;
+    }
+}
+</code></pre>
+<p>通过 <code>getType()</code> 判断如果是字节流，就直接从 <code>WebMessageCompat</code> 中取出数据即可。</p>
+<p>H5 端使用同样的方式发送字节流就可以：</p>
+<pre><code class="language-html">&lt;html&gt;
+    &lt;script type=&quot;text/javascript&quot;&gt;
+        ...
+        function postArrayBuffer(buffer) {
+            if (typeof Android !== &quot;undefined&quot;) {
+                Android.postMessage(buffer);
+            }
+        }
+    &lt;/script&gt;
+    ...
+&lt;/html&gt;
+</code></pre>
+<h1 id="总结">总结</h1>
+<p>这种方式安全，但是需要判断是否支持（遗憾的是国内大多数系统 <code>WebView</code> 升级进度拖沓），一来比较繁琐，二来在不支持的设备上仍要寻求其他解决方案，增加维护成本。</p>
+<p>不过目前其他开发平台比如 iOS、HarmonyOS、Flutter 等亦采用类似的方案进行通信，不难看出这类方案将会成为主流。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2025-12-29">2025-12-29</time>
+                  <h4 class="title white no-margin">HarmonyOS ArkWeb 有线调试</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/How-to-Trace-Android-Dependency-Sources.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/How-to-Trace-Android-Dependency-Sources/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2025-10-29">2025-10-29</time>
+                  <h4 class="title white no-margin">如何追踪 Android 依赖来源</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

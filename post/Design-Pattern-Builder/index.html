@@ -1,0 +1,843 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Design Pattern: Builder | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="建造者模式（Builder Pattern，也叫生成器模式）是最常用的设计模式之一，它与之前介绍的『Design Pattern: Singleton』和『Design Pattern: Factory』都属于创建类型的设计模式。
+它可以将..." />
+    <meta name="keywords" content="Design Pattern" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Design-Pattern-Builder.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2025-07-23"><i class="fa fa-calendar"></i><span class="lately">7 个月前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Design-Pattern-Builder/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Design-Pattern-Builder/"> </span>
+              </a>
+              <span id="/Design-Pattern-Builder/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-0 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">Design Pattern: Builder</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>建造者模式（Builder Pattern，也叫生成器模式）是最常用的设计模式之一，它与之前介绍的『<a href="https://liarrdev.github.io/post/Design-Pattern-Singleton/">Design Pattern: Singleton</a>』和『<a href="https://liarrdev.github.io/post/Design-Pattern-Factory/">Design Pattern: Factory</a>』都属于创建类型的设计模式。</p>
+<p>它可以将复杂对象的构建过程抽象出来，使这个抽象过程的不同实现方法可以构造出不同表现（属性）的对象。</p>
+<p>在讲 Builder 模式实现之前，先看看之前我们构建复杂对象时是如何编写的。</p>
+<h1 id="构造器重载telescoping-constructor-anti-pattern">构造器重载（Telescoping Constructor anti-pattern）</h1>
+<pre><code class="language-java">public class Article {
+    private String title;
+    private String content;
+    private String author;
+    private Date date;
+    public Article(String title, String content) { ... }
+    public Article(String title, String content, String author) { ... }
+    public Article(String title, String content, Date date) { ... }
+    public Article(String title, String content, String author, Date date) { ... }
+}
+</code></pre>
+<p>通过在构造器中传递不同数量的参数，从而实现构建不同属性组合的对象。这种方法简单直观，但随着属性增加，构造器的参数组合呈指数级增长，你就很难记住参数的顺序以及在特定情况下你可能需要的特定构造函数，难以维护和理解。</p>
+<p>Kotlin 的出现倒是很大程度上解决了这个问题：</p>
+<pre><code class="language-kotlin">data class Article(
+    val title: String = &quot;&quot;,
+    val content: String = &quot;&quot;,
+    val author: String = &quot;&quot;,
+    val date: Date = Date()
+)
+</code></pre>
+<p>尽管如此，它在扩展性上还是稍有欠缺，比如同一属性不同类型的构造，这时候还是要回到构造函数重载的方案。</p>
+<pre><code class="language-kotlin">data class Article(
+    val title: String = &quot;&quot;,
+    val content: String = &quot;&quot;,
+    val author: String = &quot;&quot;,
+    val date: Date = Date()
+) {
+    constructor(
+        title: String = &quot;&quot;,
+        content: String = &quot;&quot;,
+        author: String = &quot;&quot;,
+        millis: Long = System.currentTimeMillis()
+    ) : this(title, content, author, Date(millis))
+}
+</code></pre>
+<h1 id="setter">Setter</h1>
+<p>Setter 方法可以很好地解决构造函数膨胀的问题，只需添加对应的重载方法即可：</p>
+<pre><code class="language-kotlin">class Article {
+    private var title: String = &quot;&quot;
+    private var content: String = &quot;&quot;
+    private var author: String = &quot;&quot;
+    private var date: Date = Date()
+    fun setTitle(title: String) { ... }
+    fun setContent(content: String) { ... }
+    fun setAuthor(author: String) { ... }
+    fun setDate(date: Date) { this.date = date }
+    fun setDate(millis: Long) { this.date = Date(millis) }
+}
+</code></pre>
+<p>使用 Setter 逐个设置属性的值，灵活性较强，但也可能导致对象在构建过程中处于不完整状态，可变性带来的线程安全性问题，无法保证对象的不变性。</p>
+<h1 id="建造者模式">建造者模式</h1>
+<p>建造者模式通过一个独立的 Builder 类负责构建对象，可以确保对象在构建时处于合法状态。</p>
+<p>建造者模式包含如下角色：</p>
+<ul>
+<li>Builder：抽象建造者</li>
+<li>ConcreteBuilder：具体建造者</li>
+<li>Director：指挥者</li>
+<li>Product：产品角色</li>
+</ul>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1752405338134.png" alt="" loading="lazy"></figure>
+<p>下面是一个简单的示例：</p>
+<pre><code class="language-kotlin">/** &quot;Product&quot; */
+data class Pizza(var dough: String = &quot;&quot;, var sauce: String = &quot;&quot;, var topping: String = &quot;&quot;)
+
+/** &quot;Abstract Builder&quot; */
+abstract class PizzaBuilder {
+    lateinit var pizza: Pizza
+        private set
+    fun createPizza() { pizza = Pizza() }
+    abstract fun buildDough()
+    abstract fun buildSauce()
+    abstract fun buildTopping()
+}
+
+/** &quot;Concrete Builder&quot; */
+class HawaiianPizzaBuilder : PizzaBuilder() {
+    override fun buildDough() {
+        pizza.dough = &quot;cross&quot;
+    }
+    override fun buildSauce() {
+        pizza.sauce = &quot;mild&quot;
+    }
+    override fun buildTopping() {
+        pizza.topping = &quot;ham + pineapple&quot;
+    }
+}
+
+/** &quot;Concrete Builder&quot; */
+class SpicyPizzaBuilder : PizzaBuilder() {
+    override fun buildDough() {
+        pizza.dough = &quot;pan baked&quot;
+    }
+    override fun buildSauce() {
+        pizza.sauce = &quot;hot&quot;
+    }
+    override fun buildTopping() {
+        pizza.topping = &quot;pepperoni + salami&quot;
+    }
+}
+
+/** &quot;Director&quot; */
+class Chef {
+    lateinit var pizzaBuilder: PizzaBuilder
+    fun getPizza() = pizzaBuilder.pizza
+    fun constructPizza() {
+        pizzaBuilder.createPizza()
+        pizzaBuilder.buildDough()
+        pizzaBuilder.buildSauce()
+        pizzaBuilder.buildTopping()
+    }
+}
+
+fun main() {
+    val chef = Chef()
+    val hawaiianBuilder = HawaiianPizzaBuilder()
+    val spicyPizzaBuilder = SpicyPizzaBuilder()
+    chef.pizzaBuilder = hawaiianBuilder
+    chef.constructPizza()
+    val pizza = chef.getPizza()
+}
+</code></pre>
+<p>这里构建了一个厨师做披萨了例子，<code>Chef</code> 并不会直接构建 <code>Pizza</code> 对象，因为这个过程很容易出错，而是根据菜谱，也就是 Builder 实例来制作，<code>PizzaBuilder</code> 是个抽象类，由子类来实现具体的制作过程中所需的材料，<code>Chef</code> 无须关心做这个披萨需要菠萝还是火腿，这个由 <code>PizzaBuilder</code> 构建，<code>Chef</code> 拿到菜谱，按照上面的步骤执行即可。</p>
+<p>以上这个就是建造者模式比较官方的例子。</p>
+<p>抽象的引入似乎很容易会与之前介绍的<a href="https://liarrdev.github.io/post/Design-Pattern-Factory/">工厂模式</a>混淆，<a href="https://liarrdev.github.io/post/Design-Pattern-Factory/">工厂模式</a>的目的是实现多态性，而建造者模式的目的是找到一种解决伸缩构造器反模式的方法，它使用一个构造器，逐步接收每个初始化参数，然后一次性返回所构造的对象。</p>
+<p>简单来说，两者都可以创建复杂的对象，主要区别是<a href="https://liarrdev.github.io/post/Design-Pattern-Factory/">工厂模式</a>着重于多个产品对象，且产品对象是立即返回的，而建造者模式着重于一步步构造一个复杂对象，产品在最后的一步返回。</p>
+<p>另一方面，虽然利用建造者模式可以创建出不同类型的产品，但是如果产品之间的差异巨大，则需要编写多个建造者类才能实现，如果这时结合<a href="https://liarrdev.github.io/post/Design-Pattern-Factory/">工厂模式</a>会是一个更好的选择。</p>
+<p>为了更好地理解建造者模式，下面是一个对于 Android 开发者来说更常见的例子，<a href="https://liarrdev.github.io/post/Enjoy-OkHttp-in-One-Shot/"><code>OkHttp</code></a> 网络请求库内部就大量应用了建造者模式，以创建 <code>Request</code> 为例：</p>
+<pre><code class="language-kotlin">object HttpUtils {
+    private val client = OkHttpClient()
+    fun doRequest(url: String) {
+        val request = Request.Builder().url(url).build()
+        client.newCall(request).enqueue(object : Callback {
+            ...
+        })
+    }
+}
+</code></pre>
+<p><code>Request</code> 的构造方法一共 5 个参数，还有其他成员变量，我们通过它的静态内部类 <code>Builder</code> 按需设置它的 <code>url</code> 和 <code>method</code> 等参数，最后调用 <code>build()</code> 方法，<code>Builder</code> 会自动帮我们构建 <code>Request</code> 对象。</p>
+<p>可以简单看看 <code>Request</code> 的源码：</p>
+<pre><code class="language-kotlin">class Request internal constructor(
+    @get:JvmName(&quot;url&quot;) val url: HttpUrl,
+    @get:JvmName(&quot;method&quot;) val method: String,
+    @get:JvmName(&quot;headers&quot;) val headers: Headers,
+    @get:JvmName(&quot;body&quot;) val body: RequestBody?,
+    internal val tags: Map&lt;Class&lt;*&gt;, Any&gt;
+) {
+    ...
+    open class Builder {
+        internal var url: HttpUrl? = null
+        internal var method: String
+        internal var headers: Headers.Builder
+        internal var body: RequestBody? = null
+        internal var tags: MutableMap&lt;Class&lt;*&gt;, Any&gt; = mutableMapOf()
+        ...
+        constructor() {
+            this.method = &quot;GET&quot;
+            this.headers = Headers.Builder()
+        }
+        open fun url(url: HttpUrl): Builder = apply {
+            this.url = url
+        }
+        open fun url(url: String): Builder {
+            val finalUrl: String = when {
+                url.startsWith(&quot;ws:&quot;, ignoreCase = true) -&gt; {
+                    &quot;http:${url.substring(3)}&quot;
+                }
+                url.startsWith(&quot;wss:&quot;, ignoreCase = true) -&gt; {
+                    &quot;https:${url.substring(4)}&quot;
+                }
+                else -&gt; url
+            }
+            return url(finalUrl.toHttpUrl())
+        }
+        open fun build(): Request {
+            return Request(
+                checkNotNull(url) { &quot;url == null&quot; },
+                method,
+                headers.build(),
+                body,
+                tags.toImmutableMap()
+            )
+        }
+    }
+}
+</code></pre>
+<p>我们设置的参数经过处理后首先存储在 <code>Builder</code> 中，调用 <code>build()</code> 方法创建 <code>Request</code> 对象时用其构建实例，如果我们没有配置则使用 <code>Builder</code> 中设定的默认值。</p>
+<p>在这里，<code>Builder</code> 同时扮演了上文中提到的 Builder、ConcreteBuilder 角色，在 Builder 模式中如果 ConcreteBuilder 只有一个，我们都可以使用这种写法，省略抽象，简化 Builder 模式的设计。</p>
+<p>同时，因为 <code>Builder</code> 里的每一个 Setter 方法都返回了 <code>Builder</code> 对象本身，所以我们在调用的时候就可以使用链式写法，更加简洁。</p>
+<p>在 Android SDK 中也时常可以见到建造者模式的身影，比如常用的 <code>AlertDialog</code>、<code>Notification</code> 等，由于其涉及到 UI 相关的处理逻辑，代码量较大，就不在这里展开了，可自行阅读源码理解。</p>
+<h1 id="优缺点">优缺点</h1>
+<h2 id="优点">优点</h2>
+<ul>
+<li>提高可读性和可维护性：通过使用建造者模式，代码的可读性和可维护性得到提高。建造者模式允许开发者在代码中清晰地看到对象的构建过程，从而更容易理解和修改代码。此外，可以使用链式调用，代码的组织结构更加清晰，易于阅读和编写。</li>
+<li>增强对象的不可变性：建造者模式通常与不可变对象（Immutable Objects）一起使用。通过使用建造者模式，可以在对象创建过程中设置所有必要的属性，并在对象构建完成后将其设置为不可变，从而确保对象的一致性和线程安全性，这是一种保护机制，也是建造者模式的特性。</li>
+<li>处理可选参数：某些对象可能具有许多可选参数，而不是所有参数都需要在每次创建对象时提供。使用建造者模式，可以通过提供一些设置方法来设置可选参数，而不是在构造函数中使用大量的参数。这使得代码更加简洁，避免了长参数列表的问题。</li>
+<li>更好的扩展性：可以通过扩展 <code>Builder</code> 类来支持新的构建步骤，或者通过引入不同的具体 <code>Builder</code> 类来构建不同的对象变种。</li>
+</ul>
+<h2 id="缺点">缺点</h2>
+<ul>
+<li>代码量增加：使用建造者模式通常会引入额外的代码，包括 <code>Builder</code> 类本身以及目标类中的 Setter 方法。</li>
+<li>可能导致过多的类：如果每个类都需要一个独立的建造者，可能会导致类的数量激增，增加了类的管理和维护的复杂性。</li>
+<li>对象状态分散：在建造者模式中，对象的状态可能分散在构造器和目标类中，这使得对象的状态分散，可能导致维护和修改代码更加困难。</li>
+</ul>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Protocol-Buffers-Usage-on-Android.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Protocol-Buffers-Usage-on-Android/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2025-08-25">2025-08-25</time>
+                  <h4 class="title white no-margin">在 Android 中使用 Protocol Buffers</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Handle-Android-Textview-Html-Hypertext-Action.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Handle-Android-Textview-Html-Hypertext-Action/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2025-06-04">2025-06-04</time>
+                  <h4 class="title white no-margin">Android TextView HTML 超文本跳转</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

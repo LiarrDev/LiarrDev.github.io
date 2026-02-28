@@ -1,0 +1,826 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>浅析 EPUB 结构 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="什么是 EPUB
+EPUB（Electronic Publication）是一种电子图书标准，由国际数字出版论坛（IDPF）提出，属于一种可以“自动重新排版”的内容；也就是文字内容可以根据阅读设备的特性，以最适于阅读的方式显示。它的文件扩展..." />
+    <meta name="keywords" content="" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/EPUB-Structure.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2024-09-29"><i class="fa fa-calendar"></i><span class="lately">1 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/EPUB-Structure/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/EPUB-Structure/"> </span>
+              </a>
+              <span id="/EPUB-Structure/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+              </div>
+              <h1 class="title ularge white bold">浅析 EPUB 结构</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <h1 id="什么是-epub">什么是 EPUB</h1>
+<p>EPUB（Electronic Publication）是一种电子图书标准，由国际数字出版论坛（IDPF）提出，属于一种可以“自动重新排版”的内容；也就是文字内容可以根据阅读设备的特性，以最适于阅读的方式显示。它的文件扩展名为 <code>.epub</code>。</p>
+<h1 id="epub-的组成">EPUB 的组成</h1>
+<p>EPUB 文件内部使用了 XHTML 或 DTBook（一种由 <strong>DAISY Consortium</strong> 提出的 XML 标准）来展现文字，并以 ZIP 压缩格式来打包文件内容。因此我们可以通过解压缩的方式来了解 EPUB 的构成。</p>
+<p>下面这个是我从某电子书网站下载的两个 EPUB 文件解压图：</p>
+<p><img src="https://LiarrDev.github.io/post-images/1717944900149.png" alt="EPUB 目录结构 1" loading="lazy"><br>
+<img src="https://LiarrDev.github.io/post-images/1717944909348.png" alt="EPUB 目录结构 2" loading="lazy"></p>
+<p>EPUB 的标准和规范一直在迭代，目录也有所差异，但文件组成是大同小异的，下面将逐一介绍各文件的作用。</p>
+<h2 id="mimetype">MIMETYPE</h2>
+<p>它的文件名就是 <code>mimetype</code>，无文件扩展名，用于描述 EPUB 的 <a href="https://liarrdev.github.io/post/Verify-File-Types-with-Media-Type-in-Java/">MIME</a>，所以它的内容只有一行：</p>
+<pre><code>application/epub+zip
+</code></pre>
+<h2 id="meta-inf">META-INF</h2>
+<p>用于存放特定文件，默认情况下里面只有一个 <code>container.xml</code> 文件，用于描述 OPF 的存放位置。由于 EPUB 的制作差异，<code>META-INF</code> 文件夹还可能包含数字签名和加密信息等文件，Java 开发者对这个目录应该不陌生。</p>
+<p><code>container.xml</code> 文件如下：</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;container version=&quot;1.0&quot; xmlns=&quot;urn:oasis:names:tc:opendocument:xmlns:container&quot;&gt;
+   &lt;rootfiles&gt;
+      &lt;rootfile full-path=&quot;content.opf&quot; media-type=&quot;application/oebps-package+xml&quot;/&gt;
+   &lt;/rootfiles&gt;
+&lt;/container&gt;
+</code></pre>
+<p>该文件是必定存在的，它相当于是 EPUB 系统的指路牌。</p>
+<h2 id="opf">OPF</h2>
+<p>OPF 文件是 EPUB 规范中最复杂的元数据，它用来定义 OPS 一系列内容组合到一起的机制。</p>
+<p>常用的文件名是 <code>content.opf</code>，当然也可以是其他，但文件扩展名必须是 <code>.opf</code>，它内部其实是一个标准的 XML，下面是一个例子。</p>
+<pre><code class="language-xml">&lt;?xml version='1.0' encoding='utf-8'?&gt;
+&lt;package xmlns=&quot;http://www.idpf.org/2007/opf&quot; version=&quot;2.0&quot; unique-identifier=&quot;uuid_id&quot;&gt;
+    &lt;metadata xmlns:opf=&quot;http://www.idpf.org/2007/opf&quot; xmlns:dc=&quot;http://purl.org/dc/elements/1.1/&quot;&gt;
+        &lt;dc:title&gt;不连续杀人事件&lt;/dc:title&gt;
+        &lt;dc:creator&gt;坂口安吾&lt;/dc:creator&gt;
+        &lt;dc:description&gt;不连续杀人事件&lt;/dc:description&gt;
+        &lt;dc:language&gt;zh-cn&lt;/dc:language&gt;
+        &lt;dc:date&gt;&lt;/dc:date&gt;
+        &lt;dc:contributor&gt;COAY.COM [http://www.coay.com]&lt;/dc:contributor&gt;
+        &lt;dc:publisher&gt;COAY.COM&lt;/dc:publisher&gt;
+        &lt;dc:identifier id=&quot;uuid_id&quot; opf:scheme=&quot;uuid&quot;&gt;8337&lt;/dc:identifier&gt;
+        &lt;dc:subject&gt;不连续杀人事件&lt;/dc:subject&gt;
+    &lt;/metadata&gt;
+    &lt;manifest&gt;
+        &lt;item href=&quot;article_381876.html&quot; id=&quot;id381876&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381877.html&quot; id=&quot;id381877&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381878.html&quot; id=&quot;id381878&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381879.html&quot; id=&quot;id381879&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381880.html&quot; id=&quot;id381880&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381881.html&quot; id=&quot;id381881&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381882.html&quot; id=&quot;id381882&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381883.html&quot; id=&quot;id381883&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381884.html&quot; id=&quot;id381884&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381885.html&quot; id=&quot;id381885&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381886.html&quot; id=&quot;id381886&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;article_381887.html&quot; id=&quot;id381887&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;catalog.html&quot; id=&quot;catalog&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;cover.jpg&quot; id=&quot;cover&quot; media-type=&quot;image/jpeg&quot;/&gt;
+        &lt;item href=&quot;coay.jpg&quot; id=&quot;ad&quot; media-type=&quot;image/jpeg&quot;/&gt;
+        &lt;item href=&quot;stylesheet.css&quot; id=&quot;css&quot; media-type=&quot;text/css&quot;/&gt;
+        &lt;item href=&quot;titlepage.xhtml&quot; id=&quot;titlepage&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;page.xhtml&quot; id=&quot;page&quot; media-type=&quot;application/xhtml+xml&quot;/&gt;
+        &lt;item href=&quot;toc.ncx&quot; media-type=&quot;application/x-dtbncx+xml&quot; id=&quot;ncx&quot;/&gt;
+    &lt;/manifest&gt;
+    &lt;spine toc=&quot;ncx&quot;&gt;
+        &lt;itemref idref=&quot;titlepage&quot;/&gt;
+        &lt;itemref idref=&quot;page&quot;/&gt;
+        &lt;itemref idref=&quot;catalog&quot;/&gt;
+        &lt;itemref idref=&quot;id381876&quot;/&gt;
+        &lt;itemref idref=&quot;id381877&quot;/&gt;
+        &lt;itemref idref=&quot;id381878&quot;/&gt;
+        &lt;itemref idref=&quot;id381879&quot;/&gt;
+        &lt;itemref idref=&quot;id381880&quot;/&gt;
+        &lt;itemref idref=&quot;id381881&quot;/&gt;
+        &lt;itemref idref=&quot;id381882&quot;/&gt;
+        &lt;itemref idref=&quot;id381883&quot;/&gt;
+        &lt;itemref idref=&quot;id381884&quot;/&gt;
+        &lt;itemref idref=&quot;id381885&quot;/&gt;
+        &lt;itemref idref=&quot;id381886&quot;/&gt;
+        &lt;itemref idref=&quot;id381887&quot;/&gt;
+        &lt;itemref idref=&quot;page&quot;/&gt;
+    &lt;/spine&gt;
+    &lt;guide&gt;
+        &lt;reference href=&quot;titlepage.xhtml&quot; type=&quot;cover&quot; title=&quot;封面&quot;/&gt;
+        &lt;reference href=&quot;catalog.html&quot; type=&quot;toc&quot; title=&quot;目录&quot;/&gt;
+    &lt;/guide&gt;
+&lt;/package&gt;
+</code></pre>
+<p>它由四个部分组成：</p>
+<ul>
+<li><code>&lt;metadata&gt;</code>：元数据信息。包含书名、作者、出版社等信息，其中 <code>&lt;dc:title&gt;</code> 和 <code>&lt;dc:identifier&gt;</code> 这两个数据是必须的。按照 EPUB 规范，<code>&lt;dc:identifier&gt;</code> 由数字图书的创建者定义，必须唯一，对于图书出版商来说，这个字段一般包括 ISBN 或者 Library of Congress 编号。</li>
+<li><code>&lt;manifest&gt;</code>：文件列表。列出电子书中包含的资源文件（HTML、CSS、NCX、图片等），它的每一子项都包含了文件 ID、相对路径以及媒体类型。</li>
+<li><code>&lt;spine&gt;</code>：文档线性阅读顺序。其中 <code>toc</code> 属性指向 <code>&lt;manifest&gt;</code> 中 <code>.ncx</code> 文件的 <code>id</code>，子项的 <code>idref</code> 属性同样指向 <code>&lt;manifest&gt;</code> 中的文件 <code>id</code>。</li>
+<li><code>&lt;guide&gt;</code>：电子书指引页。比如封面、目录、序言等，通过 <code>href</code> 属性指向文件路径。</li>
+</ul>
+<h2 id="ncx">NCX</h2>
+<p>NCX 定义了数字图书的目录表，复杂的图书中，目录表通常采用层次结构，包括嵌套的内容、章节等。</p>
+<p>它的文件名通常是 <code>toc.ncx</code>，是一个逻辑目录，内部也是一个标准的 XML，下面是一个例子。</p>
+<pre><code class="language-xml">&lt;?xml version='1.0' encoding='utf-8'?&gt;
+&lt;ncx xmlns=&quot;http://www.daisy.org/z3986/2005/ncx/&quot; version=&quot;2005-1&quot;&gt;
+    &lt;head&gt;
+        &lt;meta name=&quot;dtb:uid&quot; content=&quot;coay_8337&quot;/&gt;
+        &lt;meta name=&quot;dtb:depth&quot; content=&quot;2&quot;/&gt;
+        &lt;meta name=&quot;dtb:generator&quot; content=&quot;COAY.COM [http://www.coay.com]&quot;/&gt;
+        &lt;meta name=&quot;dtb:totalPageCount&quot; content=&quot;0&quot;/&gt;
+        &lt;meta name=&quot;dtb:maxPageNumber&quot; content=&quot;0&quot;/&gt;
+    &lt;/head&gt;
+    &lt;docTitle&gt;&lt;text&gt;不连续杀人事件&lt;/text&gt;&lt;/docTitle&gt;
+    &lt;docAuthor&gt;&lt;text&gt;坂口安吾&lt;/text&gt;&lt;/docAuthor&gt;
+    &lt;navMap&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381876&quot; playOrder=&quot;1&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第一章 丑恶万分的人际关系（1）&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381876.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381877&quot; playOrder=&quot;2&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第一章 丑恶万分的人际关系（2）&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381877.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381878&quot; playOrder=&quot;3&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第二章 意外的访客&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381878.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381879&quot; playOrder=&quot;4&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第三章 不速之客&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381879.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381880&quot; playOrder=&quot;5&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第四章 第一位被害者&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381880.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381881&quot; playOrder=&quot;6&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第五章 猫 铃（1）&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381881.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381882&quot; playOrder=&quot;7&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第五章 猫 铃（2）&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381882.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381883&quot; playOrder=&quot;8&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第六章 第二桩案件&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381883.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381884&quot; playOrder=&quot;9&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第七章 身为侦探小说迷的老政客&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381884.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381885&quot; playOrder=&quot;10&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第八章 唯一的不在场证明&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381885.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381886&quot; playOrder=&quot;11&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第九章 火葬归途&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381886.html&quot;/&gt;
+        &lt;/navPoint&gt;
+        &lt;navPoint class=&quot;chapter&quot; id=&quot;article_381887&quot; playOrder=&quot;12&quot;&gt;
+            &lt;navLabel&gt;&lt;text&gt;第十章 疯子大集合&lt;/text&gt;&lt;/navLabel&gt;
+            &lt;content src=&quot;article_381887.html&quot;/&gt;
+        &lt;/navPoint&gt;
+    &lt;/navMap&gt;
+&lt;/ncx&gt;
+</code></pre>
+<p>它有如下几个部分组成：</p>
+<ul>
+<li><code>&lt;head&gt;</code>：该标签内主要包含四个 <code>&lt;meta&gt;</code> 元素：
+<ul>
+<li><code>dtb:uid</code>：数字图书唯一 ID。一般和 OPF 中的 <code>&lt;dc:identifier&gt;</code> 对应。</li>
+<li><code>dtb:depth</code>：反映目录表中的层次深度。</li>
+<li><code>dtb:totalPageCount</code>：仅用于纸质图书，保留 <code>0</code> 即可。</li>
+<li><code>dtb:maxPageNumber</code>：仅用于纸质图书，保留 <code>0</code> 即可。</li>
+</ul>
+</li>
+<li><code>&lt;docTitle&gt;</code>：图书标题。一般和 OPF 中的 <code>&lt;dc:title&gt;</code> 对应。</li>
+<li><code>&lt;docAuthor&gt;</code>：图书作者。一般和 OPF 中的 <code>&lt;dc:creator&gt;</code> 对应。</li>
+<li><code>&lt;navMap&gt;</code>：图书目录。包含多个 <code>&lt;navPoint&gt;</code>，内部又包含下列元素：
+<ul>
+<li><code>playOrder</code>：文档阅读顺序。和 OPF 中 <code>&lt;spine&gt;</code> 的子项顺序相同。</li>
+<li><code>&lt;navLabel&gt;</code>：章节标题。</li>
+<li><code>&lt;content&gt;</code>：指向文件路径。和 OPF 中 <code>&lt;manifest&gt;</code> 子项配置的路径一致。</li>
+</ul>
+</li>
+</ul>
+<h2 id="资源文件">资源文件</h2>
+<p>除了上面介绍的几个重要文件外，剩下的几乎都是资源文件。包括 HTML/XHTML、CSS、JPG、PNG、SVG 等等。HTML/XHTML 则是书籍的内容，里面会引用 CSS 和图片等。</p>
+<p>这些文件没有明确的路径要求（事实上除了 <code>mimetype</code> 和 <code>container.xml</code> 两个文件有明确的要求外，其他文件都没有明确的路径要求），这也是为什么文章开头的两个 EPUB 目录会相差这么大。</p>
+<h2 id="opf-spine-和-ncx-navmap-的区别">OPF <code>&lt;spine&gt;</code> 和 NCX <code>&lt;navMap&gt;</code> 的区别</h2>
+<p>两个文件都描述了文档的顺序和内容，这很容易混淆。</p>
+<p>OPF <code>&lt;spine&gt;</code> 描述了书中各个章节是如何实际连接起来的，比方说翻过第一章最后一页就到第二章第一页。</p>
+<p>NCX <code>&lt;navMap&gt;</code> 在图书一开始描述目录。目录肯定会包含书中主要的章节，但是还可能包含没有单独分页的小节。</p>
+<p>NCX 包含的 <code>&lt;navPoint&gt;</code> 元素通常比 OPF <code>&lt;spine&gt;</code> 中的 <code>itemref</code> 元素多。一般情况下，<code>&lt;spine&gt;</code> 中的所有项都会出现在 NCX 中，但 NCX 可能更详细。</p>
+<h1 id="开发">开发</h1>
+<p>基于以上知识，你完全可以自行构建一本 EPUB 电子书了。所以在此我不打算介绍 EPUB 的制作流程。</p>
+<p>简单说一下 EPUB 阅读器的制作。</p>
+<p>由上面的介绍得知，EPUB 内容是依靠 HTML/XHTML 渲染的，以 Android 为例，我们就可以借助 <code>WebView</code> 加载。</p>
+<p>首先需要解压 EPUB 文件，取出 <code>META-INF</code> 中的 <code>container.xml</code> 文件，解析获取 OPF 文件路径，再取出 OPF 文件进行解析，获取元数据、资源、阅读顺序等信息，最后将 HTML/XHTML 按顺序交给 <code>WebView</code> 加载。</p>
+<p>因为上面介绍的配置文件基本都是 XML，你可以借助之前介绍的 <a href="https://liarrdev.github.io/post/Enjoy-Dom4J-in-One-Shot/">Dom4J</a> 完成解析。</p>
+<p>如果需要交互功能，可以向 <code>WebView</code> 中注入 JavaScript 来完成。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Android-FastScroller-AlphabetIndexer.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Android-FastScroller-AlphabetIndexer/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2024-10-11">2024-10-11</time>
+                  <h4 class="title white no-margin">FastScroller &amp; AlphabetIndexer 构建 Android 字母索引器</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Wonderful-ArkUI-AlphabetIndexer.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Wonderful-ArkUI-AlphabetIndexer/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2024-09-20">2024-09-20</time>
+                  <h4 class="title white no-margin">ArkUI AlphabetIndexer 真香</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

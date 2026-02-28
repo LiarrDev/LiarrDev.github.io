@@ -1,0 +1,748 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Android 实时监听短信 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="最近收到团队内部的一个需求，使用一台测试机来做短信转发，即写一个 App 监听短信，当收到的短信内容符合我们设定的规则时，通过接口传送给我们后端。
+这个需求实际上并不难，有两个思路。
+拦截短信广播
+当手机收到短信时，会向系统发送一个广播，所..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Real-time-Monitoring-of-SMS-in-Android.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2021-08-17"><i class="fa fa-calendar"></i><span class="lately">5 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Real-time-Monitoring-of-SMS-in-Android/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Real-time-Monitoring-of-SMS-in-Android/"> </span>
+              </a>
+              <span id="/Real-time-Monitoring-of-SMS-in-Android/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">Android 实时监听短信</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>最近收到团队内部的一个需求，使用一台测试机来做短信转发，即写一个 App 监听短信，当收到的短信内容符合我们设定的规则时，通过接口传送给我们后端。</p>
+<p>这个需求实际上并不难，有两个思路。</p>
+<h1 id="拦截短信广播">拦截短信广播</h1>
+<p>当手机收到短信时，会向系统发送一个广播，所以我们可以通过监听广播来获取短信内容。</p>
+<pre><code class="language-Java">public class SmsReceiver extends BroadcastReceiver {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        String action = intent.getAction();
+        if (!action.equals(&quot;android.provider.Telephony.SMS_RECEIVED&quot;)) {
+            return;
+        }
+        Bundle bundle = intent.getExtras();
+        if (bundle == null) {
+            return;
+        }
+        Object[] pdus = (Object[]) bundle.get(&quot;pdus&quot;);
+        if (pdus == null) {
+            return;
+        }
+        SmsMessage[] messages = new SmsMessage[pdus.length];
+        StringBuilder sender = new StringBuilder();
+        StringBuffer content = new StringBuffer();
+        StringBuffer time = new StringBuffer();
+        for (int i = 0; i &lt; pdus.length; i++) {
+            sender.append(messages[i].getOriginatingAddress());
+            content.append(messages[i].getMessageBody());
+            time.append(messages[i].getTimestampMillis());
+        }
+        ...
+    }
+}
+</code></pre>
+<p>接收短信时发送的是一个有序广播，所以我们可以在注册时提高其优先级，避免被其他软件拦截：</p>
+<pre><code class="language-XML">&lt;manifest ...&gt;
+
+    &lt;uses-permission android:name=&quot;android.permission.RECEIVE_SMS&quot; /&gt;
+
+    &lt;application ...&gt;
+        &lt;receiver
+            android:name=&quot;.SmsReceiver&quot;
+            android:enabled=&quot;true&quot;
+            android:exported=&quot;true&quot;&gt;
+            &lt;intent-filter android:priority=&quot;1000&quot;&gt;
+                &lt;action android:name=&quot;android.provider.Telephony.SMS_RECEIVED&quot; /&gt;
+            &lt;/intent-filter&gt;
+        &lt;/receiver&gt;
+    &lt;/application&gt;
+&lt;/manifest&gt;
+</code></pre>
+<p>同时不要忘了动态申请 <code>RECEIVE_SMS</code> 权限。</p>
+<p>这样就可以实时监听到短信的接收了，上面的代码我获取了发件人、短信内容以及时间戳，其他参数你也可以自行获取。</p>
+<h1 id="监听短信媒体库变化">监听短信媒体库变化</h1>
+<p>除了监听系统广播，我们还可以监听短信媒体库的变化，短信一般都是存储在本地数据库中，我们能够像操作 SQLite 一样读取它。</p>
+<pre><code class="language-Java">public class SmsObserver extends ContentObserver {
+
+    public SmsObserver(Handler handler, Context context) {
+        super(handler);
+        interceptSms(context);
+    }
+
+    private void interceptSms(Context context) {
+        Cursor cursor = context.getContentResolver().query(Uri.parse(&quot;content://sms/inbox&quot;), null, null, null, &quot;date DESC&quot;);
+        if (cursor.moveToFirst()) {
+            String sender = cursor.getString(cursor.getColumnIndex(&quot;address&quot;));
+            String content = cursor.getString(cursor.getColumnIndex(&quot;body&quot;));
+            long date = cursor.getLong(cursor.getColumnIndex(&quot;date&quot;));
+            int type = cursor.getInt(cursor.getColumnIndex(&quot;type&quot;));    // 1：接收，2：发送
+            if (type == 1) {
+                ...
+            }
+        }
+        cursor.close();
+    }
+}
+</code></pre>
+<p>读取短信媒体库需要 <code>READ_SMS</code> 权限：</p>
+<pre><code class="language-XML">&lt;manifest ...&gt;
+    &lt;uses-permission android:name=&quot;android.permission.READ_SMS&quot; /&gt;
+    ...
+&lt;/manifest&gt;
+</code></pre>
+<p>动态申请成功后，在代码中注册：</p>
+<pre><code class="language-Java">SmsObserver smsObserver = new SmsObserver(new Handler(), this);
+getContentResolver().registerContentObserver(Uri.parse(&quot;content://sms&quot;), true, smsObserver);
+</code></pre>
+<p>这里给定的 <code>Uri</code> 可以查询不同的短信协议：</p>
+<blockquote>
+<ul>
+<li>收件箱：<code>content://sms/inbox</code></li>
+<li>发件箱：<code>content://sms/outbox</code></li>
+<li>已发送：<code>content://sms/sent</code></li>
+<li>草稿：<code>content://sms/draft</code></li>
+<li>发送失败：<code>content://sms/failed</code></li>
+<li>待发送：<code>content://sms/queued</code></li>
+</ul>
+</blockquote>
+<p>通过 <code>Cursor</code> 查询并按照时间戳排序即可拿到最新的短信。</p>
+<h1 id="测试">测试</h1>
+<p>测试也比较简单，两台手机就可以完成测试。</p>
+<p>假如你没有两台手机，又或者心疼话费，那么也可以通过『Android Studio』自带的模拟器进行测试。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1629041232196.png" alt="模拟器发送短信" loading="lazy"></figure>
+<p>在实际生产环境应当在真机上进行测试，因为国产 ROM 魔改出于隐私考虑有可能会对短信做处理。</p>
+<h1 id="比较">比较</h1>
+<p>通过广播拦截的方式，假如有其他应用的 <code>BroadcastReceiver</code> 高于你设定的优先级，那么你可能无法拦截到此短信。</p>
+<p>而监听短信媒体库的方式，由于状态繁多，会导致 <code>onChange()</code> 方法多次触发，造成不必要的计算，即使是同一条短信，在接收时触发回调，在阅读时也会触发，应该是短信状态变更导致。</p>
+<p>使用国产 ROM 测试发现，两种方法监听验证码类短信都无法 100% 成功，通过广播拦截方式，会接收不到该短信的广播，而使用监听短信媒体库的方式，会触发媒体库变动的接口，但你依然查不到验证码的短信。</p>
+<p>由于模拟器没有实体 SIM 卡无法接收真实的短信，且国外对于短信验证码的普及率不高，所以无法测试也没有测试的必要。</p>
+<p>如有条件可以使用国外手机如 Google Pixel 系列进行测试。</p>
+<p>因此，暂时找不到能够拦截短信验证码的方法，但这也的确符合常理，因为在国内互联网环境下，获取到验证码就可以对其对应的账号进行各种操作，比如重置或盗刷等等，系统对于此类短信的屏蔽是完全合理的。</p>
+<p>综上，对于非验证码类短信可以正常拦截，根据自己的需求选择不同的方法即可，对于验证码类短信，就别动坏心思了。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Getting-Started-with-Android-Decompilation.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Getting-Started-with-Android-Decompilation/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2021-09-02">2021-09-02</time>
+                  <h4 class="title white no-margin">Android 反编译入门指南</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Setting-Divider-for-RecyclerView-in-Android.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Setting-Divider-for-RecyclerView-in-Android/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2021-07-31">2021-07-31</time>
+                  <h4 class="title white no-margin">Android 为 RecyclerView 设置分割线</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

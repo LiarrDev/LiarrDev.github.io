@@ -1,0 +1,856 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Scrcpy | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="摸鱼是每个打工人的修养，我们在平时工作中一般都需要对着电脑屏幕，但是由于社交娱乐等需求的移动化，如果一直低着头玩手机，就会被老板认为需求不饱和，即使是像我一样的移动客户端开发者也不例外。
+
+将摸鱼方式搬到电脑中刻不容缓。
+模拟器是一个很好的..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Scrcpy.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2021-10-29"><i class="fa fa-calendar"></i><span class="lately">4 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Scrcpy/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Scrcpy/"> </span>
+              </a>
+              <span id="/Scrcpy/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">Scrcpy</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>摸鱼是每个打工人的修养，我们在平时工作中一般都需要对着电脑屏幕，但是由于社交娱乐等需求的移动化，如果一直低着头玩手机，就会被老板认为需求不饱和，即使是像我一样的移动客户端开发者也不例外。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1635353211223.jpg" alt="iOS 开发者因玩手机被辞退" loading="lazy"></figure>
+<p>将摸鱼方式搬到电脑中刻不容缓。</p>
+<p>模拟器是一个很好的替代品，但是许多应用都需要登录才能使用，这样我们就需要经常在手机和模拟器之间切换账号，很不方便。</p>
+<p>如果能将手机投影到电脑中，并且能够通过键盘鼠标操作手机，岂不美哉。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/Scrcpy.png" alt="Scrcpy" loading="lazy"></figure>
+<p>『Scrcpy』是由法国专门研究企业版 Android 虚拟化工具的著名企业 Genymobile 开发的 Android 投屏工具，Genymobile 这个公司可能很多人没听说过，不夸张的说，它开发的名为『Genymotion』的 Android 模拟器做得甚至比 Google 官方都要受欢迎，有机会的话以后也可以唠一唠。</p>
+<p>说回『Scrcpy』，它是一款通过 ADB 调试的方式来将手机屏幕投到电脑上，并可以通过电脑控制 Android 设备的投屏工具，支持 Windows、macOS 和 Linux 等桌面平台，可以通过 USB 或者 Wi-Fi 连接设备，不需要在手机上安装任何软件，也不需要 ROOT 权限，同时还拥有高性能低延迟等优点。</p>
+<p>官方是这样总结的：</p>
+<blockquote>
+<p>It focuses on:</p>
+<ul>
+<li>lightness (native, displays only the device screen)</li>
+<li>performance (30~60fps)</li>
+<li>quality (1920×1080 or above)</li>
+<li>low latency (35~70ms)</li>
+<li>low startup time (~1 second to display the first image)</li>
+<li>non-intrusiveness (nothing is left installed on the device)</li>
+</ul>
+<p>重要特性：</p>
+<ul>
+<li>轻量（原生，仅显示设备屏幕）</li>
+<li>性能（30 ~ 60 fps）</li>
+<li>画质（1920×1080 或以上）</li>
+<li>低延迟（35 ~ 70 毫秒）</li>
+<li>启动快（约 1 秒内显示第一帧图）</li>
+<li>非侵入（无需在设备安装任何软件）</li>
+</ul>
+</blockquote>
+<p>下面介绍如何使用。</p>
+<p>要连接的 Android 设备需要满足一定的环境，首先确保 Android 设备系统为 Android 5.0（Lollipop，API 21）以上版本，其次要在手机上启用「USB debugging」。</p>
+<p>「USB debugging」在「Developer options」中启用，而关于「Developer options」的启用方式，你可以在网上轻易找到，这里不再介绍。</p>
+<table>
+    <td><img src="https://liarrdev.github.io/post-images/1635353489642.png"/></td>
+    <td><img src="https://liarrdev.github.io/post-images/1635353499597.png"/></td>
+</table>
+<p>需要注意的是，在某些设备上你可能还需要启用附加选项以使用键盘和鼠标进行控制，比如上图右边的 MIUI 系统则需要启用「USB debugging（Security settings）」选项，否则仅能投屏不能用键鼠操控；而上图左侧的 EMUI 系统则无需相关选项。</p>
+<p>接下来在桌面平台安装『Scrcpy』。</p>
+<p>Windows 平台安装十分简单，只需前往项目主页下载并解压即可，『Scrcpy』还很贴心的帮你在压缩包内准备了 ADB 工具，你无需自己去下载。</p>
+<p>我非常建议你将其配置到环境变量，因为这样可以在任何地方随时启用『Scrcpy』。</p>
+<p>假如你已经安装了『Chocolatey』软件包管理器，你还可以用更加极客的方式安装『Scrcpy』：</p>
+<pre><code class="language-Bash">➜   choco install scrcpy
+➜   choco install adb    # if you don't have it yet
+</code></pre>
+<p>『Scoop』也是可以的：</p>
+<pre><code class="language-Bash">➜   scoop install scrcpy
+➜   scoop install adb    # if you don't have it yet
+</code></pre>
+<p>macOS 平台的安装对于小白来说可能不太友好，因为它不提供 DMG 或 PKG 之类的安装文件，也没有像 Windows 一样提供 ZIP 压缩包，主要原因还是 macOS 设置环境变量要更加复杂，所以『Homebrew』是个很好的选择：</p>
+<pre><code class="language-Bash">➜   brew install scrcpy
+➜   brew install android-platform-tools   # if you don't have adb yet
+</code></pre>
+<p>Linux 平台同样是命令：</p>
+<pre><code class="language-Bash">➜   apt install scrcpy
+</code></pre>
+<p>安装完成后，将 Android 设备通过数据线连接桌面平台，在使用『Scrcpy』之前，最好先用 ADB 监测一下 Android 设备是否连接成功：</p>
+<pre><code class="language-Bash">➜   adb devices
+</code></pre>
+<p>如果设备列表为空，则应当确认一开始的前置条件是否满足。</p>
+<p>设备连接成功后，就可以使用『Scrcpy』投屏了，也非常简单，只要在命令行中输入：</p>
+<pre><code class="language-Bash">➜   scrcpy
+</code></pre>
+<p>『Scrcpy』便会启动，投屏窗口立即打开。</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1635353598597.png" alt="Scrcpy 投屏" loading="lazy"></figure>
+<p>这丝滑顺畅的感觉，比模拟器要舒服的多。</p>
+<p>Windows 还支持双击「scrcpy.exe」文件启用，你可以为其创建快捷方式，那就可以在桌面直接打开了。但是…命令行不香吗?</p>
+<p>当然，如果你仅仅是用来投屏的话，的确感受不到区别，但命令行可以将『Scrcpy』的功能发挥到极致。</p>
+<p>比如，我可以限制画面的分辨率：</p>
+<pre><code class="language-Bash">➜   scrcpy --max-size 1024
+➜   scrcpy -m 1024  # short version
+</code></pre>
+<p>比如，我可以在启动『Scrcpy』的时候将 Android 设备的屏幕关闭：</p>
+<pre><code class="language-Bash">➜   scrcpy --turn-screen-off
+➜   scrcpy -S  # short version
+</code></pre>
+<p>很多时候我们的手机都会设置一段时间不操作之后休眠，这样如果我们在休眠后想再次使用『Scrcpy』操作设备，只能重新点亮设备，再回到电脑操作，就会很麻烦；如果手动设置休眠间隔，在使用完了又要重新设置回来，也不方便，那可以使用命令：</p>
+<pre><code class="language-Bash">➜   scrcpy --stay-awake
+➜   scrcpy -w  # short version
+</code></pre>
+<p>关闭屏幕以及防止休眠是可以组合使用的：</p>
+<pre><code class="language-Bash">➜   scrcpy --turn-screen-off --stay-awake
+➜   scrcpy -Sw  # short version
+</code></pre>
+<p>当连接了多台 Android 设备时，我们可以通过 <code>adb devices</code> 查询到设备 ID，然后投屏指定的设备：</p>
+<pre><code class="language-Bash">➜   scrcpy --serial $device_id
+➜   scrcpy -s $device_id  # short version
+</code></pre>
+<p>比如，在启动『Scrcpy』的时候将投屏窗口置顶：</p>
+<pre><code class="language-Bash">➜   scrcpy ---always-on-top
+➜   scrcpy -T  # short version
+</code></pre>
+<p>比如，我想全屏显示投屏窗口：</p>
+<pre><code class="language-Bash">➜   scrcpy --fullscreen
+➜   scrcpy -f  # short version
+</code></pre>
+<p>比如，我想投屏的时候，不允许使用键鼠操控：</p>
+<pre><code class="language-Bash">➜   scrcpy --no-control
+➜   scrcpy -n  # short version
+</code></pre>
+<p>比如，投屏的时候我还想录个屏，但是手机录完屏还要将视频文件传输到电脑非常麻烦，那我可以直接使用『Scrcpy』的录屏命令，它会将视频保存到当前终端所在目录，支持 MP4 和 MKV 格式：</p>
+<pre><code class="language-Bash">➜   scrcpy --record file.mp4
+➜   scrcpy -r file.mp4  # short version
+</code></pre>
+<p>假如我只是想录个屏，不需要用到投屏，那我还可以：</p>
+<pre><code class="language-Bash">➜   scrcpy --no-display --record file.mkv
+➜   scrcpy -Nr file.mkv  # short version
+</code></pre>
+<p>我们知道，在电脑上我们是可以用鼠标点击的，很直观能够知道具体的点击位置，但是在设备上操作时，点击位置的感知往往需要靠应用的动画反馈，『Scrcpy』可以将你在设备本机上的物理触摸也显示出来：</p>
+<pre><code class="language-Bash">➜   scrcpy --show-touches
+➜   scrcpy -t  # short version
+</code></pre>
+<p>假如我只想将设备屏幕的一部分投屏：</p>
+<pre><code class="language-Bash">➜   scrcpy --crop 1224:1440:0:0   # 1224x1440 at offset (0,0)
+➜   scrcpy -c 1224:1440:0:0  # short version
+</code></pre>
+<p>投屏窗口标题默认会显示设备型号，虽然不知道有啥用，不过如果你想修改，也是没问题的：</p>
+<pre><code class="language-Bash">➜   scrcpy --window-title '$title'
+</code></pre>
+<p>不喜欢显示这个窗口外框，还可以去掉：</p>
+<pre><code class="language-Bash">➜   scrcpy --window-borderless
+</code></pre>
+<p>你可以随意将文件拖到『Scrcpy』窗口以推送到 Android 设备中，在目前最新版本（V1.19）中，它会存放于 <code>/sdcard/Download/</code> 目录，但在老版本（比如 V1.17）中则存放于 <code>/sdcard/</code> 目录下，当然，你依然可以通过手动去设置这个存储路径：</p>
+<pre><code class="language-Bash">➜   scrcpy --push-target=/sdcard/Movies/
+</code></pre>
+<p>我常用的配置参数大概就这些，更加详细的配置可以使用命令查看帮助，也可以翻阅官方文档。</p>
+<p>既然提到它可以通过拖动文件到『Scrcpy』窗口来推送到 Android 设备，那更要提一个跟模拟器很相似的操作了，当拖入的文件类型是 APK 时，『Scrcpy』会自动帮你在 Android 设备上安装，十分方便。</p>
+<p>『Scrcpy』还支持键鼠的快捷键，我在这里列举一些常用的热键：</p>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Shortcut</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>切换全屏模式</td>
+<td><code>MOD</code> + <code>f</code></td>
+</tr>
+<tr>
+<td>调整窗口大小以移除黑色边框</td>
+<td><code>MOD</code> + <code>w</code> | 在黑色区域双击鼠标左键</td>
+</tr>
+<tr>
+<td>设备 <code>HOME</code> 键</td>
+<td><code>MOD</code> + <code>h</code> | 鼠标中键（即单击滚轮）</td>
+</tr>
+<tr>
+<td>设备 <code>BACK</code> 键</td>
+<td><code>MOD</code> + <code>b</code> | 鼠标右键</td>
+</tr>
+<tr>
+<td>设备 <code>APP_SWITCH</code></td>
+<td><code>MOD</code> + <code>s</code> | 鼠标的第 4 个键（如果有的话）</td>
+</tr>
+<tr>
+<td>设备 <code>MENU</code></td>
+<td><code>MOD</code> + <code>m</code></td>
+</tr>
+<tr>
+<td>设备 <code>VOLUME_UP</code></td>
+<td><code>MOD</code> + <code>↑</code></td>
+</tr>
+<tr>
+<td>设备 <code>VOLUME_DOWN</code></td>
+<td><code>MOD</code> + <code>↓</code></td>
+</tr>
+<tr>
+<td>设备 <code>POWER</code> 键</td>
+<td><code>MOD</code> + <code>p</code></td>
+</tr>
+<tr>
+<td>点亮屏幕</td>
+<td>鼠标右键</td>
+</tr>
+<tr>
+<td>展开通知面板</td>
+<td><code>MOD</code> + <code>n</code> | 鼠标的第 5 个键（如果有的话）</td>
+</tr>
+<tr>
+<td>展开设置面板</td>
+<td><code>MOD</code> + <code>n</code> + <code>n</code> | 双击鼠标的第 5 个键（如果有的话）</td>
+</tr>
+<tr>
+<td>折叠面板</td>
+<td><code>MOD</code> + <code>Shift</code> + <code>n</code></td>
+</tr>
+<tr>
+<td>复制到剪贴板（Android 7 以上设备支持）</td>
+<td><code>MOD</code> + <code>c</code></td>
+</tr>
+<tr>
+<td>剪切到剪贴板（Android 7 以上设备支持）</td>
+<td><code>MOD</code> + <code>x</code></td>
+</tr>
+<tr>
+<td>同步剪贴板并粘贴（Android 7 以上设备支持）</td>
+<td><code>MOD</code> + <code>v</code></td>
+</tr>
+<tr>
+<td>以键盘事件序列注入电脑剪贴板文本</td>
+<td><code>MOD</code> + <code>Shift</code> + <code>v</code></td>
+</tr>
+</tbody>
+</table>
+<p>上表中的 <code>MOD</code> 一般指键盘的 <code>Alt</code> 或 <code>Command</code> 键，当然你也可以使用命令修改：</p>
+<pre><code class="language-Bash">➜   scrcpy --shortcut-mod=rctrl     # use RCtrl for shortcuts
+➜   scrcpy --shortcut-mod=lctrl+lalt,lsuper     # use either LCtrl+LAlt or LSuper for shortcuts
+</code></pre>
+<p>更加详细的热键表可以使用命令查看帮助，也可以翻阅官方文档。</p>
+<p>最后再简单提一下无线网络连接『Scrcpy』，实际上这是关于 ADB 的知识，因为 ADB 本身是支持无线连接的，所以这里并不打算介绍如何操作，你可以在网上搜索相关教程。连接成功后，正常启用『Scrcpy』即可。</p>
+<p>考虑到无线连接稳定性可能不如数据线，你可以手动调整码率：</p>
+<pre><code class="language-Bash">➜   scrcpy --bit-rate 2M --max-size 800
+➜   scrcpy -b 2M -m 800  # short version
+➜   scrcpy -b2M -m800  # short version
+</code></pre>
+<p>以上就是『Scrcpy』的常用功能介绍，而『Scrcpy』的实力远远不止这些，你可以前往其<a href="https://github.com/Genymobile/scrcpy">项目主页</a>进行详细了解。</p>
+<p>总的来说『Scrcpy』实现了在电脑前轻松处理手机端的事情的需求，开源免费，绝对是办公和摸鱼兼顾的利器。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Enjoy-Palette-in-One-Shot.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Enjoy-Palette-in-One-Shot/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2021-11-02">2021-11-02</time>
+                  <h4 class="title white no-margin">一次实战爱上『Palette』</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/APK-Signature-Scheme-v1-is-No-Longer-Supported-on-Android-R.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/APK-Signature-Scheme-v1-is-No-Longer-Supported-on-Android-R/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2021-10-19">2021-10-19</time>
+                  <h4 class="title white no-margin">Android R 不再支持 APK Signature Scheme v1</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

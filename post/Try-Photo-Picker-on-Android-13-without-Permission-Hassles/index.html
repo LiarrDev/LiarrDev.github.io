@@ -1,0 +1,818 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>浅尝 Android 13 Photo Picker 无惧权限烦恼 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="背景
+最近两年适配 Android 新版本的小伙伴应该都发现，Android 对于系统读写权限的管理又收窄了。
+Android 13（Tiramisu, API 33）上，废弃了 READ_EXTERNAL_STORAGE 权限，新增 RE..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Try-Photo-Picker-on-Android-13-without-Permission-Hassles.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2024-04-12"><i class="fa fa-calendar"></i><span class="lately">2 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Try-Photo-Picker-on-Android-13-without-Permission-Hassles/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Try-Photo-Picker-on-Android-13-without-Permission-Hassles/"> </span>
+              </a>
+              <span id="/Try-Photo-Picker-on-Android-13-without-Permission-Hassles/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">浅尝 Android 13 Photo Picker 无惧权限烦恼</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <h1 id="背景">背景</h1>
+<p>最近两年适配 Android 新版本的小伙伴应该都发现，Android 对于系统读写权限的管理又收窄了。</p>
+<p>Android 13（Tiramisu, API 33）上，废弃了 <code>READ_EXTERNAL_STORAGE</code> 权限，新增 <code>READ_MEDIA_IMAGES</code>、<code>READ_MEDIA_VIDEO</code> 和 <code>READ_MEDIA_AUDIO</code> 三个权限分别用于控制图片、视频、音频的访问。</p>
+<p>Android 14（UpsideDownCake, API 34）上则新增了 <code>READ_MEDIA_VISUAL_USER_SELECTED</code> 权限，用户可以选择性地让应用访问部分图片或视频。</p>
+<p>由于系统选择器过于丑陋，相信大多数需要用到图片选择功能的 App，都会自行实现或者接入三方库来内置图片选择器功能，而这个行为在 Android 14 上则会遇到新的问题，当用户仅授权部分图片或视频时，整个操作路径会非常长，即用户首先需要选择授权哪些照片给应用，然后再从应用内置的图片选择器中选择照片。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1712849165811.gif" alt="Android 14 授权部分照片" loading="lazy"></figure>
+<p>另一方面，<a href="https://support.google.com/googleplay/android-developer/answer/14115180">Play Store 对于权限的获取政策也在将来收紧</a>：</p>
+<blockquote>
+<h4 id="timeline-information">Timeline information</h4>
+<p>We anticipate the following timeline for the rollout of the Photo and Video Permissions policy. Note that this is subject to change; updates will be posted in this article.</p>
+<ul>
+<li><strong>October 2023:</strong> We announced the new Photos and Video Permissions policy.</li>
+<li><strong>Mid 2024:</strong> Apps with one-time or infrequent use of photos requested to use a system photo picker and remove <code>READ_MEDIA_IMAGES</code> and <code>READ_MEDIA_VIDEO</code> permissions from their app manifest.</li>
+<li><strong>Early 2025:</strong> Only apps with broad access core functionality can use <code>READ_MEDIA_IMAGES</code> and <code>READ_MEDIA_VIDEO</code> permissions.</li>
+</ul>
+<h4 id="时间表信息">时间表信息</h4>
+<p>我们预计将按照以下时间表发布“照片和视频权限”政策。请注意，此时间表可能会有变动；届时我们会在本文中发布更新。</p>
+<ul>
+<li><strong>2023 年 10 月：</strong> 我们公布了新的“照片和视频权限”政策。</li>
+<li><strong>2024 年年中：</strong> 如果应用只用一次照片，或者很少用到照片，则必须使用系统照片选择器，并从应用清单中移除 <code>READ_MEDIA_IMAGES</code> 和 <code>READ_MEDIA_VIDEO</code> 权限。</li>
+<li><strong>2025 年初：</strong> 只有核心功能需要获取广泛访问权限的应用才能使用 <code>READ_MEDIA_IMAGES</code> 和 <code>READ_MEDIA_VIDEO</code> 权限。</li>
+</ul>
+</blockquote>
+<h1 id="photo-picker">Photo Picker</h1>
+<p>好消息是，从 Android 13（Tiramisu, API 33）开始，官方提供了系统级图片选择器 Photo Picker，样式和体验都非常丝滑。最重要的是，无需申请权限，只需几行代码即可轻松接入。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1712849225948.gif" alt="Photo Picker" loading="lazy"></figure>
+<h2 id="androidxactivity-160">androidx.activity 1.6.0+</h2>
+<p>首先把 <code>androidx.activity</code> 升级到最新版本：</p>
+<pre><code class="language-kts">dependencies {
+    implementation(&quot;androidx.activity:activity:1.8.2&quot;)
+}
+</code></pre>
+<p>由于项目原因无法升级的，在下文会给出解决方案。</p>
+<p>接下来只需使用 Activity Result API 调用即可：</p>
+<pre><code class="language-Kotlin">class MainActivity : AppCompatActivity() {
+    ...
+    private val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {
+        if (it != null) {
+            // 选择图片的 Uri
+        } else {
+            // 未选择图片
+        }
+    }
+    private fun pickImage() = pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+    private fun pickVideo() = pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly))
+    private fun pickImageOrVideo() = pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
+    private fun pickByMime(mimeType: String) = pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.SingleMimeType(mimeType)))
+}
+</code></pre>
+<p>通过向 <code>PickVisualMediaRequest()</code> 中传入不同的类型来构建不同的请求对象。是的，你没看错，我们调用的 <code>PickVisualMediaRequest()</code> 实际上是一个方法，它会在内部帮我们构建同名类的对象：</p>
+<pre><code class="language-Kotlin">fun PickVisualMediaRequest(
+    mediaType: VisualMediaType = ImageAndVideo
+) = PickVisualMediaRequest.Builder().setMediaType(mediaType).build()
+
+class PickVisualMediaRequest internal constructor() {
+    ...
+    class Builder {
+        ...
+    }
+}
+</code></pre>
+<p><code>VisualMediaType</code> 是一个密封接口，由上面我们示例的几种类型实现，分别对应仅选择图片、仅选择视频、选择图片或视频和仅选择特定的 <a href="https://liarrdev.github.io/post/Verify-File-Types-with-Media-Type-in-Java/">MIME 类型</a>。</p>
+<p>效果如下：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1712849269292.gif" alt="Photo Picker 单选" loading="lazy"></figure>
+<p>如果想设置多选，Photo Picker 同样支持：</p>
+<pre><code class="language-Kotlin">class MainActivity : AppCompatActivity() {
+    ...
+    private val pickMultipleMedia = registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(5)) {
+        if (it.isNotEmpty()) {
+            // 选择的图片 Uri 集合
+        } else {
+            // 未选择图片
+        }
+    }
+    private fun pickImages() = pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+    private fun pickVideos() = pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly))
+    private fun pickImageOrVideos() = pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
+    private fun pickByMimes(mimeType: String) = pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.SingleMimeType(mimeType)))
+}
+</code></pre>
+<p>只需把 <code>ActivityResultContract</code> 更换为多选的 <code>PickMultipleVisualMedia</code> 即可，同时可以传入一个整型参数控制选择的文件数量上限。效果如下：</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1712849314280.gif" alt="Photo Picker 多选" loading="lazy"></figure>
+<p>是不是非常简单？</p>
+<p>前文提到，Photo Picker 从 Android 13（Tiramisu, API 33）开始支持，这个说法其实并不准确，官方文档中提到，支持 Google Play Service 的设备也是可以更新使用的，在不支持 Photo Picker 的低版本机型中，该库会自动调用 <code>ACTION_OPEN_DOCUMENT</code> 打开系统资源管理器进行选择：</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1712849346963.gif" alt="资源管理器" loading="lazy"></figure>
+<p>同时，如果你使用多选模式，资源管理器会忽略所设置的数量上限。</p>
+<p>官方也提供了一个方法用于判断 Photo Picker 在给定设备上是否可用：</p>
+<pre><code class="language-kotlin">class ActivityResultContracts private constructor() {
+    ...
+    @RequiresApi(19)
+    open class PickVisualMedia : ActivityResultContract&lt;PickVisualMediaRequest, Uri?&gt;() {
+        companion object {
+            ...
+            @SuppressLint(&quot;ClassVerificationFailure&quot;, &quot;NewApi&quot;)
+            @JvmStatic
+            fun isPhotoPickerAvailable(context: Context): Boolean {
+                return isSystemPickerAvailable() || isSystemFallbackPickerAvailable(context) ||
+                        isGmsPickerAvailable(context)
+            }
+        }
+        ...
+    }
+}
+</code></pre>
+<h2 id="androidxactivity-151-">androidx.activity 1.5.1-</h2>
+<p>接下来说说 <code>androidx.activity</code> 在低版本中如何处理，低版本中存在的问题主要是 <code>PickVisualMedia</code> 和 <code>PickMultipleVisualMedia</code> 两个 <code>ActivityResultContract</code> 的缺失，同时连带 <code>isPhotoPickerAvailable()</code> 这个判断方法也无法使用。</p>
+<p>我们采用的策略就是当系统版本不低于 Android 13 时，使用 Photo Picker，否则使用系统资源管理器。</p>
+<p>实现的方法有很多，我这里简单写两个 <code>ActivityResultContracts</code> 示例，你可以根据实际情况进行扩展：</p>
+<pre><code class="language-kotlin">object PicResultContract {
+
+    class PickImage : ActivityResultContract&lt;Void?, Uri?&gt;() {
+        override fun createIntent(context: Context, input: Void?): Intent {
+            if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.TIRAMISU) {
+                return Intent(MediaStore.ACTION_PICK_IMAGES).setType(&quot;image/*&quot;)
+            }
+            return Intent(Intent.ACTION_OPEN_DOCUMENT).setType(&quot;image/*&quot;)
+        }
+
+        override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
+            return intent.takeIf { resultCode == Activity.RESULT_OK }?.data
+        }
+    }
+
+    class PickImages : ActivityResultContract&lt;Int, List&lt;Uri&gt;&gt;() {
+        override fun createIntent(context: Context, input: Int): Intent {
+            if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.TIRAMISU) {
+                return Intent(MediaStore.ACTION_PICK_IMAGES)
+                    .putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, input)
+                    .setType(&quot;image/*&quot;)
+            }
+            return Intent(Intent.ACTION_OPEN_DOCUMENT)
+                .putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                .setType(&quot;image/*&quot;)
+        }
+
+        override fun parseResult(resultCode: Int, intent: Intent?): List&lt;Uri&gt; {
+            val i = intent.takeIf { resultCode == Activity.RESULT_OK }
+            val data = i?.data
+            if (data != null) {
+                return listOf(data)
+            }
+            val clipData = i?.clipData
+            if (clipData != null &amp;&amp; clipData.itemCount &gt; 0) {
+                return (0 until clipData.itemCount).map {
+                    clipData.getItemAt(it).uri
+                }
+            }
+            return emptyList()
+        }
+    }
+}
+</code></pre>
+<p>示例中的多选仍然参考了高版本中的策略，当使用资源管理器时，所设置的文件数量上线也会被忽略。</p>
+<p>使用方法与原来类似（仅做示例使用所以没有完全参照原来的写法复刻，自行改造即可）：</p>
+<pre><code class="language-Kotlin">class MainActivity : AppCompatActivity() {
+    ...
+    private val pickImage = registerForActivityResult(PicResultContract.PickImage()) {
+        if (it != null) {
+            // 选择图片的 Uri
+        } else {
+            // 未选择图片
+        }
+    }
+    private val pickImages = registerForActivityResult(PicResultContract.PickImages()) {
+        if (it.isNotEmpty()) {
+            // 选择的图片 Uri 集合
+        } else {
+            // 未选择图片
+        }
+    }
+    private fun pickImage() = pickImage.launch(null)
+    private fun pickImages() = pickImages.launch(5)
+}
+</code></pre>
+<h1 id="后记">后记</h1>
+<p>前阵子 <a href="https://guolin.tech">@郭霖</a> 发了一篇文章『<a href="https://guolin.blog.csdn.net/article/details/137410229">Android 14新特性，选择性照片和视频访问授权</a>』，我也在评论区探讨了交互的策略，在支持的设备（或 Android 13+）中使用 Photo Picker，否则使用应用内实现的图片选择器，或许是当下最好的方案。</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1712849385839.jpg" alt="互动" loading="lazy"></figure>
+<h1 id="参考内容">参考内容</h1>
+<ul>
+<li><a href="https://developer.android.com/training/data-storage/shared/photopicker">Photo picker | Android Developers</a></li>
+</ul>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Building-Widgets-for-Android-Apps.jpg');"></div>
+                 <a href="https://LiarrDev.github.io/post/Building-Widgets-for-Android-Apps/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2024-04-30">2024-04-30</time>
+                  <h4 class="title white no-margin">为 Android 应用构建 Widget</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Android-Bitmap-Grayscale.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Android-Bitmap-Grayscale/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2024-03-19">2024-03-19</time>
+                  <h4 class="title white no-margin">Android Bitmap 灰度处理</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

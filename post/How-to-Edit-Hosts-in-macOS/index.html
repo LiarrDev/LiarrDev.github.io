@@ -1,0 +1,687 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>macOS 修改 Hosts | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="之前『Windows 修改 Hosts』介绍了如何在 Windows 平台修改 Hosts，今天来聊聊如何在 macOS 平台修改 Hosts。
+首先依然是找到 Hosts，macOS 系统的 Hosts 文件路径为 Macintosh H..." />
+    <meta name="keywords" content="Hosts" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/How-to-Edit-Hosts-in-macOS.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2021-06-21"><i class="fa fa-calendar"></i><span class="lately">5 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/How-to-Edit-Hosts-in-macOS/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/How-to-Edit-Hosts-in-macOS/"> </span>
+              </a>
+              <span id="/How-to-Edit-Hosts-in-macOS/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-0 ctag-Hosts" aria-label="">Hosts</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">macOS 修改 Hosts</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>之前『<a href="https://liarrdev.github.io/post/How-to-Edit-Hosts-in-Windows/">Windows 修改 Hosts</a>』介绍了如何在 Windows 平台修改 Hosts，今天来聊聊如何在 macOS 平台修改 Hosts。</p>
+<p>首先依然是找到 Hosts，macOS 系统的 Hosts 文件路径为 <code>Macintosh HD/private/etc/hosts</code>：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1624377453430.png" alt="Hosts File" loading="lazy"></figure>
+<p>由于系统文件管理器『Finder』并不会像 Windows 一样方便地从『此电脑』进入，所以我们其实还能通过『Finder』菜单「前往文件夹」功能直接进入。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1624377542469.png" alt="Finder Menu" loading="lazy"></figure>
+<p>在「前往文件夹」中输入 <code>/etc/hosts</code> 并点击「前往」即可直达。</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1624377599712.png" alt="前往文件夹" loading="lazy"></figure>
+<p>找到 Hosts 后依然可以通过任何文本编辑器对其进行修改，但需要注意，<code>etc</code> 文件夹的默认权限为「只读」：</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1624377629469.png" alt="etc 文件夹权限" loading="lazy"></figure>
+<p>当你尝试修改 Hosts 文件时，系统会弹出如下提示：</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1624377678081.png" alt="无法直接编辑 Hosts 文件" loading="lazy"></figure>
+<p>我们可以将 Hosts 文件复制到桌面进行修改，修改完成后再复制到原目录下覆盖即可，覆盖时会要求输入密码或触控 ID，都是为了防止用户误操作。</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1624377851990.png" alt="使用密码或触控 ID 覆盖 Hosts 文件" loading="lazy"></figure>
+<p>既然是 <code>etc</code> 文件夹权限原因，我们还可以通过修改该文件夹的权限来直接编辑 Hosts 文件。</p>
+<figure data-type="image" tabindex="7"><img src="https://LiarrDev.github.io/post-images/1624377915018.png" alt="修改 etc 文件夹权限" loading="lazy"></figure>
+<p>将 <code>etc</code> 文件夹中「everyone」的权限设置为「读与写」便可直接编辑 Hosts 文件，编辑完成后记得要将该权限改回来。</p>
+<p>既然都用上 Mac 了，那就再介绍一个比较 Geek 的修改方式，用命令来修改。</p>
+<p>打开『Terminal』，输入命令：</p>
+<pre><code class="language-Bash">➜   sudo vi /etc/hosts
+</code></pre>
+<p>其中 <code>sudo</code> 表示以系统管理者的身份执行指令，由于默认情况下用户对 <code>etc</code> 目录的权限为「只读」，而「系统」的权限为「读与写」，所以通过该命令可以得到写权限，<code>vi</code> 则表示要编辑，后面就是 Hosts 文件路径。</p>
+<p>执行该命令后，会要求输入本机密码，输入完成并回车就可以直接在『Terminal』中对 Hosts 文件进行编辑。</p>
+<p>编辑需要用到 <code>vi</code> 命令，也不是很复杂，通过方向键移动光标，键入 <code>i</code> 代表插入（INSERT），随即进入编辑模式，编辑完成后，点击 <code>Esc</code> 退出编辑，再键入 <code>:wq</code> 并回车执行保存退出，Hosts 文件即修改完成。</p>
+<p>除了 <code>vi</code>，我们也可以用 <code>nano</code> 来修改，同样在『Terminal』中输入命令：</p>
+<pre><code class="language-Bash">➜   sudo nano /etc/hosts
+</code></pre>
+<p>执行完后同样要求输入密码进入编辑模式，同时『Terminal』底部还会展示快捷键介绍，似乎比 <code>vi</code> 要方便一些。</p>
+<figure data-type="image" tabindex="8"><img src="https://LiarrDev.github.io/post-images/1624378113829.png" alt="使用 nano 编辑" loading="lazy"></figure>
+<p>进入后不再需要其他命令，可直接编辑模式，编辑完成后点击 <code>Control</code> + <code>O</code> 保存，提示「File Name to Write: /etc/hosts」，回车确认，再按 <code>Control</code> + <code>X</code> 退出。</p>
+<p>当你有大量的 Hosts 内容需要添加时，用上面这两个命令似乎并不是怎么方便，而修改文件夹权限或者文件副本却又一点都不 Geek，那可以考虑另一种方式。</p>
+<p>先将需要追加的 Hosts 内容写到一个文件中，比如「hosts.txt」，然后执行命令：</p>
+<pre><code class="language-Bash">➜   sudo -s
+➜   cat ~/hosts.txt&gt;&gt;/etc/hosts
+</code></pre>
+<p><code>cat</code> 命令用于在末尾追加，<code>&gt;&gt;</code> 前面的是我们需要追加的 Hosts 内容文件路径，比如我这里就放在当前用户目录中，<code>&gt;&gt;</code> 后面的是源 Hosts 文件的路径，这样就能够将 Hosts 从一个文本文件中追加到系统 Hosts 文件中。</p>
+<p>以上就是 macOS 修改 Hosts 的五种方法，同 Windows 一样，修改了 Hosts 文件后也有可能会出现不立马生效的情况，同样是需要刷新 DNS 缓存：</p>
+<pre><code class="language-Bash">➜   sudo killall -HUP mDNSResponder
+</code></pre>
+<p>与 Windows 平台的命令是不一样的，由于使用了 <code>sudo</code> 所以同样要输入本机密码。</p>
+<p>最后附上 macOS 平台下原始的 Hosts 文件内容：</p>
+<pre><code class="language-Hosts">##
+# Host Database
+#
+# localhost is used to configure the loopback interface
+# when the system is booting.  Do not change this entry.
+##
+127.0.0.1 localhost
+255.255.255.255 broadcasthost
+::1             localhost
+</code></pre>
+<p>基本与 Windows 平台下一致，只不过将几个 <code>localhost</code> 取消了注释罢了，如果怀疑你的 Hosts 文件被病毒或木马修改，可复制以上内容修复 Hosts 文件。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/How-to-Import-AAR-in-Android-Studio.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/How-to-Import-AAR-in-Android-Studio/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2021-06-27">2021-06-27</time>
+                  <h4 class="title white no-margin">『Android Studio』如何导入 AAR 包</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Auto-Adding-Hosts-in-Windows-with-Batch-Script.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Auto-Adding-Hosts-in-Windows-with-Batch-Script/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2021-06-15">2021-06-15</time>
+                  <h4 class="title white no-margin">写个脚本给 Windows 自动添加 Hosts</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

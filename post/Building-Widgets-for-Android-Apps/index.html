@@ -1,0 +1,1060 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>为 Android 应用构建 Widget | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="背景
+应用 Widget 是可以嵌入到其他应用（如主屏幕）并接收定期更新的微型应用视图，Google 官方的翻译叫做「微件」，在国内的叫法也有许多，比如「小组件」等。
+
+从 Android 1.5（Cupcake，API 3）开始，Widg..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Building-Widgets-for-Android-Apps.jpg');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2024-04-30"><i class="fa fa-calendar"></i><span class="lately">2 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Building-Widgets-for-Android-Apps/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Building-Widgets-for-Android-Apps/"> </span>
+              </a>
+              <span id="/Building-Widgets-for-Android-Apps/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">为 Android 应用构建 Widget</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <h1 id="背景">背景</h1>
+<p>应用 Widget 是可以嵌入到其他应用（如主屏幕）并接收定期更新的微型应用视图，Google 官方的翻译叫做「微件」，在国内的叫法也有许多，比如「小组件」等。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1714405924819.png" alt="Music Widget" loading="lazy"></figure>
+<p>从 Android 1.5（Cupcake，API 3）开始，Widget 就已存在，到后来 Android 4.0（Ice Cream Sandwich，API 14）则逐渐改版调整，直到 Android 6.0（Marshmallow，API 23）交互才稳定下来。</p>
+<p>不过由于 Android 的自由度导致不同应用的 Widget 设计风格各异，官方也没有为开发者们提供设计规范以及素材，堆积的 Widget 反而会让桌面变得凌乱，既不美观也不实用，于是 Widget 在经历了短暂的繁荣之后便日渐被人遗忘。</p>
+<p>没想到 2020 年 iOS 14 的发布则重新将手机系统上的桌面小组件功能拉回了人们的视野中（iOS 的小组件发展史本文按下不表，有兴趣的读者可自行查阅资料），Widget 又焕发了第二春，除了官方优化外，国内系统比如 OriginOS 也交出了高分答卷。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1714405996005.png" alt="OriginOS" loading="lazy"></figure>
+<p>说了这么多，接下来就写个 Widget 实践一下。</p>
+<h1 id="实践">实践</h1>
+<h2 id="基本配置">基本配置</h2>
+<p>得益于『Android Studio』提供的各种能力，我们可以一键生成 Widget 模版。</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1714406028530.png" alt="Android Studio 创建 Widget" loading="lazy"></figure>
+<p>创建之前我们需要先简单配置一些信息，比如放置的位置、尺寸调整模式、最小宽高等。</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1714406073399.png" alt="配置 Widget 信息" loading="lazy"></figure>
+<p>虽然可以自动创建，但我们也要知道其创建了哪些东西才能够接着开发。</p>
+<p>首先是 <code>/res/xml/new_app_widget_info.xml</code>，我们在上面配置的大部分信息会在这里生成：</p>
+<pre><code class="language-XML">&lt;appwidget-provider xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    android:description=&quot;@string/app_widget_description&quot;
+    android:initialKeyguardLayout=&quot;@layout/new_app_widget&quot;
+    android:initialLayout=&quot;@layout/new_app_widget&quot;
+    android:minWidth=&quot;40dp&quot;
+    android:minHeight=&quot;40dp&quot;
+    android:previewImage=&quot;@drawable/example_appwidget_preview&quot;
+    android:previewLayout=&quot;@layout/new_app_widget&quot;
+    android:resizeMode=&quot;horizontal|vertical&quot;
+    android:targetCellWidth=&quot;1&quot;
+    android:targetCellHeight=&quot;1&quot;
+    android:updatePeriodMillis=&quot;86400000&quot;
+    android:widgetCategory=&quot;home_screen&quot; /&gt;
+</code></pre>
+<p>它是一个 <code>AppWidgetProviderInfo</code> 对象，用来描述应用 Widget 的元数据，比如预览、布局、更新频率等。</p>
+<p>这里有几个属性需要关注，<code>android:previewImage</code> 是预览图片，会在添加 Widget 前展示，而在 Android 12（S，API 31）之后，它支持配置 <code>android:previewLayout</code> 预览布局：</p>
+<table>
+    <td><img src="https://liarrdev.github.io/post-images/1714406150776.png" /></td>
+    <td><img src="https://liarrdev.github.io/post-images/1714406118501.png" /></td>
+</table>
+<p><code>android:updatePeriodMillis</code> 用来控制定期更新的频率，但不能保证实际更新按此值正好准时发生，其不支持少于 30 分钟的值，官方建议尽可能降低更新频率，比如不超过每小时一次，以节省电池电量。</p>
+<p><code>android:initialLayout</code> 是 Widget 的布局，其基于 <code>RemoteViews</code>，所以它并不支持所有的 <code>View</code> 或 <code>ViewGroup</code>，尽管在 Android 12（S，API 31）之后扩展了支持。因此尽量使用基础的视图控件，或者在使用前查阅文档。</p>
+<p>Widget 必须定义 <code>android:minWidth</code> 和 <code>android:minHeight</code>，表示默认情况下应占用的最小空间量。当用户向其主屏幕添加微件时，Widget 占用的宽度和高度通常会超过所指定的最小值。虽然单元格的宽度和高度以及应用到 Widget 的自动外边距量可能会因设备而异，但可以使用下表根据所需占用的网格单元格数大致估算 Widget 的最小尺寸：</p>
+<table>
+<thead>
+<tr>
+<th>单元格数量（列数或行数）</th>
+<th>可用尺寸 (dp)（<code>minWidth</code> 或 <code>minHeight</code>）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>40dp</td>
+</tr>
+<tr>
+<td>2</td>
+<td>110dp</td>
+</tr>
+<tr>
+<td>3</td>
+<td>180dp</td>
+</tr>
+<tr>
+<td>4</td>
+<td>250dp</td>
+</tr>
+<tr>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr>
+<td>n</td>
+<td>70 × n − 30</td>
+</tr>
+</tbody>
+</table>
+<p>接下来看看 <code>AndroidManifest.xml</code>：</p>
+<pre><code class="language-XML">&lt;manifest ...&gt;
+    &lt;application ...&gt;
+        ...
+        &lt;receiver
+            android:name=&quot;.widget.NewAppWidget&quot;
+            android:exported=&quot;false&quot;&gt;
+            &lt;intent-filter&gt;
+                &lt;action android:name=&quot;android.appwidget.action.APPWIDGET_UPDATE&quot; /&gt;
+            &lt;/intent-filter&gt;
+            &lt;meta-data
+                android:name=&quot;android.appwidget.provider&quot;
+                android:resource=&quot;@xml/new_app_widget_info&quot; /&gt;
+        &lt;/receiver&gt;
+    &lt;/application&gt;
+&lt;/manifest&gt;
+</code></pre>
+<p>生成模版自动为我们注册了广播接收器，并将前文中的 <code>AppWidgetProviderInfo</code> 元数据配置到此处。 根据我们已有的认知，不是只有四大组件才需要注册吗？</p>
+<p>没错，其实 Widget 本身也是一个 <code>BroadcastReceiver</code>，我们来看其实现类：</p>
+<pre><code class="language-Kotlin">class NewAppWidget : AppWidgetProvider() {
+    ...
+}
+</code></pre>
+<p>可以看到，其继承 <code>AppWidgetProvider</code>，而 <code>AppWidgetProvider</code> 的父类正是 <code>BroadcastReceiver</code>：</p>
+<pre><code class="language-Java">public class AppWidgetProvider extends BroadcastReceiver {
+    ...
+}
+</code></pre>
+<p><code>AppWidgetProvider</code> 作为一个辅助类来处理 App Widget 的广播，仅接收与 Widget 有关的广播事件，例如当更新、删除、启用和停用 Widget 时发出的广播。因此我们需要着重了解其生命周期：</p>
+<pre><code class="language-Java">public class AppWidgetProvider extends BroadcastReceiver {
+    public void onReceive(Context context, Intent intent) {...}
+    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {}
+    public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {}
+    public void onDeleted(Context context, int[] appWidgetIds) {}
+    public void onEnabled(Context context) {}
+    public void onDisabled(Context context) {}
+    public void onRestored(Context context, int[] oldWidgetIds, int[] newWidgetIds) {}
+}
+</code></pre>
+<p><code>onReceive()</code> 不用过多解释，它就是实现了 <code>BroadcastReceiver</code> 的抽象方法，然后将各种事件分类处理重新分发到其他方法中。</p>
+<p><code>onUpdate()</code> 会在我们设定的更新频率中触发，所以更新 Widget 的相关逻辑应当在此处编写。</p>
+<p><code>onAppWidgetOptionsChanged()</code> 在首次放置 Widget 时以及每次调整 Widget 大小时都会调用，使用此回调可根据 Widget 的大小范围显示或隐藏内容。</p>
+<p>每次从 Widget 托管应用中删除 Widget 时，<code>onDeleted()</code> 方法会被调用。</p>
+<p><code>onEnabled()</code> 在首次创建 Widget 实例时调用，如果用户添加多个 Widget 实例，则仅在首次添加时才会调用该方法。 同样，<code>onDisabled()</code> 会在宿主删除最后一个 Widget 实例时被调用。</p>
+<p>不难看出，<code>onUpdate()</code> 是最重要的方法，『Android Studio』生成的模版中也仅实现了该方法：</p>
+<pre><code class="language-Kotlin">class NewAppWidget : AppWidgetProvider() {
+    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+        for (appWidgetId in appWidgetIds) {
+            updateAppWidget(context, appWidgetManager, appWidgetId)
+        }
+    }
+}
+internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+    val widgetText = context.getString(R.string.appwidget_text)
+    val views = RemoteViews(context.packageName, R.layout.new_app_widget)
+    views.setTextViewText(R.id.appwidget_text, widgetText)
+    appWidgetManager.updateAppWidget(appWidgetId, views)
+}
+</code></pre>
+<p>示例代码为我们简单实现了更新逻辑，逻辑清晰，无需解释。</p>
+<p><code>AppWidgetProvider</code> 只是一个辅助类。如果希望直接接收 App Widget 广播，自行实现 <code>BroadcastReceiver</code> 同样可行，只需关注如下 <code>Intent Action</code>：</p>
+<ul>
+<li><code>ACTION_APPWIDGET_UPDATE</code></li>
+<li><code>ACTION_APPWIDGET_DELETED</code></li>
+<li><code>ACTION_APPWIDGET_ENABLED</code></li>
+<li><code>ACTION_APPWIDGET_DISABLED</code></li>
+<li><code>ACTION_APPWIDGET_OPTIONS_CHANGED</code></li>
+</ul>
+<p>参照 <code>AppWidgetProvider</code> 的处理方式，当然还可以发送自定义的广播内容，这在处理一些过滤逻辑时很有用。</p>
+<h2 id="更新-widget">更新 Widget</h2>
+<p>值得一提的是，更新 Widget 内容可能会消耗大量的计算资源。所以官方也提供了三种更新方式：</p>
+<ul>
+<li>完整更新：将新的 <code>RemoteViews</code> 替换之前的 <code>RemoteViews</code>，这是计算开销最大的更新。</li>
+</ul>
+<pre><code class="language-Kotlin">internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+    ...
+    val remoteViews = RemoteViews(context.getPackageName(), R.layout.widgetlayout).also {
+        setTextViewText(R.id.textview_widget_layout1, &quot;Updated text1&quot;)
+        setTextViewText(R.id.textview_widget_layout2, &quot;Updated text2&quot;)
+    }
+    appWidgetManager.updateAppWidget(appWidgetId, remoteViews)
+}
+</code></pre>
+<ul>
+<li>部分更新：将新的 <code>RemoteViews</code> 与之前提供的 <code>RemoteViews</code> 合并，以更新 Widget 的某些部分。如果 Widget 未收到至少一个完整更新，系统会忽略此方法。</li>
+</ul>
+<pre><code class="language-Kotlin">internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+    ...
+    val remoteViews = RemoteViews(context.getPackageName(), R.layout.widgetlayout).also {
+        setTextViewText(R.id.textview_widget_layout, &quot;Updated text&quot;)
+    }
+    appWidgetManager.partiallyUpdateAppWidget(appWidgetId, remoteViews)
+}
+</code></pre>
+<ul>
+<li>集合数据刷新：使 Widget 中集合视图的数据失效，这会触发 <code>RemoteViewsFactory.onDataSetChanged()</code>。</li>
+</ul>
+<pre><code class="language-Kotlin">internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+    ...
+    appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_listview)
+}
+</code></pre>
+<p>除了在接收广播时更新 Widget，在应用内更新也同样可行，比如给 Widget 换肤等场景。只需获取到 <code>AppWidgetManager</code> 和 <code>AppWidgetIds</code> 即可：</p>
+<pre><code class="language-Kotlin">object MyAppWidgetManager {
+    fun updateAppWidget(context: Context) {
+        val appWidgetManager = AppWidgetManager.getInstance(context)
+        val appWidgetIds = appWidgetManager.getAppWidgetIds(ComponentName(context, NewAppWidget::class.java))
+        for (appWidgetId in appWidgetIds) {
+            updateAppWidget(context, appWidgetManager, appWidgetId)
+        }
+    }
+}
+</code></pre>
+<p>如果通过发送广播的方式，也可以这样写：</p>
+<pre><code class="language-kotlin">object MyAppWidgetManager {
+    fun updateAppWidget(context: Context) {
+        val appWidgetManager = AppWidgetManager.getInstance(context)
+        val appWidgetIds = appWidgetManager.getAppWidgetIds(ComponentName(context, NewAppWidget::class.java))
+        val intent = Intent().apply {
+            ...     // action, package, ect.
+            putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
+        }
+        context.sendBroadcast(intent)
+    }
+}
+</code></pre>
+<p>还可以自定义 <code>action</code> 来过滤操作。</p>
+<p>由于本质上就是 <code>BroadcastReceiver</code> 的特性，Widget 更新的时长和优先级尤为重要，系统通常会允许 <code>BroadcastReceiver</code> 最多运行 10 秒，然后会将其视为无响应并触发 ANR 错误。如果更新 Widget 需要更长的时间，使用 <code>WorkManager</code> 安排任务是个不错的选择。</p>
+<p>但在 Widget 中使用 <code>WorkManager</code> 也会引发一些预期之外的事情，比如 <code>WorkManager</code> 可能会导致 Widget 频繁刷新，从而引发 Widget 闪烁，这是一个<a href="https://issuetracker.google.com/issues/115575872">已知 Bug</a>，Google 提供了一个另类的解决方法，是用 <code>setInitialDelay()</code> 方法给 <code>WorkManager</code> 配置一个 10 年的初始延迟。经过测试这个方法确实能够解决问题，但不优雅，Google 团队也表示未来将优化 <code>WorkManager</code> 在 Widget 中的表现。</p>
+<h2 id="remoteviews-更新控件"><code>RemoteViews</code> 更新控件</h2>
+<p>上面提到，Widget 是通过 <code>RemoteViews</code> 来更新的，而 <code>RemoteViews</code> 并不是一个 <code>View</code> 或 <code>ViewGroup</code>：</p>
+<pre><code class="language-Java">public class RemoteViews implements Parcelable, Filter {
+    ...
+}
+</code></pre>
+<p>这意味着我们并不能像平时更新 <code>View</code> 那样对 Widget 内的控件进行设置，只能使用 <code>RemoteViews</code> 提供的方法，比如上面提到的：</p>
+<pre><code class="language-Kotlin">internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+    ...
+    val views = RemoteViews(context.packageName, R.layout.new_app_widget)
+    views.setTextViewText(R.id.appwidget_text, widgetText)
+    views.setImageViewResource(R.id.appwidget_img, R.drawable.bg)
+    ...
+}
+</code></pre>
+<p>虽然 <code>RemoteViews</code> 提供了常用的方法，但这种用法仍为我们带来不少麻烦，比如我想对 Widget 里面的某个 <code>View</code> 动态设置背景，似乎就找不到类似 <code>RemoteViews.setBackground()</code> 之类的方法。不过点进 <code>RemoteViews</code> 的源码后发现，其实上面的这些操作都是通过反射实现的，比如：</p>
+<pre><code class="language-Java">public class RemoteViews implements Parcelable, Filter {
+    ...
+    public void setImageViewResource(@IdRes int viewId, @DrawableRes int srcId) {
+        setInt(viewId, &quot;setImageResource&quot;, srcId);
+    }
+    public void setInt(@IdRes int viewId, String methodName, int value) {
+        addAction(new ReflectionAction(viewId, methodName, BaseReflectionAction.INT, value));
+    }
+}
+</code></pre>
+<p>所以给 <code>View</code> 设置背景时，我们可以为 <code>RemoteViews</code> 写个扩展方法：</p>
+<pre><code class="language-Kotlin">fun RemoteViews.setBackgroundResource(@IdRes viewId: Int, @DrawableRes srcId: Int) {
+    this.setInt(viewId, &quot;setBackgroundResource&quot;, srcId)
+}
+</code></pre>
+<p>这样就能实现想要的效果。</p>
+<h2 id="获取-widget-尺寸">获取 Widget 尺寸</h2>
+<p>由于 <code>RemoteViews</code> 的限制，我们无法在 Widget 内使用自定义 <code>View</code>，这样类似简单常用的圆角 <code>ImageView</code> 都无法实现，这个时候可以考虑曲线救国，比如对图片的 <code>Bitmap</code> 进行裁剪处理，生成一个圆角的图片进行显示。</p>
+<p>但是同一 Widget 在不同 ROM 下显示的尺寸都会有差异，所以使用 <code>ImageView</code> 作为圆角背景图展示时可能会遇到图片拉伸等问题，官方也没有提供对应的 API 供我们获取，我<a href="https://stackoverflow.com/questions/25153604/get-the-size-of-my-homescreen-widget">在 StackOverflow 上找到了一个并不完美的解决方案</a>：</p>
+<pre><code class="language-Kotlin">/**
+ *  获取 Widget 尺寸
+ *
+ *  @param context Do not pass Application context
+ */
+class WidgetSizeProvider(private val context: Context) {
+
+    private val appWidgetManager = AppWidgetManager.getInstance(context)
+
+    fun getWidgetsSize(widgetId: Int): Pair&lt;Int, Int&gt; {
+        val isPortrait = context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+        val width = getWidgetWidth(isPortrait, widgetId)
+        val height = getWidgetHeight(isPortrait, widgetId)
+        val widthInPx = context.dip(width)
+        val heightInPx = context.dip(height)
+        return widthInPx to heightInPx
+    }
+
+    private fun getWidgetWidth(isPortrait: Boolean, widgetId: Int) = if (isPortrait) {
+        getWidgetSizeInDp(widgetId, AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
+    } else {
+        getWidgetSizeInDp(widgetId, AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH)
+    }
+
+    private fun getWidgetHeight(isPortrait: Boolean, widgetId: Int) = if (isPortrait) {
+        getWidgetSizeInDp(widgetId, AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
+    } else {
+        getWidgetSizeInDp(widgetId, AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
+    }
+
+    private fun getWidgetSizeInDp(widgetId: Int, key: String) = appWidgetManager.getAppWidgetOptions(widgetId).getInt(key, 0)
+
+    private fun Context.dip(value: Int): Int = (value * resources.displayMetrics.density).toInt()
+}
+</code></pre>
+<p>测试过程中发现，在平板上这种方法判断横竖屏不准确，<a href="https://stackoverflow.com/questions/2435548/how-to-detect-orientation-change-in-home-screen-widget">Widget 中也无法监听屏幕旋转</a>，于是加上宽高的判断：</p>
+<pre><code class="language-Kotlin">/**
+ *  获取 Widget 尺寸
+ *
+ *  @param context Do not pass Application context
+ */
+class WidgetSizeProvider(private val context: Context) {
+    ...
+    fun getWidgetsSize(widgetId: Int): Pair&lt;Int, Int&gt; {
+        val isPortrait = ScreenUtils.getScreenHeight(context) &gt; ScreenUtils.getScreenWidth(context)
+                &amp;&amp; context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+        ...
+    }
+}
+</code></pre>
+<p>但是目前仍有一个问题无法解决，系统允许设置桌面图标网格列数，默认情况下，大多数手机桌面图标网格为 4 列。</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1714406253378.png" alt="桌面网格设置" loading="lazy"></figure>
+<p>绝大多数手机在 4 列的情况下获取到的宽高都没问题，或者说即使有误差但视觉上不易察觉出来，当切换到 5 列时，通过以上方法在很多厂商定制的系统（HarmonyOS、MagicOS、REDMAGIC OS 等）中出现了严重的误差，通过计算得知这些系统在返回宽度时是按照每列固定的宽度返回，而不是实际占据的宽度。</p>
+<p>举个例子，比如在 4 列的情况下，图标所占用的宽度为 <code>64dp</code>，两个图标间隔为 <code>16dp</code>，这样一个横向铺满的 Widget 宽度为 <code>304dp</code>；当切到 5 列时，这些定制的系统返回的结果是 <code>384dp</code>。</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1714406276430.png" alt="获取 Widget 宽度异常" loading="lazy"></figure>
+<p>问题就出在这里，一个横向铺满的 Widget，无论列数如何变更，它们的宽度差值应该不会超过一个间隔的宽度，这些厂商粗暴的计算导致返回的结果超过了小组件实际的宽度，甚至超过了屏幕的宽度。</p>
+<p>而测试发现，<strong>在搭载原生 Android 系统的 Google Pixel 上却没有此问题！</strong> 虽然这种获取尺寸的方法并非官方认证，但不同系统的割裂情况依然让我头疼。</p>
+<p>我猜测，产生这个问题的原因可能是因为从 Android 12 开始官方才支持调整桌面图标网格，而大多数 ROM 在很早之前就使用自己的方式实现了，但并没有考虑到 Widget 尺寸的问题，同时即使 Android 12 官方已经实现该功能，这些厂商因为种种原因没有迁移反而将屎山代码流传下来所导致。</p>
+<h2 id="从-widget-中启动应用">从 Widget 中启动应用</h2>
+<p>一般情况下点击 Widget 会启动应用，行为与在桌面点击应用图标一致，冷启动时进入启动页，热启动时进入到退到后台时所在的页面。但在 Android 12 上，该默认行为被取消了，也就是说不设置点击事件的情况下，点击 Widget 将不会自动启动应用，我们可以尝试给它构建一个无路径的 <code>Intent</code> 来解决该问题：</p>
+<pre><code class="language-Kotlin">internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+    val views = RemoteViews(context.packageName, R.layout.new_app_widget)
+    if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.S) {
+        val stackBuilder = TaskStackBuilder.create(context).addNextIntent(Intent())
+        val pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+        views.setOnClickPendingIntent(R.id.appwidget_root, pendingIntent)
+    }
+    appWidgetManager.updateAppWidget(appWidgetId, views)
+}
+</code></pre>
+<p>要是想修改该行为也是可以的：</p>
+<pre><code class="language-Kotlin">internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+    val views = RemoteViews(context.packageName, R.layout.new_app_widget)
+    val stackBuilder = TaskStackBuilder.create(context).apply {
+        addNextIntentWithParentStack(Intent(context, MainActivity::class.java))
+        addNextIntent(Intent(context, WidgetActivity::class.java))
+    }
+    val pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+    views.setOnClickPendingIntent(R.id.appwidget_text, pendingIntent)
+    appWidgetManager.updateAppWidget(appWidgetId, views)
+}
+</code></pre>
+<p>这里看到设置了两个 <code>Activity</code>，其中 <code>WidgetActivity</code> 是要跳转的页面，<code>MainActivity</code> 是首页，这是一个很常见的交互，即小组件跳转到具体页面后返回直接回到应用主页，而不是退出应用。通过 <code>addNextIntentWithParentStack()</code> 可以构建包含返回栈的 <code>PendingIntent</code>。</p>
+<p>仍需要注意的是，一般应用会在闪屏页执行一些初始化操作，但如果像上面修改了 Widget 的启动页面后，应用不经闪屏页即进入 <code>WidgetActivity</code>，会导致某些功能出现异常，所以可以考虑做一个中间页跳转，在中间页做初始化操作，或者直接复用闪屏页功能，根据不同情况跳转。</p>
+<p>当 Widget 内不同的 <code>View</code> 需要响应不同的 <code>PendingIntent</code> 时，我们习惯性会通过 <code>putExtra()</code> 方法给同一个键传递不同的值，但在这里你可能会发现，后一个设置的值总会覆盖前一个，比如：</p>
+<pre><code class="language-Kotlin">internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+    val views = RemoteViews(context.packageName, R.layout.new_app_widget)
+    val stackBuilder1 = TaskStackBuilder.create(context).apply { 
+        ...
+        addNextIntent(Intent(context, WidgetActivity::class.java).putExtra(&quot;arg&quot;, 1))
+    }
+    val pendingIntent1 = stackBuilder1.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+    views.setOnClickPendingIntent(R.id.appwidget_text, pendingIntent2)
+    val stackBuilder2 = TaskStackBuilder.create(context).apply {
+        ...
+        addNextIntent(Intent(context, WidgetActivity::class.java).putExtra(&quot;arg&quot;, 2))
+    }
+    val pendingIntent2 = stackBuilder2.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+    views.setOnClickPendingIntent(R.id.appwidget_img, pendingIntent2)
+    appWidgetManager.updateAppWidget(appWidgetId, views)
+}
+</code></pre>
+<p>无论点击哪一个 <code>View</code>，我们在 <code>WidgetActivity</code> 接收数据会发现都是 <code>2</code>，这显然是不合理的。究其原因，是系统把这两个 <code>PendingIntent</code> 都当成同一个去处理了，我们有两种方法可以避免这个问题。</p>
+<p>一是为 <code>Intent</code> 添加不同的 <code>action</code>：</p>
+<pre><code class="language-Kotlin">internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+    val stackBuilder1 = TaskStackBuilder.create(context).apply { 
+        ...
+        addNextIntent(Intent(context, WidgetActivity::class.java).putExtra(&quot;arg&quot;, 1).setAction(&quot;action_1&quot;))
+    }
+    val stackBuilder2 = TaskStackBuilder.create(context).apply {
+        ...
+        addNextIntent(Intent(context, WidgetActivity::class.java).putExtra(&quot;arg&quot;, 2).setAction(&quot;action_2&quot;))
+    }
+    ...
+    appWidgetManager.updateAppWidget(appWidgetId, views)
+}
+</code></pre>
+<p>二是指定唯一的 <code>requestCode</code>：</p>
+<pre><code class="language-Kotlin">internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+    val pendingIntent1 = stackBuilder1.getPendingIntent(1, PendingIntent.FLAG_UPDATE_CURRENT)
+    val pendingIntent2 = stackBuilder2.getPendingIntent(2, PendingIntent.FLAG_UPDATE_CURRENT)
+    ...
+    appWidgetManager.updateAppWidget(appWidgetId, views)
+}
+</code></pre>
+<p>这两种方案都可以为每个 <code>View</code> 区分 <code>PendingIntent</code> 并传递不同的参数，确保它们能够按照我们期望的方式执行。</p>
+<h2 id="widget-的名称和描述">Widget 的名称和描述</h2>
+<p>Widget 的描述是从 Android 12（S，API 31）开始支持的，也就是上文模版中配置的：</p>
+<pre><code class="language-XML">&lt;appwidget-provider ...
+    android:description=&quot;@string/app_widget_description&quot; /&gt;
+</code></pre>
+<p>但是 Widget 名称并没有默认配置，这时系统会将应用名称作为其默认名称。当一个应用有多个 Widget 的情况下，未配置名称会让用户无法得知每一个 Widget 的作用，比如看『豆瓣』的几个 Widget 你能分辨出它们分别是什么吗：</p>
+<figure data-type="image" tabindex="7"><img src="https://LiarrDev.github.io/post-images/1714406319197.png" alt="豆瓣的 Widget 没有配置名称" loading="lazy"></figure>
+<p>Widget 的名称实际上是通过配置 <code>BroadcastReceiver</code> 的 <code>label</code> 实现的：</p>
+<pre><code class="language-XML">&lt;manifest ...&gt;
+    &lt;application ...&gt;
+        ...
+        &lt;receiver
+            android:name=&quot;.widget.NewAppWidget&quot;
+            android:exported=&quot;false&quot;
+            android:label=&quot;@string/widget_name&quot;&gt;
+            ...
+        &lt;/receiver&gt;
+    &lt;/application&gt;
+&lt;/manifest&gt;
+</code></pre>
+<p>效果如下：</p>
+<table>
+    <td><img src="https://liarrdev.github.io/post-images/1714406438471.png" /></td>
+    <td><img src="https://liarrdev.github.io/post-images/1714406444780.png" /></td>
+</table>
+<h2 id="应用内向桌面添加-widget">应用内向桌面添加 Widget</h2>
+<p>你在日常使用一些 App 时也许有留意到，系统允许在应用内直接向桌面添加 Widget：</p>
+<figure data-type="image" tabindex="8"><img src="https://LiarrDev.github.io/post-images/1714406508376.png" alt="应用内向桌面添加 Widget" loading="lazy"></figure>
+<p>这个功能实际上是从 Android 8（Oreo，API 26）开始提供的：</p>
+<pre><code class="language-Kotlin">fun addWidgetToHomeScreen(context: Context) {
+    if (Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.O) {
+        return
+    }
+    val appWidgetManager = AppWidgetManager.getInstance(context)
+    val provider = ComponentName(context, NewAppWidget::class.java)
+    if (appWidgetManager.isRequestPinAppWidgetSupported) {
+        val intent = Intent(context, NewAppWidget::class.java)
+        val successCallback = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        appWidgetManager.requestPinAppWidget(provider, null, successCallback)
+    }
+}
+</code></pre>
+<p>如果应用不需要收到系统是否成功将 Widget 固定到受支持的启动器上的通知，可以将 <code>null</code> 作为 <code>requestPinAppWidget()</code> 的第三个参数传入。</p>
+<h1 id="总结">总结</h1>
+<p>以上就是构建 App Widget 的简单介绍，同时也涉及到 <code>RemoteViews</code>、 <code>PendingIntent</code> 和 <code>WorkManager</code> 的一些坑，事实上还有许多配置未提及，另一方面 Android 12（S，API 31）这个版本也为 Widget 扩展了许多能力，本文未能一一介绍，如需要更高级的定制功能，可自行查阅文档。</p>
+<h1 id="参考内容">参考内容</h1>
+<ul>
+<li><a href="https://developer.android.google.cn/develop/ui/views/appwidgets/overview">应用 widget 概览 | Android Developers</a></li>
+<li><a href="https://developer.android.google.cn/guide/topics/appwidgets">构建应用微件 | Android 开发者 | Android Developers</a></li>
+<li><a href="https://developer.android.google.cn/guide/practices/ui_guidelines/widget_design">应用微件设计指南 | Android 开发者 | Android Developers</a></li>
+<li><a href="https://developer.android.google.cn/reference/android/widget/RemoteViews">RemoteViews | Android Developers</a></li>
+<li><a href="https://developer.android.google.cn/training/notify-user/navigation">从通知启动 Activity | Android 开发者 | Android Developers</a></li>
+<li><a href="https://issuetracker.google.com/issues/115575872">Disabling component leads to AppWidgetProvider.onUpdate call - Google Issue Tracker</a></li>
+<li><a href="https://issuetracker.google.com/issues/241076154">widgets are &quot;flickering&quot; during every update (even if there is no content change) - Google Issue Tracker</a></li>
+<li><a href="https://issuetracker.google.com/issues/180436098">Bug: WorkManager can trigger onUpdate of AppWidget - Google Issue Tracker</a></li>
+<li><a href="https://stackoverflow.com/questions/73908973/refresh-appwidget-with-network-request-using-remoteview-button">android - Refresh AppWidget with network request using RemoteView button - Stack Overflow</a></li>
+<li><a href="https://stackoverflow.com/questions/25153604/get-the-size-of-my-homescreen-widget">android - Get the size of my homescreen widget - Stack Overflow</a></li>
+<li><a href="https://stackoverflow.com/questions/2435548/how-to-detect-orientation-change-in-home-screen-widget">android - How to detect orientation change in home screen widget? - Stack Overflow</a></li>
+</ul>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Select-Local-File-in-Android-Webview.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Select-Local-File-in-Android-Webview/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2024-05-28">2024-05-28</time>
+                  <h4 class="title white no-margin">Android WebView 选择本地文件</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Try-Photo-Picker-on-Android-13-without-Permission-Hassles.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Try-Photo-Picker-on-Android-13-without-Permission-Hassles/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2024-04-12">2024-04-12</time>
+                  <h4 class="title white no-margin">浅尝 Android 13 Photo Picker 无惧权限烦恼</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

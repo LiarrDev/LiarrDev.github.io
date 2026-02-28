@@ -1,0 +1,771 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>一次实战爱上 Dom4J | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="项目工程中使用 XML 作为配置文件很常见，比如 Android 项目中的 AndroidManifest.xml 和 Maven 项目中的 pom.xml，我们在编写脚本工具时经常需要对这类 XML 文件进行读写操作。
+XML 的解析有很..." />
+    <meta name="keywords" content="Java" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Enjoy-Dom4J-in-One-Shot.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2024-06-19"><i class="fa fa-calendar"></i><span class="lately">2 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Enjoy-Dom4J-in-One-Shot/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Enjoy-Dom4J-in-One-Shot/"> </span>
+              </a>
+              <span id="/Enjoy-Dom4J-in-One-Shot/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-0 ctag-Java" aria-label="">Java</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">一次实战爱上 Dom4J</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>项目工程中使用 XML 作为配置文件很常见，比如 Android 项目中的 <code>AndroidManifest.xml</code> 和 Maven 项目中的 <code>pom.xml</code>，我们在编写脚本工具时经常需要对这类 XML 文件进行读写操作。</p>
+<p>XML 的解析有很多种方法，但总体来说都比 JSON 要复杂。今天来介绍一个我常用的 XML 解析库——Dom4J。</p>
+<p>为了避免引起逻辑上的混乱，下面我会分几个例子介绍其用法。</p>
+<p>添加依赖：</p>
+<pre><code class="language-Kotlin">dependencies {
+    implementation(&quot;org.dom4j:dom4j:2.1.4&quot;)
+}
+</code></pre>
+<p>首先看如何读取 XML，一般情况下我们会读取 XML 文件：</p>
+<pre><code class="language-kotlin">fun parseXml(file: File) {
+    val document = SAXReader().read(file)
+    // ...
+}
+</code></pre>
+<p><code>SAXReader</code> 从 SAX 解析事件创建 Dom4J 树，通过 <code>read()</code> 方法读取 XML 并生成一个 <code>Document</code> 对象。</p>
+<p><code>read()</code> 不仅支持 <code>File</code> 类型，其他的如 <code>URL</code>、<code>InputStream</code>、<code>Reader</code> 等也是可以的。</p>
+<p>如果希望从字符串中解析，可以换一种方式：</p>
+<pre><code class="language-kotlin">fun parseXml(xml: String) {
+    val document = DocumentHelper.parseText(xml)
+    // ...
+}
+</code></pre>
+<p>读取 XML 内容后，我们通过这个 <code>Document</code> 对象，就可以获取到里面的节点。</p>
+<p>举个例子，我们解析如下 XML：</p>
+<pre><code class="language-xml">&lt;school&gt;
+    &lt;student&gt;
+        &lt;name&gt;Tom&lt;/name&gt;
+        &lt;age&gt;18&lt;/age&gt;
+    &lt;/student&gt;
+&lt;/school&gt;
+</code></pre>
+<p>代码如下：</p>
+<pre><code class="language-kotlin">fun parseDocument(document: Document) {
+    val rootElement = document.rootElement
+    val student = rootElement.element(&quot;student&quot;)
+    val name = student.elementText(&quot;name&quot;)
+    val age = student.element(&quot;age&quot;).text
+    // ...
+}
+</code></pre>
+<p>通过 <code>Document</code> 的 <code>getRootElement()</code> 方法拿到根节点，每个节点都是一个 <code>Element</code> 对象，调用其 <code>element()</code> 方法可以获取子节点。最内层的节点，我们有两种方式获取它的值，一种是对该节点的父节点调用 <code>elementText()</code> 方法，可以直接根据子节点的名称获取到值；另一种是先获取到该子节点 <code>Element</code> 对象再调用 <code>getText()</code> 方法获取值。所获取到的值都是 <code>String</code> 类型，按需转换。</p>
+<p>在 Android 中我们常见的配置往往是通过属性配置的，比如：</p>
+<pre><code class="language-xml">&lt;FrameLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;&gt;
+    &lt;TextView
+        android:id=&quot;@+id/text&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;warp_content&quot;
+        android:background=&quot;@color/white&quot;
+        tools:background=&quot;@color/black&quot; /&gt;
+&lt;/FrameLayout&gt;
+</code></pre>
+<p>这是一个布局文件，解析其属性的方法如下：</p>
+<pre><code class="language-kotlin">fun parseDocument(document: Document) {
+    val rootElement = document.rootElement
+    val textView = rootElement.element(&quot;TextView&quot;)
+    val id = textView.attributeValue(&quot;id&quot;)
+    // ...
+}
+</code></pre>
+<p>获取到对应元素的 <code>Element</code> 后，调用 <code>attributeValue()</code> 方法传入属性名获取对应的值，可以看到，虽然该 XML 中每个属性都指定了命名空间，也就是前面的 <code>android:</code>，但我们并不需要传入完整的 <code>android:id</code> 才能获取到该属性的值，恰恰相反，如果把命名空间也写上反而获取不到，这是因为命名空间需要额外配置。</p>
+<p>相信你已经注意到，上方对于 <code>background</code> 属性，我在两个命名空间下都有定义，分别是 <code>android:background</code> 和 <code>tools:background</code>，如果直接调用 <code>attributeValue(&quot;background&quot;)</code>，你猜它会获取到哪个值？</p>
+<p>实际上，哪个定义排在前面，它就会获取哪个属性的值。</p>
+<p>对于不同命名空间的属性，我们可以通过以下方法进行获取：</p>
+<pre><code class="language-kotlin">fun parseDocument(document: Document) {
+    val rootElement = document.rootElement
+    val toolsNamespace = Namespace.get(&quot;tools&quot;, &quot;http://schemas.android.com/tools&quot;)
+    val androidNamespace = Namespace.get(&quot;android&quot;, &quot;http://schemas.android.com/apk/res/android&quot;)
+    val textView = rootElement.element(&quot;TextView&quot;)
+    val toolsBackground = textView.attributeValue(QName.get(&quot;background&quot;, toolsNamespace))
+    val androidBackground = textView.attributeValue(QName.get(&quot;background&quot;, androidNamespace))
+    // ...
+}
+</code></pre>
+<p>先传入前缀和其 <code>Uri</code> 构建对应的命名空间 <code>Namespace</code>，获取属性值时，我们不再简单粗暴地传入属性名，而是通过 <code>Namespace</code> 构建 <code>QName</code>，<code>QName</code> 是 XML 元素或属性的限定名称值，它能够帮助我们根据命名空间解析正确的值。</p>
+<p>对于一些相同标签的组，我们无法直接通过标签名直接获取到我们想要的值，可以一次性把这个组下所有的标签都获取到，再根据条件筛选。</p>
+<p>比如 Android 中用到的：</p>
+<pre><code class="language-xml">&lt;application xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
+    &lt;activity android:name=&quot;.MainActivity&quot; /&gt;
+    &lt;activity android:name=&quot;.SplashActivity&quot; /&gt;
+    &lt;activity android:name=&quot;.AboutActivity&quot; /&gt;
+&lt;/application&gt;
+</code></pre>
+<p>通过 <code>Element</code> 的 <code>elements()</code> 可以获取其所有的子节点。</p>
+<pre><code class="language-kotlin">fun parseDocument(document: Document) {
+    val rootElement = document.rootElement
+    val activities = rootElement.elements()
+    activities.forEach {
+        if (it.attribute(&quot;name&quot;).text.contains(&quot;MainActivity&quot;)) {
+            // ...
+        }
+    }
+}
+</code></pre>
+<p>获取所有属性也是一样的操作，调用 <code>attributes()</code> 即可，不再赘述。</p>
+<p>另外还可以通过 <code>elementIterator()</code> 和 <code>attributeIterator()</code> 获取迭代器，使用迭代器遍历来完成操作。</p>
+<p>以上就是使用 Dom4J 对 XML 的读操作，在这几个例子中我们可以发现，主要操作的几个对象无非就是 <code>Document</code>、<code>Element</code> 和 <code>Attribute</code>，接下来的写操作大同小异。</p>
+<pre><code class="language-kotlin">fun createDocument(): Document {
+    val document = DocumentHelper.createDocument()
+    val root = document.addElement(&quot;root&quot;)
+    val author = root.addElement(&quot;author&quot;)
+        .addAttribute(&quot;location&quot;, &quot;UK&quot;)
+        .addText(&quot;James Strachan&quot;)
+    return document
+}
+</code></pre>
+<p>节点、属性的添加与修改，都可以通过 <code>addElement()</code> 和 <code>addAttribute()</code> 来完成，需要注意的是，如果涉及到命名空间，依旧要借助 <code>QName</code>。</p>
+<p>为了方便日志打印或其他操作，可以将 <code>Document</code> 转为 XML 字符串：</p>
+<pre><code class="language-kotlin">fun convertToXml(document: Document) {
+    val text = document.asXML()
+    // ...
+}
+</code></pre>
+<p>作为脚本，最重要的当然是回写到文件：</p>
+<pre><code class="language-kotlin">fun write(document: Document) {
+    FileWriter(&quot;output.xml&quot;).use { 
+        val writer = XMLWriter(it)
+        writer.write(document)
+        writer.close()
+    }
+}
+</code></pre>
+<p>根据路径创建 <code>FileWriter</code>，再创建出 <code>XMLWriter</code> 并调用 <code>write()</code> 将 <code>Document</code> 写入到路径所对应的文件中，最后不要忘了调用 <code>close()</code>。</p>
+<p>除了写入到文件中外，还可以输出到控制台：</p>
+<pre><code class="language-kotlin">fun log(document: Document) {
+    val format = OutputFormat.createPrettyPrint()
+    val writer = XMLWriter(System.out, format)
+    writer.write(document)
+    writer.close()
+}
+</code></pre>
+<p>这里同时还创建了一个格式美化的 <code>OutputFormat</code>，创建 <code>XMLWriter</code> 不再借助 <code>FileWriter</code>，而是传入 <code>System.out</code>，相信任何一个 Java 开发者对这个都不陌生。</p>
+<p>以上就是 Dom4J 的常见用法，更详细的介绍可以查阅<a href="https://dom4j.github.io">官方文档</a>。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/IntelliJ-IDEA-CE-Tomcat-Configuration-for-macOS.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/IntelliJ-IDEA-CE-Tomcat-Configuration-for-macOS/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2024-07-11">2024-07-11</time>
+                  <h4 class="title white no-margin">macOS 平台 IntelliJ IDEA 社区版 Tomcat 配置笔记</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Capture-Traffic-on-Android-with-Fiddler-Everywhere.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Capture-Traffic-on-Android-with-Fiddler-Everywhere/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2024-06-06">2024-06-06</time>
+                  <h4 class="title white no-margin">使用 Fiddler Everywhere 在 Android 上抓包</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

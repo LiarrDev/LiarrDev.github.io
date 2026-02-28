@@ -1,0 +1,1123 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>一次实战爱上『LitePal』 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="『SQLite』是一款轻量级的关系型数据库，是遵守 ACID 的关系型数据库管理系统，它包含在一个相对小的 C 库中。它的设计目标是嵌入式的，而且目前已经在很多嵌入式产品中使用了它，在嵌入式设备中，它的运算速度非常快，占用资源很少，通常只需..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Enjoy-LitePal-in-One-Shot.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2019-03-18"><i class="fa fa-calendar"></i><span class="lately">7 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Enjoy-LitePal-in-One-Shot/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Enjoy-LitePal-in-One-Shot/"> </span>
+              </a>
+              <span id="/Enjoy-LitePal-in-One-Shot/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">一次实战爱上『LitePal』</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>『SQLite』是一款轻量级的关系型数据库，是遵守 ACID 的关系型数据库管理系统，它包含在一个相对小的 C 库中。它的设计目标是嵌入式的，而且目前已经在很多嵌入式产品中使用了它，在嵌入式设备中，它的运算速度非常快，占用资源很少，通常只需要几百 KB 的内存就足够了，它实现了自给自足的、无服务器的、零配置的、事务性的 SQL 数据库引擎，因而特别适合在移动设备上使用。『SQLite』是在世界上最广泛部署的 SQL 数据库引擎，它的源代码不受版权限制。</p>
+<p>一个完整的『SQLite』数据库是存储在一个单一的跨平台的磁盘文件，这也为其便携性提供了良好的条件。而且『SQLite』不仅支持标准的 SQL 语法，还遵循了数据库的 ACID（指数据库事务正确执行的四个基本要素。包含：Atomicity &lt;原子性&gt;、Consistency &lt;一致性&gt;、Isolation &lt;隔离性&gt;、Durability &lt;持久性&gt;。一个支持 Transaction &lt;事务&gt; 的数据库，必须要具有这四种特性，否则在 Transaction processing &lt;事务过程&gt; 当中无法保证数据的正确性，交易过程极可能达不到交易方的要求）事务，所以只要以前使用过其他的关系型数据库，就可以很快地上手『SQLite』。</p>
+<p>而『SQLite』又比一般的数据库要简单得多，它甚至不用设置用户名和密码就可以使用。Android 正是把这个功能极为强大的数据库嵌入到了系统当中，使得本地数据持久化的功能有了一次质的飞跃。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1562233549499.png" alt="SQLite" loading="lazy"></figure>
+<p>抛完书包来看看在 Android 中『SQLite』的使用方式。</p>
+<p>一开始我依然是坚持原生的写法，Android 为了让我们能够更加方便地管理数据库，专门提供了一个 <code>SQLiteOpenHelper</code> 帮助类，借助这个类就可以对数据库进行创建和升级。</p>
+<p>由于 <code>SQLiteOpenHelper</code> 是一个抽象类，这就意味着如果想要使用它的话就需要创建一个自己的帮助类去继承它。</p>
+<pre><code class="language-Java">public class DatabaseHelper extends SQLiteOpenHelper {
+    public static final String CREATE_TABLE = &quot;CREATE TABLE TABLE_NAME (&quot;               // TABLE_NAME 是表名
+                                            + &quot;ID integer primary key autoincrement, &quot;  // integer 对应 int 类型
+                                            + &quot;NAME text, &quot;                             // text 对应 String 类型
+                                            + &quot;PRICE real)&quot;;                            // real 对应 double 类型
+    private Context mContext;
+
+    /**
+     *  @param context  上下文，必须存在才能进行数据库操作
+     *  @param name     数据库名
+     *  @param factory  允许在查询数据的时候返回一个自定义的 Cursor，一般传入 null 即可
+     *  @param version  当前数据库版本号，可用于对数据库进行升级操作
+     */
+    public DatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+        super(context, name, factory, version);
+        mContext = context;
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        db.execSQL(CREATE_TABLE);
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
+}
+</code></pre>
+<p>然后在创建数据库的地方进行相应的操作，比如：</p>
+<pre><code class="language-Java">DatabaseHelper dbHelper = new DatabaseHelper(this, &quot;DATABASE_NAME.db&quot;, null, 1);
+SQLiteDatabase db = dbHelper.getWriteableDatabase();
+</code></pre>
+<p>构建一个 <code>DatabaseHelper</code> 对象，并通过构造函数的参数将数据库名指定为 <code>DATABASE_NAME.db</code>，版本号指定为 <code>1</code>，并调用 <code>getWriteableDatabase()</code> 方法，系统会检测当前程序中有没有「DATABASE_NAME.db」这个数据库，如果没有就会创建该数据库并调用 <code>DatabaseHelper</code> 中的 <code>onCreate()</code> 方法，这样 <code>TABLE_NAME</code> 表也就得到了创建，如果系统检测到当前程序中已存在「DATABASE_NAME.db」数据库，就不会再创建一次了。</p>
+<p>添加数据操作如下：</p>
+<pre><code class="language-Java">ContentValues values = new ContentValues();
+
+// 组装第一条数据
+values.put(&quot;NAME&quot;, NAME_1);
+values.put(&quot;PRICE&quot;, PRICE_1);
+
+// 插入第一条数据
+db.insert(TABLE_NAME, null, value);     // 第一个参数是表名，第二个参数用于在未指定添加数据的情况下给某些可为空的列自动赋值 NULL，第三个参数将表中每个列名以及相应的待添加数据传入的 ContentValues 对象
+
+// 清空 values 中的数据
+values.clear();
+
+// 组装第二条数据
+values.put(&quot;NAME&quot;, NAME_2);
+values.put(&quot;PRICE&quot;, PRICE_2);
+
+// 插入第二条数据
+db.insert(TABLE_NAME, null, values);
+</code></pre>
+<p>更新数据的方式也是十分相似：</p>
+<pre><code class="language-Java">ContentValues values = new ContentValues();
+values.put(&quot;PRICE&quot;, PRICE_3);
+db.update(TABLE_NAME, values, &quot;NAME = ?&quot;, new String[] {    NAME_1  });
+</code></pre>
+<p>其中第一个参数毫无疑问是表名，第二个参数则是 <code>ContentValues</code> 对象，第三个参数对应的是 SQL 语句中的 <code>WHERE</code> 部分，表示更新所有 <code>NAME</code> 等于 <code>?</code> 的行，而 <code>?</code> 则是一个占位符，可以通过第四个参数提供的一个字符串数组为第三个参数中的每个占位符指定相应的内容。</p>
+<p>删除数据则更加简单：</p>
+<pre><code class="language-Java">db.delete(TABLE_NAME, &quot;NAME = ?&quot;, new String[] {    NAME_2  });
+</code></pre>
+<p>查询数据则要复杂一些，要知道 SQL 的全称是 Structured Query Language，翻译成中文就是结构化查询语句，它的大部分功能都体现在“查”这个字上，<code>SQLiteDatabase</code> 中提供了一个 <code>query()</code> 方法用于对数据库进行查询，但是这个方法的参数也是非常复杂，最短的一个方法重载也需要传入 7 个参数：</p>
+<pre><code class="language-Java">query(String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy);
+</code></pre>
+<p>第一个参数不用说，当然还是用于指定查询的表名，对应 SQL 中的 <code>FROM TABLE_NAME</code>。第二个参数用于指定查询的列名，对应 SQL 中的 <code>SELECT column_1, column_2</code>，如果不指定则默认查询所有列。第三、四个参数用于约束查询的列，对应 SQL 中的 <code>WHERE column = value</code>，不指定则默认查询所有行的数据，与上方更新与删除类似，第三个参数指定 <code>WHERE</code> 的约束条，第四列为 <code>WHERE</code> 中的占位符提供具体的值。第五个参数用于指定需要 <code>GROUP BY</code> 的列，对应 SQL 中的 <code>GROUP BY column</code>，不指定则表示不对查询结果进行 <code>GROUP BY</code> 操作。第六个参数用于对 <code>GROUP BY</code> 之后的数据结果进行进一步的约束过滤，对应 SQL 中的 <code>HAVING column = value</code>，不指定则表示不进行过滤。第七个参数用于指定查询结果的排序方式，对应 SQL 中的 <code>ORDER BY column_1, column_2</code>，不指定则表示默认的排序方式。</p>
+<p>而其他几个 <code>query()</code> 方法的重载其实也大同小异，比如增加了 <code>LIMIT</code> 功能等。</p>
+<p>实际使用代码如下：</p>
+<pre><code class="language-Java">Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, null);       // 查询表中所有数据
+if (cursor.moveToFirst) {
+    do {
+        // 遍历 Cursor 对象，取出数据
+        String name = cursor.getString(cursor.getColumnIndex(&quot;NAME&quot;));
+        double price = cursor.getDouble(cursor.getColumnIndex(&quot;PRICE&quot;));
+
+        // 对数据做相应的逻辑操作
+        ...
+    } while (cursor.moveToNext());
+    cursor.close();
+}
+</code></pre>
+<p>查询完之后可以得到一个 <code>Cursor</code> 对象，接着调用它的 <code>moveToFirst()</code> 方法将数据的指针移动到第一行的位置，然后进入一个循环当中，去遍历查询到的每一行数据，在这个循环中可以通过 <code>Cursor</code> 的 <code>getColumnIndex()</code> 方法获取到某一列在表中对应的位置索引，然后将这个索引传入到对应的取值方法中，就可以得到从数据库中读取到的数据了。</p>
+<p>需要注意，对 SQLite 的操作结束后一定要记得关闭，养成良好的编码习惯，否则在当你尝试导出的时候，有可能会遇到数据库不能正常打开的情况：</p>
+<pre><code class="language-Java">cursor.close();
+db.close();
+</code></pre>
+<p>虽然 Android 已经提供了很多非常方便的 API 用于操作数据库，不过总会有时候使用起来力不从心，不如 SQL 语言方便，而 Android 也提供了一系列的方法使得可以直接通过 SQL 来操作数据库，完成 CRUD 操作，比如适合于增删改的 <code>execSQL()</code> 方法和适用于查的 <code>rawQuery()</code> 方法。</p>
+<p>以上的 API 用起来也算是方便了，包括我在学习 Android 开发前期也是使用上面的方法。</p>
+<p>但是当开发经验逐渐积累的时候，就会发现使用这种方法在升级数据库的时候变得十分麻烦，虽然 <code>SQLiteOpenHelper</code> 中提供了 <code>onUpgrade()</code> 方法，但升级的时候依然会出现很多不必要的麻烦，这就终于要进入本文的正题了。</p>
+<p>还是来源于《第一行代码——Android》的学习经验，我开始在我的每一个项目中使用『LitePal』这个开源库，『LitePal』是一款开源的 Android 数据库框架，它采用了对象关系映射（ORM）的模式，并将我们平时开发最常用到的一些数据库功能进行了封装，使得易用性要高于 <code>SQLiteOpenHelper</code>。</p>
+<p>其实之前一直也没发现，原来『LitePal』的开发者正是《第一行代码——Android》的作者郭霖，不过郭神也是比较谦虚，虽然这是在书中第一个介绍的开源库，但是郭神也只字未提这是他所开发的框架，我也是到后来使用多了而频繁进入其 <a href="https://github.com/LitePalFramework/LitePal">Github 项目主页</a>才发现了这个真相。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1576082027103.png" alt="LitePal" loading="lazy"></figure>
+<p>还值得一提的是，郭霖已经维护『LitePal』五年之久了，截至目前，已经发布了 <code>Version 3.x</code>，而我也从 <code>Version 1.x</code> 一直学习到了 <code>Version 3.x</code>，也算是了解其 API 的变化了，另外其在 2018 年就连续更新了两次大版本，<code>Version 3.x</code> 更是分裂成了分别支持 Kotlin 和 Java 的两个项目，除了牛逼我已经找不到其他词来形容了！</p>
+<p>赶紧来看看使用的方法。</p>
+<p>首先得在「app/build.gradle」文件中声明依赖，上面也提到，为了更好地兼容 Kotlin 语言，『LitePal』现在不再是一个库了，而是变成了两个库，根据使用的语言不同，引入的库也不同。</p>
+<p>如果使用的是 Java，则引入如下配置：</p>
+<pre><code class="language-Groovy">dependencies {
+    implementation 'org.litepal.android:java:(insert latest version)'
+}
+</code></pre>
+<p>如果使用的是 Kotlin，则引入如下配置：</p>
+<pre><code class="language-Groovy">dependencies {
+    implementation 'org.litepal.android:kotlin:(insert latest version)'
+}
+</code></pre>
+<p>如果使用 <code>Version 2.x</code> 及之前版本的话，则引入如下配置：</p>
+<pre><code class="language-Groovy">dependencies {
+    implementation 'org.litepal.android:core:(insert version)'
+}
+</code></pre>
+<p>由于拆分成了两个库，所以在使用 <code>Version 2.x</code> 的项目中，『Android Studio』并不会对『LitePal』进行升级提醒，也就是说『Android Studio』默认把 <code>Version 2.1.0</code> 作为未拆分库前的最新版，而分库后则以项目文档为准，另外，因为我一直都是使用 Java 进行 Android 开发，所以下面的介绍也都用 Java 进行示例。</p>
+<p>把『LitePal』成功引入到项目中后，则需要配置 <code>LitePalApplication</code> 了，在「AndroidManifest.xml」中指定 <code>Application</code> 的 <code>android:name</code>，代码如下：</p>
+<pre><code class="language-XML">&lt;manifest xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+    package=&quot;com.liar.litepaldemo&quot;&gt;
+    &lt;application ...
+        android:name=&quot;org.litepal.LitePalApplication&quot; &gt;
+        ...
+    &lt;/application&gt;
+&lt;/manifest&gt;
+</code></pre>
+<p>当然，有时候我们还会为项目配置属于自己的 <code>Application</code>，比如：</p>
+<pre><code class="language-XML">&lt;manifest xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+    package=&quot;com.liar.litepaldemo&quot;&gt;
+    &lt;application ...
+        android:name=&quot;com.liar.MyOwnApplication&quot; &gt;
+        ...
+    &lt;/application&gt;
+&lt;/manifest&gt;
+</code></pre>
+<p>而一个 <code>Application</code> 只能有一个 <code>android:name</code>，这样麻烦就比较大了，但『LitePal』已经为我们考虑了这一点，只需在我们自定义的 <code>Application</code> 中调用『LitePal』提供的方法即可：</p>
+<pre><code class="language-Java">public class MyOwnApplication extends Application {
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        LitePal.initialize(this);
+    }
+    ...
+}
+</code></pre>
+<p>配置完 <code>Application</code>，我们就可以创建数据库了。</p>
+<p>对比之前自定义类继承自 <code>SQLiteOpenHelper</code> 并在 <code>onCreate()</code> 方法中编写建表语句来实现的方法，『LitePal』提供的方法十分颠覆却又更加好用。</p>
+<p>前面提到『LitePal』采取的是对象关系映射（ORM）的模式，那么什么是对象关系映射呢？简单点说，我们使用的编程语言是面向对象语言，而使用的数据库则是关系型数据库，那么将面向对象的语言和面向关系的数据库之间建立一种映射关系，就是对象关系映射了。</p>
+<p>对象关系映射模式赋予了我们一个强大的功能，就是可以用面向对象的思维来操作数据库，而不用再和 SQL 语句打交道。创建一张表，我们应先分析表中应包含哪些列，在『LitePal』中，可以用面向对象的思维来实现，比如我创建一个 <code>Users</code> 表，希望有 <code>name</code>、<code>email</code>、<code>password</code> 三个字段，我就可以定义一个 <code>Users</code> 类来完成这件事情：</p>
+<pre><code class="language-Java">public class Users extends LitePalSupport {
+    private String name;
+    private String email;
+    private String password;
+
+    public String getName() {  return name;    }
+    public void setName(String name) { this.name = name;   }
+    public String getEmail() { return email;   }
+    public void setEmail(String email) {   this.email = email; }
+    public String getPassword() {  return password;    }
+    public void setPassword(String password) { this.password = password;   }
+}
+</code></pre>
+<p>这是一个典型的 Java Bean，在『Android Studio』中可以通过快捷键（Windows 系统中是 <code>Alt+Insert</code>，Mac 系统中是 <code>Command+N</code>）在弹出的菜单中选择「Getter and Setter」并选中所有字段来快速生成，在 <code>Users</code> 类中定义了上述的三个字段，并生成了相应的 Getter 和 Setter 方法，这样表就创建完成了。</p>
+<p>需要注意的是，这个类需要继承自 <code>LitePalSupport</code> 类才行，其实『LitePal』进行表管理操作时不需要模型类有任何的继承结构，但是进行 CRUD 操作时就不行了，必须得继承自 <code>LitePalSupport</code> 类，而这个类也是在 <code>Version 2.0.0</code> 中才修改的，在 <code>Version 1.x</code> 中继承自 <code>DataSupport</code> 类。</p>
+<p>从 <code>Version 2.0.0</code> 开始，几乎所有的 API 接口全部都变了。但是请不要惊慌，<code>Version 2.0.0</code> 是完全向下兼容的，也就是说，大家不用担心升级之后会出现大量的错误，之前所有的代码都还是可以正常运行的，只是原来旧的 API 会被标识为废弃，提醒大家尽快使用新的 API 而已。</p>
+<p>当然，大家也不用一听到所有的 API 都变了就觉得恐慌，虽然我刚过渡版本的时候也有点手足无措，但是阅读了文档之后就发现，其实一切的变更都是有规律可循的，具体下文会继续介绍。</p>
+<p>继续来看使用方法，当模型类创建完成后就该配置「litepal.xml」文件了，在 <code>app/src/main/assets</code> 目录下新建「litepal.xml」文件，编辑代码如下：</p>
+<pre><code class="language-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;litepal&gt;
+    &lt;dbname value=&quot;HacppleStore&quot; /&gt;                 &lt;!-- 数据库名称 --&gt;
+    &lt;version value=&quot;1&quot; /&gt;                           &lt;!-- 数据库版本 --&gt;
+
+    &lt;!-- 指定所有的映射模型 --&gt;
+    &lt;list&gt;
+        &lt;mapping class=&quot;com.liar.hacpplestore.database.Users&quot; /&gt;
+    &lt;/list&gt;
+
+    &lt;!-- 设置数据库在 SD 卡中的存储目录 --&gt;
+    &lt;storage value=&quot;liar/database&quot; /&gt;
+&lt;/litepal&gt;
+</code></pre>
+<p>这里用 <code>&lt;mapping&gt;</code> 标签来声明我们要配置的映射模型类，注意一定要使用完整的类名。不管有多少模型类需要映射，都使用同样的方法配置在 <code>&lt;list&gt;</code> 标签下即可。</p>
+<p><code>&lt;storage&gt;</code> 标签则是用于将数据库保存到 SD 卡，这个功能是在 <code>Version 1.6.0</code> 中加入的，我在一般情况下是不会用到。</p>
+<p>将数据库保存到 SD 卡的功能一直呼声是挺高的，不过『LitePal』一开始并没有加入这个功能，因为数据库文件保存到 SD 卡是一件很不安全的事情，这就意味着应用程序的数据将会面临泄露的风险，但是在 <code>Version 1.6.0</code> 开始支持数据加密功能，因此开放将数据库存储到 SD 卡的这个功能也就变得顺理成章了。</p>
+<p>其实在绝大多数情况下，我们都是非常不建议将数据库文件保存到 SD 卡的，但是保存到 SD 卡也确实存在着一些好处：</p>
+<p>一是方便调试。因为数据库的默认存储路径是在应用的沙盒当中，即使作为开发者的我们也是访问不到的。因此有时候编程出现了问题，但是我们又看不到数据库原文件，调试起来非常不方便。而将数据库文件保存到 SD 卡，我们就可以轻易地访问到了。</p>
+<p>二是应用卸载后数据不丢失。由于数据库文件默认存储在应用的沙盒目录当中，一旦应用被卸载了，数据库文件也会一同被清除。如果你想实现这样的功能：应用被卸载了，然后用户又重新安装，依然能够读取到之前的数据，那么就必须将数据库文件保存到 SD 卡。</p>
+<p>回到上方的示例，郭神在设计『LitePal』的接口时，永远都会将易用性放在第一位，所以上方示例中的一行代码就已经能够将数据库文件保存到 SD 卡的 <code>liar/database</code> 目录下了。注意不需要将 SD 卡的完整路径配置进去，只需要配置相对路径即可。</p>
+<p>另外还有非常重要的一点需要注意，由于从 Android M 开始访问 SD 卡需要申请运行时权限，而『LitePal』中既没有 <code>Activity</code> 也没有 <code>Fragment</code>，所以『LitePal』是不会去帮你申请运行时权限的，因此如果你选择将数据库文件存储在 SD 卡上，那么请一定要确保你的应用程序已经对访问 SD 卡权限进行了运行时权限处理，否则『LitePal』的所有操作都将会失败。</p>
+<p>这样就把所有准备工作就做完了，只要进行任意一次数据库操作，「HacppleStore.db」数据库就会自动创建出来了，如：</p>
+<pre><code class="language-Java">LitePal.getDatabase();
+</code></pre>
+<p>前面也提到，使用 <code>SQLiteOpenHelper</code> 来升级数据库会遇到非常严重的问题，容易造成数据丢失，当然有经验的程序员可以通过复杂的逻辑控制来避免这种情况，但是维护成本很高。而有了『LitePal』，这些就都不再是问题了，使用『LitePal』来升级数据库非常非常简单，完全不用思考任何逻辑，只需要更改想要更改的内容，然后将版本号加1就可以了。</p>
+<p>比如我在上面的 <code>Users</code> 表中增加一个 <code>tel</code> 列，那么我直接修改 <code>Users</code> 类中的代码，添加一个 <code>tel</code> 字段即可：</p>
+<pre><code class="language-Java">public class Users extends LitePalSupport {
+    ...
+    private String tel;
+    public String getTel() {    return tel; }
+    public void setTel(String tel) {   this.tel = tel; }
+    ...
+}
+</code></pre>
+<p>与此同时，我还想添加一张 <code>Orders</code> 表，那么只需新建一个 <code>Orders</code> 类即可：</p>
+<pre><code class="language-Java">public class Orders extends LitePalSupport {
+    private String orderNum;
+    private String buyerName;
+    private String buyerTel;
+    private String buyerAddress;
+    private String transactionTime;
+
+    public String getOrderNum() {  return orderNum;    }
+    public void setOrderNum(String orderNum) { this.orderNum = orderNum;   }
+    public String getBuyerName() { return buyerName;   }
+    public void setBuyerName(String buyerName) {   this.buyerName = buyerName; }
+    public String getBuyerTel() {  return buyerTel;    }
+    public void setBuyerTel(String buyerTel) { this.buyerTel = buyerTel;   }
+    public String getBuyerAddress() {  return buyerAddress;    }
+    public void setBuyerAddress(String buyerAddress) { this.buyerAddress = buyerAddress;   }
+    public String getTransactionTime() {   return transactionTime; }
+    public void setTransactionTime(String transactionTime) {   this.transactionTime = transactionTime; }
+}
+</code></pre>
+<p>当改完了所有我们想改的东西，只需要记得将版本号加 <code>1</code> 即可，如果添加了一个新的模型类，因此也需要将它添加到映射模型列表中。修改「litepal.xml」中的代码：</p>
+<pre><code class="language-XML">&lt;litepal&gt;
+    &lt;dbname value=&quot;HacppleStore&quot; /&gt;
+    &lt;version value=&quot;2&quot; /&gt;
+    &lt;list&gt;
+        &lt;mapping class=&quot;com.liar.hacpplestore.database.Users&quot; /&gt;
+        &lt;mapping class=&quot;com.liar.hacpplestore.database.Orders&quot; /&gt;
+    &lt;/list&gt;
+    ...
+&lt;/litepal&gt;
+</code></pre>
+<p>运行后就可以发现『LitePal』在内部已经自动帮我们保留了所有数据并完成了升级。</p>
+<p>接下来就该介绍 CRUD 了。</p>
+<p>其实回观前面的添加数据的方法并不十分复杂，但『LitePal』则把这一切做得更加简单了：</p>
+<pre><code class="language-Java">Users user = new Users();
+user.setName(name);
+user.setTel(tel);
+user.setEmail(email);
+user.setPassword(password);
+user.save();
+</code></pre>
+<p>还记得我们在模型类中的 Java Bean 吗？添加数据只需调用 <code>Users</code> 类中的各种 set 方法对数据进行设置，最后再调用从 <code>LitePalSupport</code> 类中继承而来的 <code>save()</code> 方法就能完成数据添加操作了。</p>
+<p>更新数据则要比添加数据要稍微复杂一点，因为它的 API 接口比较多，而我最常用的就是 <code>updateAll()</code> 方法：</p>
+<pre><code class="language-Java">Users user = new Users();
+user.setTel(NEW_TEL);
+user.setPassword(NEW_PASSWORD);
+user.updateAll(&quot;name = ? and email = ?&quot;, name, email);
+</code></pre>
+<p>这里首先 <code>new</code> 出了一个 <code>Users</code> 实例，然后直接调用 set 方法来设置要更新的数据，最后在调用 <code>updateAll()</code> 方法去执行更新操作。注意 <code>updateAll()</code> 方法中可以指定一个条件约束，和 <code>SQLiteDatabase</code> 中 <code>update()</code> 方法的 <code>where</code> 参数部分有点类似，但更加简洁，不过不指定条件语句的话，就表示更新所有数据。</p>
+<p>在使用 <code>updateAll()</code> 方法时，还有一个非常重要的知识点，就是当想把一个字段的值更新成默认值时，是不可以使用上面的方式来 set 数据的。众所周知在 Java 中任何一种数据类型的字段都会有默认值，例如 <code>int</code> 类型的默认值是 <code>0</code>，<code>boolean</code> 类型的默认值是 <code>false</code>，<code>String</code> 类型的默认值是 <code>null</code>，那么当 <code>new</code> 出一个模型类对象时，其实所有字段都已经被初始化成默认值了。因此如果我们向把数据库表中的某 <code>int</code> 类型列的更新成 <code>0</code>，直接调用 <code>setVariable(0)</code> 是不可以的，因为即使不调用这行代码，<code>variable</code> 这个字段本身也是 <code>0</code>，『LitePal』此时是不会对这个列进行更新的。</p>
+<p>对于所有想要将为数据更新成默认值的操作，『LitePal』统一提供了一个 <code>setToDefault()</code> 方法，然后传入相应的列名就可以实现了：</p>
+<pre><code class="language-Java">Users user = new Users();
+user.setToDefault(&quot;tel&quot;);
+user.updateAll();
+</code></pre>
+<p>这段代码的意思是将所有用户的 <code>tel</code> 都设为 <code>null</code>，虽然实际上我们并不会这样做。因为 <code>updateAll()</code> 方法中没有指定约束条件，因此更新操作对所有数据都生效了。</p>
+<p>删除数据也是非常简单的，我最常用的方法是直接调用 <code>deleteAll()</code> 方法：</p>
+<pre><code class="language-Java">LitePal.deleteAll(Users.class, &quot;tel = ?&quot;, tel);
+</code></pre>
+<p>后面的参数同样用于指定约束条件，应该不难理解。另外如果不指定约束条件，就意味着要删除表中所有的数据，这一点和上面 <code>updateAll()</code> 方法是比较相似的。</p>
+<p>还值得一提的是，这个方法在 <code>Version 1.x</code> 中的写法为 <code>DataSupport.deleteAll()</code>，在 <code>Version 2.0.0</code> 中被改成了现在的写法。</p>
+<p>又到了查询数据部分，使用了『LitePal』后复杂的查询操作就成为了过去式，『LitePal』在查询 API 方面做了非常多的优化，基本上可以满足绝大多数场景的查询需求，并且代码十分简洁，比如向查询 <code>Users</code> 表中所有数据，代码如下：</p>
+<pre><code class="language-Java">List&lt;Users&gt; users = LitePal.findAll(Users.class);
+for (Users user: users) {
+    String name = user.getName();
+    String email = user.getEmail();
+
+    // 对数据做相应的逻辑操作
+    ...
+}
+</code></pre>
+<p><code>findAll()</code> 方法的返回值是一个 <code>List</code> 集合，也就是说，我们不用像之前那样再通过 <code>Cursor</code> 对象一行行去取值了，『LitePal』已经自动帮我们完成了赋值操作。</p>
+<p>除了 <code>findAll()</code> 方法之外，『LitePal』还提供了很多其他非常有用的查询 API，比如想要查询表中的第一条数据就可以写：</p>
+<pre><code class="language-Java">Users firstUser = LitePal.findFirst(Users.class);
+</code></pre>
+<p>同样的，查询表中最后一条数据可以这样写：</p>
+<pre><code class="language-Java">Users lastUser = LitePal.findLast(Users.class);
+</code></pre>
+<p>我们还可以通过连缀查询来定制更多的查询功能，比如：</p>
+<pre><code class="language-Java">List&lt;Users&gt; users = LitePal.select(&quot;name&quot;, &quot;tel&quot;)
+                        .where(&quot;name = ?&quot;, name)
+                        .order(&quot;tel desc&quot;)
+                        .limit(10)
+                        .offset(10)
+                        .find(Users.class);
+</code></pre>
+<p>不难理解，<code>select()</code> 方法用于指定查询哪几列的数据，<code>where()</code> 方法用于指定查询的约束条件，<code>order()</code> 方法用于指定结果的排序方式，<code>limit()</code> 方法用于指定查询结果的数量，<code>offset()</code> 用于指定查询结果的偏移量。</p>
+<p>上方的这段代码就表示，查询 <code>Users</code> 表中第 11~20 条满足名字为 <code>name</code>（即同名）这个条件的 <code>name</code> 和 <code>tel</code> 这两列数据，并将查询结果按照 <code>tel</code> 降序排列，如果只指定 <code>.order(&quot;tel&quot;)</code> 则按照升序排列。</p>
+<p>这些 API 已经足够我们应对绝大多数场景的查询需求了，如果实在有一些特殊需求，上述 API 都满足不了使用的时候，『LitePal』仍然支持使用原生的 SQL 来进行查询：</p>
+<pre><code class="language-Java">Cursor cursor = LitePal.findBySQL(&quot;SELECT * FROM Users WHERE name = ?&quot;, name);
+</code></pre>
+<p>注意 <code>findBySQL()</code> 方法返回的是一个 <code>Cursor</code> 对象，接下来还需要通过之前的老方式将数据一一取出才行。</p>
+<p>同样，上方的 <code>LitePal.***()</code> 方法都是在 <code>Version 2.0.0</code> 中从 <code>DataSupport.***()</code> 中升级过来的。总结一下其实主要就只有两点，如果是在继承结构中使用了 <code>DataSupport</code>，那么就将它改为 <code>LitePalSupport</code>，如果是调用了 <code>DataSupport</code> 中的静态方法，那么就将它改为 <code>LitePal</code>。</p>
+<p>在开发项目过程中，我还遇到了需要存储图片的需求，而我查了文档才知道原来『LitePal』在 <code>Version 1.3.1</code> 开始就支持存储图片了。</p>
+<p>『LitePal』之前支持存储的数据类型有：<code>int</code>、<code>long</code>、<code>short</code>、<code>float</code>、<code>double</code>、<code>boolean</code>、<code>char</code>、<code>String</code>、<code>Date</code>九种，<code>Version 1.3.1</code> 中引入了第十种数据类型：<code>byte[]</code>。也就是说，只要在 Model 中声明一个 <code>byte[]</code> 类型的字段，这个字段就会被自动映射到数据库表当中了。</p>
+<p><code>byte[]</code>类型的字段灵活性非常高，它可以用来存储图片，但又不仅限于存储图片，任何二进制的数据都是可以存储的，比如一段小语音，或者是小视频，不过依然不建议在手机数据库中存储较大的二进制数据。</p>
+<p>首先需要在 Modle 中添加一个相应的字段，比如我用来存储图片：</p>
+<pre><code class="language-Java">public class Product extends LitePalSupport {
+    private String name;
+    private byte[] image;
+
+    public String getName() {   return name;    }
+    public void setName(String name) { this.name = name;   }
+    public byte[] getImage() {  return image;   }
+    public void setImage(byte[] image) {    this.image = image; }
+}
+</code></pre>
+<p>当我存储图片的时候就可以这样写：</p>
+<pre><code class="language-Java">byte[] imageBytes = getImageBytesFromSomewhere();
+Product product = new Product();
+product.setName(name);
+product.setImage(imageBytes);
+product.save();
+</code></pre>
+<p>查询的方法也跟上面一致：</p>
+<pre><code class="language-Java">byte[] imageBytes = product.getImage();
+</code></pre>
+<p>对于图片的处理就不在此讨论范围了，在以后的项目总结中我会详述这一过程。</p>
+<p>我还思考过一个问题，如果我希望在『SQLite』中存储一个 <code>List&lt;Object&gt;</code> 会怎么样，之所以说思考过是因为我在项目中还未遇到过这样的需求，也没有尝试过，但是查看了『LitePal』的文档，发现在 <code>Version 1.4.0</code> 中加入了这个功能。</p>
+<p>其实对于 ORM 映射来说，集合数据真的是非常难处理的。首先最基本的 ORM 映射规则就是将 Java 中的类映射成数据库中的表，将 Java 中的字段映射成数据库中的列，然后每一个 Java 对象就对应着数据库表中的一行记录。那么 Java 中的 8 种基本数据类型以及 <code>String</code> 类型当然是非常好处理的，将它们直接存储到对应的列中就可以了。</p>
+<p>但集合数据不行，因为集合数据中可能是有任意多条记录的，而每个 Java 对象就只能对应数据库表中的一行记录而已，因此根本没有地方可以去存放集合数据。</p>
+<p>而郭神模仿数据库关联表的方式来实现了这个功能。</p>
+<p>比如说现在我们的 <code>Album</code> 实体类中有一个集合字段：</p>
+<pre><code class="language-Java">public class Album extends LitePalSupport {
+    private String name;
+    private List&lt;String&gt; titles = new ArrayList&lt;&gt;();
+    public String getName() {   return name;    }
+    public void setName(String name) { this.name = name;   }
+    public List&lt;String&gt; getTitles() {  return title;   }
+    public void setTitles(List&lt;String&gt; title) {    this.title = title; }
+}
+</code></pre>
+<p>这个 <code>titles</code> 集合记录了这张专辑里面有哪些歌名，下面我们将这个 <code>Album</code> 存储到数据库中：</p>
+<pre><code class="language-Java">Album album = new Album();
+album.setName(&quot;范特西&quot;);
+album.getTitles().add(&quot;爱在西元前&quot;);
+album.getTitles().add(&quot;双截棍&quot;);
+album.getTitles().add(&quot;安静&quot;);
+album.save();
+</code></pre>
+<p>然后我们去查看 <code>Album</code> 表，你会发现里面就只有 <code>id</code> 和 <code>name</code> 这两列：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">id</th>
+<th style="text-align:center">name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">范特西</td>
+</tr>
+</tbody>
+</table>
+<p>这也是之前版本『LitePal』表现的行为。而在 <code>Version 1.4.0</code> 中，『LitePal』会额外进行一个操作，就是创建一个 <code>album_titles</code> 表，并将集合中的数据存储在这里，如下所示：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">titles</th>
+<th style="text-align:center">album_id</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">爱在西元前</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">双截棍</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">安静</td>
+<td style="text-align:center">1</td>
+</tr>
+</tbody>
+</table>
+<p>可以看到，这里记录了所有集合中的数据，并将这些数据和 <code>album</code> 的 <code>id</code> 进行了关联，从而可以区分出每条数据到底是属于哪一个 <code>Album</code> 对象的。</p>
+<p>当然了，这些都是『LitePal』底层的实现原理，我们在使用的时候即使不了解这些原理也完全没问题，因为『LitePal』都将这些功能封装好了。</p>
+<p>这样当我们去查询 <code>Album</code> 数据的时候，会自动将它所关联的集合数据一起查出来：</p>
+<pre><code class="language-Java">Album album = LitePal.findFirst(Album.class);
+List&lt;String&gt; titles = album.getTitles();
+for (String title : titles) {
+    Log.d(TAG, &quot;title is &quot; + title);
+}
+</code></pre>
+<p>这样就可以把所有 <code>title</code> 都打印出来了。</p>
+<p>除了支持 <code>List&lt;String&gt;</code> 集合之外，还有 <code>List&lt;Integer&gt;</code>、<code>List&lt;Boolean&gt;</code>、<code>List&lt;Long&gt;</code>、<code>List&lt;Float&gt;</code>、List<code>&lt;Double&gt;</code>、<code>List&lt;Character&gt;</code> 这几种类型的集合也是支持的。</p>
+<p>还有一个常用的功能也是值得介绍的，说其常用，是因为很多情况下都会遇到这么一种情况，如果数据不存在，则存储，如果数据已存在，则更新。其实实现这个功能并不复杂，只需进行一次逻辑判断，然后根据判断的结果进行相应的逻辑处理就可以了：</p>
+<pre><code class="language-Java">Users user = new Users();
+user.setName(name);
+user.setEmail(email);
+List&lt;Users&gt; users = LitePal.where(&quot;name = ?&quot;, name).find(Users.class);
+if (users.isEmpty()) {
+    user.save();
+} else {
+    Users users = user.get(0);
+    users.setEmail(user.getEmail());
+    users.save();
+}
+</code></pre>
+<p>可以看到，这里先是通过『LitePal』的查询方法来查一下 <code>Users</code> 表中是不是有 <code>name</code>，如果没有的话，就将 <code>name</code> 保存到表中，如果有的话，就将表中的数据进行更新。</p>
+<p>不过，即使将逻辑梳理的很清楚了，不得不承认，上述代码依然有那么一丁点儿繁琐，『LitePal』之前确实是没有什么特别好的办法来处理这种需求。但是懒惰是第一生产力，从 <code>Version 1.5.0</code> 开始，这种需求就再也不是问题了，『LitePal』新增了一个 <code>saveOrUpdate()</code> 方法，专门用来处理这种不存在就存储，已存在就更新的需求：</p>
+<pre><code class="language-Java">Users user = new Users();
+user.setName(name);
+user.setEmail(email);
+user.saveOrUpdate(&quot;name = ?&quot;, user.getName());
+</code></pre>
+<p>没错，就是这么简单。调用 <code>saveOrUpdate()</code> 方法后，『LitePal』内部会自动判断，如果表中已经存在 <code>name</code> 这条记录了，就会自动更新，如果不存在的话，就会自动插入。和刚才前面那段代码相比，省去了绝大部分繁琐的逻辑操作。</p>
+<p>最后再介绍一个重磅功能，就是上文提到的数据加密解密功能，这个功能是在 <code>Version 1.6.0</code> 中实现的。</p>
+<p>一直以来，我们使用『LitePal』将数据存储到数据库中都是直接以明文形式存储的。虽说各个应用的数据库都是存放在独立的沙盒环境中，无法被其他应用所访问，也无法被用户看到，而且重要的数据我们也基本不会存储在本地，但是如果用户将手机 ROOT 了之后，就可以随意地查看每个应用的数据库文件，所有数据一览无余。</p>
+<p>当然，会去 ROOT 手机的用户毕竟在少数，因此大多数情况下，我们可能并不需要考虑这种情况。但是，如果你存储在数据库中的数据真的十分机密，并且要求较高安全性的话，那么最好还是加密一下再存储到数据库当中。</p>
+<p>之前的版本不支持数据加密功能，因此如果想要实现这个功能还得靠大家自己去写加解密算法。值得高兴的是，从 <code>Version 1.6.0</code> 开始就不用再这么麻烦了，『LitePal』内置了对数据进行加解密的功能，并且，用法还是一如既往的简单，主要支持 AES 和 MD5 两种加密算法。</p>
+<p>AES 加密算法想必大家应该都不会陌生，它的全称是 Advanced Encryption Standard，中文名叫高级加密标准，同时它也是美国联邦政府采用的一种区块加密标准。我们如果使用它来对数据进行加密的话，则可以大大提升数据的安全性。</p>
+<p>比如我们有一个 <code>Book</code> 类，类中有一个 <code>name</code> 字段和一个 <code>page</code> 字段，现在我们希望将 <code>name</code> 字段的值进行加密，那么只需要这样写：</p>
+<pre><code class="language-Java">public class Book extends LitePalSupport {
+    @Encrypt(algorithm = AES)
+    private String name;
+    private int page;
+
+    // Getter and Setter
+}
+</code></pre>
+<p>没错，就是这么简单。只需要在 <code>name</code> 字段的上方加上 <code>@Encrypt(algorithm = AES)</code> 这样一行注解即可，其他的任何操作都无需改变，我们原来该怎样存储数据还是怎样存储数据。比如插入一条这样的数据：</p>
+<pre><code class="language-Java">Book book = new Book();
+book.setName(&quot;第一行代码&quot;);
+book.setPage(500);
+book.save();
+</code></pre>
+<p>那么现在我们到数据库中来查看一下这条数据，结果如下图所示：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1562233798206.png" alt="AES 加密数据" loading="lazy"></figure>
+<p>可以看到，这里书名已经被加密了，我们直接查看数据库将完全无法得知它真实的数据是什么。</p>
+<p>更加方便的是，这种 AES 加密只是针对于破解者的一种防护措施，但是对于开发者而言，加解密操作是完全透明化的。也就是说，作为开发者我们并不用考虑某个字段有没有被加密，然后要不要进行解密等等，我们只需要仍然使用标准的『LitePal』API 来查询数据即可，『LitePal』在后台已经默默帮我们做了解密操作了，因此整个加解密工作对于开发者而言都是完全透明的。</p>
+<p>另外，可以为 AES 算法来指定一个你自己的加密密钥。使用不同的密钥，加密出来的结果也是不一样的。如果你没有指定密钥，『LitePal』会使用一个默认的密钥来进行加密。因此，尽可以地调用 <code>LitePal.aesKey()</code> 方法来指定一个你自己的加密密钥，这样会让你的数据更加安全。</p>
+<p>加密后的数据字段不能再通过 <code>where()</code> 语句来进行查询、修改或删除。也就是说，执行类似于 <code>where(&quot;name = ?&quot;, &quot;第一行代码&quot;)</code> 这样的语句将无法查到任何数据，因为在数据库中存储的真实值已经不是这个值了。</p>
+<p>MD5 算法则更常见了，它的全称是 Message Digest Algorithm 5，中文名叫信息摘要算法第五版。要说到 MD5 加密算法的特点其实有很多很多，但是它最为突出的一个特点就是，使用这种加密算法计算出来的结果是不可逆的。通俗点来说，就是 MD5 算法只能进行加密但不能进行解密。</p>
+<p>那有的朋友可能会疑惑了，如果数据加密了之后就不能再解密，那我要这个数据还有什么用？然而，实际上确实存在着不少场景是不用对数据进行解密的。</p>
+<p>比如说用户的密码，密码就是属于安全性要求非常高的数据，直接将密码的明文存储在数据库中是一件非常危险的事情，因此这种情况下我们一定要对数据进行加密才行。但是如果使用上述的 AES 算法来对密码进行加密可能并不是一个好主意，因为AES加密的数据是可以被解密的，一旦我们的密钥泄漏了出去，所有用户的密码就都有可能被解密出来。</p>
+<p>因此，这种情况下使用类似于 MD5 这种不可逆的加密算法才是最好的选择。因为密码这类数据完全不需要解密，验证用户输入的密码是否正确只需要将输入的内容同样使用MD5算法加密一下，然后和数据库中存储的值进行对比就可以了。</p>
+<p>用法想必你也已经能猜到了，和前面的 AES 加密几乎是一模一样的用法，我们只需要将 <code>@Encrypt</code> 中指定的加密算法改成 MD5 即可：</p>
+<pre><code class="language-Java">public class User extends LitePalSupport {
+    @Encrypt(algorithm = MD5)
+    private String password;
+    private String username;
+
+    // Getter and Setter
+}
+</code></pre>
+<p>现在使用同样的代码来存储一条数据：</p>
+<pre><code class="language-Java">User user = new User();
+user.setUsername(&quot;guolin&quot;);
+user.setPassword(&quot;123456&quot;);
+user.save();
+</code></pre>
+<p>然后到数据库中查看一下，结果如下所示：</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1562233842640.jpg" alt="MD5 加密数据" loading="lazy"></figure>
+<p>可以看到，数据同样被加密了，但是密文的格式明显和刚才的AES加密不一样了。而且因为 MD5 不能解密的原因，『LitePal』也不需要在后台对它进行解密处理，即使使用标准的『LitePal』API 来查询数据，得到的依然是密文。</p>
+<p>更需要注意的是，AES 算法和 MD5 算法都只对 <code>String</code> 类型的字段有效，如果你尝试给其他类型的字段（比如说 <code>int</code> 字段）指定 <code>@Encrypt</code> 注解，『LitePal』并不会执行任何加密操作。</p>
+<p>『LitePal』的基本使用到这里就介绍结束了，其实还有很多很实用的功能，比如异步操作数据库等，由于我并没有在项目中使用过，所以就不一一介绍了，需要了解的话查看官方文档即可。而且『LitePal』在 Kotlin 中的 API 得益于 Kotlin 的特性也得到了极大的优化，官方文档也有详细的介绍。</p>
+<p>最后的最后，再来介绍一款『SQLite』的 GUI 工具，由于『Android Studio』的升级，导致在『<a href="https://liarrdev.github.io/post/Android-Device-Monitor-%E6%9D%83%E9%99%90%E7%AC%94%E8%AE%B0/">Android Device Monitor 权限笔记</a>』中提到的调起『Android Device Monitor』方法变得十分困难，而且查看里面的数据也很麻烦，所以我不得不找一款 GUI 工具来代替——『SQLite Developer』。</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1562233932066.jpg" alt="SQLite Developer" loading="lazy"></figure>
+<p>用法也是非常简单，『Android Studio』界面右下角有一个「Device File Explorer」面板，它实现了之前在『Android Device Monitor』中文件管理的功能，点开它后找到相应的目录，然后右键保存即可。</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1562233986054.jpg" alt="Device File Explorer" loading="lazy"></figure>
+<p>在弹出的窗口中选择相应的保存路径。</p>
+<figure data-type="image" tabindex="7"><img src="https://LiarrDev.github.io/post-images/1562234018663.png" alt="Save As" loading="lazy"></figure>
+<p>保存成功与否在『Android Studio』右下角也会有通知提醒。</p>
+<figure data-type="image" tabindex="8"><img src="https://LiarrDev.github.io/post-images/1562234054073.png" alt="保存成功" loading="lazy"></figure>
+<p>如果保存成功，打开相应的目录就可以看到刚保存的数据库了。</p>
+<figure data-type="image" tabindex="9"><img src="https://LiarrDev.github.io/post-images/1562234093041.jpg" alt="存储目录" loading="lazy"></figure>
+<p>右键该文件选择使用『SQLite Developer』打开，或者直接打开『SQLite Developer』并把数据库文件拖到左侧「数据库列表」的面板中，『SQLite Developer』就会弹出一个「注册数据库」的对话框，点击「确定」即可把刚才的数据库文件注册到『SQLite Developer』中。</p>
+<figure data-type="image" tabindex="10"><img src="https://LiarrDev.github.io/post-images/1562234123810.png" alt="注册数据库" loading="lazy"></figure>
+<p>这时候可以在左侧的「数据库列表」面板中看到该数据库，双击可查看内部的表或视图等。</p>
+<p>比如我想查看 <code>Goods</code> 表，则可双击该表，在右侧即可打开编辑表的窗口，可以查看表的各字段、约束、索引、数据等，还可以查看 DDL 语句。</p>
+<figure data-type="image" tabindex="11"><img src="https://LiarrDev.github.io/post-images/1562234168644.jpg" alt="查看数据库表" loading="lazy"></figure>
+<p>另外，『SQLite Developer』是存在试用期的，当试用期过了之后就会有提醒，想要继续免费使用的话可以通过删除注册表的方式来绕过它的检测。</p>
+<p>在「运行」中输入 <code>regedit</code>，打开「注册表编辑器」，依次展开目录 <code>HKEY_CURRENT_USER\SharpPlus\SqliteDev</code>，在右侧把「StartDate」项删除即可。</p>
+<figure data-type="image" tabindex="12"><img src="https://LiarrDev.github.io/post-images/1562234367683.png" alt="编辑注册表" loading="lazy"></figure>
+<p>还有另外一种方法，就是直接在命令行中执行：</p>
+<pre><code class="language-Bash">➜    reg delete &quot;HKEY_CURRENT_USER\SharpPlus\SqliteDev&quot; /v &quot;StartDate&quot; /f
+</code></pre>
+<p>系统会自动帮我们删除该注册表。</p>
+<figure data-type="image" tabindex="13"><img src="https://LiarrDev.github.io/post-images/1562234419821.png" alt="在终端删除注册表" loading="lazy"></figure>
+<p>这样之后就能一直使用了，如果再过期了就再次执行下这个方法即可。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Enjoy-Glide-in-One-Shot.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Enjoy-Glide-in-One-Shot/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2019-04-08">2019-04-08</time>
+                  <h4 class="title white no-margin">一次实战爱上『Glide』</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Get-Network-Date-and-Time-in-Java.jpeg');"></div>
+                 <a href="https://LiarrDev.github.io/post/Get-Network-Date-and-Time-in-Java/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2019-01-14">2019-01-14</time>
+                  <h4 class="title white no-margin">在 Java 中获取网络日期和时间</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

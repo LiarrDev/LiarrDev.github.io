@@ -1,0 +1,703 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>为 EMUI 10 制作字体包 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="从 MIUI 切换到 EMUI 后，其实用起来感觉并没有特别顺手，不过也罢，毕竟万物基于 MIUI，造 ROM 发家的小米这看家本事也不是盖的。
+即便如此，搞机这么多年，花点儿时间我还是能定制出一套适合自己的软件系统的。
+今天来唠唠如何更换..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Pack-a-Font-for-EMUI-10.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2020-06-20"><i class="fa fa-calendar"></i><span class="lately">6 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Pack-a-Font-for-EMUI-10/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Pack-a-Font-for-EMUI-10/"> </span>
+              </a>
+              <span id="/Pack-a-Font-for-EMUI-10/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">为 EMUI 10 制作字体包</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>从 MIUI 切换到 EMUI 后，其实用起来感觉并没有特别顺手，不过也罢，毕竟万物基于 MIUI，造 ROM 发家的小米这看家本事也不是盖的。</p>
+<p>即便如此，搞机这么多年，花点儿时间我还是能定制出一套适合自己的软件系统的。</p>
+<p>今天来唠唠如何更换 EMUI 的字体。</p>
+<p>这几年用小米的朋友应该知道，MIUI 内置了一套小米兰亭字体，说实话，尽管还有一点儿瑕疵，但我还是非常喜欢。中文字体其实我倒是没有特别感冒，倒是英文字体的圆润感，让我看起来十分舒服。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1592575243330.jpg" alt="小米兰亭 Pro" loading="lazy"></figure>
+<p>但是看看 EMUI 系统预置的字体，三个预置的字体其实都并不怎么样，而主题商店里的免费字体也少得可怜，付费字体也大都花里胡哨。</p>
+<table>
+    <td><img src="https://liarrdev.github.io/post-images/1592575570260.png"/></td>
+    <td><img src="https://liarrdev.github.io/post-images/1592575594531.png"/></td>
+</table>
+<p>那我何不上传一套自己喜欢的字体呢？</p>
+<p>由于国内 ROM 越来越强大，从 Android 5.0 开始我也不怎么折腾系统主题美化了，在手机里找了一下，竟没发现可以上传字体的地方，不知是 EMUI 的问题还是所有 ROM 都这样，是我太落后了。</p>
+<p>既然手机不能直接搞，那就怼上电脑开干吧。</p>
+<p>看看系统的目录，找找主题相关的文件夹，不难定位到 <code>本地/内部存储/Huawei/Themes</code>，但是里面只有主题缓存文件夹，并没有其他内容。</p>
+<p>奇怪了，搜一下字体文件的扩展名「.ttf」，可以发现在主题的缓存文件夹中有相关的文件。</p>
+<p>看来是不能直接丢一个字体文件进来就完事的，要把字体封装主题才行。</p>
+<p>由于我对中文字体没有太高要求，所以我可以只选用一款只有英文的字体，这样还可以达到减小体积的目的。正好，Google 在几年前发布的一款字体 Google Sans 也很符合我的胃口，不过没有适配中文。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1592575652093.jpg" alt="Google Sans" loading="lazy"></figure>
+<p>首先参考主题文件夹，我们可以建立这样的文件夹目录：</p>
+<pre><code class="language-Bash">|-- GoogleSans.hwt
+    |-- fonts
+    |   |-- DroidSansChinese.ttf
+    |   |-- pic_font_default.jpg
+    |-- preview
+    |   |-- preview_fonts_0_50.png
+    |-- description.xml
+    |-- icons
+</code></pre>
+<p>解释一下，HWT 是 EMUI 主题文件，必须要使用这样的扩展名才可以被系统识别；「fonts」是字体文件夹，里面有一个 TTF 字体文件，还有一张字体封面图；「preview」是预览文件夹，里面有一张字体预览图；「description.xml」是关于这款主题的一些描述信息；「icons」是一个无扩展名压缩文件，用于规定桌面软件图标。</p>
+<p>以上就是给 EMUI 添加一款字体的最小组成，它去除了完整主题文件中其他无关的文件，如壁纸或锁屏等。</p>
+<p>下面，就教大家如何一步一步完成这个字体主题包。</p>
+<p>首先新建一个文件夹，可以使用任何你喜欢的名字命名，为了易于识别，我使用该字体名字命名，即「GoogleSans」。</p>
+<p>然后按照上面的目录结构，建立好文件夹「fonts」和「preview」，以及文本文件「description.xml」，至于「icons」，如果你没有特别的需要，从其他主题文件夹复制过来即可，因为我们在修改字体的时候其实用不上，但是缺少该文件的话主题也是无法正常使用的，所以我们需要从其他主题文件中复制过来占位。</p>
+<p>接着，就是把你喜欢的字体文件命名为「DroidSansChinese.ttf」，并放置在「fonts」文件夹内，还要做一张封面图，我这里就秉承简单的理念，随便做了一张：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1592575711891.jpg" alt="Google Sans 字体封面" loading="lazy"></figure>
+<p>还有一张字体预览图，同样按照规范命名，放置在「preview」文件夹下，这张图主要用于预览字体效果的，我贪图方便，用手机的『Notepad』来做：</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1592575752841.png" alt="Google Sans 字体预览" loading="lazy"></figure>
+<p>最后就是主题的描述文件，参考下面的修改即可：</p>
+<pre><code class="language-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;HwTheme&gt;
+    &lt;title&gt;GoogleSans&lt;/title&gt;           &lt;!--  主题英文名字  --&gt;
+    &lt;title-cn&gt;GoogleSans&lt;/title-cn&gt;     &lt;!--  主题中文名字  --&gt;
+    &lt;author&gt;Liarr&lt;/author&gt;              &lt;!--  主题制作者名字  --&gt; 
+    &lt;designer&gt;Google&lt;/designer&gt;         &lt;!--  主题设计者名字  --&gt; 
+    &lt;screen&gt;FHD+&lt;/screen&gt;               &lt;!--  主题分辨率  --&gt;
+    &lt;version&gt;1.0.0&lt;/version&gt;            &lt;!--  主题版本号  --&gt;
+    &lt;font&gt;GoogleSans&lt;/font&gt;             &lt;!--  字体英文名称  --&gt;
+    &lt;font-cn&gt;GoogleSans&lt;/font-cn&gt;       &lt;!--  字体中文名称  --&gt;
+	&lt;transition&gt;None&lt;/transition&gt;
+	&lt;type&gt;font&lt;/type&gt;
+&lt;/HwTheme&gt;
+</code></pre>
+<p>这样，就完成了上面目录结构中所需的所有文件了，将这个主题文件夹打包为「GoogleSans.zip」压缩文件，然后修改文件扩展名，得到「GoogleSans.hwt」，大功告成。</p>
+<p>将这个主题压缩包放置在 <code>本地/内部存储/Huawei/Themes</code> 目录下，打开手机的主题商店，就可以看到我们刚刚的字体已经导入成功。</p>
+<table>
+    <td><img src="https://liarrdev.github.io/post-images/1592576094870.png"/></td>
+    <td><img src="https://liarrdev.github.io/post-images/1592576110913.png"/></td>
+</table>
+<p>封面和预览图都在相应的地方展示好，只要点击应用就可以在手机系统中全局使用这套字体了。</p>
+<hr>
+<h4 id="参考内容">参考内容：</h4>
+<ul>
+<li><a href="https://cn.ui.vmall.com/thread-21587315-1-1.html">[字体分享] 小米兰亭PRO 优化适配 - 华为P30系列应用资源 花粉俱乐部</a></li>
+<li><a href="https://cn.ui.vmall.com/thread-18456263-1-1.html">华为EMUI系统hwt主题文件修改及制作超详细教程 - 荣耀10分享交流 花粉俱乐部</a></li>
+<li><a href="https://cn.club.vmall.com/thread-19918283-1-1.html">华为EMUI系统hwt主题文件修改及制作超详细新手教学 - 荣耀10分享交流 花粉俱乐部</a></li>
+</ul>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Where-to-Find-Android-Source-Code.jpeg');"></div>
+                 <a href="https://LiarrDev.github.io/post/Where-to-Find-Android-Source-Code/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2020-06-28">2020-06-28</time>
+                  <h4 class="title white no-margin">从哪里能找到 Android 源码</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Waveview-Designed-by-onlynight.jpeg');"></div>
+                 <a href="https://LiarrDev.github.io/post/Waveview-Designed-by-onlynight/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2020-06-14">2020-06-14</time>
+                  <h4 class="title white no-margin">@唯夜 的『WaveView』控件</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

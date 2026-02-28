@@ -1,0 +1,761 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Toolbar NavigationIcon &amp; Title 迷之间距 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="整理了一下之前的项目，发现一个关于 Toolbar 的问题，Toolbar 中的 NavigationIcon 与 Title 的距离似乎有点过大：
+
+网上查了一下发现是从 Support 包 V23.0.0 之后才出现这种情况，而我的这个..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Space-between-Navigationicon-and-Title-in-Toolbar.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2020-05-20"><i class="fa fa-calendar"></i><span class="lately">6 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Space-between-Navigationicon-and-Title-in-Toolbar/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Space-between-Navigationicon-and-Title-in-Toolbar/"> </span>
+              </a>
+              <span id="/Space-between-Navigationicon-and-Title-in-Toolbar/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">Toolbar NavigationIcon &amp; Title 迷之间距</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>整理了一下之前的项目，发现一个关于 <code>Toolbar</code> 的问题，<code>Toolbar</code> 中的 <code>NavigationIcon</code> 与 <code>Title</code> 的距离似乎有点过大：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1589552928506.png" alt="NavigationIcon 和 Title 间距过大" loading="lazy"></figure>
+<p>网上查了一下发现是从 <code>Support</code> 包 V23.0.0 之后才出现这种情况，而我的这个项目使用的是 V28.0.0 的包，看来这个问题历史悠久啊。</p>
+<p>打开 <code>Toolbar</code> 的源码：</p>
+<pre><code class="language-Java">public class Toolbar extends ViewGroup {
+    private RtlSpacingHelper mContentInsets;            // 对应的属性名称为 contentInsetStart
+    private int mContentInsetStartWithNavigation;       // 对应的属性名称为 contentInsetStartWithNavigation
+    ...
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        final boolean isRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
+        final int paddingLeft = getPaddingLeft();   // 获取系统的偏移量
+        int left = paddingLeft;
+        ...
+        // 计算 Navigation 的 Layout
+        if (shouldLayout(mNavButtonView)) {
+            if (isRtl) {
+                ...
+            } else {
+                left = layoutChildLeft(mNavButtonView, left, collapsingMargins, alignmentHeight);
+            }
+        }
+        ...
+        final int contentInsetLeft = getCurrentContentInsetLeft();
+        left = Math.max(left, contentInsetLeft);
+        ...
+        if (layoutTitle || layoutSubtitle) {
+            ...
+            if (isRtl) {
+                ...
+            } else {
+                ...
+                int titleLeft = left;
+                if (layoutTitle) {
+                    ...
+                    mTitleTextView.layout(titleLeft, titleTop, titleRight, titleBottom);
+                }
+                ...
+            }
+        }
+        ...
+    }
+    ...
+    private int layoutChildLeft(View child, int left, int[] collapsingMargins, int alignmentHeight) {
+        final LayoutParams lp = (LayoutParams) child.getLayoutParams();
+        final int l = lp.leftMargin - collapsingMargins[0];
+        left += Math.max(0, l);
+        collapsingMargins[0] = Math.max(0, -l);
+        final int top = getChildTop(child, alignmentHeight);
+        final int childWidth = child.getMeasuredWidth();
+        child.layout(left, top, left + childWidth, top + child.getMeasuredHeight());
+        left += childWidth + lp.rightMargin;
+        return left;
+    }
+    
+    /**
+     * Gets the content inset that will be used on the left side of the bar in the current toolbar configuration.
+     *
+     * @return the current content inset left in pixels
+     * @see #getContentInsetStartWithNavigation()
+     * @see #getContentInsetEndWithActions()
+     */
+    public int getCurrentContentInsetLeft() {
+        return isLayoutRtl() ? getCurrentContentInsetEnd() : getCurrentContentInsetStart();
+    }
+
+    /**
+     * Gets the content inset that will be used on the starting side of the bar in the current toolbar configuration.
+     *
+     * @return the current content inset start in pixels
+     * @see #getContentInsetStartWithNavigation()
+     */
+    public int getCurrentContentInsetStart() {
+        return getNavigationIcon() != null ? Math.max(getContentInsetStart(), Math.max(mContentInsetStartWithNavigation, 0)) : getContentInsetStart();
+    }
+}
+</code></pre>
+<p>看 <code>onLayout()</code> 里面，<code>isRtl</code> 这个变量用于判断是否从右往左显示，我们的 <code>Toolbar</code> 是从左往右显示的，所以只需要看值为 <code>false</code> 的情况即可。</p>
+<p>在计算 <code>Navigation</code> 的 <code>Layout</code> 中，进到 <code>layoutChildLeft()</code> 方法里进行计算，计算完之后 <code>left</code> 的距离为 <code>paddingLeft</code> + <code>mNavButtonView</code> 的宽度 + <code>mNavButtonView</code> 自身的偏移量。</p>
+<p>接下来就进到 <code>getCurrentContentInsetLeft()</code> 方法，因为是从左向右显示所以会调用 <code>getCurrentContentInsetStart()</code> 这个方法，由于有 <code>NavigationIcon</code>，所以就会走前面的分支。</p>
+<p>其中 <code>Math.max(mContentInsetStartWithNavigation, 0)</code> 返回的就是 <code>mContentInsetStartWithNavigation</code> 这个值，<code>mContentInsetStartWithNavigation</code> 这个值就是从 <code>contentInsetStartWithNavigation</code> 这个属性中取得的；<code>getContentInsetStart()</code> 这个方法的返回值就是 <code>contentInsetStart</code> 这个属性对应的值。</p>
+<p>所以最后就是比较 <code>contentInsetStart</code> 和 <code>contentInsetStartWithNavigation</code> 这两个属性的值。</p>
+<p>接下来我们来看这两个属性的值在修改前后的版本中到底是多少，具体的文件应找到对应版本的 <code>appcompact-v7</code> 包的「arr」文件，然后解压找到 <code>/res/values/values.xml</code>，当然也可以通过『Android Studio』的跳转查找功能。</p>
+<p>在 V22.2.0 的版本中，描述 <code>Toolbar</code> 属性的内容如下：</p>
+<pre><code class="language-XML">&lt;style name=&quot;Base.Widget.AppCompat.Toolbar&quot; parent=&quot;android:Widget&quot;&gt;
+    ...
+    &lt;item name=&quot;contentInsetStart&quot;&gt;16dp&lt;/item&gt;
+&lt;/style&gt;
+</code></pre>
+<p>可以发现 <code>contentInsetStart</code> 的值是 <code>16dp</code>，但没有 <code>contentInsetStartWithNavigation</code> 这个属性，这是因为 <code>contentInsetStartWithNavigation</code> 这个属性是在之后的版本才加上的，而之前的版本 <code>Toolbar</code> 代码中只会根据 <code>contentInsetStart</code> 来计算 <code>Title</code> 的左边距。</p>
+<p>再来看看在 V28.0.0 版本中的代码：</p>
+<pre><code class="language-XML">&lt;style name=&quot;Base.V7.Widget.AppCompat.Toolbar&quot; parent=&quot;android:Widget&quot;&gt;
+    ...
+    &lt;item name=&quot;contentInsetStart&quot;&gt;16dp&lt;/item&gt;
+    &lt;item name=&quot;contentInsetStartWithNavigation&quot;&gt;@dimen/abc_action_bar_content_inset_with_nav&lt;/item&gt;
+&lt;/style&gt;
+</code></pre>
+<p><code>contentInsetStart</code> 的值也还是 <code>16dp</code>，<code>contentInsetStartWithNavigation</code> 这个值定义在 <code>&lt;dimen&gt;</code> 中，我们去找找这个值：</p>
+<pre><code class="language-XML">&lt;dimen name=&quot;abc_action_bar_content_inset_with_nav&quot;&gt;72dp&lt;/dimen&gt;
+</code></pre>
+<p>再回到一开始的那段代码：</p>
+<pre><code class="language-Java">final int contentInsetLeft = getCurrentContentInsetLeft();      // 核心的方法，返回就是那个让距离错误的值
+left = Math.max(left, contentInsetLeft);    // left 会从之前的 left 值也就是计算过 Navigation 的距离之后，和 contentInsetLeft 比较，取最大值
+</code></pre>
+<p><code>left</code> 的值一开始是 <code>NavigationIcon</code> 的宽度，一般为 <code>56dp</code>，而 <code>contentInsetLeft</code> 这个值是 <code>72dp</code>，取最大值之后 <code>left</code> 的值就变成了 <code>72dp</code>，就最后导致了距离显示异常。</p>
+<p>了解了问题产生的原因，就该说说解决方法了，解决方法也很简单，在 <code>Toolbar</code> 控件属性中添加一句即可：</p>
+<pre><code class="language-XML">&lt;android.support.v7.widget.Toolbar
+    ...
+    app:contentInsetStartWithNavigation=&quot;0dp&quot; /&gt;
+</code></pre>
+<p>也可以通过指定 <code>&lt;style&gt;</code> 的方法：</p>
+<pre><code class="language-XML">&lt;style name=&quot;NoSpaceActionBarTheme&quot; parent=&quot;Base.Widget.AppCompat.Toolbar&quot;&gt;
+    &lt;item name=&quot;contentInsetStart&quot;&gt;0dp&lt;/item&gt;
+    &lt;item name=&quot;contentInsetStartWithNavigation&quot;&gt;0dp&lt;/item&gt;
+&lt;/style&gt;
+</code></pre>
+<p>再在 <code>Toolbar</code> 控件属性中指定：</p>
+<pre><code class="language-XML">&lt;android.support.v7.widget.Toolbar
+    ...
+    style=&quot;@style/NoSpaceActionBarTheme&quot; /&gt;
+</code></pre>
+<p>完美解决，看看实际效果图：</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1589552970601.png" alt="NavigationIcon 和 Title 间距正常" loading="lazy"></figure>
+<p>不过一时半会真的想不通为什么 Android 要加一个这样的东西…</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Show-Webview-Title-at-Android-Toolbar.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Show-Webview-Title-at-Android-Toolbar/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2020-06-02">2020-06-02</time>
+                  <h4 class="title white no-margin">Android Toolbar 显示 WebView Title</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Simple-Use-of-Android-Shape.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Simple-Use-of-Android-Shape/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2020-05-10">2020-05-10</time>
+                  <h4 class="title white no-margin">Android Shape 的简单使用</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

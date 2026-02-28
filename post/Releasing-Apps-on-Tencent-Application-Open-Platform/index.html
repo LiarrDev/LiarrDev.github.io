@@ -1,0 +1,693 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>腾讯应用开放平台上线 App 踩坑记录 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="经过漫长而痛苦的改 Bug 折磨，我为公司开发的 App 终于要上线了！
+我仿佛看到了工资在向我招手，仿佛听到了年终奖为我欢呼！
+然而，现实总是充满了坑，没想到上线应用的路依然曲折，今天就来说说我在上线 App 时踩过的坑。
+这次上架的只有..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Releasing-Apps-on-Tencent-Application-Open-Platform.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2019-12-04"><i class="fa fa-calendar"></i><span class="lately">6 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Releasing-Apps-on-Tencent-Application-Open-Platform/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Releasing-Apps-on-Tencent-Application-Open-Platform/"> </span>
+              </a>
+              <span id="/Releasing-Apps-on-Tencent-Application-Open-Platform/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">腾讯应用开放平台上线 App 踩坑记录</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>经过漫长而痛苦的改 Bug 折磨，我为公司开发的 App 终于要上线了！</p>
+<p>我仿佛看到了工资在向我招手，仿佛听到了年终奖为我欢呼！</p>
+<p>然而，现实总是充满了坑，没想到上线应用的路依然曲折，今天就来说说我在上线 App 时踩过的坑。</p>
+<p>这次上架的只有 Android 版的 App，经 Leader 决定，只在『应用宝』上线，虽然这样限制了分发渠道，但也是减少了我的工作量，而且在『应用宝』上线的一个好处就是可以利用微信及其开放平台进行跳转下载。</p>
+<p>好的，开搞。</p>
+<p>首先得在『<a href="https://open.qq.com/user/info">腾讯开放平台</a>』注册开发者账号，不过得益于腾讯平台社交能力，支持使用 QQ 授权登陆，但是也仅能支持 QQ 授权登录。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1575201665666.jpeg" alt="腾讯开放平台首页" loading="lazy"></figure>
+<p>这种方式对于个人开发者而言，是十分方便的，而对于公司来说，就会涉及到个人隐私问题，就像我们公司，需要员工注册一个新的 QQ 号，并使用员工的手机号码进行绑定，鉴于国内隐私保护能力，这样对员工的影响也是不小的，所以我认为应该增加一个邮箱注册登录的入口更加合适。</p>
+<p>另外需要注意的是，『腾讯开放平台』在我使用期间表现十分不稳定，通过搜索引擎结果登录后常常进不去，我后来发现可以通过其邮件上的链接跳转，而进去后部分页面也会出现加载时间过长的情况。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1575201719583.jpeg" alt="选择注册类型" loading="lazy"></figure>
+<p>登录后还需要作一系列的信息认证，个人开发者需要上传身份证等信息，公司开发者还需要上传公司的信息，比如营业执照等。</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1575201793548.jpeg" alt="信息认证" loading="lazy"></figure>
+<p>做完一系列的认证就可以上传开发好的应用了，在「管理中心」中创建应用即可。</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1575201837751.jpeg" alt="创建应用" loading="lazy"></figure>
+<p>随后跳转到「选择平台」的页面，这里可以选择 Android、iOS 以及 Web 三个平台。</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1575201879605.jpeg" alt="选择平台" loading="lazy"></figure>
+<p>由于我目前只开发了 Android 版本的 App，所以这里我选择 Android，然后点击「创建应用」，则会弹出对话框选择应用类型。</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1575201914143.png" alt="应用类型" loading="lazy"></figure>
+<p>有「游戏」和「软件」两个选项，我这里选择「软件」。</p>
+<p>关于应用分成的问题，我在『<a href="https://mp.weixin.qq.com/s?__biz=MzIwNzY3NDY5NA==&amp;mid=2247485316&amp;idx=1&amp;sn=33ab84f034f877cffaf77044cc783468&amp;chksm=970f8bada07802bb45cf47052529a1ff2f0a4da69163113a45f59b0a6ff76f3966d14b81ed7f&amp;token=1744606324&amp;lang=zh_CN#rd">Quick App</a>』一文中有聊过，有兴趣可以了解一下。</p>
+<p>接着就到关键一步了，填写应用的相关信息。</p>
+<figure data-type="image" tabindex="7"><img src="https://LiarrDev.github.io/post-images/1575202025799.jpeg" alt="填写应用信息" loading="lazy"></figure>
+<p>这就经历了我踩坑最多的地方，因为我一共提交了 7 次审核，历时三周。</p>
+<p>先打个比方说一下我公司的背景，假设有 A 和 B 两个公司，其中 B 是 A 的独立子公司，我就职于 B 公司。这怎么理解呢，可以参考一下手机品牌中的 HUAWEI 和 ZTE 等，Honor 是 HUAWEI 的独立子品牌，nubia 是 ZTE 的独立子品牌；也可以参考一下 Alphabet，Google 就是 Alphabet 的子公司，所以我所在的公司是子公司，上面还有一个母公司。</p>
+<p>第一次提交，驳回原因是<strong>该应用存在版权问题，需提供应用软件著作权证书，请在版权证明处上传相关材料扫描件后重新提交</strong>。</p>
+<p>原因是未上传版权证明，由上图可以看出，版权证明中并无必填项，所以我一开始并没有上传。</p>
+<p>后来我才发现，版权证明下有一行小字：</p>
+<blockquote>
+<p>应用必须提供版权证明，开发者版权证明提交，请参考版权证明指引，大小2M以内，支持JPG/PNG格式的图片。</p>
+</blockquote>
+<p>过分！明明说必须提供，但是却没有标记为必填项，这不是浪费我时间嘛！</p>
+<p>上网查了一下相关手续，极其繁琐，需要填写各种资料，更麻烦的是需要上传源码及文档共 120 页的鉴定材料，而且邮寄提交后需要等待一个月的时间，由于文档我在开发的时候并没有写（坏习惯），所以要完成这一整套流程估计也得一个半月，于是我就给 Leader 提了两个方案：</p>
+<p>一是等待我完成所有鉴定材料再申请，但是这个时长具有不确定性，因为这个材料即使提交了，也可能因为各种原因不能通过，被打回来还要修改，然后重新提交上去后再审核，每个审核周期大约是一个月，所以往坏的想，申请一个这样的证书可能需要几个月甚至是半年的时间。</p>
+<p>二是交给第三方平台来辅助完成，这些平台基本上都自称包过，而且加钱还可以加急，可以保证在短时间内拿到这个软件著作权证书，但价格也不便宜。</p>
+<p>当我搜集了一天的资料递给 Leader 后，他说可以拿母公司的软件著作权证书来代替。</p>
+<p>突然就觉得我这一整天瞎忙活了…</p>
+<p>上传母公司的著作权证书，静候佳音。</p>
+<p>第二天再次驳回，原因是<strong>该应用经下载检测，应用内容无法加载，请修复并核实后重新提交</strong>。</p>
+<p>出现这个问题是因为之前在『<a href="https://liarrdev.github.io/post/Wechat-H5-Payment-For-Android/">WeChat H5 Payment for Android</a>』和『<a href="https://liarrdev.github.io/post/Android-M-%E4%BB%8E-Service-%E4%B8%AD%E5%90%AF%E5%8A%A8-Activity/">Android M 从 Service 中启动 Activity</a>』等文章中提到这个 App 里包含了大量的 <code>WebView</code>，而由于后台代码还未发版本，仅在测试服务器上可用，而在正式服务器上不能正常显示，所以导致被驳回。</p>
+<figure data-type="image" tabindex="8"><img src="https://LiarrDev.github.io/post-images/1575202611506.jpeg" alt="WebView 不能正常加载" loading="lazy"></figure>
+<p>催促后端工程师发版本，使其能正常显示，再次提交申请。</p>
+<p>迎来了第三次驳回，原因是<strong>该应用经下载体验，无注册端口，请在版权证明处上传测试账号和密码的截图后重新提交</strong>。</p>
+<p>因为当初我们开发的时候为了方便维护，要求用户在微信端绑定了手机号码后，才能在 App 中使用手机号码登录，这样就不会在 App 端登录的时候需要创建一个新的账号出来，账号中的各种信息也可以同步，但明显『腾讯开放平台』方并不允许我们这样做。</p>
+<p>为了通过这个审核，我们只能重新修改代码，使用户在使用 App 时，用手机号码创建一个新的账户，不检测其是否在微信绑定。不过由于我们的后端大佬太忙需求太多，这个后台需求交给了一个菜鸡前端来完成，结果这个功能做好后，其他的功能都出了 Bug。</p>
+<p>上线要紧，毕竟我们使用了 <code>WebView</code>，这些功能可以后面再进行热修复，而且由于我们的 App 需要结合硬件使用，所以相信审核的人员也没有条件可以测出我们的 Bug。</p>
+<p>提交后，第四次驳回，原因是<strong>该应用存在版权问题，提供软件著作权证书归属与上传认证开发商不一致，请提供相关授权后重新提交</strong>。</p>
+<p>上面提到，我们使用了母公司的软件著作权证书，而在「应用提供方」一项中我填写的是我们子公司，这就导致了不一致，综合考虑，我们把这一项也改成了母公司，并再次提交申请。</p>
+<p>第五次驳回，<strong>该应用存在版权问题，提供软件著作权人名称与认证开发者名称不一致，请在版权证明处上传真实有效的材料扫描件后重新提交</strong>。</p>
+<p>这是由于一开始我们在申请该开发者账号的时候，填写的也是子公司的信息，所以同样造成了冲突，把开发者账号的认证信息也修改成母公司，并再次提交审核。</p>
+<p>第六次驳回的原因和第五次相同，一开始我还以为我理解错了，去后台查看了一下才发现，开发者账号的认证信息修改也是需要审核的，所以在审核未成功之前，使用的还是之前的信息，也就是子公司的认证信息，因此才会出现同样的驳回原因。</p>
+<p>等待认证信息审核成功后，再次提交 App 的上线申请。</p>
+<p>终于，在第七次提交的时候成功了。</p>
+<p>最后就可以在「管理中心」中查看 App 的相关信息了，比如应用等级和下载量等，也可以更新安装包进行版本迭代，还可以为应用接入广告服务等。</p>
+<p>这时候可以去『应用宝』搜索一下确认是否成功上线，因为一开始我接收到腾讯发过来的上线邮件时，我去『应用宝』搜索并没有，然后在网上看了一下发现有人遇到相同的情况，他们是通过提交工单给腾讯方要求其展示的，不过过了十几分钟后我准备采取相同的做法时，却发现在『应用宝』中可以搜索到我们的应用了。</p>
+<p>成功上线，皆大欢喜。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/An-Images-Crawler-Written-with-NodeJS.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/An-Images-Crawler-Written-with-NodeJS/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2019-12-25">2019-12-25</time>
+                  <h4 class="title white no-margin">用 Node.js 写一个下载图片的爬虫</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/printf-d-printf-d-d-1-2.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/printf-d-printf-d-d-1-2/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2019-11-27">2019-11-27</time>
+                  <h4 class="title white no-margin">printf(&#34;%d&#34;, printf(&#34;%d%d&#34;, 1, 2));</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

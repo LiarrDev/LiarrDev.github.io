@@ -1,0 +1,730 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bubble Sort | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="相信很多学习计算机的同学接触的第一个算法就是冒泡排序，如果现在让你手写冒泡排序算法，你还记得吗？
+冒泡排序是一种简单直观的排序算法，也是一种最基础的交换排序。
+这个算法的名字由来是因为越大的元素会经由交换慢慢“浮”到数列的顶端（升序或降序排..." />
+    <meta name="keywords" content="Algorithm" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Bubble-Sort.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2024-08-16"><i class="fa fa-calendar"></i><span class="lately">2 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Bubble-Sort/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Bubble-Sort/"> </span>
+              </a>
+              <span id="/Bubble-Sort/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-0 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">Bubble Sort</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>相信很多学习计算机的同学接触的第一个算法就是冒泡排序，如果现在让你手写冒泡排序算法，你还记得吗？</p>
+<p>冒泡排序是一种简单直观的排序算法，也是一种最基础的交换排序。</p>
+<p>这个算法的名字由来是因为越大的元素会经由交换慢慢“浮”到数列的顶端（升序或降序排列），就如同碳酸饮料中二氧化碳的气泡最终会上浮到顶端一样，故名“冒泡排序”。</p>
+<p>冒泡排序算法的原理如下：</p>
+<ol>
+<li>比较相邻的元素。如果第一个比第二个大，就交换他们两个。</li>
+<li>对每一对相邻元素做同样的工作，从开始第一对到结尾的最后一对。在这一点，最后的元素应该会是最大的数。</li>
+<li>针对所有的元素重复以上的步骤，除了最后一个。</li>
+<li>持续每次对越来越少的元素重复上面的步骤，直到没有任何一对数字需要比较。</li>
+</ol>
+<p>如果文字讲得过于晦涩，可以来看看这张图：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1565684016811.gif" alt="Bubble Sort" loading="lazy"></figure>
+<p>从序列的一端开始往另一端冒泡（你可以从左往右冒泡，也可以从右往左冒泡，看心情），依次比较相邻的两个数的大小（到底是比大还是比小也看你心情）。</p>
+<p>当然，如果你习惯从左往右冒泡的话，可以看这张图：</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1565690494616.gif" alt="Bubble Sort" loading="lazy"></figure>
+<p>维基百科上对冒泡排序的动画展示如下：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1565707586248.gif" alt="Bubble Sort Animation from Wikipedia" loading="lazy"></figure>
+<p>我们拆解一步步来看，以 [ 8，2，5，9，7 ] 这组数字来做示例，从左往右依次冒泡，将小的往右移动。</p>
+<p>第一轮冒泡如下：</p>
+<p><img src="https://LiarrDev.github.io/post-images/1565686187924.webp" alt="一轮冒泡 - 1" loading="lazy"><br>
+<img src="https://LiarrDev.github.io/post-images/1565686208483.webp" alt="一轮冒泡 - 2" loading="lazy"><br>
+<img src="https://LiarrDev.github.io/post-images/1565686219466.webp" alt="一轮冒泡 - 3" loading="lazy"><br>
+<img src="https://LiarrDev.github.io/post-images/1565686230533.webp" alt="一轮冒泡 - 4" loading="lazy"></p>
+<p>指针再往右移动，发现已经到底了，则本轮冒泡结束，处于最右边的 2 就是已经排好序的数字。通过这一轮不断的对比交换，数组中最小的数字移动到了最右边。</p>
+<p>第二轮冒泡如下：</p>
+<p><img src="https://LiarrDev.github.io/post-images/1565686321134.webp" alt="二轮冒泡 - 1" loading="lazy"><br>
+<img src="https://LiarrDev.github.io/post-images/1565686327714.webp" alt="二轮冒泡 - 2" loading="lazy"><br>
+<img src="https://LiarrDev.github.io/post-images/1565686334112.webp" alt="二轮冒泡 - 3" loading="lazy"></p>
+<p>由于右边的 2 已经是排好序的数字，就不再参与比较，所以本轮冒泡结束，本轮冒泡最终冒到顶部的数字 5 也归于有序序列中：</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1565686410315.webp" alt="二轮冒泡 - 4" loading="lazy"></figure>
+<p>第三轮冒泡如下：</p>
+<p><img src="https://LiarrDev.github.io/post-images/1565686473598.webp" alt="三轮冒泡 - 1" loading="lazy"><br>
+<img src="https://LiarrDev.github.io/post-images/1565686498264.webp" alt="三轮冒泡 - 2" loading="lazy"></p>
+<p>由于 8 比 7 大，所以位置不变，此时第三轮冒泡也已经结束。</p>
+<p>第四轮冒泡如下：</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1565686551865.webp" alt="四轮冒泡" loading="lazy"></figure>
+<p>9 和 8 比，位置不变，即确定了 8 进入有序序列，那么最后只剩下一个数字 9 ，放在末尾，至此排序结束。</p>
+<p>代码如下：</p>
+<pre><code class="language-Java">public static void bubbleSort(int[] arr) {
+    int temp;
+    for (int i = 0; i &lt; arr.length - 1; i++) {
+        for (int j = 0; j &lt; arr.length - 1 - i; j++) {
+            if (arr[j] &lt; arr[j + 1]) {
+                temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+}
+</code></pre>
+<p>代码非常简单，使用双循环来进行排序。外部循环控制冒泡轮数，内部循环代表每一轮的冒泡处理，先进行元素比较，再进行元素交换。</p>
+<p>接下来再看看能否对代码进行性能优化。</p>
+<p>引入一个新数组并从小到大排序：</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1565687235022.webp" alt="可优化的数组排序前" loading="lazy"></figure>
+<p>经过六轮排序后数组如下：</p>
+<figure data-type="image" tabindex="7"><img src="https://LiarrDev.github.io/post-images/1565687315120.webp" alt="可优化的数组冒泡第六轮" loading="lazy"></figure>
+<p>第七轮：</p>
+<figure data-type="image" tabindex="8"><img src="https://LiarrDev.github.io/post-images/1565687451970.webp" alt="可优化的数组冒泡第七轮" loading="lazy"></figure>
+<p>第八轮：</p>
+<figure data-type="image" tabindex="9"><img src="https://LiarrDev.github.io/post-images/1565687471700.webp" alt="可优化的数组冒泡第八轮" loading="lazy"></figure>
+<p>很明显可以看出，自从经过第六轮排序，整个数列已然是有序的了。可是我们的排序算法仍然兢兢业业地继续执行第七轮和第八轮。</p>
+<p>这种情况下，如果我们能判断出数列已经有序，并且做出标记，剩下的几轮排序就可以不必执行，提早结束工作。</p>
+<p>优化后代码如下：</p>
+<pre><code class="language-Java">public static void bubbleSort(int[] arr) {
+    int temp;
+    for (int i = 0; i &lt; arr.length - 1; i++) {
+        boolean isSorted = true;
+        for (int j = 0; j &lt; arr.length - 1 - i; j++) {
+            if (arr[j] &gt; arr[j + 1]) {
+                temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+                isSorted = false;
+            }
+        }
+        if (isSorted) {
+            break;
+        }
+    }
+}
+</code></pre>
+<p>利用布尔变量作为标记。如果在本轮排序中，元素有交换，则说明数列无序；如果没有元素交换，说明数列已然有序，直接跳出大循环。</p>
+<p>很多博客基本都是优化至此就结束了，其实还可以继续优化。</p>
+<p>再引入一个新数组：</p>
+<figure data-type="image" tabindex="10"><img src="https://LiarrDev.github.io/post-images/1565688807953.webp" alt="半有序数组" loading="lazy"></figure>
+<p>可以看到该数组后半部分已升序且为数列最大值。因此前四轮冒泡确定的有序数列实际上在未排序前就已经是有序的，而上述算法每一轮都要作一些无用功，这就是需要优化的地方。</p>
+<p>这个问题的关键点在于对数列有序区的界定。</p>
+<p>按照现有的逻辑，有序区的长度和排序的轮数是相等的。比如第一轮排序过后的有序区长度是 1，第二轮排序过后的有序区长度是 2……</p>
+<figure data-type="image" tabindex="11"><img src="https://LiarrDev.github.io/post-images/1565689144242.webp" alt="半有序数组冒泡第二轮" loading="lazy"></figure>
+<p>实际上，数列真正的有序区可能会大于这个长度，比如例子中仅仅第二轮，后面 6 个元素实际都已经属于有序区。因此后面的许多次元素比较是没有意义的。</p>
+<p>如何避免？我们可以在每一轮排序的最后，记录下最后一次元素交换的位置，那个位置也就是无序数列的边界，再往后就是有序区了。</p>
+<p>优化后代码如下：</p>
+<pre><code class="language-Java">public static void bubbleSort(int[] arr) {
+    int temp;
+    int lastExchangeIndex = 0;          // 记录最后一次交换的位置
+    int sortBorder = arr.length - 1;    // 无序数列的边界，每次比较只需要比到这里为止
+    for (int i = 0; i &lt; arr.length - 1; i++) {
+        boolean isSorted = true;        // 有序标记，每一轮的初始是 true
+        for (int j = 0; j &lt; sortBorder; j++) {
+            if (arr[j] &gt; arr[j + 1]) {
+                temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+                isSorted = false;       // 有元素交换，所以不是有序，标记变为 false
+                lastExchangeIndex = j;  // 把无序数列的边界更新为最后一次交换元素的位置
+            }
+        }
+        sortBorder = lastExchangeIndex;
+        if (isSorted) {
+            break;
+        }
+    }
+}
+</code></pre>
+<p>这里引入了一个新的变量用来记录无需数组的边界，每一轮排序过程中，边界之后的元素就完全不需要比较了，因为它们肯定是有序的。</p>
+<hr>
+<p>冒泡排序是把小的元素往前调或者把大的元素往后调，比较是相邻的两个元素比较，交换也发生在这两个元素之间。所以，如果两个元素相等，是不会再交换的；如果两个相等的元素没有相邻，那么即使通过前面的两两交换把两个相邻起来，这时候也不会交换，所以相同元素的前后顺序并没有改变，所以冒泡排序是一种稳定排序算法。</p>
+<p>算法中有两重嵌套循环，所以容易得出，冒泡排序算法的时间复杂度为 O(n²)。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

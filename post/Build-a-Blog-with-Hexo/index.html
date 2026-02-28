@@ -1,0 +1,944 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>用『Hexo』搭建个人博客 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="其实很多人都想过有一个属于自己的网站，无奈因为技术门槛，大多数人都没能实现这个小小的心愿。
+说实话，对于技术人或者是互联网从业者来说，一个属于自己的个人网站是很常见的，由于我们通常会将其用于记录我们的一些笔记、知识、生活等等，因此也会将其称..." />
+    <meta name="keywords" content="Blog" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Build-a-Blog-with-Hexo.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2021-02-08"><i class="fa fa-calendar"></i><span class="lately">5 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Build-a-Blog-with-Hexo/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Build-a-Blog-with-Hexo/"> </span>
+              </a>
+              <span id="/Build-a-Blog-with-Hexo/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-0 ctag-Blog" aria-label="">Blog</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">用『Hexo』搭建个人博客</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>其实很多人都想过有一个属于自己的网站，无奈因为技术门槛，大多数人都没能实现这个小小的心愿。</p>
+<p>说实话，对于技术人或者是互联网从业者来说，一个属于自己的个人网站是很常见的，由于我们通常会将其用于记录我们的一些笔记、知识、生活等等，因此也会将其称为博客。</p>
+<p>“博客”这个词，说起来也有点儿久远了，甚至现在很多人都已经不知道这个词，它其实是一个音译词，英文叫“Blog”，而这个词也是一个混成词，源自“Web Log”，即网络日志，更早期的音译其实叫“部落格”，是一种通常由个人管理、不定期张贴新文章的网站。</p>
+<p>国内也有很多博客写作平台，比如偏技术向的『CSDN』和『掘金』，偏大众向的『简书』等等，注册个账号就能开始写作，那为什么还要自己动手去搭建一个博客呢？</p>
+<p>从我个人看来，有三个原因：</p>
+<ul>
+<li><strong>广告</strong>。商业平台需要盈利，广告是重要的来源，平台往往会向作者的博客插入广告而不需要经过作者的同意。</li>
+<li><strong>样式</strong>。商业平台通常对于所有的博客，都只会提供单一的页面展示样式，没有个性化定制。</li>
+<li><strong>监管</strong>。文章发表在商业平台，就必须受到平台的监管。以微信公众平台为例，微信每年清理的微信文章不计其数，除掉绝大部分造谣、抄袭的垃圾文章外，还有极小部分揭露社会黑暗的文章因为某些不可描述的原因而被删除。</li>
+</ul>
+<p>如果你也有同样的顾虑，可以尝试跟随我的脚步，搭建一个属于自己的个人博客。</p>
+<h1 id="hexo">Hexo</h1>
+<p>在开源社区各路大神的努力下，已经诞生了不少博客框架，我按照我个人的喜好，选择了『Hexo』，你也可以选择其他框架搭建。</p>
+<p>『Hexo』官网对于这个框架的描述是：</p>
+<blockquote>
+<p>A fast, simple &amp; powerful blog framework</p>
+<p>快速、简洁且高效的博客框架</p>
+</blockquote>
+<p>同时，还介绍了几个优点：</p>
+<ul>
+<li><strong>超快速度</strong>。Node.js 所带来的超快生成速度，让上百个页面在几秒内瞬间完成渲染。</li>
+<li><strong>支持 Markdown</strong>。Hexo 支持 <a href="https://help.github.com/articles/github-flavored-markdown">GitHub Flavored Markdown</a> 的所有功能，甚至可以整合 Octopress 的大多数插件。</li>
+<li><strong>一键部署</strong>。只需一条指令即可部署到 <a href="https://pages.github.com">GitHub Pages</a>, <a href="https://www.heroku.com/">Heroku</a> 或其他平台。</li>
+<li><strong>插件和可扩展性</strong>。强大的 API 带来无限的可能，与数种模板引擎（EJS，Pug，Nunjucks）和工具（Babel，PostCSS，Less/Sass）轻易集成。</li>
+</ul>
+<p>尽管我认同『Hexo』的确是一个优秀的博客框架，但在这里我必须要泼一下冷水：</p>
+<ul>
+<li>网页的加载速度还依赖于实际网络情况。</li>
+<li>不支持 Markdown 的博客框架算不上博客框架。</li>
+<li>绝大多数的优秀博客框架都支持一键部署。</li>
+<li>拥有插件扩展的博客框架才算优秀框架。</li>
+</ul>
+<p>总之，『Hexo』满足了优秀博客框架的条件，接下来我就带你利用『Hexo』一步一步搭建自己的博客。</p>
+<h1 id="工具">工具</h1>
+<h2 id="nodejs">Node.js</h2>
+<p>上面也提到，『Hexo』是基于 Node.js 的，它是一个基于 Chrome V8 引擎 的 JavaScript 运行时，不懂没有关系，你只需要下载安装即可。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1612968811233.png" alt="Node.js" loading="lazy"></figure>
+<p>其实 Node.js 在之前『<a href="https://liarrdev.github.io/post/Set-up-React-Native-Development-Environment-on-Windows/">Windows 平台 React Native 开发环境搭建笔记</a>』中也有介绍过，如果感觉使用过程中网速不理想可以参考切换国内镜像源。</p>
+<p>建议使用 LTS 版本。</p>
+<h2 id="git">Git</h2>
+<p>Git 也是我们程序员的老朋友了，它可以帮助我们拉取相关文件以及将博客部署到网上去，也只需要下载安装即可。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1612968834183.png" alt="Git" loading="lazy"></figure>
+<p>新版本的 Git 已经默认勾选「Run Git from Windows Command Prompt」了，也就是说可以自动添加到环境变量。</p>
+<p>macOS 中安装 Git 则更为方便，直接在『Terminal』中输入 <code>git</code> 命令就会自动提示安装。</p>
+<h1 id="环境">环境</h1>
+<p>只需安装以上两个软件，我们就已经准备好工具啦，接下来在任意终端（你可以使用刚刚下载的『Git Bash』，或者系统自带的『CMD』、『Windows PowerShell』、『Terminal』等）输入以下命令：</p>
+<pre><code class="language-Bash">➜   npm install -g hexo-cli
+</code></pre>
+<p>该命令会安装『Hexo』及其相关命令，等待一小会环境就安装完成啦。</p>
+<h1 id="建站">建站</h1>
+<p>你可能会觉得前面的准备工作太过简单，或许这正是『Hexo』的优点，但接下来才是我们的重点工作。</p>
+<p>『Hexo』环境安装完成后，我们在终端执行：</p>
+<pre><code class="language-Bash">➜   hexo init &lt;folder&gt;
+</code></pre>
+<p><code>&lt;folder&gt;</code> 是我们想要将整个博客环境存放的目录路径，这个命令会加载对应的文件到该文件夹下，你可能会好奇这些文件是从哪里来的，『Hexo』的 Github 项目中有一个叫「hexo-starter」的 Repo，所有的包文件都在其中。</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1612968887543.png" alt="hexo-starter" loading="lazy"></figure>
+<p>执行完上述命令之后很可能会有相关错误，比如无法安装相应的包扩展文件等，我们可以进入刚刚生成的该文件夹把没有安装上的包再安装一遍：</p>
+<pre><code class="language-Bash">➜   cd &lt;folder&gt;
+➜   npm install
+</code></pre>
+<p>这样就把所需要的包和文件安装完成，指定文件夹的目录结构如下：</p>
+<pre><code>.
+├── _config.yml
+├── package.json
+├── scaffolds
+├── source
+|   ├── _drafts
+|   └── _posts
+└── themes
+</code></pre>
+<p>「_config.yml」是网站的配置信息，可以在此配置大部分的参数。</p>
+<p>「package.json」是应用程序的信息，EJS、Stylus 和 Markdown renderer 皆已默认安装。</p>
+<p>「scaffolds」是模版文件夹。当您新建文章时，『Hexo』会根据「scaffolds」来建立文件。『Hexo』的模板是指在新建的 Markdown 文件中默认填充的内容。</p>
+<p>「source」是资源文件夹，存放用户资源的地方。除「_posts」文件夹之外，开头命名为 <code>_</code>（下划线）的文件、文件夹和隐藏的文件将会被忽略。Markdown 和 HTML 文件会被解析并放到「public」文件夹，而其他文件会被拷贝过去。</p>
+<p>「themes」是主题文件夹，『Hexo』会根据主题来生成静态页面。</p>
+<p>接下来就可以生成我们的网站页面了，在创建的项目文件夹根目录下，执行命令：</p>
+<pre><code class="language-Bash">➜   hexo generate
+</code></pre>
+<p>因为单词比较长容易输错，『Hexo』支持用简写的方式执行命令，上面这条命令可以简写成：</p>
+<pre><code class="language-Bash">➜   hexo g
+</code></pre>
+<p>如果你使用『Windows PowerShell』的话可能会遇到输出信息缺失的情况：</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1612968986555.png" alt="Windows PowerShell 信息缺失" loading="lazy"></figure>
+<p>不用太担心，这只是『Hexo』命令显示不兼容『Windows PowerShell』的缘故，所以我还是比较习惯用『Git Bash』，不过『Git Bash』省略了比较多的信息，你也可以使用『CMD』，它会显示完整的信息。无论你使用哪个终端，只要它没有报错，我们的命令都是正常执行的。</p>
+<p>该命令执行完成后，可以发现目录下多了一个名为「public」的文件夹，该目录就是生成的网站。</p>
+<p>这时候再执行命令：</p>
+<pre><code class="language-Bash">➜   hexo server
+</code></pre>
+<p>或者简写：</p>
+<pre><code class="language-Bash">➜   hexo s
+</code></pre>
+<p>在浏览器中访问网址：http://localhost:4000，就可以查看刚刚生成的网站。</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1612969066699.jpeg" alt="" loading="lazy"></figure>
+<p>我们的网站就建立起来了！</p>
+<h1 id="写作">写作</h1>
+<p>虽然网站搭建好了，但里面除了一个「Hello World」还是空空如也，既然作为我们的个人博客，那么就需要用自己的内容来把它充实起来。</p>
+<p>执行以下命令来创建一篇新文章：</p>
+<pre><code class="language-Bash">➜   hexo new [layout] &lt;title&gt;
+</code></pre>
+<p>你可以在命令中指定文章的布局（<code>layout</code>），默认为 <code>post</code>，可通过修改「_config.yml」中的 <code>default_layout</code> 参数来指定默认布局。</p>
+<p><code>post</code> 相当于发布的文章，你也可以选择 <code>draft</code> 生成一个草稿，草稿页面不会被『Hexo』渲染生成但也可以预览其效果。</p>
+<p>如果你担心命令太长太多你记不住，你可以把这个参数省略掉，记住如下写法即可：</p>
+<pre><code class="language-Bash">➜   hexo new &quot;文章标题&quot;
+</code></pre>
+<p>执行完命令后你可以看到『Hexo』帮我们生成了一个与 <code>&lt;title&gt;</code> 名字相对应的 Markdown 文件，默认情况下 <code>&lt;title&gt;</code> 即文章的标题。</p>
+<p>打开该文件，可以看到『Hexo』已经帮我们初始化了一些基本信息：</p>
+<pre><code class="language-YAML">---
+title: &lt;title&gt;
+date: 2019-06-03 20:49:47
+tags: 
+---
+</code></pre>
+<p>文件最上方以 <code>---</code> 分隔的这一部分区域叫作「Front-matter」，用于指定个别文件的变量，简单来说就是这个文章的一些属性。</p>
+<p>「Front-matter」通常使用 YAML 语法，当然你也可以使用 JSON 来编写，不过个人觉得虽然大部分程序员都比较熟悉 JSON 但在这里无疑使用 YAML 要更加方便易读，况且 YAML 学起来跟 JSON 一样无成本不是么。</p>
+<p>以下是预先定义的参数，您可在模板中使用这些参数值并加以利用。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数</th>
+<th style="text-align:center">描述</th>
+<th style="text-align:center">默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><code>layout</code></td>
+<td style="text-align:center">布局</td>
+<td style="text-align:center">「config.default_layout」中设置的默认值</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>title</code></td>
+<td style="text-align:center">标题</td>
+<td style="text-align:center">文章的文件名</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>date</code></td>
+<td style="text-align:center">建立日期</td>
+<td style="text-align:center">文件建立日期</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>updated</code></td>
+<td style="text-align:center">更新日期</td>
+<td style="text-align:center">文件更新日期</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>comments</code></td>
+<td style="text-align:center">开启文章的评论功能</td>
+<td style="text-align:center">true</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>tags</code></td>
+<td style="text-align:center">标签（不适用于分页）</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center"><code>categories</code></td>
+<td style="text-align:center">分类（不适用于分页）</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center"><code>permalink</code></td>
+<td style="text-align:center">覆盖文章网址</td>
+<td style="text-align:center"></td>
+</tr>
+</tbody>
+</table>
+<p>我一般还会使用 <code>subtitle</code> 指定副标题，使用 <code>cover</code> 指定文章封面图等，不过这并不是『Hexo』预先定义的参数，而是跟当前使用的主题相关，我使用这两个参数还是来源于在『微信公众平台』上写推文的习惯。</p>
+<p>接下来只需要在「Front-matter」下方使用 Markdown 语法进行文章写作即可，任意文本编辑器都可以对其进行编辑，为了方便也可以使用专门的 Markdown 编辑器。</p>
+<p>需要注意的是，『Hexo』中的 Markdown 语法使用的是 <a href="https://help.github.com/articles/github-flavored-markdown">GFM（GitHub Flavored Markdown）</a>而不是标准的 Markdown 语法，两者有点区别但总体区别不大，对于我日常使用来说，<a href="https://help.github.com/articles/github-flavored-markdown">GFM</a> 要相对严格一些（客观上来说并不是，因为 <a href="https://help.github.com/articles/github-flavored-markdown">GFM</a> 也有比标准 Markdown 自由的地方）。</p>
+<p>写作完成后，再次运行上一小节生成网站以及启动服务器的两条命令：</p>
+<pre><code class="language-Bash">➜   hexo g
+➜   hexo s
+</code></pre>
+<p>访问 http://localhost:4000 即可查看刚刚生成的文章了。</p>
+<p>这两条命令应当牢牢记住，因为在对博客做任何更新后都要用这两条命令来启动预览。</p>
+<h1 id="配置">配置</h1>
+<p>对于新手其实只需要了解几个常用的配置项即可，但如果想要定制更加个性的网站，就需要了解如何玩转配置文件了。</p>
+<p>首先，配置文件指的是「_config.yml」，它可以分为网站配置文件和主题配置文件，分别存放于项目根目录以及对应主题目录。</p>
+<p>正如它的文件名后缀所示，配置文件也是遵循 YAML 语法的，同样，凡是支持 YAML 的地方都是可以使用 JSON 来替代。</p>
+<p>最主要的配置有几个地方，第一是网站基础配置。</p>
+<p>比如你打开网站后你可以看到网站的标题是「Hexo」：</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1612969261942.png" alt="Default Title" loading="lazy"></figure>
+<p>我们的个人博客当然要自己起一个名字，所以可以修改：</p>
+<pre><code class="language-YAML"># Site
+title: &quot;Liarr's Studio&quot;
+subtitle: 
+description:
+keywords:
+author: Liarr
+language:
+timezone:
+</code></pre>
+<p><code>title</code> 就是网站的标题，我这里把它命名为「Liarr's Studio」，意为我的工作台。重新生成并重启服务器，就可以看到网站的标题改为了我定义的名字了。</p>
+<figure data-type="image" tabindex="7"><img src="https://LiarrDev.github.io/post-images/1612969305806.png" alt="Customize Title" loading="lazy"></figure>
+<p>第二个需要修改的是部署的配置。</p>
+<p>上文虽然你看到的是你生成的网站，但这也仅限于本地查看，他人还无法在公网上访问你的博客，所以你还需要把它部署到服务器上，具体部署的步骤下文会详细说，在配置这里需要填写你部署的方式以及地址，如我这里填写的是：</p>
+<pre><code class="language-YAML"># Deployment
+deploy:
+  type: git
+  repo: https://github.com/LiarrDev/LiarrDev.github.io.git
+</code></pre>
+<p>也就是说，我使用 Git 的方式来部署，并且存放在『Github』对应的仓库中。<br>
+第三个需要修改的是主题的配置。</p>
+<p>你一定会认为默认的主题「Landscape」丑死了，我们可以通过修改主题来美化自己的网站，配置上只需要填写主题的名字即可，比如我这里填写：</p>
+<pre><code class="language-YAML"># Extensions
+theme: hexo-theme-clean-blog
+</code></pre>
+<p>就是使用这款名为「CleanBlog」的主题，具体设置主题的步骤下文也会有详细的介绍。</p>
+<p>由于配置门槛较高，所以建议还是参考官方文档，官方文档上有更详细的介绍，且英文文档要比中文文档更加详细。</p>
+<h1 id="部署">部署</h1>
+<p>『Hexo』支持多种部署方式，比如 Git、Heroku、Netlify、Rsync 等，这里主要介绍流行的 Git 部署方式。</p>
+<p>正如前文所提到，我的博客是部署在『Github』上的，没错，我使用的正是 <a href="https://pages.github.com">GitHub Pages</a>，这是『Github』给开发者建立一个私人页面，用来分享新颖的想法和自己写的代码。</p>
+<p>不过由于『Github』的服务器在海外，我们在国内访问有时候会不稳定，再加上时不时会遇上 DNS 污染，对于国内的非专业用户，我个人更加建议选用国内的代码托管平台，比如『<a href="https://gitee.com">Gitee</a>』和『<a href="https://coding.net">CODING</a>』，部署流程和我在『Github』上部署基本没有太大差别。</p>
+<p>注册的流程就不赘述了，直接讲部署流程。</p>
+<p>首先得新建一个代码仓库，我们一般叫 Repo。</p>
+<figure data-type="image" tabindex="8"><img src="https://LiarrDev.github.io/post-images/1612969578142.png" alt="创建 Repo" loading="lazy"></figure>
+<p>创建的信息必须得严格按照标准来填写。</p>
+<p>首先是「Repository name」，也就是仓库的名称，使用 <a href="https://pages.github.com">Github Pages</a> 必须按照 <code>&lt;Username&gt;.github.io</code> 的方式填写，<code>Username</code> 一般跟左边的 Owner 是相同的，就是你注册的时候填写的用户名。由于我已经创建好我的个人网站了，所以这里它会提示该仓库已存在。</p>
+<p>如果你使用其他代码托管平台则参照对应平台的命名规范，国内的代码托管平台一般都有中文文档，可以轻松参考。</p>
+<p>其他内容可以根据自己的需要进行改动，比如「Description」是对这个仓库的描述，它是一个选填项，所以你可以在以后对它进行修改，比如我的仓库描述为：</p>
+<figure data-type="image" tabindex="9"><img src="https://LiarrDev.github.io/post-images/1612969560210.png" alt="Repo Description" loading="lazy"></figure>
+<p>可以让别人直接通过点击跳转至我的博客主页。</p>
+<p>对于仓库的权限一般不修改，即默认的「Public」即可。</p>
+<p>『Github』之前对于「Private」私人仓库是要收费的，被 Microsoft 收购之后个人也可以免费创建私有仓库了，并且数量无限制。设立私有仓库的目的主要是使代码仅为内部人员使用防止被竞争对手拿到核心代码，而我们搭建个人博客这种基于开源项目上的代码，也没必要设为私有。</p>
+<p>创建完成后，打开仓库，点击「Clone」菜单的的复制按钮把仓库的地址复制下来。</p>
+<figure data-type="image" tabindex="10"><img src="https://LiarrDev.github.io/post-images/1612969661946.png" alt="Copy Repo Address" loading="lazy"></figure>
+<p>填写到配置文件当中，如上文提到的部署配置所示。</p>
+<pre><code class="language-YAML"># Deployment
+deploy:
+  type: git
+  repo: https://github.com/LiarrDev/LiarrDev.github.io.git
+</code></pre>
+<p>这样，『Hexo』就知道应该部署到哪个仓库中去了。</p>
+<p>写作完成并在本地预览无误后，就可以通过命令部署到『GitHub Pages』中去：</p>
+<pre><code class="language-Bash">➜   hexo deploy
+</code></pre>
+<p>也可以简写：</p>
+<pre><code class="language-Bash">➜   hexo d
+</code></pre>
+<p>这条命令同样非常重要，当你本地预览网站觉得没有问题后，通过这条命令就能将网站部署到线上。</p>
+<p>然后你就可以在公网上访问你的个人博客网站了。</p>
+<p>地址为：https://&lt;Username&gt;.github.io。</p>
+<p>如果你初次执行命令后有关于 Github 方面的报错，也可以尝试通过把仓库 Clone 下来并把里面的文件复制到你的 Hexo 博客项目目录下进行解决。</p>
+<p>假若有时候修改内容后网站依旧无法正常展示，可以尝试通过清除缓存的命令来解决：</p>
+<pre><code class="language-Bash">➜   hexo clean
+</code></pre>
+<p>清除缓存后再部署就能够看到修改后的效果，如果依然不行，有可能是其他地方的问题，可以参考文档或相关教程一一排查。</p>
+<h1 id="主题">主题</h1>
+<p>默认的「Landscape」主题虽然比『CSDN』之类的广告流要好很多，甚至比很多国内你见到的博客都要好看，但依然无法满足我们对美观的追求，开源的『Hexo』有一个好处就是大家都可以为其打造主题。</p>
+<p>截止至文章发表时，官网上登记的已经有 331 个主题，其他未被『Hexo』官方收录的主题应该也是不少的，所以你可以根据自己的喜好来选择合适的主题，当然，如果你能够自己制作一款主题供大家使用那就再好不过了。</p>
+<p>打开『Hexo』官方的<a href="https://hexo.io/themes/">主题页</a>，这里展示了各种各样的主题，可以花些时间慢慢挑选。</p>
+<figure data-type="image" tabindex="11"><img src="https://LiarrDev.github.io/post-images/1612969737354.png" alt="Hexo Themes" loading="lazy"></figure>
+<p>鼠标移动到主题的封面图上，会有一只小眼睛，点进去可以对不同主题的效果进行预览。</p>
+<p>其实大多都是开发者的个人博客，也刚好看看效果和内容。</p>
+<p>选到合适的主题后，回到官方的主题页，点击该<strong>主题的名字</strong>（我觉得这种交互方式十分不好，因为用户更加习惯点击图片，而且鼠标移动到名字时仅鼠标手势改变了，名字也没有进行高亮或者动效提示），就可以进入到该主题的项目主页。</p>
+<p>接着把对应的主题 Clone 至博客项目的「themes」目录下即可。</p>
+<p>然后再在项目配置文件中如上文所述载入主题。</p>
+<pre><code class="language-YAML"># Extensions
+theme: hexo-theme-clean-blog
+</code></pre>
+<p>如我这里载入的就是名为「CleanBlog」的主题。</p>
+<p>不同的主题也有不同的配置项，如这款「CleanBlog」主题我可以配置 Header：</p>
+<pre><code class="language-YAML"># Header
+menu:
+  Home: /
+  Archives: /archives
+  Tags: /tags
+  Categories: /categories
+  Github:
+    url: https://github.com/LiarrDev
+    icon: github
+</code></pre>
+<p>首页的封面图我暂时还是使用其默认图片：</p>
+<pre><code class="language-YAML"># URL of the Home page image
+index_cover: http://www.codeblocq.com/assets/projects/hexo-theme-clean-blog/img/home-bg.jpg
+</code></pre>
+<p>上面可以看到，网站的 Favicon 默认是一个空白页的 ICON：</p>
+<figure data-type="image" tabindex="12"><img src="https://LiarrDev.github.io/post-images/1612969795589.png" alt="Default Favicon" loading="lazy"></figure>
+<p>这样看起来就会觉得很 Low，你看看各大网站，哪个没有自己专属的 LOGO？</p>
+<figure data-type="image" tabindex="13"><img src="https://LiarrDev.github.io/post-images/1612969830922.png" alt="各大网站的 Favicon" loading="lazy"></figure>
+<p>那我们也应该给自己的网站设定一个 Favicon，为了方便，我就直接把我个人公众号的头像拿过来了，先把它转成 ICO 格式，然后再存放在该主题目录下的 <code>/source/img/</code> 目录下，然后在主题配置中引入：</p>
+<pre><code class="language-YAML"># set your own favicon
+favicon: /img/favicon.ico
+</code></pre>
+<p>就可以把网站的 Favicon 改为我自己设计的 LOGO 了。</p>
+<figure data-type="image" tabindex="14"><img src="https://LiarrDev.github.io/post-images/1612969875196.jpeg" alt="Customize Favicon" loading="lazy"></figure>
+<p>另外，「CleanBlog」这款主题还支持加上自己的社交账号，这里我仅设定我的 Github 账号：</p>
+<pre><code class="language-YAML"># Social Accounts
+twitter_url:
+twitter_handle:
+facebook_url:
+github_url: https://github.com/LiarrDev
+gitlab_url:
+linkedin_url:
+mailto:
+</code></pre>
+<p>我的博客最终成品大致如下：</p>
+<figure data-type="image" tabindex="15"><img src="https://LiarrDev.github.io/post-images/1612969916418.jpeg" alt="Blog Preview" loading="lazy"></figure>
+<p>其实每一款主题都有不同的参数配置，具体根据选定的主题进行配置即可。</p>
+<hr>
+<p>至此，属于自己的个人博客就基本搭建完成了，有空也可以来我的技术博客中交流一下。</p>
+<p>关于『Hexo』更详细的玩法可以参考官方文档。</p>
+<p>在快餐式互联网时代，个人 Blog 实际上也越来越少见，大众娱乐化使得创作者更加愿意使用碎片化的记录方式，也几乎没有多少人愿意读长篇大论的文章，但无论是对写博客的作者，还是读博客的读者来说，都是一种沉淀。</p>
+<hr>
+<h1 id="参考内容">参考内容</h1>
+<ul>
+<li><a href="https://hexo.io">Hexo</a></li>
+</ul>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Add-Icons-for-TextView-or-EditText-in-Android.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Add-Icons-for-TextView-or-EditText-in-Android/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2021-03-16">2021-03-16</time>
+                  <h4 class="title white no-margin">Android 为 TextView 或 EditText 添加 ICON</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Solve-the-Android-Nested-Scrolling-Problem-with-NestedScrollView.jpeg');"></div>
+                 <a href="https://LiarrDev.github.io/post/Solve-the-Android-Nested-Scrolling-Problem-with-NestedScrollView/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2020-12-14">2020-12-14</time>
+                  <h4 class="title white no-margin">NestedScrollView 解决 Android 嵌套滚动问题</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

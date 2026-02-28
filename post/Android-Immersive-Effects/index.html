@@ -1,0 +1,759 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Android 沉浸式效果 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="市面上很多 App 启动的时候都有一个几秒钟启动页，可以用来放一些广告，或者做一些宣传自家品牌的内容，而且是沉浸式效果，看起来十分舒服。
+那么今天就来聊聊沉浸式的实现。
+什么是沉浸式
+估计问十个人会有十个回答，很多人都说不上到底什么才是沉浸..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Android-Immersive-Effects.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2023-10-08"><i class="fa fa-calendar"></i><span class="lately">2 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Android-Immersive-Effects/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Android-Immersive-Effects/"> </span>
+              </a>
+              <span id="/Android-Immersive-Effects/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">Android 沉浸式效果</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>市面上很多 App 启动的时候都有一个几秒钟启动页，可以用来放一些广告，或者做一些宣传自家品牌的内容，而且是沉浸式效果，看起来十分舒服。</p>
+<p>那么今天就来聊聊沉浸式的实现。</p>
+<h1 id="什么是沉浸式">什么是沉浸式</h1>
+<p>估计问十个人会有十个回答，很多人都说不上到底什么才是沉浸式，原因是国内许多博客都张冠李戴说什么沉浸式状态栏或者沉浸式效果之类的名词，让人摸不着头脑。</p>
+<p>Android 官方从来没有给出过沉浸式状态栏这样的命名，只有沉浸式模式（Immersive Mode）这种说法，不过倒是有部分国内的 ROM 给出了「沉浸式状态栏」这种设置。</p>
+<p>所以实际上「沉浸式状态栏」可以理解为透明状态栏，而真正的「沉浸式模式」则是如游戏或视频状态下的全屏效果。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1564929669447.png" alt="沉浸式" loading="lazy"></figure>
+<p>整个屏幕显示都是游戏的内容，没有状态栏也没有导航栏，用户玩游戏的时候就可以完全沉浸在游戏当中，而不会被一些系统的界面元素所打扰，这就是沉浸式模式。</p>
+<h1 id="界面元素">界面元素</h1>
+<p>要实现沉浸式，首先要了解界面上有哪些元素是需要隐藏的，来看看这张图：</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1564930212312.png" alt="界面元素" loading="lazy"></figure>
+<p>可以看到，有状态栏、<code>ActionBar</code>、导航栏等。而打造沉浸式模式的用户体验，就是要将这些系统元素全部隐藏，只留下主体内容部分。</p>
+<h1 id="实践">实践</h1>
+<h2 id="布局">布局</h2>
+<p>启动页很多情况下是一张图片，我从『网易云音乐』中偷了一张图，布局很简单：</p>
+<pre><code class="language-XML">&lt;FrameLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    tools:context=&quot;.activity.SplashActivity&quot;&gt;
+    &lt;androidx.appcompat.widget.AppCompatImageView
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;match_parent&quot;
+        android:scaleType=&quot;centerCrop&quot;
+        android:src=&quot;@drawable/splash_bg&quot; /&gt;
+&lt;/FrameLayout&gt;
+</code></pre>
+<p>初始效果如下：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1694882931051.PNG" alt="初始效果" loading="lazy"></figure>
+<h2 id="隐藏-actionbar">隐藏 ActionBar</h2>
+<p>隐藏 <code>ActionBar</code> 是项目中常用的场景，我们可以在指定其 <code>android:theme</code> 为 <code>NoActionBar</code> 类型的主题，也可以在逻辑代码中动态隐藏：</p>
+<pre><code class="language-Kotlin">class SplashActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        ...
+        supportActionBar?.hide()
+    }
+}
+</code></pre>
+<p>效果如下：</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1564932072193.png" alt="隐藏 ActionBar" loading="lazy"></figure>
+<h2 id="隐藏状态栏">隐藏状态栏</h2>
+<p>接下来是隐藏状态栏，我通过重写 <code>onWindowFocusChanged()</code> 方法来实现：</p>
+<pre><code class="language-Kotlin">class SplashActivity : AppCompatActivity() {
+    ...
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        ...
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+    }
+}
+</code></pre>
+<p>这里先获取到了当前界面的 <code>DecorView</code>，然后调用它的 <code>setSystemUiVisibility()</code> 方法来设置系统 UI 元素的可见性。其中，<code>SYSTEM_UI_FLAG_FULLSCREEN</code> 表示全屏的意思，也就是会将状态栏隐藏。效果如下：</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1564932612912.png" alt="隐藏状态栏" loading="lazy"></figure>
+<p>另外，根据 Android 的设计建议，<code>ActionBar</code> 是不应该独立于状态栏而单独显示的，因此状态栏如果隐藏了，则要确保 <code>ActionBar</code> 也进行了隐藏。</p>
+<h2 id="透明状态栏">透明状态栏</h2>
+<p>那如果想实现所谓的「沉浸式状态栏」呢？</p>
+<p>上面提到，所谓的「沉浸式状态栏」实际上是透明状态栏，我们可以借助另外一种 UI FLAG 来实现：</p>
+<pre><code class="language-Kotlin">class SplashActivity : AppCompatActivity() {
+    ...
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        ...
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        window.statusBarColor = Color.TRANSPARENT
+    }
+}
+</code></pre>
+<p>要实现这种效果，修改为 <code>SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN</code>，表示会让应用的主体内容占用系统状态栏的空间，网上有文章提到需要结合 <code>SYSTEM_UI_FLAG_LAYOUT_STABLE</code> 一起使用，但我测试发现似乎不需要也能实现该效果，不知道是不是版本问题。</p>
+<p>主体内容占用状态栏的空间还不够，因为此时状态栏依然有着色，我们再将其置为透明即可。</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1564933835949.png" alt="透明状态栏" loading="lazy"></figure>
+<h2 id="透明导航栏">透明导航栏</h2>
+<p>其实导航栏在不同手机上是不一定存在的，比如小米早期的手机，底部的三大金刚键是不在屏幕范围内的，而华为早期的一些手机则是在屏幕内，近几年手势全面屏的普及，又可以由用户自己决定是否显示三大金刚键，所以只有在屏幕内的才叫导航栏。</p>
+<p>透明导航栏和透明状态栏的实现方式相似：</p>
+<pre><code class="language-Kotlin">class SplashActivity : AppCompatActivity() {
+    ...
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        ...
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        window.navigationBarColor = Color.TRANSPARENT
+    }
+}
+</code></pre>
+<p>使用 <code>SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION</code> 使应用主体内容占用导航栏位置，并将导航栏设置为透明色。</p>
+<figure data-type="image" tabindex="7"><img src="https://LiarrDev.github.io/post-images/1564936169310.png" alt="透明导航栏" loading="lazy"></figure>
+<h2 id="隐藏导航栏">隐藏导航栏</h2>
+<p>隐藏导航栏的实现方式和上面相似，也是使用不同的 UI FLAG：</p>
+<pre><code class="language-Kotlin">class SplashActivity : AppCompatActivity() {
+    ...
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        ...
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
+    }
+}
+</code></pre>
+<p>同时使用 <code>SYSTEM_UI_FLAG_FULLSCREEN</code> 和 <code>SYSTEM_UI_FLAG_HIDE_NAVIGATION</code> 可以实现将状态栏和导航栏一起隐藏。这种方式虽然看上去好像是全屏化了，但会有个问题，我们触摸屏幕的任意位置或边缘划动会退出全屏，使状态栏和导航栏显示出来，并且无法再次隐藏：</p>
+<figure data-type="image" tabindex="8"><img src="https://LiarrDev.github.io/post-images/1564935672126.gif" alt="点击后失效" loading="lazy"></figure>
+<p>这显然不是我们想要的效果，因此这种模式的使用场景比较有限。</p>
+<h2 id="沉浸式">沉浸式</h2>
+<p>如何才能实现真正的沉浸式效果呢？</p>
+<p>同样，还是继续组合 UI FLAG：</p>
+<pre><code class="language-Kotlin">class SplashActivity : AppCompatActivity() {
+    ...
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        ...
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+    }
+}
+</code></pre>
+<p>触摸屏幕并不会退出全屏，且仅在屏幕边缘向中央划动的时候才会呼出状态栏和导航栏，如无操作则在几秒后折叠，重新回到全屏，很符合我们平时玩游戏或看视频时的操作。</p>
+<figure data-type="image" tabindex="9"><img src="https://LiarrDev.github.io/post-images/1564990415162.gif" alt="沉浸式" loading="lazy"></figure>
+<p>不过，网上的博客在介绍这种方式的时候通常会用到 6 种 UI FLAG：</p>
+<pre><code class="language-Kotlin">class SplashActivity : AppCompatActivity() {
+    ...
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        ...
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+    }
+}
+</code></pre>
+<p>为何只需 3 个 UI FLAG 组合就能实现的效果，大家都选用将这 6 个同时写入呢？</p>
+<p>经过各种我想到的情况进行测试，终于找到了区别，当我们长按 POWER 键的时候，会有如下不同：</p>
+<figure data-type="image" tabindex="10"><img src="https://LiarrDev.github.io/post-images/1564996575474.gif" alt="沉浸式对比" loading="lazy"></figure>
+<p>长按 POWER 键会弹出一个菜单遮挡在最顶部，同时该界面会短暂退出沉浸式，仅使用三种 UI FLAG 的时候状态栏和导航栏将显示为默认状态，而使用六种 UI FLAG 的时候状态栏和导航栏将会显示为透明状态，不用我说你也知道，透明状态交互会更加友好。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Verify-File-Types-with-Magic-Number.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Verify-File-Types-with-Magic-Number/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2023-10-26">2023-10-26</time>
+                  <h4 class="title white no-margin">利用 Magic Number 校验文件类型</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Simple-Use-of-the-Android-Clipboard.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Simple-Use-of-the-Android-Clipboard/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2023-09-15">2023-09-15</time>
+                  <h4 class="title white no-margin">Android 剪贴板的简单使用</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

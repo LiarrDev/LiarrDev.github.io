@@ -1,0 +1,877 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>如何追踪 Android 依赖来源 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="相信在日常开发中你已经发现，当我们添加某个库的依赖时，它会帮助我们同步它所依赖的库，比如我们常用的网络请求库 OkHttp 就依赖了 Okio，但我们依赖 OkHttp 时并不需要把 Okio 的依赖也添加进去，这是由 POM 声明的。
+这..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/How-to-Trace-Android-Dependency-Sources.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2025-10-29"><i class="fa fa-calendar"></i><span class="lately">4 个月前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/How-to-Trace-Android-Dependency-Sources/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/How-to-Trace-Android-Dependency-Sources/"> </span>
+              </a>
+              <span id="/How-to-Trace-Android-Dependency-Sources/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">如何追踪 Android 依赖来源</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>相信在日常开发中你已经发现，当我们添加某个库的依赖时，它会帮助我们同步它所依赖的库，比如我们常用的网络请求库 <a href="https://square.github.io/okhttp">OkHttp</a> 就依赖了 <a href="https://square.github.io/okio">Okio</a>，但我们依赖 <a href="https://square.github.io/okhttp">OkHttp</a> 时并不需要把 <a href="https://square.github.io/okio">Okio</a> 的依赖也添加进去，这是由 POM 声明的。</p>
+<p>这种方案能够帮助我们屏蔽掉一些多余的信息，降低上手门槛，但有时候却不利于追踪。</p>
+<h1 id="追踪-aar-jar-依赖">追踪 AAR / JAR 依赖</h1>
+<p>好在 Android 官方已经帮我们准备好一个 Gradle 任务用于分析项目中的依赖关系，我们只需要一行命令就可以查询。</p>
+<pre><code class="language-bash">➜   ./gradlew app:dependencies
+</code></pre>
+<p>控制台中会输出整个项目的依赖树：</p>
+<pre><code class="language-bash">+--- androidx.appcompat:appcompat:1.7.1
+|    +--- androidx.activity:activity:1.8.0 -&gt; 1.10.1
+|    |    +--- androidx.annotation:annotation:1.8.1
+|    |    |    \--- androidx.annotation:annotation-jvm:1.8.1
+|    |    |         \--- org.jetbrains.kotlin:kotlin-stdlib:1.7.10 -&gt; 1.8.22
+|    |    |              +--- org.jetbrains.kotlin:kotlin-stdlib-common:1.8.22
+|    |    |              \--- org.jetbrains:annotations:13.0 -&gt; 23.0.0
+|    |    +--- androidx.core:core-ktx:1.13.0
+|    |    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    |    +--- androidx.core:core:1.13.0
+|    |    |    |    +--- androidx.annotation:annotation:1.6.0 -&gt; 1.8.1 (*)
+|    |    |    |    +--- androidx.annotation:annotation-experimental:1.4.0
+|    |    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.7.10 -&gt; 1.8.22 (*)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-runtime:2.6.2
+|    |    |    |    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    |    |    |    +--- androidx.arch.core:core-common:2.2.0
+|    |    |    |    |    |    \--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-common:2.6.2
+|    |    |    |    |    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    |    |    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.8.10 -&gt; 1.8.22 (*)
+|    |    |    |    |    |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4 -&gt; 1.7.3
+|    |    |    |    |    |    |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3
+|    |    |    |    |    |    |    |    \--- org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.7.3
+|    |    |    |    |    |    |    |         +--- org.jetbrains:annotations:23.0.0
+|    |    |    |    |    |    |    |         +--- org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.7.3
+|    |    |    |    |    |    |    |         |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3 (c)
+|    |    |    |    |    |    |    |         |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.7.3 (c)
+|    |    |    |    |    |    |    |         |    \--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3 (c)
+|    |    |    |    |    |    |    |         +--- org.jetbrains.kotlin:kotlin-stdlib-common:1.8.20 -&gt; 1.8.22
+|    |    |    |    |    |    |    |         \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.20 -&gt; 1.8.22
+|    |    |    |    |    |    |    |              +--- org.jetbrains.kotlin:kotlin-stdlib:1.8.22 (*)
+|    |    |    |    |    |    |    |              \--- org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22
+|    |    |    |    |    |    |    |                   \--- org.jetbrains.kotlin:kotlin-stdlib:1.8.22 (*)
+|    |    |    |    |    |    |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.7.3 (*)
+|    |    |    |    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.20 -&gt; 1.8.22 (*)
+|    |    |    |    |    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.6.2 (c)
+|    |    |    |    |    |    +--- androidx.lifecycle:lifecycle-runtime:2.6.2 (c)
+|    |    |    |    |    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.6.2 (c)
+|    |    |    |    |    |    +--- androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2 (c)
+|    |    |    |    |    |    \--- androidx.lifecycle:lifecycle-livedata:2.6.2 (c)
+|    |    |    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.8.10 -&gt; 1.8.22 (*)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-common:2.6.2 (c)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.6.2 (c)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.6.2 (c)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2 (c)
+|    |    |    |    |    \--- androidx.lifecycle:lifecycle-livedata:2.6.2 (c)
+|    |    |    |    +--- androidx.versionedparcelable:versionedparcelable:1.1.1
+|    |    |    |    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    |    |    |    \--- androidx.collection:collection:1.0.0 -&gt; 1.1.0
+|    |    |    |    |         \--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.8.22 (*)
+|    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.8.22 (*)
+|    |    +--- androidx.core:core-viewtree:1.0.0
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib -&gt; 1.8.22 (*)
+|    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.8.22 (c)
+|    |    +--- androidx.lifecycle:lifecycle-common:2.6.1 -&gt; 2.6.2 (*)
+|    |    +--- androidx.lifecycle:lifecycle-runtime:2.6.1 -&gt; 2.6.2 (*)
+|    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.6.1 -&gt; 2.6.2
+|    |    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.8.10 -&gt; 1.8.22 (*)
+|    |    |    +--- androidx.lifecycle:lifecycle-common:2.6.2 (c)
+|    |    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.6.2 (c)
+|    |    |    +--- androidx.lifecycle:lifecycle-runtime:2.6.2 (c)
+|    |    |    +--- androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2 (c)
+|    |    |    \--- androidx.lifecycle:lifecycle-livedata:2.6.2 (c)
+|    |    +--- androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.1 -&gt; 2.6.2
+|    |    |    +--- androidx.annotation:annotation:1.0.0 -&gt; 1.8.1 (*)
+|    |    |    +--- androidx.core:core-ktx:1.2.0 -&gt; 1.13.0 (*)
+|    |    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.6.2
+|    |    |    |    +--- androidx.lifecycle:lifecycle-common:2.6.2 (*)
+|    |    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.8.10 -&gt; 1.8.22 (*)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-common:2.6.2 (c)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-runtime:2.6.2 (c)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.6.2 (c)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2 (c)
+|    |    |    |    \--- androidx.lifecycle:lifecycle-livedata:2.6.2 (c)
+|    |    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.6.2 (*)
+|    |    |    +--- androidx.savedstate:savedstate:1.2.1
+|    |    |    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.8.10 -&gt; 1.8.22 (*)
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.8.10 -&gt; 1.8.22 (*)
+|    |    |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4 -&gt; 1.7.3 (*)
+|    |    |    +--- androidx.lifecycle:lifecycle-common:2.6.2 (c)
+|    |    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.6.2 (c)
+|    |    |    +--- androidx.lifecycle:lifecycle-runtime:2.6.2 (c)
+|    |    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.6.2 (c)
+|    |    |    \--- androidx.lifecycle:lifecycle-livedata:2.6.2 (c)
+|    |    +--- androidx.savedstate:savedstate:1.2.1 (*)
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib -&gt; 1.8.22 (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.8.22 (c)
+|    +--- androidx.annotation:annotation:1.3.0 -&gt; 1.8.1 (*)
+|    +--- androidx.appcompat:appcompat-resources:1.7.1
+|    |    +--- androidx.annotation:annotation:1.2.0 -&gt; 1.8.1 (*)
+|    |    +--- androidx.core:core:1.6.0 -&gt; 1.13.0 (*)
+|    |    +--- androidx.vectordrawable:vectordrawable:1.1.0
+|    |    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    |    +--- androidx.core:core:1.1.0 -&gt; 1.13.0 (*)
+|    |    |    \--- androidx.collection:collection:1.1.0 (*)
+|    |    +--- androidx.vectordrawable:vectordrawable-animated:1.1.0
+|    |    |    +--- androidx.vectordrawable:vectordrawable:1.1.0 (*)
+|    |    |    +--- androidx.interpolator:interpolator:1.0.0
+|    |    |    |    \--- androidx.annotation:annotation:1.0.0 -&gt; 1.8.1 (*)
+|    |    |    \--- androidx.collection:collection:1.1.0 (*)
+|    |    \--- androidx.appcompat:appcompat:1.7.1 (c)
+|    +--- androidx.core:core:1.13.0 (*)
+|    +--- androidx.cursoradapter:cursoradapter:1.0.0
+|    |    \--- androidx.annotation:annotation:1.0.0 -&gt; 1.8.1 (*)
+|    +--- androidx.drawerlayout:drawerlayout:1.0.0 -&gt; 1.1.1
+|    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    +--- androidx.core:core:1.2.0 -&gt; 1.13.0 (*)
+|    |    \--- androidx.customview:customview:1.1.0
+|    |         +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |         \--- androidx.core:core:1.3.0 -&gt; 1.13.0 (*)
+|    +--- androidx.fragment:fragment:1.5.4
+|    |    +--- androidx.activity:activity:1.5.1 -&gt; 1.10.1 (*)
+|    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    +--- androidx.annotation:annotation-experimental:1.0.0 -&gt; 1.4.0 (*)
+|    |    +--- androidx.collection:collection:1.1.0 (*)
+|    |    +--- androidx.core:core-ktx:1.2.0 -&gt; 1.13.0 (*)
+|    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.5.1 -&gt; 2.6.2 (*)
+|    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.5.1 -&gt; 2.6.2 (*)
+|    |    +--- androidx.lifecycle:lifecycle-viewmodel-savedstate:2.5.1 -&gt; 2.6.2 (*)
+|    |    +--- androidx.loader:loader:1.0.0
+|    |    |    +--- androidx.annotation:annotation:1.0.0 -&gt; 1.8.1 (*)
+|    |    |    +--- androidx.core:core:1.0.0 -&gt; 1.13.0 (*)
+|    |    |    +--- androidx.lifecycle:lifecycle-livedata:2.0.0 -&gt; 2.6.2
+|    |    |    |    +--- androidx.arch.core:core-runtime:2.1.0 -&gt; 2.2.0
+|    |    |    |    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    |    |    |    \--- androidx.arch.core:core-common:2.2.0 (*)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.6.2 (*)
+|    |    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.8.10 -&gt; 1.8.22 (*)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-common:2.6.2 (c)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.6.2 (c)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-runtime:2.6.2 (c)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.6.2 (c)
+|    |    |    |    \--- androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2 (c)
+|    |    |    \--- androidx.lifecycle:lifecycle-viewmodel:2.0.0 -&gt; 2.6.2 (*)
+|    |    +--- androidx.savedstate:savedstate:1.2.0 -&gt; 1.2.1 (*)
+|    |    +--- androidx.viewpager:viewpager:1.0.0
+|    |    |    +--- androidx.annotation:annotation:1.0.0 -&gt; 1.8.1 (*)
+|    |    |    +--- androidx.core:core:1.0.0 -&gt; 1.13.0 (*)
+|    |    |    \--- androidx.customview:customview:1.0.0 -&gt; 1.1.0 (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.6.21 -&gt; 1.8.22 (*)
+|    +--- androidx.savedstate:savedstate:1.2.1 (*)
+|    \--- androidx.appcompat:appcompat-resources:1.7.1 (c)
++--- com.google.android.material:material:1.12.0
+|    +--- androidx.activity:activity:1.8.0 -&gt; 1.10.1 (*)
+|    +--- androidx.annotation:annotation:1.2.0 -&gt; 1.8.1 (*)
+|    +--- androidx.appcompat:appcompat:1.6.1 -&gt; 1.7.1 (*)
+|    +--- androidx.cardview:cardview:1.0.0
+|    |    \--- androidx.annotation:annotation:1.0.0 -&gt; 1.8.1 (*)
+|    +--- androidx.coordinatorlayout:coordinatorlayout:1.1.0
+|    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    +--- androidx.core:core:1.1.0 -&gt; 1.13.0 (*)
+|    |    +--- androidx.customview:customview:1.0.0 -&gt; 1.1.0 (*)
+|    |    \--- androidx.collection:collection:1.0.0 -&gt; 1.1.0 (*)
+|    +--- androidx.constraintlayout:constraintlayout:2.0.1 -&gt; 2.2.1
+|    +--- androidx.core:core:1.6.0 -&gt; 1.13.0 (*)
+|    +--- androidx.drawerlayout:drawerlayout:1.1.1 (*)
+|    +--- androidx.dynamicanimation:dynamicanimation:1.0.0
+|    |    +--- androidx.core:core:1.0.0 -&gt; 1.13.0 (*)
+|    |    +--- androidx.collection:collection:1.0.0 -&gt; 1.1.0 (*)
+|    |    \--- androidx.legacy:legacy-support-core-utils:1.0.0
+|    |         +--- androidx.annotation:annotation:1.0.0 -&gt; 1.8.1 (*)
+|    |         +--- androidx.core:core:1.0.0 -&gt; 1.13.0 (*)
+|    |         +--- androidx.documentfile:documentfile:1.0.0
+|    |         |    \--- androidx.annotation:annotation:1.0.0 -&gt; 1.8.1 (*)
+|    |         +--- androidx.loader:loader:1.0.0 (*)
+|    |         +--- androidx.localbroadcastmanager:localbroadcastmanager:1.0.0
+|    |         |    \--- androidx.annotation:annotation:1.0.0 -&gt; 1.8.1 (*)
+|    |         \--- androidx.print:print:1.0.0
+|    |              \--- androidx.annotation:annotation:1.0.0 -&gt; 1.8.1 (*)
+|    +--- androidx.annotation:annotation-experimental:1.0.0 -&gt; 1.4.0 (*)
+|    +--- androidx.fragment:fragment:1.2.5 -&gt; 1.5.4 (*)
+|    +--- androidx.lifecycle:lifecycle-runtime:2.0.0 -&gt; 2.6.2 (*)
+|    +--- androidx.recyclerview:recyclerview:1.0.0 -&gt; 1.1.0
+|    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    +--- androidx.core:core:1.1.0 -&gt; 1.13.0 (*)
+|    |    +--- androidx.customview:customview:1.0.0 -&gt; 1.1.0 (*)
+|    |    \--- androidx.collection:collection:1.0.0 -&gt; 1.1.0 (*)
+|    +--- androidx.resourceinspection:resourceinspection-annotation:1.0.1
+|    +--- androidx.transition:transition:1.5.0
+|    |    +--- androidx.annotation:annotation:1.2.0 -&gt; 1.8.1 (*)
+|    |    \--- androidx.core:core:1.13.0 (*)
+|    +--- androidx.vectordrawable:vectordrawable:1.1.0 (*)
+|    \--- androidx.viewpager2:viewpager2:1.0.0
+|         +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|         +--- androidx.fragment:fragment:1.1.0 -&gt; 1.5.4 (*)
+|         +--- androidx.recyclerview:recyclerview:1.1.0 (*)
+|         +--- androidx.core:core:1.1.0 -&gt; 1.13.0 (*)
+|         \--- androidx.collection:collection:1.1.0 (*)
++--- androidx.activity:activity:1.10.1 (*)
++--- androidx.constraintlayout:constraintlayout:2.2.1
+</code></pre>
+<h1 id="追踪-so-依赖">追踪 SO 依赖</h1>
+<p>在添加的 AAR 依赖中还可能存在 SO 库，这追踪起来就相对麻烦一些，相信近期适配 Android 16KB Page Size 的小伙伴可能深有体会。</p>
+<p>我目前没找到官方有类似的任务供我们一键调用，所以写了个任务：</p>
+<pre><code class="language-Groovy">def variantName = &quot;dokitDebug&quot;
+def soName = &quot;librtmp-jni.so&quot;
+android.applicationVariants.all { variant -&gt;
+    if (variant.name != variantName) return   // 只处理你关心的变体
+    tasks.register(&quot;findSoOwner${variant.name.capitalize()}&quot;) {
+        group = &quot;verification&quot;
+        description = &quot;查找 ${soName} 来自哪个 AAR&quot;
+        def artifacts = variant.runtimeConfiguration.incoming.artifacts
+        doLast {
+            artifacts.artifacts.each { artifact -&gt;
+                def file = artifact.file
+                if (file.name.endsWith(&quot;.aar&quot;)) {
+                    new java.util.zip.ZipFile(file).withCloseable { zf -&gt;
+                        zf.entries().each { entry -&gt;
+                            if (entry.name.endsWith(soName)) {
+                                println &quot;Found ${soName} in ${artifact.id.componentIdentifier} (${file.name})&quot;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+</code></pre>
+<p>将最开始的两个变量要修改为自己实际项目中的内容，比如我这里就在一个名为 <code>dokitDebug</code> 的变体下查询 <code>librtmp-jni.so</code> 这个 SO 的来源，只需在终端中执行命令：</p>
+<pre><code class="language-bash">➜   ./gradlew :app:findSoOwner
+</code></pre>
+<p>就可以得到以下输出：</p>
+<pre><code class="language-bash">&gt; Task :app:findSoOwnerDokitDebug
+Found librtmp-jni.so in io.antmedia:rtmp-client:3.2.0 (rtmp-client-3.2.0.aar)
+Found librtmp-jni.so in io.antmedia:rtmp-client:3.2.0 (rtmp-client-3.2.0.aar)
+Found librtmp-jni.so in io.antmedia:rtmp-client:3.2.0 (rtmp-client-3.2.0.aar)
+Found librtmp-jni.so in io.antmedia:rtmp-client:3.2.0 (rtmp-client-3.2.0.aar)
+</code></pre>
+<p>我们可以在结果中看到查找的 SO 库来源于哪个依赖，结果可能会输出多次。</p>
+<p>查询到的依赖也许并不是你自己添加的，这时候只需再使用上一节提到的命令打印依赖树，就可以追踪到根依赖了。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Android-WebKit-Based-Hybrid-Interaction-Solution.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Android-WebKit-Based-Hybrid-Interaction-Solution/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2025-11-24">2025-11-24</time>
+                  <h4 class="title white no-margin">Android 基于 WebKit 的 Hybrid 交互方案</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/DataStore-Pull-You-Out-of-SharedPreferences-Quagmire.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/DataStore-Pull-You-Out-of-SharedPreferences-Quagmire/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2025-09-17">2025-09-17</time>
+                  <h4 class="title white no-margin">用 DataStore 将你拉出 SharedPreferences 泥潭</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

@@ -1,0 +1,776 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>@唯夜 的『WaveView』控件 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="收到美工的需求，想要在主页背景中加入水的元素。
+水其实不算一个很好表达的事物，因为静态的水比较难呈现，所以我们打算使用波纹来表示流动的水。
+本着不自己造轮子（实际上是自己对 Canvas 的理解还不够透彻）以及敏捷开发的原则，上『GitHu..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Waveview-Designed-by-onlynight.jpeg');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2020-06-14"><i class="fa fa-calendar"></i><span class="lately">6 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Waveview-Designed-by-onlynight/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Waveview-Designed-by-onlynight/"> </span>
+              </a>
+              <span id="/Waveview-Designed-by-onlynight/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">@唯夜 的『WaveView』控件</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>收到美工的需求，想要在主页背景中加入水的元素。</p>
+<p>水其实不算一个很好表达的事物，因为静态的水比较难呈现，所以我们打算使用波纹来表示流动的水。</p>
+<p>本着不自己造轮子（实际上是自己对 <code>Canvas</code> 的理解还不够透彻）以及敏捷开发的原则，上『GitHub』薅一个吧。</p>
+<p>『GitHub』上这类型的开源控件并不少，一般都叫 <code>WaveView</code>，名字很贴切，对比了几个，还是决定选一个比较简单的 —— 由国内开发者 <a href="https://me.csdn.net/tgbus18990140382">@唯夜</a>（Github ID: <a href="https://github.com/onlynight">@onlynight</a>）开发的 <code>WaveView</code> 控件。</p>
+<p>先来看看他提供的 Demo 效果：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1592064036336.gif" alt="Demo 效果" loading="lazy"></figure>
+<p>首先在 Project 的「build.gradle」中添加远程仓库：</p>
+<pre><code class="language-Groovy">allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+</code></pre>
+<p>然后在 Module 的「build.gradle」中添加依赖：</p>
+<pre><code class="language-Groovy">dependencies {
+    ...
+    implementation 'com.github.onlynight:WaveView:(insert latest version)'
+}
+</code></pre>
+<p>这样就将 <code>WaveView</code> 引入到项目中了，接下来在布局文件中添加此控件：</p>
+<pre><code class="language-XML">&lt;com.github.onlynight.waveview.WaveView
+    android:id=&quot;@+id/wave_view&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;240dp&quot;
+    app:isCircle=&quot;false&quot;
+    app:period=&quot;1&quot;
+    app:waveHeightPercent=&quot;0.9&quot;
+    app:waveRange=&quot;15dp&quot;
+    app:waveSpeed=&quot;4&quot;
+    app:wave1Color=&quot;@color/waveBackColor&quot;
+    app:wave2Color=&quot;@color/waveFrontColor&quot;
+    app:layout_constraintBottom_toBottomOf=&quot;parent&quot; /&gt;
+</code></pre>
+<p>说一下其专有属性：</p>
+<pre><code class="language-XML">&lt;declare-styleable name=&quot;WaveView&quot;&gt;
+
+    &lt;!-- define wave speed, example value 10 --&gt;
+    &lt;!-- 定义波速，类型为 Float --&gt;
+    &lt;attr name=&quot;waveSpeed&quot; format=&quot;float&quot; /&gt;
+
+    &lt;!-- define wave range, example value 15dp --&gt;
+    &lt;!-- 定义波动范围，类型为 Dimension --&gt;
+    &lt;attr name=&quot;waveRange&quot; format=&quot;dimension|reference&quot; /&gt;
+
+    &lt;!-- define wave 1 color --&gt;
+    &lt;!-- 定义背景波纹颜色，类型是 Color --&gt;
+    &lt;attr name=&quot;wave1Color&quot; format=&quot;color|reference&quot; /&gt;
+
+    &lt;!-- define wave 2 color --&gt;
+    &lt;!-- 定义前景波纹颜色，类型是 Color --&gt;
+    &lt;attr name=&quot;wave2Color&quot; format=&quot;color|reference&quot; /&gt;
+
+    &lt;!-- define wave height percent, the value is between 0 to 1 --&gt;
+    &lt;!-- 定义波高百分比，类型是 Float，取值范围为 0～1 --&gt;
+    &lt;attr name=&quot;waveHeightPercent&quot; format=&quot;float&quot; /&gt;
+
+    &lt;!-- define paint stroke width, if you want optimizing view, you should change the stroke width more --&gt;
+    &lt;!-- 定义绘画笔划宽度，如果要优化视图，则应更改画笔宽度，类型为 Dimension --&gt;
+    &lt;attr name=&quot;waveStrokeWidth&quot; format=&quot;dimension|reference&quot; /&gt;
+
+    &lt;!-- if the view is circle --&gt;
+    &lt;!-- 视图是否为圆形 --&gt;
+    &lt;attr name=&quot;isCircle&quot; format=&quot;boolean&quot; /&gt;
+
+    &lt;!-- the sine wave period, value range 0 to all --&gt;
+    &lt;!-- 正弦波周期，类型是 Float，取值范围为 0～∞ --&gt;
+    &lt;attr name=&quot;period&quot; format=&quot;float&quot; /&gt;
+
+&lt;/declare-styleable&gt;
+</code></pre>
+<p>可以看到我上方的代码只选取了其中一部分属性进行设置。</p>
+<p>最后我们还需在 <code>Activity</code> 中启动动画：</p>
+<pre><code class="language-Java">WaveView waveView = (WaveView) findViewById(R.id.wave_view);
+// When you want start wave you should call this method.
+waveView.start();
+// When you want stop wave you should call this method.
+waveView.stop();
+</code></pre>
+<p>尽管很多时候我们并没有必要停止波纹动画但它还是提供了相应的方法。</p>
+<p>最后来看看我做的效果图：</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1592064154550.gif" alt="效果图" loading="lazy"></figure>
+<p>不难看出控件的绘制并不这么平滑，我猜想应该使用的是矩形绘制，于是截了个图放大一看，果然如此。</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1592064193396.jpg" alt="矩形组合" loading="lazy"></figure>
+<p>其实数学几何和素描几何中也经常使用此方法进行绘制。</p>
+<p>比如微积分中，使用容易计算的矩形面积来代替不规则图形的面积，而当矩形的宽足够小并趋近于零的时候，矩形代替的面积也就越趋近于不规则图形的面积了。</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1592064303700.webp" alt="微积分中的应用" loading="lazy"></figure>
+<p>在立体几何素描中我们都不会使用圆规作圆，而是通过切圆法，即先画出一个矩形，再通过取半径中点切圆的方法逐渐把圆切出来，当切的次数越多，该多边形也就越接近于圆。</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1592064321865.webp" alt="切圆法的应用" loading="lazy"></figure>
+<p>可以从 <code>WaveView</code> 的源码中看一下其实现的原理。</p>
+<p>我们视觉上看到的是水波纹，实际上只是一个正弦波和余弦波向左位移，然后将三角函数的周期加长，在一个 <code>View</code> 中不显示整个三角函数的波形，这样从视觉上来说就实现了水波纹效果。</p>
+<p>根据上面的分析，我们知道需要计算一个正弦波和一个余弦波，并且根据时间的推移将正弦波或者余弦波向左或者向右平移，最后每次计算完波形图的时候绘制下来就完成了。</p>
+<p>来看下 <code>WaveView</code> 中的关键代码：</p>
+<pre><code class="language-Java">private void drawWave(Canvas canvas, int width, int height) {
+    setPaint();
+    double lineX = 0;
+    double lineY1 = 0;
+    double lineY2 = 0;
+    for (int i = 0; i &lt; width; i += mStrokeWidth) {
+        lineX = i;
+        if (mIsRunning) {
+            lineY1 = mWaveRange * Math.sin((mAngle + i) * Math.PI / 180 / mPeriod) + height * (1 - mWaveHeightPercent);
+            lineY2 = mWaveRange * Math.cos((mAngle + i) * Math.PI / 180 / mPeriod) + height * (1 - mWaveHeightPercent);
+        } else {
+            lineY1 = 0;
+            lineY2 = 0;
+        }
+        canvas.drawLine((int) lineX, (int) lineY1, (int) lineX + 1, height, mWavePaint1);
+        canvas.drawLine((int) lineX, (int) lineY2, (int) lineX + 1, height, mWavePaint2);
+    }
+}
+</code></pre>
+<p>可以看到，这里没有选择 <code>Path</code> 进行绘制，因为 <span style="color:blue">@唯夜</span> 认为 <code>Path</code> 绘制无法满足需求，所以通过画竖线，计算每个点起始的位置，然后从这个点画一条线到 <code>View</code> 的底部，然后循环多次直到 <code>View</code> 的边界处结束绘制，这样就看到正弦波了。这时候在每次绘制过程中给三角函数添加一个偏移量，每次计算的时候波形就会偏移，就完成了波纹。</p>
+<p>这也就解释上方的矩形填充理论了，可以通过修改 <code>waveStrokeWidth</code> 属性来使其更平滑，我使用时发现大概使用 <code>1dp</code> 左右比较合适，同时也发现一个问题，当修改后虽然曲线更加平滑，但会出现少许卡顿的现象，这个平衡还是需要开发者自己来找。</p>
+<p>顺便再说一个作者开发时遇到的一个坑，从上方的 Demo 图知道其可设置为圆形；常规的思路是画完以后再将其切成一个圆形，作者尝试了各种方法证明这种思路有问题。</p>
+<p>最后发现需要先限定 <code>Canvas</code> 的绘制区域，然后再将图形绘制到 <code>View</code> 上去，这样才能实现效果。</p>
+<pre><code class="language-Java">@Override
+protected void onDraw(Canvas canvas) {
+    super.onDraw(canvas);
+    if (mIsRunning) {
+        int height = getHeight();
+        int width = getWidth();
+        // 注意这里的执行顺序
+        clipContainer(canvas, width, height);
+        drawWave(canvas, width, height);
+    }
+}
+
+private void clipContainer(Canvas canvas, int width, int height) {
+    if (mIsCircle) {
+        mContainerPath.reset();
+        canvas.clipPath(mContainerPath);
+        mContainerPath.addCircle(width / 2, height / 2, width / 2, Path.Direction.CCW);
+        canvas.clipPath(mContainerPath, Region.Op.REPLACE);
+    }
+}
+</code></pre>
+<p>其实看完源码之后发现实现该功能也不是特别复杂，但前提还是得搞懂自定义 View 的基本原理。</p>
+<p>该控件的项目主页可 <a href="https://github.com/onlynight/WaveView">👉戳这里👈</a> 跳转。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Pack-a-Font-for-EMUI-10.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Pack-a-Font-for-EMUI-10/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2020-06-20">2020-06-20</time>
+                  <h4 class="title white no-margin">为 EMUI 10 制作字体包</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Show-Webview-Title-at-Android-Toolbar.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Show-Webview-Title-at-Android-Toolbar/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2020-06-02">2020-06-02</time>
+                  <h4 class="title white no-margin">Android Toolbar 显示 WebView Title</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

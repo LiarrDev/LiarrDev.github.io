@@ -1,0 +1,744 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Android 中各尺寸单位的区别 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="众所周知，Android 设备厂商非常多，各种尺寸的 Android 手机、平板层出不穷，屏幕分辨率也各有出入。
+Google 为了解决分辨率过多的问题，在 Android 开发文档中定义了多种衡量尺寸的单位，方便开发者适配不同分辨率的 A..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Differences-between-Size-Units-in-Android.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2022-01-11"><i class="fa fa-calendar"></i><span class="lately">4 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Differences-between-Size-Units-in-Android/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Differences-between-Size-Units-in-Android/"> </span>
+              </a>
+              <span id="/Differences-between-Size-Units-in-Android/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">Android 中各尺寸单位的区别</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>众所周知，Android 设备厂商非常多，各种尺寸的 Android 手机、平板层出不穷，屏幕分辨率也各有出入。</p>
+<p>Google 为了解决分辨率过多的问题，在 Android 开发文档中定义了多种衡量尺寸的单位，方便开发者适配不同分辨率的 Android 设备。</p>
+<h1 id="尺寸单位">尺寸单位</h1>
+<h2 id="in">in</h2>
+<p>Inches，不难理解，就是英寸，基于屏幕的物理尺寸。1in=2.54cm。</p>
+<h2 id="mm">mm</h2>
+<p>Millimeters，也就是毫米，基于屏幕的物理尺寸。不用多解释。</p>
+<h2 id="px">px</h2>
+<p>Pixels，即像素。我们用放大镜看显示屏，发现图像是由一个个小点组成的，这些小点就是像素点。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1564472714356.png" alt="像素构成了完整图像" loading="lazy"></figure>
+<p>像素是图像的基本采样单位，它不是一个准确的物理量，因为像素点的物理大小是不确定的，像素也不是一个具体的点或者小方块（尽管可以用点和小方块来呈现），而是一个抽象的概念。</p>
+<p>我们常说的手机分辨率就是指屏幕像素的数量，这就很好理解它的物理大小不确定的这句话了，比如一个屏幕比例为 16:9 的 5.5-inch 的手机，它的分辨率既可以是 1280×720 像素，也可以是 1920×1080 像素，也就是我们常说的 720P 和 1080P。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1564500257681.png" alt="尺寸相同但像素密度不同的两个设备" loading="lazy"></figure>
+<p>也正因为如此，<code>px</code> 单位并不被建议使用，因为同样像素大小的图片在不同手机显示的实际大小可能不同。</p>
+<p>当然，你可以用在一些线条的绘制中，比如需要画 1 像素表格线或阴影线的时候。</p>
+<h2 id="dp-dip">dp / dip</h2>
+<p>Density-independent Pixels，它是一种基于屏幕密度的抽象单位，密度无关像素，在不同的像素密度的设备上会自动适配。</p>
+<p>虽然有 <code>dp</code> 和 <code>dip</code> 两种说法，实际上是同一个概念，为了和 <code>sp</code> 更加一致，<code>dp</code> 会更加常用。</p>
+<p>要理解 <code>dp</code>，首先要先引入 DPI 和 PPI 这两个概念。</p>
+<p>DPI 全称是 Dots Per Inch，即<strong>网点密度</strong>，在纸质媒介时代，我们常用网点密度来描述印刷品的打印精度。DPI 常用于“设备参数”描述（如扫描仪和打印机），例如我设置了打印的分辨率为 96DPI，那么打印机在打印过程中，每英寸（Inch）的长度打印了 96 个点（Dot），打印机在每英寸内打印的墨点数越多，图片看起来越精细。这种概念也带入到 PC 时代的 Windows 系统，Windows 系统的默认 DPI 为 96。</p>
+<p>因此，在 Android 上你可以将其理解为对角线每英寸的像素点的个数，计算公式如下：</p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>D</mi><mi>P</mi><mi>I</mi><mo>=</mo><mfrac><msqrt><mrow><mi>h</mi><mi>e</mi><mi>i</mi><mi>g</mi><mi>h</mi><msup><mi>t</mi><mn>2</mn></msup><mo>+</mo><mi>w</mi><mi>i</mi><mi>d</mi><mi>t</mi><msup><mi>h</mi><mn>2</mn></msup></mrow></msqrt><mrow><mi>s</mi><mi>i</mi><mi>z</mi><mi>e</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">DPI=\frac{\sqrt{height^{2}+width^{2}}}{size}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">D</span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mord mathdefault" style="margin-right:0.07847em;">I</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:2.320834em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.6348340000000001em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">s</span><span class="mord mathdefault">i</span><span class="mord mathdefault" style="margin-right:0.04398em;">z</span><span class="mord mathdefault">e</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.6770000000000005em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9578340000000001em;"><span class="svg-align" style="top:-3.2em;"><span class="pstrut" style="height:3.2em;"></span><span class="mord" style="padding-left:1em;"><span class="mord mathdefault">h</span><span class="mord mathdefault">e</span><span class="mord mathdefault">i</span><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="mord mathdefault">h</span><span class="mord"><span class="mord mathdefault">t</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.740108em;"><span style="top:-2.9890000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathdefault" style="margin-right:0.02691em;">w</span><span class="mord mathdefault">i</span><span class="mord mathdefault">d</span><span class="mord mathdefault">t</span><span class="mord"><span class="mord mathdefault">h</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.740108em;"><span style="top:-2.9890000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span><span style="top:-2.917834em;"><span class="pstrut" style="height:3.2em;"></span><span class="hide-tail" style="min-width:1.02em;height:1.28em;"><svg width='400em' height='1.28em' viewBox='0 0 400000 1296' preserveAspectRatio='xMinYMin slice'><path d='M263,681c0.7,0,18,39.7,52,119c34,79.3,68.167,
+158.7,102.5,238c34.3,79.3,51.8,119.3,52.5,120c340,-704.7,510.7,-1060.3,512,-1067
+c4.7,-7.3,11,-11,19,-11H40000v40H1012.3s-271.3,567,-271.3,567c-38.7,80.7,-84,
+175,-136,283c-52,108,-89.167,185.3,-111.5,232c-22.3,46.7,-33.8,70.3,-34.5,71
+c-4.7,4.7,-12.3,7,-23,7s-12,-1,-12,-1s-109,-253,-109,-253c-72.7,-168,-109.3,
+-252,-110,-252c-10.7,8,-22,16.7,-34,26c-22,17.3,-33.3,26,-34,26s-26,-26,-26,-26
+s76,-59,76,-59s76,-60,76,-60z M1001 80H40000v40H1012z'/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2821659999999999em;"><span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+<p>其中，<code>height</code> 和 <code>weight</code> 表示长宽的像素，平方和再开方其实就是勾股定理，得出对角线的像素个数，<code>size</code> 表示屏幕的尺寸，也就是我们常说的英寸，比如我们说这个手机是 5.5-inch 的，那么它的 <code>size</code> 在这里就是 5.5。</p>
+<p>因此，屏幕同样大小的手机，分辨率越高，DPI 越高；分辨率相同，屏幕越小，DPI 越高。</p>
+<p>前面也说了，DPI 其实面向的是印刷领域，而 PPI 面向的是计算机领域，PPI 全称是 Pixels Per Inch，即<strong>像素密度</strong>。在 Android 开发中 Drawable 文件对应的是DPI，实际上 PPI 和 DPI 的值是一样的，只是描述不同。</p>
+<p><code>dp</code> 表示的是在每英寸 160 点，即 160PPI 的屏幕上，和 <code>px</code> 相同长度的单位，计算公式如下：</p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>p</mi><mi>x</mi><mo>=</mo><mi>d</mi><mi>p</mi><mo>⋅</mo><mfrac><mrow><mi>P</mi><mi>P</mi><mi>I</mi></mrow><mn>160</mn></mfrac></mrow><annotation encoding="application/x-tex">px = dp \cdot  \frac{PPI}{160}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">p</span><span class="mord mathdefault">x</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">d</span><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:2.04633em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.36033em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mord">6</span><span class="mord">0</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mord mathdefault" style="margin-right:0.07847em;">I</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+<ul>
+<li>在 320×480 分辨率，像素密度为 160 时，1dp=1px。</li>
+<li>在 480×800 分辨率，像素密度为 240 时，1dp=1.5px。</li>
+</ul>
+<p>为什么规定 160DPI 规格的显示器上，1dp=1px？</p>
+<p>这个在官方文档中有给出解释，原因是因为第一款 Android 设备也就是 HTC T-Mobile G1 是属于 160DPI 的，事实上这也是 Android 1.6 之前唯一支持的屏幕配置。</p>
+<p>HTC T-Mobile G1 准确的 DPI 并不等于160，它是 3.2-inch，320×480 分辨率，不难计算出它约为 180DPI，那为什么不使用 180DPI 作基准呢？</p>
+<p>原因是 180DPI 不好作适配，Android 其实为了不至于为每一个设备制造商做适配，将不同屏幕大小和不同 DPI 的设备大致划分为四类：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1564481394047.png" alt="设备分类" loading="lazy"></figure>
+<p>当然，随着设备屏幕越来越大，现在也增加了「xxhdpi」和「xxxhdpi」等，不过没关系，我们在这里只是讨论它的起源，大家可以看到 HTC T-Mobile G1 是属于「mdpi」区域的，所以也就是使用 160DPI 作基准的原因。</p>
+<p>我们大致可以得出以下规格：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">密度</th>
+<th style="text-align:center">密度值</th>
+<th style="text-align:center">代表分辨率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">ldpi</td>
+<td style="text-align:center">120</td>
+<td style="text-align:center">240×320</td>
+</tr>
+<tr>
+<td style="text-align:center">mdpi</td>
+<td style="text-align:center">160</td>
+<td style="text-align:center">320×480</td>
+</tr>
+<tr>
+<td style="text-align:center">hdpi</td>
+<td style="text-align:center">240</td>
+<td style="text-align:center">480×800</td>
+</tr>
+<tr>
+<td style="text-align:center">xhdpi</td>
+<td style="text-align:center">320</td>
+<td style="text-align:center">720×1280</td>
+</tr>
+<tr>
+<td style="text-align:center">xxhdpi</td>
+<td style="text-align:center">480</td>
+<td style="text-align:center">1080×1920</td>
+</tr>
+</tbody>
+</table>
+<p>不难看出，屏幕的密度值比 ldpi : mdpi : hdpi : xhdpi : xxhdpi = 0.75 : 1 : 1.5 : 2 : 3；即在「xhdpi」的密度下，1dp=2px；在「hdpi」情况下，1dp=1.5px，其他类推。</p>
+<h2 id="sp">sp</h2>
+<p>Scale-independent Pixels，它是 Android 中专门用来描述字体大小的单位，一般情况下，<code>sp</code> 的值和 <code>dp</code> 的值是相同的，那为什么要特地用一个新的单位来描述字体呢？</p>
+<p>如果你家里有老人家，或者你尝试教老年人使用智能手机时，你常常会先帮他们把字体调大，否则老人家可能会由于年纪大视力不好而看不清手机屏幕上的字。</p>
+<table>
+    <td><img src="https://liarrdev.github.io/post-images/1641736482399.png"/></td>
+    <td><img src="https://liarrdev.github.io/post-images/1641736473534.png"/></td>
+</table>
+<p>而设置字体单位为 <code>sp</code> 的目的就是为了当用户调整系统设置的字体大小时，应用的字体也能够作出相应的改变。</p>
+<p>也就是说，系统默认设置的 <code>sp</code> 和 <code>dp</code> 的大小值一致，而当用户把字体调大或调小后，这个 <code>sp</code> 则跟 <code>dp</code> 的值不一致了。</p>
+<p>为什么 <code>dp</code> 不会像 <code>sp</code> 一样变化，这就是这两者应用对象的区别，<code>sp</code> 专门用于衡量字体，<code>dp</code> 则用来衡量控件以及间距的尺寸。那么假设有一张图片刚好填充整个屏幕，假如 <code>dp</code> 也像 <code>sp</code> 一样变化，把它调小了之后，它应该如何去显示，图片和屏幕边缘之间的空间应该由什么来填充？很不合理对吧。</p>
+<h2 id="pt">pt</h2>
+<p>Points，点，也是基于屏幕的物理尺寸，印刷行业常用单位，等于 1/72 英寸。</p>
+<p>计算公式如下：</p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>1</mn><mi>p</mi><mi>t</mi><mo>=</mo><mo>(</mo><mi>D</mi><mi>P</mi><mi>I</mi><mi mathvariant="normal">/</mi><mn>72</mn><mo>)</mo><mi>p</mi><mi>x</mi></mrow><annotation encoding="application/x-tex">1pt=(DPI/72)px
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8388800000000001em;vertical-align:-0.19444em;"></span><span class="mord">1</span><span class="mord mathdefault">p</span><span class="mord mathdefault">t</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.02778em;">D</span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mord mathdefault" style="margin-right:0.07847em;">I</span><span class="mord">/</span><span class="mord">7</span><span class="mord">2</span><span class="mclose">)</span><span class="mord mathdefault">p</span><span class="mord mathdefault">x</span></span></span></span></span></p>
+<p>当『Photoshop』中新建画布的分辨率为 72DPI时，1pt=1px；当新建画布分辨率为 144DPI 时，1pt=2px。</p>
+<h1 id="在开发中的使用">在开发中的使用</h1>
+<p>为了更好的适配不同的屏幕，应该选择合理的单位，最常使用的，当然就是 <code>dp</code> 和 <code>sp</code>，其他几个单位虽然用得少，但既然提供了，就当然有对应的使用场景，所以应该根据当前项目作选择。</p>
+<p>要在像素密度不同的设备上提供良好的图形质量，应该以相应的分辨率在应用中提供每个位图的多个版本（针对每个密度级别提供一个版本）。否则，Android 系统必须缩放位图，使其在每个屏幕上占据相同的可见空间，从而导致缩放失真模糊。</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1564500932993.png" alt="不同密度大小的位图的相对尺寸" loading="lazy"></figure>
+<p>跟屏幕的密度比是一致的。之后，每当您引用该位图资源时，系统都会根据屏幕的 DPI 选择适当的位图。如果您没有为某个密度提供特定于密度的资源，那么系统会选取下一个最佳匹配项并对其进行缩放以适合屏幕。</p>
+<p>如果您有一些系统绝不能缩放（或许是因为您在运行时自行对图片进行一些调整）的可绘制资源，则应将这些资源放在带有「nodpi」配置限定符的目录中。带有此限定符的资源被视为与密度无关，系统将不会对它们进行缩放。</p>
+<p>除了创建多个特定于密度的图片版本之外，另一种方法是仅创建一个矢量图形。在借助矢量图形创建图片时，使用 XML 定义路径和颜色，而不是使用像素位图。因此，矢量图形可以缩放到任何尺寸而不会出现缩放失真，不过它们通常最适合图标等插图，而不太适合照片。</p>
+<p>矢量图形通常以 SVG（可缩放矢量图形）文件的形式提供，但 Android 不支持此格式，因此必须将 SVG 文件转换为 Android 的矢量图格式。『Android Studio』中提供的『Vector Asset Studio』可以方便地进行转换。</p>
+<p>另外，在合适的情况下使用矢量图形来代替位图也可以很好地达到减少安装包体积的效果。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Sets-Error-Floating-Window-for-Android-EditText.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Sets-Error-Floating-Window-for-Android-EditText/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2022-02-10">2022-02-10</time>
+                  <h4 class="title white no-margin">Android 为 EditText 设置错误提示浮窗</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/SwitchHosts.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/SwitchHosts/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2021-12-28">2021-12-28</time>
+                  <h4 class="title white no-margin">SwitchHosts</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

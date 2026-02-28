@@ -1,0 +1,739 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Android 不可编辑的 EditText | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="项目中有时会需要用到一个不可编辑的 EditText，用于展示，很奇怪的需求对吧，明明就应该使用 TextView 来做展示，使用 EditText 来做输入，但现实就是可能为了 UI 统一，又或者是其他乱七八糟的原因，就得这么实现。
+比如..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Android-Non-Editable-EditText.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2020-10-29"><i class="fa fa-calendar"></i><span class="lately">5 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Android-Non-Editable-EditText/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Android-Non-Editable-EditText/"> </span>
+              </a>
+              <span id="/Android-Non-Editable-EditText/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">Android 不可编辑的 EditText</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>项目中有时会需要用到一个不可编辑的 <code>EditText</code>，用于展示，很奇怪的需求对吧，明明就应该使用 <code>TextView</code> 来做展示，使用 <code>EditText</code> 来做输入，但现实就是可能为了 UI 统一，又或者是其他乱七八糟的原因，就得这么实现。</p>
+<p>比如在之前的『<a href="https://github.com/LiarrDev/PassBox_Android">PassBox</a>』和『<a href="https://github.com/LiarrDev/HacppleStore_Android">HacppleStore</a>』，我就是这么干的。</p>
+<p>那么在 Android 中应如何将 <code>EditText</code> 设置为不可编辑状态呢？</p>
+<p>我总结了几种方法：</p>
+<h1 id="androideditable">android:editable</h1>
+<pre><code class="language-XML">&lt;EditText
+    ...
+    android:editable=&quot;false&quot; /&gt;
+</code></pre>
+<p>效果如下：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1603732817529.gif" alt="Editable" loading="lazy"></figure>
+<p>可以看到，默认情况下，<code>EditText</code> 并没有获取到焦点，但点击 <code>EditText</code> 后，尽管焦点马上被激活，但输入法并没有弹出。</p>
+<p>需要提醒的是，该属性已经被标记为 <code>@Deprecated</code>：</p>
+<pre><code class="language-XML">&lt;!-- If set, specifies that this TextView has an input method.
+     It will be a textual one unless it has otherwise been specified.
+     For TextView, this is false by default.  
+     For EditText, it is true by default.
+     {@deprecated Use inputType instead.} --&gt;
+&lt;attr name=&quot;editable&quot; format=&quot;boolean&quot; /&gt;
+</code></pre>
+<p>虽然上面提到使用 <code>android:inputType</code> 来代替，但我暂时没找到该属性的替代方法。</p>
+<h1 id="setkeylistener">setKeyListener()</h1>
+<p>在逻辑中使用：</p>
+<pre><code class="language-Java">editText.setKeyListener(false);
+</code></pre>
+<p>效果与 <code>android:editable</code> 相同，默认情况下没有获取到焦点，点击后焦点被激活，输入法没有弹出。</p>
+<p><code>setKeyListener()</code> 实际上是继承自 <code>TextView</code> 的一个方法，传入 <code>null</code> 即为禁止用户输入。</p>
+<h1 id="androidfocusable-setfocusable">android:focusable / setFocusable()</h1>
+<p>在布局文件中：</p>
+<pre><code class="language-XML">&lt;EditText
+    ...
+    android:focusable=&quot;false&quot; /&gt;
+</code></pre>
+<p>或使用逻辑控制：</p>
+<pre><code class="language-Java">editText.setFocusable(false)                // boolean
+editText.setFocusable(View.NOT_FOCUSABLE);  // int
+</code></pre>
+<p>效果如下：</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1603732881895.gif" alt="Focusable" loading="lazy"></figure>
+<p>这其实是继承自 <code>View</code> 的一个属性，用于控制对应的 <code>View</code> 能否获取焦点。</p>
+<p>可以看到，默认情况下，<code>EditText</code> 并没有获取到焦点，触摸时 <code>EditText</code> 获取到焦点，并在触摸结束后失去焦点，而通过长按可以将剪贴板的内容粘贴至 <code>EditText</code> 内。</p>
+<p>需要注意的是，<code>setFocusable()</code> 做了方法重载，使用 <code>int</code> 类型参数则需要到 API 26 才支持。</p>
+<h1 id="androidfocusableintouchmode-setfocusableintouchmode">android:focusableInTouchMode / setFocusableInTouchMode()</h1>
+<p>在布局文件中：</p>
+<pre><code class="language-XML">&lt;EditText
+    ...
+    android:focusableInTouchMode=&quot;false&quot; /&gt;
+</code></pre>
+<p>或使用逻辑控制：</p>
+<pre><code class="language-Java">editText.setFocusableInTouchMode(false);
+</code></pre>
+<p>该方法效果和 <code>android:focusable</code> 也一样，同样是继承自 <code>View</code> 的一个属性，用于控制对应的 <code>View</code> 在触摸时能否获取焦点。</p>
+<h1 id="androidenabled-setenabled">android:enabled / setEnabled()</h1>
+<p>在布局文件中：</p>
+<pre><code class="language-XML">&lt;EditText
+    ...
+    android:enabled=&quot;false&quot; /&gt;
+</code></pre>
+<p>或使用逻辑控制：</p>
+<pre><code class="language-Java">editText.setEnabled(false);
+</code></pre>
+<p>效果如下：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1603732910034.gif" alt="Enabled" loading="lazy"></figure>
+<p>编辑框完全失去焦点，即无法通过粘贴的方法修改输入内容，但是整个编辑框变成了暗色状态，不易于阅读。</p>
+<h1 id="androidlongclickable-setlongclickable">android:longClickable / setLongClickable()</h1>
+<p>为了可以清晰显示，并且不可以通过粘贴的方式编辑，我们可以考虑引入一些其他的解决方法。</p>
+<p>通过粘贴方式编辑，实际操作过程是通过长按 <code>EditText</code> 以弹出对应的操作浮窗，才得以完成粘贴操作，那么我们就可以禁用长按操作，来避免用户进行粘贴。</p>
+<p>在布局中：</p>
+<pre><code class="language-XML">&lt;EditText
+    ...
+    android:focusable=&quot;false&quot;
+    android:longClickable=&quot;false&quot; /&gt;
+</code></pre>
+<p>或使用逻辑控制：</p>
+<pre><code class="language-Java">editText.setFocusable(false);
+editText.setLongClickable(false);
+</code></pre>
+<p>效果如下：</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1603732935374.gif" alt="禁用长按" loading="lazy"></figure>
+<p>可以看到，文字能够清晰显示，长按 <code>EditText</code> 时也无法呼出操作浮窗，使用 <code>android:focusable</code> 或 <code>setFocusable()</code> 来搭配使用，因此同时也具备了相同的缺点，就是触摸时 <code>EditText</code> 仍然会获取焦点，但因为已经禁用了长按，所以不会产生功能上的问题。</p>
+<p>如果还是不想存在焦点效果，添加个背景即可。</p>
+<h1 id="自定义-edittext">自定义 EditText</h1>
+<p>没有什么效果是自定义 <code>View</code> 解决不了的。</p>
+<pre><code class="language-Java">public class NonEditableEditText extends AppCompatEditText {
+
+    public NonEditableEditText(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return true;
+    }
+}
+</code></pre>
+<p>其实不需要多复杂，只需要重写 <code>onTouchEvent()</code> 方法即可，这里涉及到 <code>View</code> 的事件分发机制，简单来说，返回 <code>true</code> 代表当前 <code>View</code> 已经完整地处理了该事件，且不希望上层 <code>ViewGroup</code> 其他回调方法再次处理。</p>
+<p>我们只需要在布局中使用该自定义控件：</p>
+<pre><code class="language-XML">&lt;com.custom.widget.NonEditableEditText
+    ... /&gt;
+</code></pre>
+<p>效果如下：</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1603732968634.gif" alt="自定义 EditText 不响应触摸事件" loading="lazy"></figure>
+<p>可以看到，无论是点击还是长按，该自定义的 <code>EditText</code> 都不会获取焦点，因为它并不会对我们的触摸事件做任何处理。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Android-Build-an-Single-Selection-Menu-with-Dialog-Easily.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Android-Build-an-Single-Selection-Menu-with-Dialog-Easily/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2020-11-09">2020-11-09</time>
+                  <h4 class="title white no-margin">Android 用 Dialog 轻松实现单选菜单</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Get-the-Actual-Size-of-Image-with-Glide-in-Android.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Get-the-Actual-Size-of-Image-with-Glide-in-Android/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2020-10-19">2020-10-19</time>
+                  <h4 class="title white no-margin">Android 利用 Glide 获取图片的实际尺寸</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

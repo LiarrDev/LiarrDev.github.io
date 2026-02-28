@@ -1,0 +1,776 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Design Pattern: Singleton Pattern | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="在有些系统中，为了节省内存资源、保证数据内容的一致性，对某些类要求只能创建一个实例，这就是所谓的 Singleton Pattern，也就单例模式。
+这种类型的设计模式属于创建型模式，它提供了一种创建对象的最佳方式。
+这种模式涉及到一个单一..." />
+    <meta name="keywords" content="Design Pattern" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Design-Pattern-Singleton.jpg');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2022-04-29"><i class="fa fa-calendar"></i><span class="lately">4 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Design-Pattern-Singleton/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Design-Pattern-Singleton/"> </span>
+              </a>
+              <span id="/Design-Pattern-Singleton/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-0 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">Design Pattern: Singleton Pattern</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>在有些系统中，为了节省内存资源、保证数据内容的一致性，对某些类要求只能创建一个实例，这就是所谓的 Singleton Pattern，也就单例模式。</p>
+<p>这种类型的设计模式属于创建型模式，它提供了一种创建对象的最佳方式。</p>
+<p>这种模式涉及到一个单一的类，该类负责创建自己的对象，同时确保只有单个对象被创建。这个类提供了一种访问其唯一的对象的方式，可以直接访问，不需要实例化该类的对象。</p>
+<p>在计算机系统中，线程池、缓存、日志对象、对话框、打印机、显卡的驱动程序对象常被设计成单例，这些应用都或多或少具有资源管理器的功能。每台计算机可以有若干个打印机，但只能有一个 Printer Spooler，以避免两个打印作业同时输出到打印机中；每台计算机可以有若干通信端口，系统应当集中管理这些通信端口，以避免一个通信端口同时被两个请求同时调用。</p>
+<p>在 Android 开发中，我们常用的网络请求框架『<a href="https://liarrdev.github.io/post/Enjoy-OkHttp-in-One-Shot/">OkHttp</a>』，官方就建议 <code>OkHttpClient</code> 实例仅新建一次，所以我们也可以做成单例模式。</p>
+<p>总之，选择单例模式就是为了避免不一致状态，避免政出多头。</p>
+<h1 id="特点">特点</h1>
+<ul>
+<li>单例类只能有一个实例。</li>
+<li>单例类必须自己创建自己的唯一实例。</li>
+<li>单例类必须给所有其他对象提供这一实例。</li>
+</ul>
+<h1 id="优缺点">优缺点</h1>
+<h2 id="优点">优点</h2>
+<ul>
+<li>在内存里只有一个实例，减少了内存的开销，尤其是频繁的创建和销毁实例（比如管理学院首页页面缓存）。</li>
+<li>避免对资源的多重占用（比如写文件操作）。</li>
+<li>可以在系统设置全局的访问点，优化和共享资源访问（比如可以设计一个单例类负责所有数据表的映射处理）。</li>
+</ul>
+<h2 id="缺点">缺点</h2>
+<ul>
+<li>没有接口，不能继承，与单一职责原则冲突，一个类应该只关心内部逻辑，而不关心外面怎么样来实例化。</li>
+</ul>
+<h1 id="实现">实现</h1>
+<p>通常，普通类的构造函数是公有的，外部类可以通过 <code>new</code> 构造函数来生成多个实例。但是，如果将类的构造函数设为私有的，外部类就无法调用该构造函数，也就无法生成多个实例。这时该类自身必须定义一个静态私有实例，并向外提供一个静态的公有函数用于创建或获取该静态私有实例。</p>
+<p>结构如下：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1566725626650.png" alt="单例 - 结构图" loading="lazy"></figure>
+<p>单例模式有多种创建的方式，各有利弊，最常用的有懒汉式和饿汉式，下面一一讲解。</p>
+<h2 id="lazy懒汉式">Lazy：懒汉式</h2>
+<p>懒汉式其实是一种比较形象的称谓。既然懒，那么在创建对象实例的时候就不着急，一直等到马上要使用对象实例的时候才会创建，懒人嘛，总是推脱不开的时候才会真正去执行工作，因此在装载对象的时候不创建对象实例。</p>
+<pre><code class="language-Java">public class Singleton {
+    private static Singleton instance;
+    private Singleton () {}
+    public static Singleton getInstance() {
+        if (instance == null) {
+            instance = new Singleton();
+        }
+        return instance;
+    }
+}
+</code></pre>
+<p>这段代码简单明了，而且使用了懒加载模式，但是却存在致命的问题。当有多个线程并行调用 <code>getInstance()</code> 的时候，就会创建多个实例。也就是说在多线程下不能正常工作，是线程不安全的创建方式。</p>
+<p>我们可以改进一下：</p>
+<pre><code class="language-Java">public class Singleton {
+    private static Singleton instance;
+    private Singleton () {}
+    public static synchronized Singleton getInstance() {
+        if (instance == null) {
+            instance = new Singleton();
+        }
+        return instance;
+    }
+}
+</code></pre>
+<p>虽然做到了线程安全，并且解决了多实例的问题，但是它并不高效，因为在任何时候只能有一个线程调用 <code>getInstance()</code> 方法，而同步操作只在第一次调用时才被需要，即第一次创建单例实例对象时，所以会造成不必要的同步开销。</p>
+<p>这就引出了双重检验锁。</p>
+<h2 id="double-checked-locking双重检验锁">Double-Checked Locking：双重检验锁</h2>
+<p>双重检验锁模式（Double-Checked Locking Pattern）是一种使用同步块加锁的方法，程序员称其为双重检查锁，因为会有两次检查实例是否为 <code>null</code>，一次是在同步块外，一次是在同步块内。为什么在同步块内还要再检验一次？因为可能会有多个线程一起进入同步块外的 <code>if</code>，如果在同步块内不进行二次检验的话就会生成多个实例了。</p>
+<pre><code class="language-Java">public class Singleton {
+    private static Singleton instance;
+    private Singleton () {}
+    public static Singleton getSingleton() {
+        if (instance == null) {                         // Single Checked
+            synchronized (Singleton.class) {
+                if (instance == null) {                 // Double Checked
+                    instance = new Singleton();
+                }
+            }
+        }
+        return instance;
+    }
+}
+</code></pre>
+<p>这段代码看起来很完美，很可惜，它是有问题。主要在于 <code>instance = new Singleton()</code> 这句，这并非是一个原子操作，事实上在 JVM 中这句话大概做了下面 3 件事情:</p>
+<ol>
+<li>给 <code>instance</code> 分配内存；</li>
+<li>调用 <code>Singleton</code> 的构造函数来初始化成员变量；</li>
+<li>将 <code>instance</code> 对象指向分配的内存空间（执行完这步 <code>instance</code> 就为非 <code>null</code> 了）。</li>
+</ol>
+<p>但是，在 JVM 的即时编译器中存在指令重排序的优化，也就是说上面的第二步和第三步的顺序是不能保证的，最终的执行顺序可能是 1→2→3，也可能是 1→3→2。如果是后者，则在 3 执行完毕且 2 未执行之前，被线程二抢占了，这时 <code>instance</code> 已经是非 <code>null</code> 了（但却没有初始化），所以线程二会直接返回 <code>instance</code>，然后使用，然后顺理成章地报错。</p>
+<p>其实只需要将 <code>instance</code> 变量声明成 <code>volatile</code> 就可以了。</p>
+<pre><code class="language-Java">public class Singleton {
+    private volatile static Singleton instance;     // 声明成 volatile
+    private Singleton () {}
+    public static Singleton getSingleton() {
+        if (instance == null) {                         
+            synchronized (Singleton.class) {
+                if (instance == null) {       
+                    instance = new Singleton();
+                }
+            }
+        }
+        return instance;
+    }
+}
+</code></pre>
+<p>有些人认为使用 <code>volatile</code> 的原因是可见性，也就是可以保证线程在本地不会存有 <code>instance</code> 的副本，每次都是去主内存中读取。</p>
+<p>但其实是不对的，使用 <code>volatile</code> 的主要原因是其另一个特性：禁止指令重排序优化。也就是说，在 <code>volatile</code> 变量的赋值操作后面会有一个内存屏障（生成的汇编代码上），读操作不会被重排序到内存屏障之前。比如上面的例子，取操作必须在执行完 1→2→3 之后或者 1→3→2 之后，不存在执行到 1→3 然后取到值的情况。</p>
+<p>从「先行发生原则」的角度理解的话，就是对于一个 <code>volatile</code> 变量的写操作都先行发生于后面对这个变量的读操作（这里的“后面”是时间上的先后顺序）。</p>
+<p>特别注意，在 Java 5 以前的版本使用了 <code>volatile</code> 的双检锁还是有问题的。其原因是 Java 5 以前的 JMM（Java Memory Model，Java 内存模型）是存在缺陷的，即使将变量声明成 <code>volatile</code> 也不能完全避免重排序，主要是 <code>volatile</code> 变量前后的代码仍然存在重排序问题。这个 <code>volatile</code> 屏蔽重排序的问题在 Java 5 中才得以修复，所以在这之后才可以放心使用 <code>volatile</code>。</p>
+<p>相信你不会喜欢这种复杂又隐含问题的方式，当然我们有更好的实现线程安全的单例模式的办法。</p>
+<h2 id="hungry饿汉式">Hungry：饿汉式</h2>
+<p>饿汉式其实是一种比较形象的称谓。既然饿，那么在创建对象实例的时候就比较着急，饿了嘛，于是在装载类的时候就创建对象实例。</p>
+<p>这种方法非常简单，因为单例的实例被声明成 <code>static</code> 和 <code>final</code> 变量了，在第一次加载类到内存中时就会初始化，所以创建实例本身是线程安全的。</p>
+<pre><code class="language-Java">public class Singleton {
+    private static final Singleton instance = new Singleton();      // 类加载时就初始化
+    private Singleton() {}
+    public static Singleton getInstance() {
+        return instance;
+    }
+}
+</code></pre>
+<p>缺点是它不是一种懒加载模式（Lazy Initialization），单例会在加载类后一开始就被初始化，即使客户端没有调用 <code>getInstance()</code> 方法。</p>
+<p>饿汉式的创建方式在一些场景中将无法使用：譬如 <code>Singleton</code> 实例的创建是依赖参数或者配置文件的，在 <code>getInstance()</code> 之前必须调用某个方法设置参数给它，那样这种单例写法就无法使用了。</p>
+<h2 id="static-nested-class静态内部类">Static Nested Class：静态内部类</h2>
+<p>这种方法也是《<em>Effective Java</em>》上所推荐的。</p>
+<pre><code class="language-Java">public class Singleton {  
+    private static class SingletonHolder {  
+        private static final Singleton INSTANCE = new Singleton();  
+    }  
+    private Singleton () {}  
+    public static final Singleton getInstance() {  
+        return SingletonHolder.INSTANCE; 
+    }  
+}
+</code></pre>
+<p>这种写法仍然使用 JVM 本身机制保证了线程安全问题。由于静态单例对象没有作为 <code>Singleton</code> 的成员变量直接实例化，因此类加载时不会实例化 <code>Singleton</code>，第一次调用 <code>getInstance()</code> 时将加载内部类 <code>SingletonHolder</code>，在该内部类中定义了一个 <code>static</code> 类型的变量 <code>INSTANCE</code>，此时会首先初始化这个成员变量，由 Java 虚拟机来保证其线程安全性，确保该成员变量只能初始化一次。由于 <code>getInstance()</code> 方法没有任何线程锁定，因此其性能不会造成任何影响。</p>
+<p>由于 <code>SingletonHolder</code> 是私有的，除了 <code>getInstance()</code> 之外没有办法访问它，因此它是懒汉式的；同时读取实例的时候不会进行同步，没有性能缺陷；也不依赖 JDK 版本。</p>
+<h2 id="enum枚举">Enum：枚举</h2>
+<p>用枚举写单例实在太简单了！这也是它最大的优点。</p>
+<pre><code class="language-Java">public enum Singleton {
+    INSTANCE;
+}
+</code></pre>
+<p>我们可以通过 <code>Singleton.INSTANCE</code> 来访问实例，这比调用 <code>getInstance()</code> 方法简单多了。创建枚举默认就是线程安全的，所以不需要担心 Double Checked Locking，而且还能防止反序列化导致重新创建新的对象。</p>
+<p>这种实现方式实际上还没有被广泛采用，但这是实现单例模式的最佳方法，同时也是《<em>Effective Java</em>》作者 Josh Bloch 提倡的方式。不过，由于 Java 5 之后才加入 <code>enum</code> 特性，用这种方式写不免让人感觉生疏，在实际工作中，也很少用。</p>
+<h1 id="总结">总结</h1>
+<p>一般情况下，单例模式有上述五种实现方法，也都给出了线程安全的实现。</p>
+<p>大多数情况下直接使用饿汉式即可；如果明确要求要懒加载（Lazy Initialization）倾向于使用静态内部类，不建议直接使用懒汉式；如果涉及到反序列化创建对象时会试着使用枚举的方式来实现；如果有其他特殊的需求，可以考虑使用双检锁方式。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/How-to-Send-SMS-Message-in-Android.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/How-to-Send-SMS-Message-in-Android/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2022-05-27">2022-05-27</time>
+                  <h4 class="title white no-margin">Android 实现短信发送</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Set-up-Flutter-Development-Environment-on-Windows.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Set-up-Flutter-Development-Environment-on-Windows/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2022-04-20">2022-04-20</time>
+                  <h4 class="title white no-margin">Windows 平台 Flutter 开发环境搭建笔记</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

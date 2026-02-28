@@ -1,0 +1,756 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Windows 平台 React Native 开发环境搭建笔记 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="现在各种第三方框架流行，每次安装总要花太多的时间，在重装系统后还要再一步一步的搭起来，实在是太麻烦。
+来讲讲 Windows 平台 React Native 的开发环境搭建。
+
+撰文时 React Native 版本为 0.51。
+Pyth..." />
+    <meta name="keywords" content="React Native" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Set-up-React-Native-Development-Environment-on-Windows.jpg');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2018-04-15"><i class="fa fa-calendar"></i><span class="lately">8 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Set-up-React-Native-Development-Environment-on-Windows/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Set-up-React-Native-Development-Environment-on-Windows/"> </span>
+              </a>
+              <span id="/Set-up-React-Native-Development-Environment-on-Windows/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-0 ctag-React-Native" aria-label="">React Native</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">Windows 平台 React Native 开发环境搭建笔记</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>现在各种第三方框架流行，每次安装总要花太多的时间，在重装系统后还要再一步一步的搭起来，实在是太麻烦。</p>
+<p>来讲讲 Windows 平台 React Native 的开发环境搭建。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1562229516108.jpg" alt="React Native" loading="lazy"></figure>
+<p>撰文时 React Native 版本为 <code>0.51</code>。</p>
+<h1 id="python">Python</h1>
+<p>第一步先安装『Python』，进入<a href="https://www.python.org">官网</a>，可以发现有两个版本。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1562229571730.jpg" alt="Python 官网" loading="lazy"></figure>
+<p>这里需要注意的是一定要下载 Python 2，不要下载 Python 3。</p>
+<p>下载下来运行安装即可，中间有一个需要注意的地方，安装进入到以下界面时，需要修改选项。</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1562229620809.jpg" alt="Python Add to Path" loading="lazy"></figure>
+<p>最后一项，默认是没有选择「Add python.exe to Path」，意思是把『Python』的安装路径添加到系统路径下面，需要把它选上，这样会省去安装完成后还要自己设置路径的功夫。</p>
+<p>把它选上安装完成的情况下，在 <code>CMD</code> 中输入 <code>python</code> 就会去调用「python.exe」，如果没有选上这个选项，<code>CMD</code> 则会报以下错误：</p>
+<blockquote>
+<p>'python' 不是内部或外部命令，也不是可运行的程序或批处理文件。</p>
+</blockquote>
+<p>安装完成后，进行下一步。</p>
+<h1 id="nodejs">Node.js</h1>
+<p>进入『Node.js』<a href="https://nodejs.org/en/">官网</a>或<a href="http://nodejs.cn">中文网</a>下载即可，官网有一个推荐版本和最新版本，我下载的是推荐版本，中文网的版本比官网的推荐版本要低。</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1562230060305.jpg" alt="Node.js 官网" loading="lazy"></figure>
+<p>Node.js 提供了 JavaScript 代码的编译环境，还提供了 <code>npm</code> 工具，<code>npm</code> 是一个包管理器，是一个专门负责 JavaScript 代码的包管理器。</p>
+<p>安装完 Node.js 后建议设置 <code>npm</code> 镜像以加速后面的过程，也可以使用科学上网工具，由于我在用的 VPN 流量有限，而且第一次搭 React Native 环境的时候使用 VPN 速度并没有太理想，所以我用 <code>npm</code> 把服务器设置到国内的淘宝源。</p>
+<p>在 <code>CMD</code> 中输入以下两行：</p>
+<pre><code class="language-Bash">➜   npm config set registry https://registry.npm.taobao.org --global
+➜   npm config set disturl https://npm.taobao.org/dist --global
+</code></pre>
+<p>这样就方便我们后面去安装下载 JavaScript 模块的时候速度更快。</p>
+<h1 id="yarn-react-native-的命令行工具">Yarn、React Native 的命令行工具</h1>
+<p>我们使用 <code>npm</code> 安装两种 JavaScript 模块，其中一种是 <code>Yarn</code> 和 <code>CLI</code> 这种可以直接在命令行中执行的命令，使用以下的命令直接在 <code>CMD</code> 中进行安装：</p>
+<pre><code class="language-Bash">➜   npm install -g yarn react-native-cli
+</code></pre>
+<p><code>npm install -g</code>  表示安装全局模块，<code>Yarn</code> 和 <code>CLI</code> 全局安装是因为它们是直接在命令行中执行的，是在任何目录下都可以直接执行的命令。</p>
+<p>另一类则是之后在开发过程中会引用一些第三方的组件或者工具，是代码层而不是命令，这些模块则不需要加 <code>-g</code> 进行安装。</p>
+<p><code>Yarn</code> 是 Facebook 提供的替代 <code>npm</code> 的工具，可以加速 Node 模块的下载，比 <code>npm</code> 更快。<code>CLI</code> 则是 React Native 的外围的工具，它用于执行创建、初始化、更新项目、运行打包服务等任务。</p>
+<p>到这里，第三方的工具就安装的差不多了，接下来安装核心的开发工具。</p>
+<h1 id="android-studio">Android Studio</h1>
+<p>因为我主要还是做 Android 开发，所以这是必装工具。</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1562230173878.jpg" alt="Android Studio 官网" loading="lazy"></figure>
+<p>下载并安装完成后，先创建个项目并在模拟器上运行一下，以确认安装是否正常。</p>
+<h1 id="android-sdk">Android SDK</h1>
+<p>安装完『Android Studio』后能运行项目证明已经安装了基本的 SDK 了，但我们还需要安装其他的 SDK。</p>
+<p>进入「SDK Manager」，打开「SDK Tools」标签页，并选择下方的「Show Package Details」，并在「Android SDK Build-Tools」中勾选 <code>23.0.1</code> 的版本，然后按「OK」下载。</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1562230217950.jpg" alt="Android SDK Settings" loading="lazy"></figure>
+<p>网上的教程基本都说有很多项是必须下载的，但是我发现只下载这一项也能够运行，不知道后续的开发会不会受影响，但是目前没有发现问题。</p>
+<p>记住 SDK 的安装目录，进入下一步。</p>
+<h1 id="配置环境变量">配置环境变量</h1>
+<p>相信所有写过 Java 的人都配置过环境变量了，这里要配置 <code>ANDROID_HOME</code> 环境变量。</p>
+<figure data-type="image" tabindex="7"><img src="https://LiarrDev.github.io/post-images/1562230264645.jpg" alt="环境变量" loading="lazy"></figure>
+<p>在「用户变量」中新建。变量名为 <code>ANDROID_HOME</code>，注意是大写，然后变量值为上一步中 SDK 的目录。</p>
+<figure data-type="image" tabindex="8"><img src="https://LiarrDev.github.io/post-images/1562230296254.jpg" alt="ANDROID_HOME" loading="lazy"></figure>
+<p>然后还要在「用户变量」的 <code>Path</code> 中添加两个目录，如图所示：</p>
+<figure data-type="image" tabindex="9"><img src="https://LiarrDev.github.io/post-images/1562230328602.jpg" alt="Path" loading="lazy"></figure>
+<p>这两个目录中有一些比较重要的 Android 命令，在以后的开发中可能会用到。</p>
+<h1 id="jre">JRE</h1>
+<p>你可能会发现我并没有配置 JDK，这不是 Java 最基本的东西吗？</p>
+<p>其实，从我用『Eclipse』写 Java 开始就没有再配置过 JDK 了，是不是很神奇，『Eclipse』部分版本里面内置了 OpenJDK，并且自带了 JRE，所以无需再自己安装 JDK 了。</p>
+<p>从刚才能运行 Android 项目，就可以知道『Android Studio』里面也是内置了 JRE 的，也就是 Java 运行环境，所以我们只要引用其 JRE 路径，就可以在 React Native 项目中使用。</p>
+<p>在『Android Studio』的安装目录中找到 JRE 的路径，填入「系统变量」的 <code>Path</code> 中即可。</p>
+<figure data-type="image" tabindex="10"><img src="https://LiarrDev.github.io/post-images/1562230374011.jpg" alt="JRE Path" loading="lazy"></figure>
+<p>然后确定，并退出所有窗口。</p>
+<p>这时候，在 Windows 系统下 React Native 的 Android 运行环境就基本搭建完成了。</p>
+<p>为了更方便的开发 React Native，我还需要一个好用的 IDE。</p>
+<h1 id="atom">Atom</h1>
+<p>考虑到适合 React Native 开发的 IDE 实在不多，比如最好用的可能是与『<a href="https://developer.android.google.cn/studio">Android Studio</a>』师出同门的『<a href="http://www.jetbrains.com/webstorm/">WebStorm</a>』了，但是收费；比如插件强大的『<a href="http://www.sublimetext.com">Sublime Text 3</a>』，也是收费，虽然目前还可以无限期试用，但配置起来相对麻烦；比如 Mircosoft 家的轻量级的开源 Web 集成开发环境『<a href="https://code.visualstudio.com">Visual Studio Code</a>』，个人喜好问题，不太喜欢；比如开源的专门为 React Native 打造的『<a href="https://www.decoide.org">Deco</a>』，可惜目前只支持 Mac OS X。</p>
+<p>综合考虑，到最后我选择了『<a href="https://atom.io">Atom</a>』，由全球最大的同性交友社区『<a href="https://github.com">GitHub</a>』打造的编程开发利器。</p>
+<p>打开官网进行下载。直接下载安装默认是装在 C 盘，我的 C 盘可没打算给它留位置，仔细看官网可以发现有一行小字：</p>
+<figure data-type="image" tabindex="11"><img src="https://LiarrDev.github.io/post-images/1562230813466.jpg" alt="Atom 官网" loading="lazy"></figure>
+<p>点击这个「<a href="https://github.com/atom/atom/releases">Other platforms</a>」即可跳转到『GitHub』的全平台的下载页。</p>
+<p>在里面找到对应的版本下载即可，比如我是 64 位的 Windows 操作系统，则下载「atom-x64-windows.zip」。</p>
+<figure data-type="image" tabindex="12"><img src="https://LiarrDev.github.io/post-images/1562230925819.jpg" alt="Atom Download Page" loading="lazy"></figure>
+<p>下载完成后解压即可。</p>
+<h1 id="nuclide">Nuclide</h1>
+<p>『<a href="https://atom.io">Atom</a>』本质上是一个文本编辑器，而不是一个 IDE，因此在用来开发 React Native 时需要配合『Nuclide』一起使用，『Nuclide』是 Facebook 基于『Atom』的基础上开发的一个插件。</p>
+<p>在『Atom』中搜索「Nuclide」进行安装即可，不过『Atom』在安装插件的过程中没有进度条，安装时间又长，实在令人抓狂，最好挂梯子。</p>
+<figure data-type="image" tabindex="13"><img src="https://LiarrDev.github.io/post-images/1562230996067.jpg" alt="Install Nuclide Package" loading="lazy"></figure>
+<p>安装完成后，进入『Nuclide』的「Settings」，勾选「Install Recommended Packets on Startup」。</p>
+<figure data-type="image" tabindex="14"><img src="https://LiarrDev.github.io/post-images/1562231029834.jpg" alt="Nuclide Settings" loading="lazy"></figure>
+<p>然后退出『Atom』再打开，会发现自动安装这些依赖包。</p>
+<p>另外需要注意的是，『Atom』的插件是默认装在 C 盘的，目前似乎没有办法修改。</p>
+<h1 id="others">Others</h1>
+<h2 id="chocolatey">Chocolatey</h2>
+<p>官网包括中文网把『Chocolatey』归类到必需的软件中，它是一个 Windows 上的包管理器，类似于应用市场。</p>
+<p>可以看到在上面的步骤中并没有安装，因为它的安装和使用都比较困难，由于在国外，所以它的网速会比较慢，因此并没有什么特别的好处，所以就直接跳过了。</p>
+<h2 id="git">Git</h2>
+<p>官网把『Git』归类到可选的安装项中，不过在之前的版本是必须安装。</p>
+<p>『Git』的话在某些情况也是需要用到的，比如有时候需要运行在『GitHub』上的开源项目的时候，没有『Git』会报错，这个在需要的时候安装即可。</p>
+<p>在安装过程中注意勾选「Run Git from Windows Command Prompt」，这样才会把 <code>git</code> 命令添加到 <code>PATH</code> 环境变量中，保证我们在命令行中可以调用 <code>git</code> 命令。</p>
+<hr>
+<p>到这里环境就基本搭建完成了，然后就可以创建一个项目运行一下。</p>
+<p>在 <code>CMD</code> 进入需要创建项目的目录下，输入：</p>
+<pre><code class="language-Bash">➜   react-native init ProjectName
+</code></pre>
+<p>其中，「ProjectName」代表项目名，注意不要使用中文的项目名，也不要在任何中文目录下执行这个命令，避免不必要的麻烦。</p>
+<p>还需要注意的是，不要在命令行默认的「System32」目录中 <code>init</code> 项目！会有各种权限限制导致不能运行！</p>
+<p>然后进入项目文件夹：</p>
+<pre><code class="language-Bash">➜   cd ProjectName
+</code></pre>
+<p>执行以下命令以运行 Android 项目：</p>
+<pre><code class="language-Bash">➜   react-native run-android
+</code></pre>
+<p>执行的过程中会弹出一个 Node 窗口，不能关闭这个窗口，否则程序将不能执行。</p>
+<figure data-type="image" tabindex="15"><img src="https://LiarrDev.github.io/post-images/1562231163693.jpg" alt="Node Running" loading="lazy"></figure>
+<p>这是程序在 Node 中执行编译、打包、转码 JavaScript 文件的工具。</p>
+<p>可以看到，它运行在 <code>8081</code> 端口上，可能会有某些杀毒软件，比如『McAfee』，也会占用该端口，这种情况下程序是无法正常运行的，所以要停止相关占用端口的软件。</p>
+<p>然后等待命令执行，直到最后看到有且仅有「No connected devices!」的错误时，就代表万事俱备，App 已经编译好了，只是没有找到可以安装的设备。</p>
+<figure data-type="image" tabindex="16"><img src="https://LiarrDev.github.io/post-images/1562231236800.jpg" alt="Build App" loading="lazy"></figure>
+<p>不要被下方的红字所迷惑，它看起来像是报错，而且有提示 <code>FAILED</code>，其实并没有什么信息量，只是一个一般性的提示，它并不是任何错误的具体原因，不管任何报错，都会蹦出这几行红字。</p>
+<p>最后就可以连真机运行了。</p>
+<p>同样的步骤，不过在真机运行会遇到两种情况。</p>
+<p>在低于 Android 5.0 的设备上运行可能会出现报错，如图所示：</p>
+<figure data-type="image" tabindex="17"><img src="https://LiarrDev.github.io/post-images/1562231281124.jpg" alt="Could not Connect Server" loading="lazy"></figure>
+<p>我尝试按照网上的各种方法进行调整，手动修改端口等，但目前仍没有解决这个问题。</p>
+<p>另外在『Android Studio』中也无法正常运行程序。</p>
+<p>但是在高于 Android 5.0 的真机上运行则没有任何问题。</p>
+<figure data-type="image" tabindex="18"><img src="https://LiarrDev.github.io/post-images/1562231325522.jpg" alt="React Native Run Succeed" loading="lazy"></figure>
+<p>当出现上面这个页面的时候，就证明项目正常运行了。</p>
+<hr>
+<p>参考内容：<a href="https://reactnative.cn">React Native 中文网</a></p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Permissions-of-Android-Device-Monitor.jpg');"></div>
+                 <a href="https://LiarrDev.github.io/post/Permissions-of-Android-Device-Monitor/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2018-07-29">2018-07-29</time>
+                  <h4 class="title white no-margin">Android Device Monitor 权限笔记</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/How-to-Get-Icons-of-Android-App.jpg');"></div>
+                 <a href="https://LiarrDev.github.io/post/How-to-Get-Icons-of-Android-App/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2017-12-19">2017-12-19</time>
+                  <h4 class="title white no-margin">获取手机应用 ICON 的方法</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

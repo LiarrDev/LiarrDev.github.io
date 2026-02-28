@@ -1,0 +1,771 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Android 动态获取 Resource ID | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="在 Android 开发中，我们平时需要使用一些资源时，都需要传入 Resource ID。当然，这个 ID 是编译的时候自动生成的，我们不可能去手动填入这个 ID 值，而是通过 R 来获取这个 Resource ID，比如 R.layou..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Get-Android-Resource-ID-Dynamically.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2021-12-21"><i class="fa fa-calendar"></i><span class="lately">4 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Get-Android-Resource-ID-Dynamically/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Get-Android-Resource-ID-Dynamically/"> </span>
+              </a>
+              <span id="/Get-Android-Resource-ID-Dynamically/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">Android 动态获取 Resource ID</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>在 Android 开发中，我们平时需要使用一些资源时，都需要传入 Resource ID。当然，这个 ID 是编译的时候自动生成的，我们不可能去手动填入这个 ID 值，而是通过 <code>R</code> 来获取这个 Resource ID，比如 <code>R.layout.activity_main</code> 或者 <code>R.mipmap.ic_launcher</code> 等。</p>
+<p>但是在开发 SDK 的时候，我们并不推荐使用这种方式来开发。</p>
+<p>为什么呢？你可能会写个 Module 打成 AAR 包验证一下并认为没有问题，的确，假如你所写的 SDK 是在你们团队内部使用的话，正常情况下的确不会有问题。</p>
+<p>而当你的 SDK 需要提供给其他团队接入，甚至是给其他个人或公司的开发者接入，就不得不考虑兼容性问题。</p>
+<p>假如某些开发团队需要使用 JAR 的方式来接入（可前往『<a href="https://liarrdev.github.io/post/How-to-Import-AAR-in-Android-Studio/">「Android Studio」如何导入 AAR 包</a>』一文了解），而你在 SDK 内部通过 <code>R</code> 来获取 Resource ID，很可能就会报类似下面的异常：</p>
+<pre><code>E/AndroidRuntime: FATAL EXCEPTION: main
+    Process: &lt;applicationId&gt;, PID: 1290
+    java.lang.NoClassDefFoundError: Failed resolution of: L&lt;package&gt;/R$layout;
+        at ...
+     Caused by: java.lang.ClassNotFoundException: Didn't find class &quot;&lt;package&gt;.R$layout&quot; on path: DexPathList[[zip file &quot;/data/app/&lt;package&gt;-7LVvXGSzJoLlgcJqzY5uYg==/base.apk&quot;],nativeLibraryDirectories=[/data/app/&lt;package&gt;-7LVvXGSzJoLlgcJqzY5uYg==/lib/arm64, /system/lib64, /system/product/lib64, /hw_product/lib64, /system/product/lib64]]
+        at dalvik.system.BaseDexClassLoader.findClass(BaseDexClassLoader.java:196)
+        at java.lang.ClassLoader.loadClass(ClassLoader.java:379)
+        at ...
+</code></pre>
+<p>因为使用 JAR 的方式接入时，我们会将资源文件复制到我们项目的资源文件夹中，而不是如 AAR 一样直接引用，因此经过重新编译 AAPT（Android Asset Packaging Tool，Android 资源打包工具，可将资源文件编译成二进制文件）会给对应的资源文件生成一个新的 Resource ID。</p>
+<p>我们在代码中通过 <code>R</code> 获取 Resource ID 实际上相当于将原来的 ID 硬编码到 APK 中，即 <code>setContentView(R.layout.activity_main)</code> 编译完成后相当于 <code>setContentView(2131361821)</code>（详见『<a href="https://liarrdev.github.io/post/Getting-Started-with-Android-Decompilation/">Android 反编译入门指南</a>』一文），那么新生成的 ID 和原有的 ID 不相同，自然就抛出找不到 Resource ID 的异常了。</p>
+<p>在 SDK 中，我们常会使用动态获取 Resource ID 的方法来避免以上的坑。</p>
+<p>Android 为我们提供了 <code>getIdentifier()</code> 方法：</p>
+<pre><code class="language-Java">/**
+ * Return a resource identifier for the given resource name.  A fully
+ * qualified resource name is of the form &quot;package:type/entry&quot;.  The first
+ * two components (package and type) are optional if defType and
+ * defPackage, respectively, are specified here.
+ * 
+ * &lt;p&gt;Note: use of this function is discouraged.  It is much more
+ * efficient to retrieve resources by identifier than by name.
+ * 
+ * @param name The name of the desired resource.
+ * @param defType Optional default resource type to find, if &quot;type/&quot; is not included in the name.  Can be null to require an explicit type.
+ * @param defPackage Optional default package to find, if &quot;package:&quot; is not included in the name.  Can be null to require an explicit package.
+ * 
+ * @return int The associated resource identifier.  Returns 0 if no such resource was found.  (0 is not a valid resource ID.)
+ */
+public int getIdentifier(String name, String defType, String defPackage) {
+    return mResourcesImpl.getIdentifier(name, defType, defPackage);
+}
+</code></pre>
+<p>该方法本质上是通过反射调用实现获取资源的 <code>int</code> 型的 ID 数值，所以并不高效，也不鼓励使用。</p>
+<p>我们只需传入资源名称、资源类型以及包名就可以获取到对应资源的 ID 了，比如：</p>
+<pre><code class="language-Java">public class ModelActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(getResourceId(this, &quot;activity_model&quot;, &quot;layout&quot;));
+    }
+    
+    public static int getResourceId(Context context, String name, String defType) {
+        return context.getResources().getIdentifier(name, defType, context.getPackageName());
+    }
+}
+</code></pre>
+<p>当然，我们可以封装成一个工具类，让使用更加方便：</p>
+<pre><code class="language-Java">public class ResourceUtil {
+
+    public static int getResourceId(Context context, String name, String defType) {
+        return context.getResources().getIdentifier(name, defType, context.getPackageName());
+    }
+
+    public static int getAnimId(Context context, String name) {
+        return getResourceId(context, name, &quot;anim&quot;);
+    }
+
+    public static int getAnimatorId(Context context, String name) {
+        return getResourceId(context, name, &quot;animator&quot;);
+    }
+
+    public static int getAttrId(Context context, String name) {
+        return getResourceId(context, name, &quot;attr&quot;);
+    }
+
+    public static int getBoolId(Context context, String name) {
+        return getResourceId(context, name, &quot;bool&quot;);
+    }
+
+    public static int getColorId(Context context, String name) {
+        return getResourceId(context, name, &quot;color&quot;);
+    }
+
+    public static int getDimenId(Context context, String name) {
+        return getResourceId(context, name, &quot;dimen&quot;);
+    }
+
+    public static int getDrawableId(Context context, String name) {
+        return getResourceId(context, name, &quot;drawable&quot;);
+    }
+
+    public static int getComponentId(Context context, String name) {
+        return getResourceId(context, name, &quot;id&quot;);
+    }
+
+    public static int getIntegerId(Context context, String name) {
+        return getResourceId(context, name, &quot;integer&quot;);
+    }
+
+    public static int getInterpolatorId(Context context, String name) {
+        return getResourceId(context, name, &quot;interpolator&quot;);
+    }
+
+    public static int getLayoutId(Context context, String name) {
+        return getResourceId(context, name, &quot;layout&quot;);
+    }
+
+    public static int getMipmapId(Context context, String name) {
+        return getResourceId(context, name, &quot;mipmap&quot;);
+    }
+
+    public static int getPluralsId(Context context, String name) {
+        return getResourceId(context, name, &quot;plurals&quot;);
+    }
+
+    public static int getStringId(Context context, String name) {
+        return getResourceId(context, name, &quot;string&quot;);
+    }
+
+    public static int getStyleId(Context context, String name) {
+        return getResourceId(context, name, &quot;style&quot;);
+    }
+
+    public static int getStyleableId(Context context, String name) {
+        return getResourceId(context, name, &quot;styleable&quot;);
+    }
+
+    public static int getXmlId(Context context, String name) {
+        return getResourceId(context, name, &quot;xml&quot;);
+    }
+}
+</code></pre>
+<p>使用以上封装的方法，你可以减少传入的参数，却能够更加清晰的知道自己所获取的资源类型，十分方便。</p>
+<p>基于这个工具类，你甚至还可以实现一些有趣的骚操作，比如：</p>
+<pre><code class="language-Java">ImageView[] imageViews = new ImageView[NUMBER];
+for (int i = 0; i &lt; NUMBER; i++) {
+    imageViews[i] = findViewById(ResourceUtil.getComponentId(context, &quot;image_&quot; + i));
+}
+</code></pre>
+<p>当然这个例子并不那么合适，因为有更优雅的实现方式，只是想通过这个例子来表达，我们可以发挥我们的想象，来创作更多的应用场景。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/SwitchHosts.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/SwitchHosts/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2021-12-28">2021-12-28</time>
+                  <h4 class="title white no-margin">SwitchHosts</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/The-Selectable-TextView-Cannot-Respond-to-the-First-Click-Event.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/The-Selectable-TextView-Cannot-Respond-to-the-First-Click-Event/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2021-12-09">2021-12-09</time>
+                  <h4 class="title white no-margin">可选择的 TextView 无法响应首次点击事件</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

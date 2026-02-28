@@ -1,0 +1,692 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Android Gradle Plugin 依赖项配置 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="做 Android 开发必定会依赖第三方库，比如常用的如网络请求框架 OkHttp、图片加载框架 Glide 等，即使你完全采用原生 API 来开发，也会依赖 AppCompat 或者 Support 之类的官方库。
+以前 Android ..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Android-Gradle-Plugin-Dependency-Configurations.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2021-05-17"><i class="fa fa-calendar"></i><span class="lately">5 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Android-Gradle-Plugin-Dependency-Configurations/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Android-Gradle-Plugin-Dependency-Configurations/"> </span>
+              </a>
+              <span id="/Android-Gradle-Plugin-Dependency-Configurations/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">Android Gradle Plugin 依赖项配置</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>做 Android 开发必定会依赖第三方库，比如常用的如网络请求框架 <a href="https://liarrdev.github.io/post/Enjoy-OkHttp-in-One-Shot/"><code>OkHttp</code></a>、图片加载框架 <a href="https://liarrdev.github.io/post/Enjoy-Glide-in-One-Shot/"><code>Glide</code></a> 等，即使你完全采用原生 API 来开发，也会依赖 <code>AppCompat</code> 或者 <code>Support</code> 之类的官方库。</p>
+<p>以前 Android 开发是在『Eclipse』上进行的，开发者使用第三方库往往需要手动下载 Jar 包再到『Eclipse』内引用，在『Android Studio』推出后，得益于 Gradle 构建工具，我们只需在 Gradle 文件中用使用一行代码即可将第三方库从远程站点依赖到项目中，十分方便。</p>
+<p>我们引用依赖一般都是使用 <code>implementation</code> 配置依赖项，的确大多数第三方库文档的 Usage 都是这么写的，大多数情况下我们这么用也没问题，但是我们依然需要了解其他的依赖项配置。</p>
+<h1 id="implementation">implementation</h1>
+<p>首先我们从最熟悉的 <code>implementation</code> 开始，为什么 <code>implementation</code> 是绝大多数第三方库文档所介绍的配置方式，同时也是『Android Studio』的默认配置方式？</p>
+<p>原因其实很简单，与其他配置方式相比，此依赖项配置可以显著缩短构建时间，因为这样可以减少构建系统需要重新编译的 Module 数。</p>
+<p>当 <code>implementation</code> 依赖项更改了其 API，Gradle 只会重新编译该依赖项以及直接依赖于它的 Module。同时，该 Module 在编译时不会将该依赖项泄露给其他 Module，也就是说，其他 Module 只有在运行时才能使用该依赖项。</p>
+<h1 id="api">api</h1>
+<p>当一个 Module 包含 <code>api</code> 依赖项时，该 Module 会以传递方式将该依赖项导出到其他 Module，以便这些 Module 在运行时和编译时都可以使用该依赖项。</p>
+<p>此配置的行为类似于 <code>compile</code>（现已弃用），会以传递方式导出到其他上游消费者。<br>
+其与 <code>implementation</code> 的最大区别在于能否被上游消费者调用，如下图所示：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1620490674516.jpeg" alt="" loading="lazy"></figure>
+<p>假设 Module X 同时依赖 Library A 和 Library B，而 Library A 通过 <code>implementation</code> 引用 Library C，而 Library B 则使用 <code>api</code> 引用 Library D。</p>
+<p>这时候，Module X 是不能够直接使用 Library C 的，但却能够直接使用 Library D。因为 <code>implementation</code> 可以让 Module 在编译时“隐藏”自己使用的依赖，而 <code>api</code> 则会“传递”自己的依赖。</p>
+<p>同时，如果 <code>api</code> 依赖项更改了其外部 API，Gradle 会在编译时重新编译所有有权访问该依赖项的 Module，因此，拥有大量的 <code>api</code> 依赖项会显著增加构建时间。</p>
+<p>除非要将依赖项的 API 公开给单独的 Module，否则应使用 <code>implementation</code> 依赖项。</p>
+<h1 id="compileonly">compileOnly</h1>
+<p>Gradle 只会将依赖项添加到编译类路径，也就是说，不会将其添加到构建输出。</p>
+<p>如果您创建 Module 时在编译期间需要相应依赖项，但它在运行时可有可无，此配置会很有用。</p>
+<p>如果您使用 <code>compileOnly</code>，那么您的 Module 必须包含一个运行时条件，用于检查是否提供了相应依赖项，然后适当地改变该 Module 的行为，以使该 Module 在未提供相应依赖项的情况下仍可正常运行。</p>
+<p>这样做不会添加不重要的暂时依赖项，因而有助于减小最终 APK 的大小。此配置的行为类似于 <code>provided</code>（现已弃用）。</p>
+<h1 id="runtimeonly">runtimeOnly</h1>
+<p>Gradle 只会将依赖项添加到构建输出，以便在运行时使用。也就是说，不会将其添加到编译类路径。</p>
+<p>此配置的行为类似于 <code>apk</code>（现已弃用）。</p>
+<h1 id="annotationprocessor">annotationProcessor</h1>
+<p>我们在使用一些包含注解的第三方库时经常可以见到它，比如 <code>Dagger</code> 等。</p>
+<p>如需添加对作为注解处理器的库的依赖，可以使用 <code>annotationProcessor</code> 配置将其添加到注解处理器的类路径。</p>
+<p>使用此配置可以将编译类路径与注释处理器类路径分开，从而提高构建性能。</p>
+<h1 id="lintchecks">lintChecks</h1>
+<p>使用此配置可以添加您希望 Gradle 在构建项目时执行的 lint 检查。</p>
+<p>需要注意，使用 Android Gradle Plugin 3.4.0 及更高版本时，此依赖项配置不再将 lint 检查打包在 AAR 项目中。</p>
+<h1 id="lintpublish">lintPublish</h1>
+<p>在 AAR 项目中使用此配置可以添加您希望 Gradle 编译成 <code>lint.jar</code> 文件并打包在 AAR 中的 lint 检查。这会使得使用 AAR 的项目也应用这些 lint 检查。</p>
+<h1 id="testimplementation">testImplementation</h1>
+<p>只在单元测试代码的编译以及最终打包测试 APK 时有效。</p>
+<p>默认新建项目中 <code>JUnit</code> 就是以此配置依赖的，同时可以看到默认项目目录中除了我们一般写业务代码的 <code>/src/main</code> 目录外，还有 <code>/src/test</code> 目录供我们写本地单元测试，<code>testImplementation</code> 就可以为其 Source Set 添加依赖。</p>
+<h1 id="androidtestimplementation">androidTestImplementation</h1>
+<p>只在单元测试代码的编译以及最终打包测试 APK 时有效。</p>
+<p>默认新建项目中 <code>Espresso</code> 就是以此配置依赖的，同时可以看到默认项目目录中除了我们一般写业务代码的 <code>/src/main</code> 目录外，还有 <code>/src/androidTest</code> 目录供我们写仪器化单元测试、UI 测试等，<code>androidTestImplementation</code> 就可以为其 Source Set 添加依赖。</p>
+<h1 id="releaseimplementation-debugimplementation">releaseImplementation / debugImplementation</h1>
+<p>仅仅针对 Release 或 Debug 模式的编译和最终的 Release / Debug Apk 打包。</p>
+<p>DiDi 团队著名框架 <code>DoKit</code> 就是以此配置依赖的，可以针对 Release 和 Debug 采用不同的处理。</p>
+<h1 id="compile">compile</h1>
+<p>该配置已弃用。</p>
+<p>与 <code>api</code> 类似，Gradle 会将依赖项添加到编译类路径和构建输出，并将依赖项导出到其他 Module。</p>
+<h1 id="apk">apk</h1>
+<p>该配置已弃用。</p>
+<p>与 <code>runtimeOnly</code> 类似，Gradle 只会将依赖项添加到构建输出，以便在运行时使用，不会将其添加到编译类路径。</p>
+<h1 id="provided">provided</h1>
+<p>该配置已弃用。</p>
+<p>与 <code>compileOnly</code> 类似，Gradle 只会将依赖项添加到编译类路径，不会将其添加到构建输出。</p>
+<hr>
+<h1 id="参考">参考</h1>
+<ul>
+<li><a href="https://developer.android.google.cn/studio/build/dependencies">添加构建依赖项 | Android 开发者 | Android Developers</a></li>
+</ul>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/How-to-Import-JAR-in-Android-Studio.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/How-to-Import-JAR-in-Android-Studio/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2021-05-27">2021-05-27</time>
+                  <h4 class="title white no-margin">『Android Studio』如何导入 JAR 包</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Auto-Signing-with-Gradle-in-Android-Studio.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Auto-Signing-with-Gradle-in-Android-Studio/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2021-04-30">2021-04-30</time>
+                  <h4 class="title white no-margin">『Android Studio』用 Gradle 实现自动签名</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

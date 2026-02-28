@@ -1,0 +1,826 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Design Pattern: Factory | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="前言
+工厂模式（Factory Pattern）是最常用的设计模式之一，它与之前介绍的『Design Pattern: Singleton』都属于创建类型的设计模式。
+它在创建对象时提供了一种封装机制，将实际创建对象的代码与使用代码分离。在..." />
+    <meta name="keywords" content="Design Pattern" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Design-Pattern-Factory.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2024-12-27"><i class="fa fa-calendar"></i><span class="lately">1 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Design-Pattern-Factory/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Design-Pattern-Factory/"> </span>
+              </a>
+              <span id="/Design-Pattern-Factory/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-0 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">Design Pattern: Factory</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <h1 id="前言">前言</h1>
+<p>工厂模式（Factory Pattern）是最常用的设计模式之一，它与之前介绍的『<a href="https://liarrdev.github.io/post/Design-Pattern-Singleton/">Design Pattern: Singleton</a>』都属于创建类型的设计模式。</p>
+<p>它在创建对象时提供了一种封装机制，将实际创建对象的代码与使用代码分离。在创建对象时不会对客户端暴露创建逻辑，而是使其创建过程延迟到子类进行，并且通过一个共同的接口来指向新创建的对象。它主要解决接口选择的问题。</p>
+<p>一般情况下，工厂模式有三种实现：简单工厂模式（Simple Factory）、工厂方法模式（Factory Method）、抽象工厂模式（Abstract Factory）。 这三种模式从上到下逐步抽象，不过值得一提的是，简单工厂模式并不在 GoF 23 种设计模式之列。</p>
+<p>下面我们逐一介绍这三种实现。</p>
+<h1 id="实现">实现</h1>
+<p>假设我们需要生产两款手机（以 Apple 和 Samsung 为例），在不使用设计模式的情况下，我们可能会这么写：</p>
+<pre><code class="language-kotlin">class Apple(val screen: String, val usb: String) {
+    fun hardware() = println(&quot;[Apple] screen: $screen, usb: $usb&quot;)
+}
+
+class Samsung(val screen: String, val usb: String) {
+    fun hardware() = println(&quot;[Samsung] screen: $screen, usb: $usb&quot;)
+}
+
+fun main() {
+    val apple = Apple(&quot;LCD&quot;, &quot;Lightning&quot;)
+    apple.hardware()
+    val samsung = Samsung(&quot;OLed&quot;, &quot;Type-C&quot;)
+    samsung.hardware()
+}
+</code></pre>
+<p>即由用户手动去创建实际的对象，在上面这个例子中，用户需要知道如何创建一台手机，需要知道什么手机使用什么屏幕和什么类型的 USB 插口，用户和手机的生产就耦合在一起了。</p>
+<p>为了降低耦合性，我们引入工厂模式，把手机的生产细节放到工厂里，用户无需关心这台手机使用什么屏幕和 USB 插口，直接调用工厂的创建方法，不必知道创建的细节。</p>
+<h2 id="simple-factory-简单工厂模式">Simple Factory 简单工厂模式</h2>
+<h3 id="简介">简介</h3>
+<p>简单工厂模式又叫作静态工厂方法模式（Static Factory Method）。它将对象的创建逻辑封装在一个工厂类中，客户端通过调用工厂类的静态方法来创建对象。</p>
+<p>简单工厂模式包含如下角色：</p>
+<ul>
+<li>Factory：工厂角色，负责实现创建所有实例的内部逻辑。</li>
+<li>AbstractProduct：抽象产品角色，是创建的所有对象的父类，负责描述所有实例的公共接口。</li>
+<li>Product：具体产品角色，即创建目标，所有创建的对象都是该角色。</li>
+</ul>
+<pre><code class="language-kotlin">abstract class Phone {
+    abstract fun hardware()
+}
+
+class Apple(val screen: String, val usb: String) : Phone() {
+    override fun hardware() = println(&quot;[Apple] screen: $screen, usb: $usb&quot;)
+}
+
+class Samsung(val screen: String, val usb: String) : Phone() {
+    override fun hardware() = println(&quot;[Samsung] screen: $screen, usb: $usb&quot;)
+}
+
+object PhoneFactory {
+    fun createPhone(type: String): Phone? {
+        return when (type) {
+            &quot;Apple&quot; -&gt; Apple(&quot;LCD&quot;, &quot;Lightning&quot;)
+            &quot;Samsung&quot; -&gt; Samsung(&quot;OLed&quot;, &quot;Type-C&quot;)
+            else -&gt; null
+        }
+    }
+}
+
+fun main() {
+    val apple: Phone? = PhoneFactory.createPhone(&quot;Apple&quot;)
+    apple?.hardware()
+    val samsung: Phone? = PhoneFactory.createPhone(&quot;Samsung&quot;)
+    samsung?.hardware()
+}
+</code></pre>
+<p>在这个例子中，<code>Phone</code> 就充当了抽象产品角色，<code>Apple</code> 和 <code>Samsung</code> 都是具体产品，工厂提供了静态方法用于创建具体产品，用户只需要传入手机的品牌即可获取手机实例。</p>
+<h3 id="优缺点">优缺点</h3>
+<ul>
+<li>优点：简单工厂模式提供专门的工厂类用于创建对象，实现了对象创建和使用的职责分离，客户端不需知道所创建的具体产品类的类名以及创建过程，只需要知道具体产品类所对应的参数即可。通过引入配置文件，可以在不修改任何客户端代码的情况下更换和增加新的具体产品类，在一定程度上提高了系统的灵活性。</li>
+<li>缺点：不符合设计模式的开闭原则（对扩展开放，对修改关闭），每次添加新的产品就需要修改工厂类。在产品类型较多时，有可能造成工厂逻辑过于复杂，不利于系统的扩展维护。</li>
+</ul>
+<h2 id="factory-method-工厂方法模式">Factory Method 工厂方法模式</h2>
+<h3 id="简介-2">简介</h3>
+<p>工厂方法模式又被称为虚拟构造子模式（Virtual Constructor）或者多态工厂模式（Polymorphic Factory）。工厂方法模式是目标是定义一个创建产品对象的工厂接口，将实际创建工作推迟到子类中。</p>
+<p>工厂方法模式包含如下角色：</p>
+<ul>
+<li>AbstractFactory：抽象工厂角色，与应用程序无关，主要在创建模式中规范和产品对应的工厂对象的标准化定义。</li>
+<li>Factory：具体工厂角色，和用户直接交互的具体实现，用户创建产品对象。</li>
+<li>AbstractProduct：抽象产品角色，是创建的所有对象的父类，负责描述所有实例的公共接口。</li>
+<li>Product：具体产品角色，即创建目标，所有创建的对象都是该角色。</li>
+</ul>
+<pre><code class="language-kotlin">abstract class Phone {
+    abstract fun hardware()
+}
+
+class Apple(val screen: String, val usb: String) : Phone() {
+    override fun hardware() = println(&quot;[Apple] screen: $screen, usb: $usb&quot;)
+}
+
+class Samsung(val screen: String, val usb: String) : Phone() {
+    override fun hardware() = println(&quot;[Samsung] screen: $screen, usb: $usb&quot;)
+}
+
+interface PhoneFactory {
+    fun createPhone(): Phone
+}
+
+class AppleFactory : PhoneFactory {
+    override fun createPhone(): Phone = Apple(&quot;LCD&quot;, &quot;Lightning&quot;)
+}
+
+class SamsungFactory : PhoneFactory {
+    override fun createPhone(): Phone = Samsung(&quot;OLed&quot;, &quot;Type-C&quot;)
+}
+
+fun main() {
+    val factory: PhoneFactory = AppleFactory()
+    val phone: Phone = factory.createPhone()
+    phone.hardware()
+}
+</code></pre>
+<p>工厂方法模式在简单工厂模式的基础上抽象了工厂类，即将具体的手机创建过程交给专门的工厂子类去完成。</p>
+<p>工厂方法模式之所以又被称为多态工厂模式，是因为所有的具体工厂类都具有同一抽象父类。</p>
+<h3 id="优缺点-2">优缺点</h3>
+<ul>
+<li>优点：最直接的优点就是在满足开闭原则的基础上实现功能的扩展，核心工厂类不再负责所有产品的构建，而是将具体的工作交给工厂子类实现，需要增加新产品时，无须修改已有的抽象或具体的工厂或产品，只要添加一个具体工厂和具体产品就可以。</li>
+<li>缺点：由于在添加新产品时需要编写新的产品类和工厂类，系统中类的个数将成对增加，在一定程度上增加了复杂度，有更多的类需要编译和运行，也会给系统带来一些额外开销。</li>
+</ul>
+<h2 id="abstract-factory-抽象工厂模式">Abstract Factory 抽象工厂模式</h2>
+<h3 id="简介-3">简介</h3>
+<p>抽象工厂模式是工厂方法模式的升级版本，工厂方法模式只生产一个等级的产品，而抽象工厂模式可生产多个等级的产品。</p>
+<p>为了更清晰地理解工厂方法模式，需要先引入两个概念：</p>
+<ul>
+<li>产品等级结构：产品等级结构即产品的继承结构，如一个抽象类是电视机，其子类有海尔电视机、海信电视机、索尼电视机，则抽象电视机与具体品牌的电视机之间构成了一个产品等级结构，抽象电视机是父类，而具体品牌的电视机是其子类。</li>
+<li>产品族：在抽象工厂模式中，产品族是指由同一个工厂生产的，位于不同产品等级结构中的一组产品，如海尔电器工厂生产的海尔电视机、海尔电冰箱，海尔电视机位于电视机产品等级结构中，海尔电冰箱位于电冰箱产品等级结构中。</li>
+</ul>
+<p>当系统所提供的工厂所需生产的具体产品并不是一个简单的对象，而是多个位于不同产品等级结构中属于不同类型的具体产品时需要使用抽象工厂模式。</p>
+<p>抽象工厂模式是所有形式的工厂模式中最为抽象和最具一般性的一种形态。</p>
+<p>抽象工厂模式与工厂方法模式最大的区别在于，工厂方法模式针对的是一个产品等级结构，而抽象工厂模式则需要面对多个产品等级结构，一个工厂等级结构可以负责多个不同产品等级结构中的产品对象的创建 。当一个工厂等级结构可以创建出分属于不同产品等级结构的一个产品族中的所有对象时，抽象工厂模式比工厂方法模式更为简单、有效率。</p>
+<p>抽象工厂模式包含如下角色：</p>
+<ul>
+<li>AbstractFactory：抽象工厂角色，与应用程序无关，主要在创建模式中规范和产品对应的工厂对象的标准化定义。</li>
+<li>Factory：具体工厂角色，用于生产不同的产品族。</li>
+<li>AbstractProduct：抽象产品角色，定义了产品的规范，描述了产品的共同主要特性和功能，抽象工厂模式有多个抽象产品。</li>
+<li>Product：具体产品角色，由专门的具体工厂来创建，具体产品和具体工厂之间往往一一对应。</li>
+</ul>
+<pre><code class="language-kotlin">interface Tablet {
+    fun play()
+}
+
+interface Earphone {
+    fun play()
+}
+
+class iPad : Tablet {
+    override fun play() = println(&quot;Apple iPad play game&quot;)
+}
+
+class Tab : Tablet {
+    override fun play() = println(&quot;Samsung Tab play game&quot;)
+}
+
+class AirPods : Earphone {
+    override fun play() = println(&quot;Apple AirPods play music&quot;)
+}
+
+class Buds : Earphone {
+    override fun play() = println(&quot;Samsung Buds play music&quot;)
+}
+
+interface Factory {
+    fun createTablet(): Tablet
+    fun createEarphone(): Earphone
+}
+
+class AppleFactory : Factory {
+    override fun createTablet(): Tablet = iPad()
+    override fun createEarphone(): Earphone = AirPods()
+}
+
+class SamsungFactory : Factory {
+    override fun createTablet(): Tablet = Tab()
+    override fun createEarphone(): Earphone = Buds()
+}
+
+fun main() {
+    val appleFactory: Factory = AppleFactory()
+    appleFactory.createTablet().play()
+    appleFactory.createEarphone().play()
+
+    val samsungFactory: Factory = SamsungFactory()
+    samsungFactory.createTablet().play()
+    samsungFactory.createEarphone().play()
+}
+</code></pre>
+<p>这里定义了平板和耳机两类产品，各为一个产品等级结构，Apple 和 Samsung 都生产这两类产品，所以旗下的产品可视为产品族</p>
+<p>抽象工厂可以通过多态，来动态设置不同的工厂，生产不同的产品，同时每个工厂中的产品又不属于同一个产品等级结构。</p>
+<h3 id="优缺点-3">优缺点</h3>
+<ul>
+<li>优点：可以在类的内部对产品族中相关联的多等级产品共同管理，而不必专门引入多个新的类来进行管理。增加新的具体工厂和产品族很方便，因为一个具体的工厂实现代表的是一个产品族，无须修改已有系统，符合开闭原则。</li>
+<li>缺点：开闭原则的倾斜性。增加新的工厂和产品族容易，增加新的产品等级结构却比较麻烦，这是因为在抽象工厂角色中规定了所有可能被创建的产品集合，要支持新种类的产品就意味着要对该接口进行扩展，而这将涉及到对抽象工厂角色及其所有子类的修改，显然会带来较大的不便。</li>
+</ul>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/ArkUI-Custom-Components-KeyCap.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/ArkUI-Custom-Components-KeyCap/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2025-02-11">2025-02-11</time>
+                  <h4 class="title white no-margin">ArkUI 自定义组件：KeyCap 实践</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/MOJiKana-Physical-Button-Motion-Effect.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/MOJiKana-Physical-Button-Motion-Effect/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2024-11-15">2024-11-15</time>
+                  <h4 class="title white no-margin">『MOJiKana』中模仿实体按键的动效是如何实现的？</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

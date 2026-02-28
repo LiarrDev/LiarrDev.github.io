@@ -1,0 +1,739 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>用 Node.js 写一个下载图片的爬虫 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="尝试学了一下 Node.js，虽说之前有学习使用过 React Native，但可能 Java 的根深蒂固，让我很难理解 JavaScript 和 Node.js 的思想。
+都说写一个项目胜过看十天书，那就直接开练吧。
+本想写个简单的后台熟..." />
+    <meta name="keywords" content="Node.js,JavaScript" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/An-Images-Crawler-Written-with-NodeJS.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2019-12-25"><i class="fa fa-calendar"></i><span class="lately">6 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/An-Images-Crawler-Written-with-NodeJS/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/An-Images-Crawler-Written-with-NodeJS/"> </span>
+              </a>
+              <span id="/An-Images-Crawler-Written-with-NodeJS/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-0 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-1 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">用 Node.js 写一个下载图片的爬虫</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>尝试学了一下 Node.js，虽说之前有学习使用过 React Native，但可能 Java 的根深蒂固，让我很难理解 JavaScript 和 Node.js 的思想。</p>
+<p>都说写一个项目胜过看十天书，那就直接开练吧。</p>
+<p>本想写个简单的后台熟悉一下，但是考虑到花费的时间可能会比较长，而且没什么方向，所以也是无从下手。</p>
+<p>后来发现，Node.js 原来也可以写爬虫，那就写了个爬虫玩一下呗，也算是了却我一直想学 Python 写爬虫玩数据分析的心愿。</p>
+<p>想了一想也不知道爬点啥，打开『<a href="https://cn.bing.com">Bing</a>』搜索的时候突然想到，Microsoft 的『<a href="https://cn.bing.com">Bing</a>』不是每天都更新壁纸的吗，那我能不能把『<a href="https://cn.bing.com">Bing</a>』的壁纸爬下来呢？</p>
+<p>好的开搞。</p>
+<p>首先打开『<a href="https://bing.ioliu.cn">必应壁纸</a>』首页。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1564208529701.png" alt="必应壁纸-首页" loading="lazy"></figure>
+<p>然后查看页面源代码，我使用的浏览器快捷键是 <code>Ctrl+U</code>，一按，结果没反应，右键菜单进入吧，右键，结果还是没反应。</p>
+<p>卧槽，没想到『<a href="https://bing.ioliu.cn">必应壁纸</a>』的工程师居然做了这样的设置，不过的确用户体验是挺好的，只不过对我们这群“搞破坏的”不友好罢了。</p>
+<p>既然不能查看页面源代码，那我能不能使用它的检查元素功能呢？</p>
+<p>我的浏览器快捷键是 <code>Ctrl+Shift+C</code>，一按，有了！</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1564208961133.png" alt="检查元素" loading="lazy"></figure>
+<p>这样看起来还是不太方便，既然检查元素的窗口已经打开了，那我能不能在这里进入页面源代码的窗口呢，<code>Ctrl+U</code> 尝试一下，欸，进去了。</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1564209026819.png" alt="必应壁纸-页面源代码" loading="lazy"></figure>
+<p>先看一下『<a href="https://bing.ioliu.cn">必应壁纸</a>』首页的前端源代码，太凌乱了，它的图片链接也不好找，这样爬起来肯定就十分麻烦了，还是放弃吧，于是我把爬取对象转向了其他壁纸网站。</p>
+<p>最终确定是『<a href="https://stocksnap.io">Stocksnap.io</a>』。</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1564209382911.png" alt="Stocksnap.io" loading="lazy"></figure>
+<p>为什么选它呢，首先它的页面除了壁纸以外并没有其他的多余元素，另外它的页面源代码可读性也比『<a href="https://bing.ioliu.cn">必应壁纸</a>』要高，图片链接也十分清晰，就它了。</p>
+<p>接下来就是编写代码了。</p>
+<p>编写代码之前肯定需要 Node.js 环境，直接去官网下载就可以了，而我在之前『<a href="https://liarrdev.github.io/post/Set-up-React-Native-Development-Environment-on-Windows/">Windows 平台 React Native 开发环境搭建笔记</a>』中我已经安装过 Node.js 的环境了，所以就不用重新安装。</p>
+<p>直接上代码。</p>
+<pre><code class="language-JavaScript">var https = require('https');
+var fs = require('fs');
+var path = require('path');
+
+var url = 'https://stocksnap.io';
+
+// 检查目录中是否存在 images 文件夹，如果没有就创建
+fs.mkdir('./images', function(err) {
+   if(err) {
+       console.log('Directory already exists.');
+   } else {
+       console.log('Directory creation success.');
+   }
+});
+
+https.get(url, function(res) {
+    var content = null;
+    res.on('data', function(chunk) {
+        content += chunk;
+    });
+    res.on('end', function() {
+        var reg = /src=&quot;(.*?\.jpg)&quot;/img;        // 全局匹配以【src=】开头，并以【.jpg】结尾的内容
+        var filename;
+        while (filename = reg.exec(content)) {
+            getImage(filename[1]);      // 子匹配
+        }
+    });
+});
+
+function getImage(url) {
+    var imageName = path.parse(url).base;
+    var stream = fs.createWriteStream('./images/' + imageName);
+    https.get(url, function(res) {
+        res.pipe(stream);
+        console.log(imageName + '  download completed！');
+    });
+}
+</code></pre>
+<p>解释一下源代码。</p>
+<p>首先是引入各模块，这里由于需要发起 HTTPS 请求，需要写入文件，还需要分析 URL 的路径，所以就引入这三个模块。</p>
+<p>接着需要一个目录来存储从网站上抓取下来的图片，为了不使文件夹里的文件类别凌乱，我就在项目的根目录创建一个名为「images」的文件夹用于存放，如果该文件夹已存在，则不需要重复创建，并在控制台中打印相关信息。</p>
+<p>做好这些前期准备之后，就可以向『<a href="https://stocksnap.io">Stocksnap.io</a>』发起 HTTPS 请求了。</p>
+<p>先把整个页面的前端代码爬下来，如果数据量大的话，肯定不能一次性就能把所有的内容获取，所以使用拼接的方式把获取的片段连接完整。</p>
+<p>当请求结束之后，会触发 <code>end</code> 事件，就在 <code>end</code> 事件中处理我们对其页面代码的解析。</p>
+<p>我们再次来看看『<a href="https://stocksnap.io">Stocksnap.io</a>』的前端代码：</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1564209692301.png" alt="Stocksnap.io-页面源代码" loading="lazy"></figure>
+<p>比『<a href="https://bing.ioliu.cn">必应壁纸</a>』的代码清晰多了，定位一下我需要的内容，我需要的是图片，一般图片都会使用 <code>&lt;img&gt;</code> 标签。</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1564209987007.png" alt="图片链接" loading="lazy"></figure>
+<p>太好了，就一个完整的链接，不需要进行 URL 的拼接操作。</p>
+<p>我只需要写个正则表达式将它匹配上就可以了，匹配规则也很简单，以 <code>src=&quot;</code> 开头，并以 <code>.jpg&quot;</code> 结尾的链接就是我们想要得到的图片链接。</p>
+<p>根据之前在『<a href="https://liarrdev.github.io/post/Common-Regular-Expressions/">常用正则表达式</a>』中的参考，我们可以写出相应的正则表达式：<code>/src=&quot;(.*?\.jpg)&quot;/</code>。</p>
+<p>那后面的 <code>/img</code> 是什么意思呢？由于我对正则也是一知半解，就照搬一下网上的解释：</p>
+<p>这些是模式修正符，是解说正则表达式模式中使用的修正符。其中，<code>/i</code> 表示模式中的字符将同时匹配大小写字母；<code>/m</code> 表示“行起始”和“行结束”除了匹配整个字符串开头和结束外，还分别匹配其中的换行符的之后和之前；<code>/g</code> 表示全局循环。</p>
+<p>另外，<code>/s</code> 表示模式中的圆点元字符（.）匹配所有的字符，包括换行符；<code>/x</code> 表示模式中的空白字符除了被转义的或在字符类中的以外完全被忽略，在未转义的字符类之外的 <code>#</code> 以及下一个换行符之间的所有字符，包括两头，也都被忽略；<code>/e</code> 表示 <code>preg_replace()</code> 在替换字符串中对逆向引用作正常的替换。</p>
+<p>当正则匹配完成后，匹配结果是一个数组对象，有两项，格式如下：</p>
+<pre><code class="language-JavaScript">[
+'src=&quot;https://cdn.stocksnap.io/img-thumbs/280h/G5Q3IISSYX.jpg&quot;', 
+'https://cdn.stocksnap.io/img-thumbs/280h/G5Q3IISSYX.jpg'
+]
+</code></pre>
+<p>可以发现它已经帮我们把图片的 URL 解析出来了，那我们只需获取解析好的链接进行下载即可。</p>
+<p>根据数组的下标特性，下标为 <code>1</code> 的项就是图片的 URL。</p>
+<p>在下载图片的函数中，调用 <code>path</code> 模块的 <code>parse()</code> 方法，可以对 URL 中的信息再次进行解析，得到如下 JSON 对象：</p>
+<pre><code class="language-JSON5">{
+    root: '',
+    dir: 'https://cdn.stocksnap.io/img-thumbs/280h',
+    base: 'G5Q3IISSYX.jpg',
+    ext: '.jpg',
+    name: 'G5Q3IISSYX' 
+}
+</code></pre>
+<p>其中，<code>base</code> 就是图片的文件名，通过连缀 <code>.base</code> 就可以获取了，获取的作用就是为了帮我们把下载的图片命名。</p>
+<p>最后，通过管道流 <code>pipe()</code> 方法把图片下载下来就可以了。</p>
+<p>如果程序没有报错，可以在项目根目录发现有一个「images」文件夹，里面已经有我们刚才爬下来的图片了。</p>
+<figure data-type="image" tabindex="7"><img src="https://LiarrDev.github.io/post-images/1564210403968.jpeg" alt="爬虫下载的图片" loading="lazy"></figure>
+<p>不过，由于首页展示的只是缩略图，所以这个图片比较小，另外，由于页面使用的是滑动到底部自动加载的技术，所以爬取的数量也不会太多。</p>
+<p>由于这对于我来说也只能算是一个练手的小项目，我也不打算继续深入研究了，如果有兴趣的朋友可以对其功能进行扩展以及改进。</p>
+<p>我顺便也把这个项目放到了 Github 上，有兴趣的朋友可以<a href="https://github.com/LiarrDev/StockSnapCrawler_Node">去看看</a>。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Android-determines-main-Thread.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Android-determines-main-Thread/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2020-03-02">2020-03-02</time>
+                  <h4 class="title white no-margin">Android 判断当前是否在主线程</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Releasing-Apps-on-Tencent-Application-Open-Platform.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Releasing-Apps-on-Tencent-Application-Open-Platform/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2019-12-04">2019-12-04</time>
+                  <h4 class="title white no-margin">腾讯应用开放平台上线 App 踩坑记录</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

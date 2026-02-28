@@ -1,0 +1,1113 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Android 反编译入门指南 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="之前的文章已经多次提到我现在在游戏发行公司工作，当前由于国内游戏和广告环境，反编译是作为游戏 Android SDK 工程师必备的技能，经常需要将上游 CP 提供的游戏母包反编译，然后接入一些我们自己的或者是第三方的 SDK 再重新编译打包..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Getting-Started-with-Android-Decompilation.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2021-09-02"><i class="fa fa-calendar"></i><span class="lately">4 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Getting-Started-with-Android-Decompilation/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Getting-Started-with-Android-Decompilation/"> </span>
+              </a>
+              <span id="/Getting-Started-with-Android-Decompilation/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">Android 反编译入门指南</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>之前的文章已经多次提到我现在在游戏发行公司工作，当前由于国内游戏和广告环境，反编译是作为游戏 Android SDK 工程师必备的技能，经常需要将上游 CP 提供的游戏母包反编译，然后接入一些我们自己的或者是第三方的 SDK 再重新编译打包并转成多个子包再上线。</p>
+<p>在我接触这个行业之前，我以为反编译更多的是用在破解软件或者是某些公司对其他公司的技术窃取途径，没想到游戏发行居然能这么玩。</p>
+<p>今天就来带大家入门 Android 反编译。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/Getting-Started-with-Android-Decompilation.png" alt="" loading="lazy"></figure>
+<p>我们都知道，Android 应用程序打包之后得到的是一个 APK 文件，这个文件是可以直接安装到任何 Android 手机上的，所以我们反编译其实也就是对这个 APK 文件进行反编译。</p>
+<p>Android 的反编译主要又分为两个部分，一是对代码的反编译，二是对资源的反编译。</p>
+<h1 id="准备">准备</h1>
+<p>既然是对 APK 文件进行反编译，那么理应有个前提 —— 有一个 APK 文件。<br>
+为了能够更加简单的演示，以及对其他开发者的尊重，就不使用任何一款已上线的应用了，简单写个 Demo 就行，而且是越简单越好。</p>
+<p>另一方面，现在上架应用市场的大多数应用都经过了加固处理，如果对其进行反编译还需要脱壳，相对来说会更加麻烦。</p>
+<p>话不多说，新建一个项目，布局就一个 <code>Button</code>，没有其他东西：</p>
+<pre><code class="language-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;androidx.constraintlayout.widget.ConstraintLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    tools:context=&quot;.MainActivity&quot;&gt;
+    &lt;androidx.appcompat.widget.AppCompatButton
+        android:id=&quot;@+id/button&quot;
+        android:layout_width=&quot;wrap_content&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:text=&quot;Button&quot;
+        app:layout_constraintBottom_toBottomOf=&quot;parent&quot;
+        app:layout_constraintLeft_toLeftOf=&quot;parent&quot;
+        app:layout_constraintRight_toRightOf=&quot;parent&quot;
+        app:layout_constraintTop_toTopOf=&quot;parent&quot; /&gt;
+&lt;/androidx.constraintlayout.widget.ConstraintLayout&gt;
+</code></pre>
+<p>逻辑就是点击这个 <code>Button</code> 后弹出一个 <code>Toast</code>：</p>
+<pre><code class="language-Java">public class MainActivity extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainActivity.this, &quot;Hello World&quot;, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+}
+</code></pre>
+<p>编译打包成一个 APK 文件，并安装到手机上，效果如下：</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1630764114635.gif" alt="Demo 演示效果" loading="lazy"></figure>
+<p>至此，准备工作完成。</p>
+<h1 id="反编译代码">反编译代码</h1>
+<p>要对应用的代码进行反编译，我们首先得大概了解 Dex 文件。</p>
+<p>而在明白什么是 Dex 文件之前，要先了解一下 JVM、Dalvik 和 ART。</p>
+<p>JVM 是 Java 虚拟机，用来运行 Java 字节码程序。Dalvik 是 Google 设计的用于 Android 平台的运行时环境，适合移动环境下内存和处理器速度有限的系统。ART 即 Android Runtime，是 Google 为了替换 Dalvik 设计的新 Android 运行时环境，在 Android 4.4 推出，比 Dalvik 的性能更好。</p>
+<p>Android 程序一般使用 Java 语言开发，但是 Dalvik 虚拟机并不支持直接执行 Java 字节码，所以会对编译生成的 CLASS 文件（即以 <code>.class</code> 结尾的文件）进行翻译、重构、解释、压缩等处理，这个处理过程是由『DX』或『D8』进行处理，处理完成后生成的产物会以 <code>.dex</code> 结尾，称为 Dex 文件。Dex 文件格式是专为 Dalvik 设计的一种压缩格式。所以可以简单的理解为：Dex 文件是很多 CLASS 文件处理后的产物（类似 Jar 包），最终可以在 Android 运行时环境执行。</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1630764192802.png" alt="Dex 编译流程" loading="lazy"></figure>
+<p>上面这张图简化形象地描述了 Java 文件转化为 Dex 文件的过程，当然真的处理流程不会这么简单。</p>
+<p>而我们反编译代码就是将这个操作反过来，通过将可以在 Android 运行时环境执行的 Dex 文件转化为可供我们阅读的代码。</p>
+<p>这时候你可能就疑惑了，我们只有 APK 文件，去哪里找这个应用的 Dex 文件呢？</p>
+<p>之前也说过，软件安装包 APK 文件实质上也是一个压缩包，所以只需解压 APK 文件即可，相同的操作在之前『<a href="https://liarrdev.github.io/post/How-to-Get-Icons-of-Android-App/">获取手机应用 ICON 的方法</a>』一文中也提到过。</p>
+<p>解压之后，可以看到一个名为 <code>classes.dex</code> 的文件，这就是我们所需要的 Dex 文件，即存放所有 Java 代码的地方。</p>
+<ul>
+<li>
+<h2 id="dex2jar">Dex2Jar</h2>
+</li>
+</ul>
+<p>首先我们需要一个叫『<a href="https://github.com/pxb1988/dex2jar">Dex2Jar</a>』的小工具，看名字就知道，它可以帮助我们把 Dex 文件转换成一个 Jar 文件。</p>
+<p>下载解压后可以得到一大堆文件，我们暂时只需要用到一个文件，Windows 平台下用到的是 <code>d2j-dex2jar.bat</code>，Linux 或 macOS 平台用到的则是 <code>d2j-dex2jar.sh</code>。</p>
+<p>为了方便，我们把 <code>classes.dex</code> 文件复制到『<a href="https://github.com/pxb1988/dex2jar">Dex2Jar</a>』解压后所在的目录，并打开命令行终端进入到该目录，执行以下命令：</p>
+<pre><code class="language-Bash">➜   d2j-dex2jar classes.dex
+</code></pre>
+<p>一般执行结果如下所示：</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1630764352592.png" alt="dex2jar 正确执行" loading="lazy"></figure>
+<p>但也时常有报错：</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1630764541114.png" alt="dex2jar 执行报错" loading="lazy"></figure>
+<p>网上的文章说产生该报错可能是因为安装的『<a href="https://github.com/pxb1988/dex2jar">Dex2Jar</a>』不是最新版，而实际上我安装了最新版也出现该情况。</p>
+<p>尽管有报错，但『<a href="https://github.com/pxb1988/dex2jar">Dex2Jar</a>』依然帮我把 Dex 文件转成了 Jar 文件，只不过多了一个错误日志的压缩包罢了。</p>
+<p>而 <code>classes-dex2jar.jar</code> 这个文件，才是真正有用的文件。</p>
+<ul>
+<li>
+<h2 id="jd-gui">JD-GUI</h2>
+</li>
+</ul>
+<p>可是对于我们而言，Jar 文件也不是可读的，因此这里还需要再借助一下『<a href="https://github.com/java-decompiler/jd-gui">JD-GUI</a>』这个工具来将 Jar 文件转换成 Java 代码。</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1630765416315.png" alt="JD-GUI" loading="lazy"></figure>
+<p>『<a href="https://github.com/java-decompiler/jd-gui">JD-GUI</a>』安装完后，坑还没完，你得确定你安装了 JRE，否则是无法运行的。</p>
+<p>这时候你可能就会想，做 Android 开发的，怎么可能没有 JRE 呢，Android SDK 里都自带了呢。</p>
+<p>Too young too simple.</p>
+<p>按照之前在『<a href="https://liarrdev.github.io/post/Set-up-React-Native-Development-Environment-on-Windows/">Windows 平台 React Native 开发环境搭建笔记</a>』提到的方法把 JRE 配置到环境变量后，打开『<a href="https://github.com/java-decompiler/jd-gui">JD-GUI</a>』，依然可能会报出需要 JRE 的提示：</p>
+<figure data-type="image" tabindex="7"><img src="https://LiarrDev.github.io/post-images/1630765479322.png" alt="JRE 1.8 Required" loading="lazy"></figure>
+<p>使用命令的方式来打开：</p>
+<pre><code class="language-Bash">➜   java -jar jd-gui.exe
+</code></pre>
+<p>相信有部分用户能正常打开了，而没有正常打开的用户会发现，在『<a href="https://github.com/java-decompiler/jd-gui">JD-GUI</a>』的 Logo 一闪而过后，报了错：</p>
+<figure data-type="image" tabindex="8"><img src="https://LiarrDev.github.io/post-images/1630765555346.gif" alt="用命令启动 JD-GUI 失败" loading="lazy"></figure>
+<p>应该可以猜到原因，上面报需要 JRE 的提示框中，点击确定后会打开一个网页：</p>
+<figure data-type="image" tabindex="9"><img src="https://LiarrDev.github.io/post-images/1630765627209.jpg" alt="Oracle Java" loading="lazy"></figure>
+<p>熟悉吗？我们刚开始学 Java 的时候就是来这个网站下载 JDK 的。</p>
+<p>至于原因，你要清楚这两者的区别，Android SDK 中使用的是 OpenJDK，而我们安装 Java 开发环境的时候使用的是 Oracle JDK。</p>
+<p>OpenJDK 是 Sun 在 2006 年末把 Java 开源而形成的项目，如 IcedTea、UltraViolet 等都是从 OpenJDK 源码衍生出的发行版，包括国内的大厂也有单独维护的基于 OpenJDK 的发行版，比如华为的<a href="https://www.hikunpeng.com/developer/devkit/compiler?data=JDK">毕昇JDK</a>、阿里巴巴的 <a href="http://dragonwell-jdk.io">Dragonwell</a>、腾讯的 <a href="https://cloud.tencent.com/product/tkjdk">Kona</a> 等。</p>
+<p>Oracle JDK 采用了商业实现，而 OpenJDK 使用的是开源的 FreeType。当然，相同是建立在两者共有的组件基础上的，Oracle JDK 中还会存在一些 OpenJDK 没有的、商用闭源的功能。</p>
+<figure data-type="image" tabindex="10"><img src="https://LiarrDev.github.io/post-images/1630765715211.jpg" alt="Oracle JDK 和 OpenJDK 区别" loading="lazy"></figure>
+<p>尽管我们编译的 OpenJDK 基本上可以认为性能、功能和执行逻辑上都和 Oracle JDK 是一致的，但这么一小点的差别就在『<a href="https://github.com/java-decompiler/jd-gui">JD-GUI</a>』中被体现出来了。</p>
+<p>所以我也顺手在『<a href="https://github.com/java-decompiler/jd-gui">JD-GUI</a>』的 Github 开源项目上提了 <a href="https://github.com/java-decompiler/jd-gui/issues/269">Issue</a>，发现包括微软工程师在内的不少用户都遇到这个问题，实际上这是 <a href="https://bugs.openjdk.java.net/browse/JDK-8144074">OpenJDK 的 Bug</a>，『Android Studio』内置的 OpenJDK 1.8 版本恰好就包含了这个 Bug，而在『Android Studio』更新到 4.2 版本之后内置的 OpenJDK 也提升至 11.0.8，这个问题也就不再出现了，假如你用的是『Android Studio』内置的 OpenJDK 且不想升级『Android Studio』，另外再下载一套新的 JDK 即可。</p>
+<p>更换 JDK 后应该就能正常启动『<a href="https://github.com/java-decompiler/jd-gui">JD-GUI</a>』了，然后把上面得到的 Jar 文件拉进来即可。</p>
+<figure data-type="image" tabindex="11"><img src="https://LiarrDev.github.io/post-images/1630765769360.png" alt="JD-GUI 反编译 Jar" loading="lazy"></figure>
+<p>可以发现，代码反编译操作十分成功，<code>MainActivity</code> 中的内容基本全部还原，但你会发现 <code>setContentView()</code> 和 <code>findViewById()</code> 之类的方法传参并不是之前 Demo 中写的，因为这个参数实际上只是资源的 ID 值，那么这里反编译也就只能将相应的 ID 值进行还原，而无法变成像 <code>R.layout.activity_main</code> 和 <code>R.id.button</code> 这样直观的代码展示。</p>
+<p>除了 <code>MainActivity</code> 之外，还有很多其它的代码也被反编译出来了，比如当前项目中引用的 <code>AndroidX</code> 的包，这些引用的 Library 也会作为代码的一部分被打包到「classes.dex」文件当中，因此反编译的时候这些代码也会一起被还原。</p>
+<ul>
+<li>
+<h2 id="jadx">JADX</h2>
+</li>
+</ul>
+<p>『<a href="https://github.com/java-decompiler/jd-gui">JD-GUI</a>』算是我刚接触反编译时使用的工具，从上面的流程可以看到，反编译的操作其实是比较繁琐的，为了提高工作效率当然要寻找更优秀的工具，后来我便发现了『<a href="https://github.com/skylot/jadx">JADX</a>』。</p>
+<figure data-type="image" tabindex="12"><img src="https://LiarrDev.github.io/post-images/1630765831662.png" alt="JADX" loading="lazy"></figure>
+<p>『<a href="https://github.com/skylot/jadx">JADX</a>』能够直接将 APK、Dex、AAR、AAB 等 Dalvik 字节码格式文件反编译，只需将文件拖进『<a href="https://github.com/skylot/jadx">JADX</a>』即可。</p>
+<p>将上面生成的 APK 文件用『<a href="https://github.com/skylot/jadx">JADX</a>』打开：</p>
+<figure data-type="image" tabindex="13"><img src="https://LiarrDev.github.io/post-images/1630765859397.png" alt="JADX 反编译 APK" loading="lazy"></figure>
+<p>可以看到几乎与『<a href="https://github.com/java-decompiler/jd-gui">JD-GUI</a>』无异，但是一步到位真的太省事了。</p>
+<h1 id="反编译资源">反编译资源</h1>
+<p>你可能会有些奇怪，刚才解压 APK 文件后不是已经可以看到资源文件的目录了吗，之前『<a href="https://liarrdev.github.io/post/How-to-Get-Icons-of-Android-App/">获取手机应用 ICON 的方法</a>』一文也通过这种方法获取到了安装包里面的许多图片资源，那怎么还需要反编译资源呢？</p>
+<p>这里说的当然不是图片资源，有时候会需要查看或者修改布局文件甚至是 <code>AndroidManifest.xml</code> 中的内容，而你如果直接打开上面解压后的文件，可能会是一脸懵逼的：</p>
+<figure data-type="image" tabindex="14"><img src="https://LiarrDev.github.io/post-images/1630766922561.jpg" alt="Brackets 打开被编译的 AndroidManifest" loading="lazy"></figure>
+<p>或者是这样的：</p>
+<figure data-type="image" tabindex="15"><img src="https://LiarrDev.github.io/post-images/1630767056661.png" alt="Sublime Text 打开被编译的 AndroidManifest" loading="lazy"></figure>
+<p>在 Android 打包的时候，资源文件会被编译，所以直接打开是无法看到明文的，因此我们还需要对资源进行反编译。</p>
+<ul>
+<li>
+<h2 id="apktool">Apktool</h2>
+</li>
+</ul>
+<p>于是，又需要另外一个工具 ——『<a href="https://github.com/iBotPeaches/Apktool">Apktool</a>』。</p>
+<figure data-type="image" tabindex="16"><img src="https://LiarrDev.github.io/post-images/1630767125935.png" alt="Apktool" loading="lazy"></figure>
+<p>『<a href="https://github.com/iBotPeaches/Apktool">Apktool</a>』可以用于最大幅度地还原 APK 文件中的 9-patch 图片、布局、字符串等等一系列的资源。</p>
+<p>下载下来后同样是得到一个 Jar 包，所以我们还是会通过命令来进行反编译操作。</p>
+<p>把需要反编译的 APK 文件复制到和『<a href="https://github.com/iBotPeaches/Apktool">Apktool</a>』相同的目录，在命令行终端进到该文件夹中，执行以下命令：</p>
+<pre><code class="language-Bash">➜   java -jar apktool.jar d Demo.apk
+</code></pre>
+<p>其中 <code>d</code> 是指 Decode 的意思，表示对后面的 <code>Demo.apk</code> 文件进行解码。还可以加上一些附加参数来控制 Decode 行为：</p>
+<ul>
+<li><code>-f</code>：如果目标文件夹已存在，则强制删除现有文件夹（默认如果目标文件夹已存在，则解码失败）。</li>
+<li><code>-o</code>：指定解码目标文件夹的名称（默认在当前命令行所在目录使用 APK 文件的名字来命名目标文件夹）。</li>
+<li><code>-s</code>：不反编译 Dex 文件，也就是说 <code>classes.dex</code> 文件会被保留（默认会将 Dex 文件解码成 Smali 文件）。</li>
+<li><code>-r</code>：不反编译资源文件，也就是说 <code>resources.arsc</code> 文件会被保留（默认会将 <code>resources.arsc</code> 解码成具体的资源文件）。</li>
+</ul>
+<p>有时候 APK 包体太大，为了避免文件的复制或移动耗时太长，我会使用以下的命令：</p>
+<pre><code class="language-Bash">➜   java -jar apktool.jar d -f {需要解码的Apk文件} -o {解码后项目存储目录}
+</code></pre>
+<p>不过使用该命令需要注意的是，需要解码的 APK 文件路径和解码后项目所在路径不能为同一目录，因为有 <code>-f</code> 参数，解码后指定的项目目录会执行一次清空操作，即假如被反编译的 APK 在这一目录，则会被删除，而此时反编译操作仍未结束，就会导致报错。</p>
+<p>当然你按照上面的操作也有可能会反编译失败，比如报以下错误：</p>
+<figure data-type="image" tabindex="17"><img src="https://LiarrDev.github.io/post-images/1630767199632.png" alt="存在加密 Dex 导致 Apktool 报错" loading="lazy"></figure>
+<p>这是因为 APK 里有加密过的 Dex 文件，比如有些 APK 会在 <code>/assets</code> 目录下存放加密的 Dex 文件，就会报这个错。要解决这个错误需要将『<a href="https://github.com/iBotPeaches/Apktool">Apktool</a>』升级至 2.4.1 或以上版本，然后增加如下参数：</p>
+<pre><code class="language-Bash">➜   java -jar apktool.jar d -f {需要解码的Apk文件} -o {解码后项目存储目录} --only-main-classes
+</code></pre>
+<p>这个参数是在 2.4.1 版本上新增的，源码判断如下：</p>
+<pre><code class="language-Java">case DECODE_SOURCES_SMALI_ONLY_MAIN_CLASSES:
+    if (file.startsWith(&quot;classes&quot;) &amp;&amp; file.endsWith(&quot;.dex&quot;)) {
+        mAndrolib.decodeSourcesSmali(mApkFile, outDir, file, mBakDeb, mApiLevel);
+    } else {
+        mAndrolib.decodeSourcesRaw(mApkFile, outDir, file);
+    }
+    break;
+</code></pre>
+<p>即反编译根目录下的以 <code>classes</code> 开头，并以 <code>.dex</code> 结尾的 Dex 文件。</p>
+<p>除此之外，你还可能遇到一些奇奇怪怪的错误，比如：</p>
+<figure data-type="image" tabindex="18"><img src="https://LiarrDev.github.io/post-images/1630767315046.png" alt="Apktool 版本兼容报错" loading="lazy"></figure>
+<p>出现这个错误的原因很有可能是你之前使用过老版本的『<a href="https://github.com/iBotPeaches/Apktool">Apktool</a>』进行反编译操作，然后『<a href="https://github.com/iBotPeaches/Apktool">Apktool</a>』就会在你系统的 <code>C:\Users\Administrator\apktool\framework</code> 这个目录下生成一个名字为 <code>1.apk</code> 的缓存文件，将这个缓存文件删除掉，然后再重新执行反编译命令应该就可以成功了。</p>
+<p>反编译成功后，就可以在默认目录或者指定目录中得到反编译的项目，项目结构跟我们平时开发的目录结构也是非常相似的。</p>
+<p>现在打开 <code>AndroidManifest.xml</code> 瞧一瞧：</p>
+<figure data-type="image" tabindex="19"><img src="https://LiarrDev.github.io/post-images/1630767369504.png" alt="正确反编译的 AndroidManifest" loading="lazy"></figure>
+<p>这样就完全看得懂了吧，除了格式相比在『Android Studio』里面要压缩了许多之外，其他基本无异，完全可以通过文本编辑器的格式化插件或者是直接放进『Android Studio』里面格式化解决。</p>
+<h1 id="入侵">入侵</h1>
+<p>反编译后我们就可以对 App 进行修改，或者说，入侵。</p>
+<p>在游戏发行领域，我们常用于为游戏母包注入自己或第三方的 SDK，如统计数据等，在这种情况下，反编译是允许的，因为我们获得了游戏研发商的授权，且对游戏本体功能没有造成任何损害。</p>
+<p>在其他领域可就不一定了，比如市面上流行的很多破解版软件，实际上就是通过反编译技术对原作者的一种侵权行为。</p>
+<p>当然，还有一些或许还在灰色地带的用法，比如说汉化，它并没有向破解软件一样入侵软件的原有逻辑，只是翻译其中的资源进行打包，但不管怎么说依然是对他人开发的程序进行了修改，虽然造福了用户，却依然不是一件值得吹捧的事。</p>
+<p>这次就不去讨论本身这件事情的对或错，只是站在技术的角度来了解相关知识。</p>
+<p>我们游戏发行常常需要修改的是 App 的资源文件，比如说包名，比如说应用图标，比如说应用名称等，跟我们平时开发中的差别不大，只需要把资源复制到相应的文件夹，修改资源文件内对应的部分即可，一般遵循有则覆盖无则追加的原则。</p>
+<p>解释一下另外两个目录，<code>/original</code> 目录下存放的是未经反编译过、原始的 <code>AndroidManifest.xml</code> 文件，<code>/smali</code> 目录下存放的是反编译出来的所有代码。</p>
+<p>进入 <code>/smali</code> 目录后你可以发现它的目录结构和我们平时开发时的 <code>/app/src</code> 目录结构十分相似，主要区别就是 Java 文件全都变成了 Smali 文件，因此这些 Smali 文件实际上也就是真正的源代码，只不过它的语法和 Java 完全不同，有点类似于汇编的语法，是 Android 虚拟机所使用的寄存器语言。</p>
+<p>看不懂也是十分正常的，但是一旦能够看得懂 Smali 文件，你就可以做很恐怖的事情了 —— 随意修改应用程序内的逻辑，将其破解。</p>
+<p>说实话我并没有学习过 Smali 的语法，但即使这样我也可以对这个 Demo 做一定程度的修改了，因为这个 Demo 实在写得太简单了，打开反编译后的 <code>MainActivity</code>，它处在对应的包目录下。</p>
+<p>打开后会发现有两个与 <code>MainActivity</code> 相关的文件，一个是 <code>MainActivity.smali</code>，还有一个是 <code>MainActivity$1.smali</code>，一般情况下，当类内包含内部类或匿名类时，就会产生多个同名的以 <code>$</code> 及后面数字或类名区分的 Smali 文件。</p>
+<p>先来看「MainActivity.smali」：</p>
+<pre><code class="language-Smali">.class public Lcom/example/reverse/MainActivity;
+.super Landroidx/appcompat/app/AppCompatActivity;
+.source &quot;MainActivity.java&quot;
+
+
+# direct methods
+.method public constructor &lt;init&gt;()V
+    .locals 0
+
+    .line 9
+    invoke-direct {p0}, Landroidx/appcompat/app/AppCompatActivity;-&gt;&lt;init&gt;()V
+
+    return-void
+.end method
+
+
+# virtual methods
+.method protected onCreate(Landroid/os/Bundle;)V
+    .locals 1
+
+    .line 13
+    invoke-super {p0, p1}, Landroidx/appcompat/app/AppCompatActivity;-&gt;onCreate(Landroid/os/Bundle;)V
+
+    const p1, 0x7f0a001c
+
+    .line 14
+    invoke-virtual {p0, p1}, Lcom/example/reverse/MainActivity;-&gt;setContentView(I)V
+
+    const p1, 0x7f070042
+
+    .line 15
+    invoke-virtual {p0, p1}, Lcom/example/reverse/MainActivity;-&gt;findViewById(I)Landroid/view/View;
+
+    move-result-object p1
+
+    new-instance v0, Lcom/example/reverse/MainActivity$1;
+
+    invoke-direct {v0, p0}, Lcom/example/reverse/MainActivity$1;-&gt;&lt;init&gt;(Lcom/example/reverse/MainActivity;)V
+
+    invoke-virtual {p1, v0}, Landroid/view/View;-&gt;setOnClickListener(Landroid/view/View$OnClickListener;)V
+
+    return-void
+.end method
+</code></pre>
+<p>反编译后的代码虽然咋一看与我们平时写的代码大相径庭，但仔细一行行读过去，其实也不是读不通。即使我对 Smali 的语法依然不熟悉，这里也不打算介绍，我们逐行阅读，依然能够读懂。</p>
+<p>第一部分：</p>
+<pre><code class="language-Smali">.class public Lcom/example/reverse/MainActivity;
+.super Landroidx/appcompat/app/AppCompatActivity;
+.source &quot;MainActivity.java&quot;
+</code></pre>
+<p>与 Java 中的 <code>class</code> 关键字相似，Smali 用 <code>.class</code> 来指定当前的类名，同时还包含了完整的包名。</p>
+<p><code>.super</code> 我们也很熟悉，在 Java 中可以理解为是指向父类的指针，在这里的作用应该和 <code>extends</code> 相似，即继承自 <code>AppCompatActivity</code>。</p>
+<p><code>.source</code> 不难看出，描述的是源 Java 文件。</p>
+<p>第二部分：</p>
+<pre><code class="language-Smali"># direct methods
+.method public constructor &lt;init&gt;()V
+    .locals 0
+
+    .line 9
+    invoke-direct {p0}, Landroidx/appcompat/app/AppCompatActivity;-&gt;&lt;init&gt;()V
+
+    return-void
+.end method
+</code></pre>
+<p><code>.method</code> 指代方法，<code>constructor</code> 顾名思义就是构造方法了，因为我们没有写 <code>MainActivity</code> 的构造方法，所以它会使用父类 <code>AppCompatActivity</code> 的构造方法。</p>
+<p>第三部分：</p>
+<pre><code class="language-Smali"># virtual methods
+.method protected onCreate(Landroid/os/Bundle;)V
+    .locals 1
+
+    .line 13
+    invoke-super {p0, p1}, Landroidx/appcompat/app/AppCompatActivity;-&gt;onCreate(Landroid/os/Bundle;)V
+
+    const p1, 0x7f0a001c
+
+    .line 14
+    invoke-virtual {p0, p1}, Lcom/example/reverse/MainActivity;-&gt;setContentView(I)V
+
+    const p1, 0x7f070042
+
+    .line 15
+    invoke-virtual {p0, p1}, Lcom/example/reverse/MainActivity;-&gt;findViewById(I)Landroid/view/View;
+
+    move-result-object p1
+
+    new-instance v0, Lcom/example/reverse/MainActivity$1;
+
+    invoke-direct {v0, p0}, Lcom/example/reverse/MainActivity$1;-&gt;&lt;init&gt;(Lcom/example/reverse/MainActivity;)V
+
+    invoke-virtual {p1, v0}, Landroid/view/View;-&gt;setOnClickListener(Landroid/view/View$OnClickListener;)V
+
+    return-void
+.end method
+</code></pre>
+<p>同样是方法，这里描述的是 <code>onCreate()</code> 方法，参数为 <code>Bundle</code> 对象，然后执行 <code>super</code> 也就是 <code>AppCompatActivity</code> 中的 <code>onCreate()</code> 方法，接着便看到了 <code>setContentView()</code> 方法被调用，参数 <code>I</code> 表示 <code>int</code> 类型。至此为项目默认生成的代码。</p>
+<p>接下来是我们的逻辑，通过 <code>findViewById()</code> 找到我们的 <code>View</code> 控件，也就是我们在布局文件中的 <code>Button</code>，最后再调用 <code>setOnClickListener()</code> 传入我们的点击事件 <code>View.OnClickListener</code>。</p>
+<p>那我们点击事件的逻辑呢？</p>
+<p>上文提到，当类内包含内部类或匿名类时，就会产生多个同名的以 <code>$</code> 及后面数字或类名区分的 Smali 文件，所以接下来看 <code>MainActivity$1.smali</code> 文件：</p>
+<pre><code class="language-Smali">.class Lcom/example/reverse/MainActivity$1;
+.super Ljava/lang/Object;
+.source &quot;MainActivity.java&quot;
+
+# interfaces
+.implements Landroid/view/View$OnClickListener;
+
+
+# annotations
+.annotation system Ldalvik/annotation/EnclosingMethod;
+    value = Lcom/example/reverse/MainActivity;-&gt;onCreate(Landroid/os/Bundle;)V
+.end annotation
+
+.annotation system Ldalvik/annotation/InnerClass;
+    accessFlags = 0x0
+    name = null
+.end annotation
+
+
+# instance fields
+.field final synthetic this$0:Lcom/example/reverse/MainActivity;
+
+
+# direct methods
+.method constructor &lt;init&gt;(Lcom/example/reverse/MainActivity;)V
+    .locals 0
+
+    .line 15
+    iput-object p1, p0, Lcom/example/reverse/MainActivity$1;-&gt;this$0:Lcom/example/reverse/MainActivity;
+
+    invoke-direct {p0}, Ljava/lang/Object;-&gt;&lt;init&gt;()V
+
+    return-void
+.end method
+
+
+# virtual methods
+.method public onClick(Landroid/view/View;)V
+    .locals 2
+
+    .line 18
+    iget-object p1, p0, Lcom/example/reverse/MainActivity$1;-&gt;this$0:Lcom/example/reverse/MainActivity;
+
+    const-string v0, &quot;Hello World&quot;
+
+    const/4 v1, 0x0
+
+    invoke-static {p1, v0, v1}, Landroid/widget/Toast;-&gt;makeText(Landroid/content/Context;Ljava/lang/CharSequence;I)Landroid/widget/Toast;
+
+    move-result-object p1
+
+    invoke-virtual {p1}, Landroid/widget/Toast;-&gt;show()V
+
+    return-void
+.end method
+</code></pre>
+<p>重复的内容就不过多解释了，来看刚刚没有提到的。</p>
+<p>接口：</p>
+<pre><code class="language-Smali"># interfaces
+.implements Landroid/view/View$OnClickListener;
+</code></pre>
+<p><code>.implements</code> 依然是老朋友，指实现了哪些接口，回到一开始我们写的代码，里面按钮中实现了一个点击事件，就是用的 <code>View.OnClickListener</code>。</p>
+<p>注解：</p>
+<pre><code class="language-Smali"># annotations
+.annotation system Ldalvik/annotation/EnclosingMethod;
+    value = Lcom/example/reverse/MainActivity;-&gt;onCreate(Landroid/os/Bundle;)V
+.end annotation
+
+.annotation system Ldalvik/annotation/InnerClass;
+    accessFlags = 0x0
+    name = null
+.end annotation
+</code></pre>
+<p><code>.annotation</code> 就是注解，很容易联想到我们代码中常用的注解 <code>@Override</code>，这里指向了 <code>onCreate()</code> 方法，参数为 <code>Bundle</code>。</p>
+<p>实例域：</p>
+<pre><code class="language-Smali"># instance fields
+.field final synthetic this$0:Lcom/example/reverse/MainActivity;
+</code></pre>
+<p>到最重要的点击事件：</p>
+<pre><code class="language-Smali"># virtual methods
+.method public onClick(Landroid/view/View;)V
+    .locals 2
+
+    .line 18
+    iget-object p1, p0, Lcom/example/reverse/MainActivity$1;-&gt;this$0:Lcom/example/reverse/MainActivity;
+
+    const-string v0, &quot;Hello World&quot;
+
+    const/4 v1, 0x0
+
+    invoke-static {p1, v0, v1}, Landroid/widget/Toast;-&gt;makeText(Landroid/content/Context;Ljava/lang/CharSequence;I)Landroid/widget/Toast;
+
+    move-result-object p1
+
+    invoke-virtual {p1}, Landroid/widget/Toast;-&gt;show()V
+
+    return-void
+.end method
+</code></pre>
+<p>这里就是点击事件 <code>onClick()</code> 的实现，我们看到了定义的要显示的字符串，<code>Toast</code> 的 <code>makeText()</code> 方法以及 <code>show()</code> 方法。</p>
+<p>至此，整个 <code>MainActivity</code> 就通读一遍了，虽然不会写，但只要有写过代码，并且比对原 Java 文件，相信都能读出个大概。</p>
+<p>尽管不知道怎么写，但我们知道，字符串在这里只是显示作用，我们并没有对这个字符串做其他操作，所以可以直接修改这个字符串，当用户点击 <code>Button</code> 后，弹出的是我们修改后的内容，同时也不会影响到程序的正常运行。</p>
+<p>而在我们游戏渠道打包的时候，大多数情况并不会手动修改里面的内容，因为实际上也没有太多必要，游戏逻辑是游戏研发商设计的，我们只需要注入 SDK，具体做法就是把我们的 SDK 打包并反编译成 Smali 文件，然后一一复制到母包中，覆盖原有的内容。</p>
+<h1 id="重新打包">重新打包</h1>
+<p>不管是何种修改，肯定要重新打包才能够安装到手机上，重新打包也同样要用到『<a href="https://github.com/iBotPeaches/Apktool">Apktool</a>』，执行命令：</p>
+<pre><code class="language-Bash">➜   java -jar apktool.jar b Demo -o New_Demo.apk
+</code></pre>
+<p>其中 <code>b</code> 是指 Build 的意思，后面指定了重新打包后的 APK 文件名称，这样你就会在同级目录中得到这个重新打包后的文件。</p>
+<p>同样，为了简便可以用以下命令：</p>
+<pre><code class="language-Bash">➜   java -jar apktool.jar b {解码后项目所在目录}
+</code></pre>
+<p>没有指定重新打包后的 APK 文件名，会默认在解码后的项目中创建一个名为 <code>/dist</code> 的文件夹，打开这个文件夹你就会发现一个和项目同名的 APK 文件，这就是重新打包后的文件了。</p>
+<p>不过也不要高兴得太早，因为这个 APK 文件还不能直接安装在手机上。</p>
+<h1 id="apk-signature-scheme-v1">APK Signature Scheme v1</h1>
+<p>重新打包后的 APK 文件不能直接安装在手机上，是因为这个安装包还没进行签名，平时我们要上线应用，都要先对应用进行签名，而现在经过我们反编译后原签名已经被破坏掉了，所以我们需要手动签名。</p>
+<p>但是，假如我们反编译的是别人的 App，那我们从哪儿能拿到它原来的签名文件呢？很显然，根本没有办法拿到，因此我们只能拿自己的签名文件来对这个 APK 文件重新进行签名，但同时也表明我们重新打包出来的软件就是个十足的盗版软件。</p>
+<p>这是 Android 为了保护版权而设立的机制，因此判定盗版 App 的标准就很明确了，只要你不是使用原版的签名，那就是盗版的，所以汉化软件实际上也是盗版软件，当然如果有人通过非法途径获取到了原版签名，那我也无话可说了。</p>
+<p>签名的生成相信做 Android 开发的都不会陌生吧，直接到『Android Studio』中生成一个即可，有了签名文件后就可以执行命令：</p>
+<pre><code class="language-Bash">➜   jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore {签名文件} -storepass {KeyStore_Password} {待签名的APK文件} {Key_alias}
+</code></pre>
+<p>该命令执行完成后你可能会发现并没有新增其他文件，实际上它是生成一个和原来待签名文件名相同的已签名的 APK 文件，并且覆盖了原来待签名的文件。</p>
+<p>当然，配置参数不同写法也不尽相同，比如我最常用的：</p>
+<pre><code class="language-Bash">➜   jarsigner -keystore {签名文件} -storepass {KeyStore_Password} -keypass {Key_Password} -signedjar {签名后的APK文件} {待签名的APK文件} {Key_alias}
+</code></pre>
+<p>这种方法会指定签名后的文件名称，而不会覆盖原有的待签名文件。</p>
+<p>相信你已经注意到，这里用于签名的工具实际上是 JDK 中用于给 Jar 包签名的『JarSigner』，它会使用 <code>SHA1</code> 或者 <code>SHA256</code> 算法对 APK 中每个文件生成摘要并进行 <code>BASE64</code> 编码写入到 <code>MANIFEST.MF</code> 文件中，然后使用 <code>SHA1</code> 算法对 <code>MANIFEST.MF</code> 二次摘要再写入到 <code>CERT.SF</code> 中，接着使用私钥对 <code>CERT.SF</code> 签名，签名结果与公钥和证书一起打包写入 <code>CERT.RSA</code> 里，最后将以上生成的这三个文件保存到 <code>/META-INF</code> 目录，压缩入 APK 内。</p>
+<p>当你直接解压 APK 文件的时候也会发现这些经过签名生成的文件。</p>
+<p>签名之后的 APK 文件现在已经可以安装到手机上了。</p>
+<h1 id="对齐">对齐</h1>
+<p>Android 还极度建议我们对签名后的 APK 文件进行一次对齐操作，因为这样可以使得我们的程序在 Android 系统中运行得更快。</p>
+<p>对齐操作使用的是『ZipAlign』工具，该工具存放于 <code>/{Android_SDK}/build-tools/{version}</code> 目录下，将这个目录配置到系统环境变量当中就可以在任何位置执行此命令了。命令格式如下：</p>
+<pre><code class="language-Bash">➜   zipalign 4 {已签名的APK文件} {对齐后的APK文件}
+</code></pre>
+<p>其中 <code>4</code> 是固定值不能改变，指的是字节对齐参数，代表对齐为 4 个字节，据说输入其他值起不到任何作用，在 4 个字节边界上对齐的意思就是，一般来说，是指编译器把 4 个字节作为一个单位来进行读取的结果，这样的话相比之前没有对齐的情况，CPU 能够对变量进行高效、快速的访问。</p>
+<p>另外，验证一个 APK 文件是否对齐的命令如下：</p>
+<pre><code class="language-Bash">➜   zipalign -c -v 4 {待验证的APK文件}
+</code></pre>
+<p>其中 <code>-c</code> 就是用于确认 APK 文件是否对齐，<code>-v</code> 则表示输出详细日志，是可选参数，同时也可以用在上方对齐的命令中，<code>4</code> 也是字节对齐参数。</p>
+<p>最后就可以得到一个已签名并对齐的安装包了。</p>
+<h1 id="apk-signature-scheme-v2">APK Signature Scheme v2</h1>
+<p>我们在老版本的『Android Studio』中打包时会要求勾选 V1 和 V2 签名（新版本中已无需勾选，默认会两者都启用）：</p>
+<figure data-type="image" tabindex="20"><img src="https://LiarrDev.github.io/post-images/1630767563978.png" alt="老版本 Android Studio 可自主选择 V1 和 V2 签名" loading="lazy"></figure>
+<p>APK Signature Scheme v2 是一种全文件签名方案，该方案能够发现对 APK 的受保护部分进行的所有更改，从而有助于加快验证速度并增强完整性保证。</p>
+<p>它从 Android 7.0（Nougat）开始支持，用于签名的工具『ApkSigner』内置在 Android SDK Build Tools 24.0.3 及更高的版本中。</p>
+<p>官方文档中提到：</p>
+<blockquote>
+<p>To make a APK installable on Android 6.0 (Marshmallow) and older devices, the APK should be signed using JAR signing before being signed with the v2 scheme.</p>
+<p>为了使 APK 可在 Android 6.0（Marshmallow） 及更低版本的设备上安装，应先使用 JAR 签名功能对 APK 进行签名，然后再使用 v2 方案对其进行签名。</p>
+</blockquote>
+<p>因此，尽管你仅使用 V1 方案签名也可以使 APK 在设备上正常安装运行，但应当同时采用 V2 方案，且两套签名方案有明确的先后顺序。</p>
+<p>官方文档中还提到：</p>
+<blockquote>
+<p>Caution: You must use <code>zipalign</code> at one of two specific points in the app-building process, depending on which app-signing tool you use:</p>
+<ul>
+<li>If you use <code>apksigner</code>, <code>zipalign</code> must only be performed before the APK file has been signed. If you sign your APK using <code>apksigner</code> and make further changes to the APK, its signature is invalidated.</li>
+<li>If you use <code>jarsigner</code>, <code>zipalign</code> must only be performed after the APK file has been signed.</li>
+</ul>
+<p>注意：您必须在应用构建过程中的两个特定时间点之一使用 <code>zipalign</code>，具体在哪个时间点使用，取决于您所使用的应用签名工具：</p>
+<ul>
+<li>如果您使用的是 <code>apksigner</code>，只能在为 APK 文件签名之前执行 <code>zipalign</code>。如果您在使用 <code>apksigner</code> 为 APK 签名之后对 APK 做出了进一步更改，签名便会失效。</li>
+<li>如果您使用的是 <code>jarsigner</code>，只能在为 APK 文件签名之后执行 <code>zipalign</code>。</li>
+</ul>
+</blockquote>
+<p>这样顺序就更加明确了，先使用『JarSigner』进行 V1 方案签名，再使用『ZipAlign』做对齐操作，最后再使用『ApkSigner』进行 V2 方案签名。</p>
+<p>V2 方案签名命令如下：</p>
+<pre><code class="language-Bash">➜   java -jar apksigner.jar sign --ks {签名文件路径} --ks-key-alias {Key_alias} --ks-pass pass:{KeyStore_Password} --key-pass pass:{Key_Password} --out {V2签名后的APK文件} {对齐后的APK文件}
+</code></pre>
+<p>虽然上方文档要求我们手动进行 V1 和 V2 方案签名，但是实际上『ApkSigner』也是支持 V1 方案签名的。它有一个配置的选项：</p>
+<blockquote>
+<p>The following options specify basic settings to apply to a signer:</p>
+<ul>
+<li><code>--v1-signing-enabled &lt;true | false&gt;</code>: Determines whether <code>apksigner</code> signs the given APK package using the traditional, JAR-based signing scheme. By default, the tool uses the values of <code>--min-sdk-version</code> and <code>--max-sdk-version</code> to decide when to apply this signature scheme.</li>
+</ul>
+<p>以下选项指定要应用于签名者的基本设置：</p>
+<ul>
+<li><code>--v1-signing-enabled &lt;true | false&gt;</code>：确定 <code>apksigner</code> 是否会使用基于 JAR 的传统签名方案为给定的 APK 软件包签名。默认情况下，该工具会使用 <code>--min-sdk-version</code> 和 <code>--max-sdk-version</code> 的值来决定何时采用此签名方案。</li>
+</ul>
+</blockquote>
+<p>因此我们可以不需要手动使用『JarSigner』进行 V1 方案签名，直接使用『ApkSigner』进行 V2 方案签名即可。</p>
+<p>查询 APK 文件签名情况可以使用以下命令：</p>
+<pre><code class="language-Bash">➜   java -jar apksigner.jar verify -v {需要查看签名的 APK}
+</code></pre>
+<p>至此，V2 签名方案也操作完成了。</p>
+<p>生成已签名的 APK 文件的同时，你可以发现还自动生成了一个以 APK 文件名命名的 IDSIG 文件，默认情况下，IDSIG 文件包含 APK 文件的完整 Merkle 树。使用此标志时，『ApkSigner』会生成一个 V4 签名方案的 IDSIG 文件，且不会嵌入完整的 Merkle 树。</p>
+<p>Google 在 Android 9（Pie）中引入了 APK Signature Scheme v3，在 Android 11（R）中引入了 APK Signature Scheme v4，这里暂不介绍。</p>
+<h1 id="测试">测试</h1>
+<p>无论是破解还是 SDK 注入，都需要对最终的安装包进行测试，确认其是否按照我们期望的效果正常运行。</p>
+<p>把这个 APK 文件安装到手机上来查看效果：</p>
+<figure data-type="image" tabindex="21"><img src="https://LiarrDev.github.io/post-images/1630767725579.gif" alt="修改过的 APK 演示效果" loading="lazy"></figure>
+<p>可以看到，无论是应用图标、应用名称，还是点击按钮后的响应逻辑，都修改成了我设定的样子，说明以上的所有操作都成功了。</p>
+<hr>
+<p>以上就是 Android 反编译中的基本操作，当然也只是一个简单的入门，有很多东西没办法一一展开，以后有机会的话，可以再深入聊聊。</p>
+<p>另外，还是要再次提醒，反编译技术仅用于学习和交流，请勿作于非法用途。</p>
+<h1 id="参考内容">参考内容：</h1>
+<ul>
+<li><a href="https://developer.android.google.cn/studio/command-line/zipalign.html">zipalign | Android 开发者 | Android Developers</a></li>
+<li><a href="https://source.android.google.cn/security/apksigning/v2">APK 签名方案 v2 | Android 开源项目 | Android Open Source Project</a></li>
+<li><a href="https://developer.android.google.cn/studio/command-line/apksigner">apksigner | Android 开发者 | Android Developers</a></li>
+</ul>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Bypassing-the-Package-Name-Detection-of-Phone-Number-Verification-Service-Provided-by-Alibaba-Cloud.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Bypassing-the-Package-Name-Detection-of-Phone-Number-Verification-Service-Provided-by-Alibaba-Cloud/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2021-09-18">2021-09-18</time>
+                  <h4 class="title white no-margin">绕过阿里云本机号码一键登录的包名检测机制</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Real-time-Monitoring-of-SMS-in-Android.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Real-time-Monitoring-of-SMS-in-Android/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2021-08-17">2021-08-17</time>
+                  <h4 class="title white no-margin">Android 实时监听短信</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

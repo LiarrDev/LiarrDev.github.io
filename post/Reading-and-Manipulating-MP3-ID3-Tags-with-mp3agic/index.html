@@ -1,0 +1,899 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>使用 mp3agic 读写 MP3 的 ID3 标签 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="背景
+数年前为了应对各音乐平台的版权割据，我开始建立自己的离线音乐库。只是当年的我没有意识到，它会庞大到将近 6 千首歌——这还是在我近几年都没有维护的情况下。
+
+为了清晰管理，库建立之初我就采用了统一的文件命名格式：歌手 - 歌曲.mp3..." />
+    <meta name="keywords" content="" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2026-02-27"><i class="fa fa-calendar"></i><span class="lately">2 天前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/"> </span>
+              </a>
+              <span id="/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+              </div>
+              <h1 class="title ularge white bold">使用 mp3agic 读写 MP3 的 ID3 标签</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <h1 id="背景">背景</h1>
+<p>数年前为了应对各音乐平台的版权割据，我开始建立自己的离线音乐库。只是当年的我没有意识到，它会庞大到将近 6 千首歌——这还是在我近几年都没有维护的情况下。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1772293914084.png" alt="Music Lib" loading="lazy"></figure>
+<p>为了清晰管理，库建立之初我就采用了统一的文件命名格式：<code>歌手 - 歌曲.mp3</code>。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1772293964378.png" alt="命名规范" loading="lazy"></figure>
+<p>终于有一天我面对着这个 20 几 GB 的文件夹手足无措时，我意识到，它还需要进一步整理。</p>
+<p>我的想法是这样的，为了方便索引，我应该为歌手建立一个目录，然后歌手下再建立专辑子目录，最后把每首歌曲归类到对应的专辑中去。</p>
+<pre><code>Music
+  ├── Singer 1
+  │  ├── Album 1
+  │  │  ├── Song 1
+  │  │  ├── Song 2
+  │  │  └── ···
+  │  ├── Album 2
+  │  │  ├── Song 1
+  │  │  ├── Song 2
+  │  │  └── ···
+  │  └── ···
+  ├── Singer 2
+  │  ├── Album 1
+  │  │  ├── Song 1
+  │  │  ├── Song 2
+  │  │  └── ···
+  │  ├── Album 2
+  │  │  ├── Song 1
+  │  │  ├── Song 2
+  │  │  └── ···
+  │  └── ···
+  └── ···
+</code></pre>
+<p>歌手名字和歌曲名字都好说，得益于我规范的命名，直接解析文件名就可以拿到，那么专辑名应该如何获取呢？</p>
+<p>点开 MP3 文件的属性，可以看到它内部就存储了标题、歌手、专辑等信息，这恰好能够满足我的需要。</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1772294056349.png" alt="MP3 Metadata" loading="lazy"></figure>
+<p>首先需要了解这些元数据的存储方式。MP3 文件的元数据通常遵循 ID3 标准，主要分为 ID3v1 和 ID3v2 两种。</p>
+<p>ID3v1：位于文件尾部，长度为 128 字节，如果 MP3 文件中有 APE 格式信息，则在 APE 信息之后。不支持封面和一些特殊字符，兼容性较好，但信息容量有限。</p>
+<p>ID3v2：位于文件头部，可以包含封面和特殊字符等，长度任意，是目前最常用的标准。它由一个标签头和多个帧（Frame）组成。</p>
+<p>ID3v2 当前最新版本是 ID3v2.4，但一些老设备或软件可能只支持 ID3v2.3。</p>
+<p>ID3v2.4 对 ID3v2.3 做了一些改进：</p>
+<ul>
+<li>容量和限制：ID3v2.4 相比 ID3v2.3 有更好的扩展性，可以支持更大容量的文件。</li>
+<li>标签大小：ID3v2.4 新增了 16 位和 32 位的大小字段，可以表示更大的标签尺寸。</li>
+<li>文本编码：ID3v2.4 强制使用 UTF-16 编码，而 ID3v2.3 则默认使用 ISO-8859-1 编码。</li>
+<li>帧类型：ID3v2.4 废弃了一些过时的帧类型，并引入了新的帧类型，如：用户自定义文本信息等。</li>
+</ul>
+<p>既然知道了元数据存储的位置，如何读取呢？直接解析文件的 <code>ByteArray</code> 是一种方案，但是这种方法过于硬核，使用封装过的三方库显然更加简单易用。</p>
+<h1 id="使用-mp3agic">使用 mp3agic</h1>
+<p>我找到了一个名为 mp3agic 的库，尽管该仓库上一次提交已经是 2022 年，并且在 2024 年已标注为不再积极维护，但我实际测试下来，仍能够满足我的需求。</p>
+<p>先来看看使用方法。</p>
+<p>引入依赖：</p>
+<pre><code class="language-kotlin">dependencies {
+    implementation(&quot;com.mpatric:mp3agic:0.9.1&quot;)
+}
+</code></pre>
+<p>读取 MP3 文件：</p>
+<pre><code class="language-kotlin">fun open(file: File) {
+    val mp3File = Mp3File(it)
+    val length = mp3File.lengthInSeconds
+    val bitrate = mp3File.bitrate
+    val sampleRate = mp3File.sampleRate
+    // ...
+}
+</code></pre>
+<p>支持直接使用路径或者 <code>File</code> 实例构建 <code>Mp3File</code>。</p>
+<p>移除 ID3 或者自定义 Tag：</p>
+<pre><code class="language-kotlin">fun deleteTag(mp3File: Mp3File, savePath: String) {
+    if (mp3File.hasId3v1Tag()) {
+        mp3File.removeId3v1Tag()
+    }
+    if (mp3File.hasId3v2Tag()) {
+        mp3File.removeId3v2Tag()
+    }
+    if (mp3File.hasCustomTag()) {
+        mp3File.removeCustomTag()
+    }
+    mp3File.save(savePath)
+}
+</code></pre>
+<p>需要留意的是修改后调用 <code>save()</code> 保存时，不能直接覆盖原文件，需要提供一个新的保存路径，否则会抛出异常。</p>
+<p>获取 ID3v1 的值：</p>
+<pre><code class="language-kotlin">fun getId3v1(mp3File: Mp3File) {
+    if (mp3File.hasId3v1Tag()) {
+        val v1Tag = mp3File.id3v1Tag
+        val track = v1Tag.track
+        val artist = v1Tag.artist
+        val album = v1Tag.album
+        val title = v1Tag.title
+        val year = v1Tag.year
+        val genre = v1Tag.genre
+        val genreDesc = v1Tag.genreDescription
+        val comment = v1Tag.comment
+        val version = v1Tag.version
+        // ...
+    }
+}
+</code></pre>
+<p>设置 ID3v1 的值：</p>
+<pre><code class="language-kotlin">fun setId3v1(mp3File: Mp3File, savePath: String) {
+    val v1Tag = if (mp3File.hasId3v1Tag()) {
+        mp3File.id3v1Tag
+    } else {
+        ID3v1Tag().also { mp3File.id3v1Tag = it }
+    }
+    v1Tag.track = &quot;5&quot;
+    v1Tag.artist = &quot;An Artist&quot;
+    v1Tag.title = &quot;The Title&quot;
+    v1Tag.album = &quot;The Album&quot;
+    v1Tag.year = &quot;2001&quot;
+    v1Tag.genre = 12
+    v1Tag.comment = &quot;Some comment&quot;
+    // ...
+    mp3File.save(savePath)
+}
+</code></pre>
+<p>其实就是简单的调用 Getter 和 Setter。</p>
+<p>获取 ID3v2 的值：</p>
+<pre><code class="language-kotlin">fun getId3v2(mp3File: Mp3File) {
+    if (mp3File.hasId3v2Tag()) {
+        val v2Tag = mp3File.id3v2Tag
+        val track = v2Tag.track
+        val artist = v2Tag.artist
+        val album = v2Tag.album
+        val title = v2Tag.title
+        val year = v2Tag.year
+        val genre = v2Tag.genre
+        val genreDesc = v2Tag.genreDescription
+        val comment = v2Tag.comment
+        val version = v2Tag.version
+        val lyrics = v2Tag.lyrics
+        val composer = v2Tag.composer
+        val publisher = v2Tag.publisher
+        val origArtist = v2Tag.originalArtist
+        val albumArtist = v2Tag.albumArtist
+        val copyright = v2Tag.copyright
+        val url = v2Tag.url
+        val encoder = v2Tag.encoder
+        val albumImage = v2Tag.albumImage
+        if (albumImage != null) {
+            val mime = v2Tag.albumImageMimeType
+            // Write image to file - can determine appropriate file extension from the mime type
+            val file = RandomAccessFile(&quot;album-artwork&quot;, &quot;rw&quot;)
+            file.write(albumImage);
+            file.close();
+        }
+        // ...
+    }
+}
+</code></pre>
+<p>因为 ID3v2 支持设置专辑封面，所以也可以获取到封面图片。</p>
+<p>设置 ID3v2 的值：</p>
+<pre><code class="language-kotlin">fun setId3v2(mp3File: Mp3File, savePath: String) {
+    val v2Tag = if (mp3File.hasId3v2Tag()) {
+        mp3File.id3v2Tag
+    } else {
+        ID3v24Tag().also { mp3File.id3v2Tag = it }
+    }
+    v2Tag.track = &quot;5&quot;
+    v2Tag.artist = &quot;An Artist&quot;
+    v2Tag.title = &quot;The Title&quot;
+    v2Tag.album = &quot;The Album&quot;
+    v2Tag.year = &quot;2001&quot;
+    v2Tag.genre = 12
+    v2Tag.comment = &quot;Some comment&quot;
+    v2Tag.lyrics = &quot;Some lyrics&quot;
+    v2Tag.composer = &quot;The Composer&quot;
+    v2Tag.publisher = &quot;A Publisher&quot;
+    v2Tag.originalArtist = &quot;Another Artist&quot;
+    v2Tag.albumArtist = &quot;An Artist&quot;
+    v2Tag.copyright = &quot;Copyright&quot;
+    v2Tag.url = &quot;http://foobar&quot;
+    v2Tag.encoder = &quot;The Encoder&quot;
+    v2Tag.setAlbumImage(byteArray, mime)
+    // ...
+    mp3File.save(&quot;MyMp3File.mp3&quot;)
+}
+</code></pre>
+<p><code>Mp3File</code> 支持创建 ID3v2.2、ID3v2.3、ID3v2.4，可以按需创建。</p>
+<h1 id="编写整理脚本">编写整理脚本</h1>
+<p>有了上面的工具，下面就可以写一个符合我预期的脚本了：</p>
+<pre><code class="language-kotlin">object MusicScript {
+
+    private const val SOURCE_DIR = &quot;/Users/Liarr/mp3-source&quot;
+    private const val RESULT_DIR = &quot;/Users/Liarr/mp3-result&quot;
+    private const val FIXED_DIR = &quot;/Users/Liarr/mp3-fixed&quot;
+
+    fun group() {
+        val dir = File(SOURCE_DIR)
+        dir.listFiles()?.forEach {
+            if (it.name.endsWith(&quot;.mp3&quot;)) { // 避免读到本地 .DS_Store 等非 MP3 文件
+                val regex = &quot;&quot;&quot;(.*) - (.*)\.mp3&quot;&quot;&quot;.toRegex()
+                val matchResult = regex.find(it.name)
+                val fileArtist = matchResult?.groupValues?.get(1)
+                val fileTitle = matchResult?.groupValues?.get(2)
+
+                if (fileArtist == null || fileTitle == null) {
+                    return@forEach
+                }
+                val singerDir = File(RESULT_DIR, fileArtist)
+                if (singerDir.exists().not()) {
+                    singerDir.mkdirs()      // 歌手文件夹不存在，先创建
+                }
+
+                val mp3File = Mp3File(it)
+                if (mp3File.hasId3v2Tag()) {
+                    val v2Tag = mp3File.id3v2Tag
+
+                    // ID3v2 Tag 里面的数据和文件名解析出来的不一致，大概率是乱码了，尝试修正
+                    if (fileArtist != v2Tag.artist || fileTitle != v2Tag.title) {
+                        val tagArtist = v2Tag.artist.correctCharset()
+                        val tagTitle = v2Tag.title.correctCharset()
+                        val tagAlbum = v2Tag.album.correctCharset()
+                        if (tagArtist == fileArtist &amp;&amp; tagTitle == fileTitle) { // 转码正确，重设 ID3v2
+                            v2Tag.artist = tagArtist
+                            v2Tag.title = tagTitle
+                            v2Tag.album = tagAlbum
+                            // save 方法不允许覆盖原文件，先存到单独文件夹，后面再处理
+                            mp3File.save(FIXED_DIR + File.separator + it.name)
+                            return@forEach
+                        } else {    // 转码后也不匹配，尝试读取 ID3v1
+                            if (mp3File.hasId3v1Tag().not()) {
+                                return@forEach
+                            }
+                            val v1Tag = mp3File.id3v1Tag
+                            if (fileArtist != v1Tag.artist || fileTitle != v1Tag.title) {
+                                return@forEach
+                            }
+                            // ID3v1 里面的数据正确，重设 ID3v2
+                            v2Tag.artist = v1Tag.artist
+                            v2Tag.title = v1Tag.title
+                            v2Tag.album = v1Tag.album
+                            // save 方法不允许覆盖原文件，先存到单独文件夹，后面再处理
+                            mp3File.save(FIXED_DIR + File.separator + it.name)
+                            return@forEach
+                        }
+                    }
+
+                    if (v2Tag.album.isBlank().not()) {
+                        val albumDir = File(singerDir, v2Tag.album)
+                        if (albumDir.exists().not()) {
+                            albumDir.mkdirs()
+                        }
+                        val f = File(albumDir, it.name)
+                        it.renameTo(f)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun String.correctCharset() = String(this.toByteArray(Charsets.ISO_8859_1), Charset.forName(&quot;gbk&quot;))
+}
+</code></pre>
+<p>总结一下我的实现思路：</p>
+<ol>
+<li>定义三个目录：源文件夹、输出文件夹、修复文件夹。</li>
+<li>遍历源文件夹下所有 MP3 文件（防止读取到比如 <code>.DS_Store</code> 等非 MP3 文件，当然你也可以<a href="https://liarrdev.github.io/post/Verify-File-Types-with-Media-Type-in-Java/">使用 Media Type 校验文件类型</a>）。</li>
+<li>解析文件名得到歌手和歌曲名，在输出文件夹中创建歌手文件夹。</li>
+<li>读取 MP3 的 ID3v2 标签，检查标签中的歌手和歌曲是否与文件名一致。</li>
+<li>如果标签中的信息与文件名一致，且专辑名不为空，则将该文件移动到输出文件夹下对应的 <code>歌手/专辑</code> 子目录中。</li>
+<li>如果标签中的信息与文件名不一致，尝试将其转换为 GBK 编码，若转换后匹配，则修正标签并保存到修复文件夹，仍不匹配则尝试读取 ID3v1 标签，如果 ID3v1 的信息与文件名一致，则将其写入到 ID3v2，并保存到修复文件夹中。</li>
+</ol>
+<p>为什么要做文件名和 ID3v2 的匹配判断呢，因为跑脚本的过程中我发现，一些 MP3 文件解析出来的结果是乱码，系统播放器也不能正常识别：</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1772294509391.png" alt="歌曲信息乱码" loading="lazy"></figure>
+<p>这种情况下大概率就是上文中提到的 ID3v2.3 默认使用 ISO-8859-1 编码导致的，所以会出现跟文件名跟 ID3v2 不一致的问题，尝试将其转换为 GBK 编码。</p>
+<p>执行脚本后，输出文件夹中就归类了本来就符合要求的 MP3 文件，修复文件夹中则得到了经过处理的 MP3 文件，此时可以手动检查修复文件夹中的文件，确认无误后替换源文件，再次运行脚本即可。这样既保证了自动化效率，又留有人工复核的空间。</p>
+<p>二次执行脚本之后剩下的就是无法根据我们定义的规则处理的文件，那就需要手动处理了。</p>
+<h1 id="遇到的小插曲">遇到的小插曲</h1>
+<p>第一次运行脚本时，发现许多文件无法移动，调试到 <code>renameTo()</code> 方法返回了 <code>false</code>，排查发现是权限问题，这些无法被移动的文件都被设置了 <code>uchg</code> 标志，估计是多年前为了防止意外修改而设置的只读属性。</p>
+<p>执行命令：</p>
+<pre><code class="language-bash">➜   ls -lO &quot;/Users/Liarr/mp3-source&quot;
+# -rwxr-xr-x  1 hugecore  staff  uchg 4199728 Jan 24  2017 陈奕迅 - 天下无双.mp3
+# ...
+</code></pre>
+<p>可以看到该目录下输出的文件信息中都包含 <code>uchg</code> 标志（即 user immutable），有这个标志的文件无法通过脚本进行修改、删除、重命名、移动等操作，所以需要先执行命令解除 <code>uchg</code> 标志：</p>
+<pre><code class="language-bash">➜   sudo chflags -R nouchg &quot;/Users/Liarr/mp3-source&quot;
+</code></pre>
+<p>输入密码后即可解除，后面跑脚本就没有问题了。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2026-02-02">2026-02-02</time>
+                  <h4 class="title white no-margin"> Jetpack Glance 助力 Compose AppWidget 开发</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

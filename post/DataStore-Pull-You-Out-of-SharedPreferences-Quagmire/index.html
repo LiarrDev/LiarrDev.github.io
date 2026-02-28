@@ -1,0 +1,765 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>用 DataStore 将你拉出 SharedPreferences 泥潭 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="简介
+DataStore 是一种数据存储解决方案，允许您使用 ProtoBuf 存储键值对或类型化对象，由 Android 官方在 2020 年推出，并在 2021 年正式发布的库，旨在替代服役多年的 SharedPreferences。
+..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/DataStore-Pull-You-Out-of-SharedPreferences-Quagmire.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2025-09-17"><i class="fa fa-calendar"></i><span class="lately">5 个月前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/DataStore-Pull-You-Out-of-SharedPreferences-Quagmire/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/DataStore-Pull-You-Out-of-SharedPreferences-Quagmire/"> </span>
+              </a>
+              <span id="/DataStore-Pull-You-Out-of-SharedPreferences-Quagmire/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">用 DataStore 将你拉出 SharedPreferences 泥潭</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <h1 id="简介">简介</h1>
+<p>DataStore 是一种数据存储解决方案，允许您使用 <a href="https://liarrdev.github.io/post/Protocol-Buffers-Usage-on-Android">ProtoBuf</a> 存储键值对或类型化对象，由 Android 官方在 2020 年推出，并在 2021 年正式发布的库，旨在替代服役多年的 SharedPreferences。</p>
+<h1 id="sharedpreferences-的缺陷">SharedPreferences 的缺陷</h1>
+<ul>
+<li>文件数据的读取加锁，如果 SharedPreferences 文件未被加载或解析到内存中，读写操作都需要等待，可能会对 UI 线程流畅度造成一定影响，甚至ANR.</li>
+<li>在保存数据时，无论是 <code>commit()</code> 还是 <code>apply()</code> 都有可能引发 ANR 问题。</li>
+<li>没有错误提示机制。</li>
+</ul>
+<h1 id="datastore-的优点">DataStore 的优点</h1>
+<ul>
+<li>基于 Flow 实现，保证主线程的安全性。</li>
+<li>以事务方式处理更新数据。</li>
+<li>可以监听到操作成功或者失败结果。</li>
+<li>多进程使用。</li>
+</ul>
+<h1 id="preferences-datastore-和-proto-datastore">Preferences DataStore 和 Proto DataStore</h1>
+<p>DataStore 提供两种不同的实现：Preferences DataStore 和 Proto DataStore。</p>
+<ul>
+<li>Preferences DataStore 使用键存储和访问数据。此实现不需要预定义的架构，也不确保类型安全。</li>
+<li>Proto DataStore 将数据作为自定义数据类型的实例进行存储。此实现要求您使用 <a href="https://liarrdev.github.io/post/Protocol-Buffers-Usage-on-Android">ProtoBuf</a> 来定义架构，但可以确保类型安全。</li>
+</ul>
+<h1 id="preferences-datastore">Preferences DataStore</h1>
+<p>Preferences DataStore 用于存储键值对，相当于 SharedPreferences 的改良版。</p>
+<pre><code class="language-kotlin">dependencies {
+    implementation(&quot;androidx.datastore:datastore-preferences:1.1.0&quot;)
+}
+</code></pre>
+<p>实例：</p>
+<pre><code class="language-kotlin">// At the top level of your kotlin file:
+val Context.dataStore: DataStore&lt;Preferences&gt; by preferencesDataStore(name = &quot;settings&quot;)
+</code></pre>
+<p>读取：</p>
+<pre><code class="language-kotlin">val EXAMPLE_COUNTER = intPreferencesKey(&quot;example_counter&quot;)
+val exampleCounterFlow: Flow&lt;Int&gt; = context.dataStore.data.map { preferences -&gt;
+    // No type safety.
+    preferences[EXAMPLE_COUNTER] ?: 0
+}
+</code></pre>
+<p>支持的类型基本与 SharedPreferences 一致。</p>
+<p>写入：</p>
+<pre><code class="language-kotlin">suspend fun incrementCounter() {
+    context.dataStore.edit { settings -&gt;
+        val currentCounterValue = settings[EXAMPLE_COUNTER] ?: 0
+        settings[EXAMPLE_COUNTER] = currentCounterValue + 1
+    }
+}
+</code></pre>
+<p>转换块中的所有代码均被视为单个事务。</p>
+<h1 id="proto-datastore">Proto DataStore</h1>
+<p>Proto DataStore 用于存储类型化对象，相当于 SharedPreferences 的升级版。它使用了 <a href="https://liarrdev.github.io/post/Protocol-Buffers-Usage-on-Android">Protocol Buffers</a>。</p>
+<pre><code class="language-kotlin">dependencies {
+    implementation(&quot;androidx.datastore:datastore:1.1.0&quot;)
+}
+</code></pre>
+<p>在 <code>app/src/main/proto/</code> 目录下预定义：</p>
+<pre><code class="language-protobuf">// Settings.proto
+syntax = &quot;proto3&quot;;
+
+option java_package = &quot;com.example.application&quot;;
+option java_multiple_files = true;
+
+message Settings {
+  int32 example_counter = 1;
+}
+</code></pre>
+<p>用于告知 DataStore 如何读取和写入数据的序列化器：</p>
+<pre><code class="language-kotlin">object SettingsSerializer : Serializer&lt;Settings&gt; {
+
+    override val defaultValue: Settings = Settings.getDefaultInstance()
+
+    override suspend fun readFrom(input: InputStream): Settings {
+        try {
+            return Settings.parseFrom(input)
+        } catch (e: InvalidProtocolBufferException) {
+            throw CorruptionException(&quot;Cannot read proto.&quot;, e)
+        }
+    }
+
+    override suspend fun writeTo(t: Settings, output: OutputStream) = t.writeTo(output)
+}
+</code></pre>
+<p>实例：</p>
+<pre><code class="language-kotlin">// At the top level of your kotlin file:
+val Context.settingsDataStore: DataStore&lt;Settings&gt; by dataStore(
+    fileName = &quot;settings.pb&quot;,
+    serializer = SettingsSerializer
+)
+</code></pre>
+<p>读取：</p>
+<pre><code class="language-kotlin">val exampleCounterFlow: Flow&lt;Int&gt; = context.settingsDataStore.data.map { settings -&gt;
+    // The exampleCounter property is generated from the proto schema.
+    settings.exampleCounter
+}
+</code></pre>
+<p>写入：</p>
+<pre><code class="language-kotlin">suspend fun incrementCounter() {
+    context.settingsDataStore.updateData {
+        it.toBuilder()
+            .setExampleCounter(it.exampleCounter + 1)
+            .build()
+    }
+}
+</code></pre>
+<p>同样以事务方式更新数据。</p>
+<h1 id="从-sharedpreferences-中迁移">从 SharedPreferences 中迁移</h1>
+<pre><code class="language-kotlin">private val Context.migrationDataStore: DataStore&lt;Preferences&gt; by preferencesDataStore(
+    name = PREF_FILE_NAME,
+    produceMigrations = {
+        listOf(SharedPreferencesMigration(it, PREF_FILE_NAME))
+    }
+)
+</code></pre>
+<p>数据的迁移在创建 DataStore 的过程中自动完成，迁移完成后，原 SharedPreferences 的 XML 文件会被删除。</p>
+<h1 id="对比-mmkv">对比 MMKV</h1>
+<p>MMKV 是微信团队开源的基于 mmap 内存映射的 Key-Value 组件，底层序列化与反序列化同样使用 <a href="https://liarrdev.github.io/post/Protocol-Buffers-Usage-on-Android">ProtoBuf</a>，性能高，稳定性强。</p>
+<p>虽然 MMKV 的初衷并不是替代 SharedPreferences，但是同样作为 Key-Value 组件，大多数人都将 MMKV 视为 SharedPreferences 的替代品。</p>
+<p>官方文档中也对 MMKV 和 SharedPreferences 的性能进行了对比：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1757255479084.png" alt="MMKV vs SP" loading="lazy"></figure>
+<p>事实上，MMKV 并不是任何时候都更强。由于内存映射这种方案是自行管理一块独立的内存，所以它在尺寸的伸缩上面就比较受限，这就导致它在写大一点的数据时，速度会慢。</p>
+<p>另一方面，该写入耗时对于正常开发来说并非特别重要，界面的流畅度更在意主线程的耗时，而 SharedPreferences 本身也提供了异步写入的 API，所以它们都足够快了。但 MMKV 的诞生场景决定了，它更在意同步处理机制下的耗时。</p>
+<p>MMKV 还有一个缺陷——丢数据。操作系统在往磁盘写数据的过程中发生意外都会导致文件损坏，这种问题不可避免。MMKV 虽然由于底层机制的原因，在程序崩溃的时候不会影响数据往磁盘的写入，但断电关机之类的操作系统级别的崩溃，MMKV 就没办法了，文件照样会损坏。</p>
+<p>对于这种文件损坏，SharedPreferences 和 DataStore 的应对方式是在每次写入新数据之前都对现有文件做一次自动备份，这样在发生了意外出现了文件损坏之后，它们就会把备份的数据恢复过来。</p>
+<p>而 MMKV，没有这种自动的备份和恢复，那么当文件发生了损坏，数据就丢了，之前保存的各种信息只能被重置。据官方统计，<a href="https://github.com/Tencent/MMKV/wiki/design#%E6%95%B0%E6%8D%AE%E6%9C%89%E6%95%88%E6%80%A7">iOS 微信平均约有 70 万日次的数据校验不通过</a>。</p>
+<p>因此 MMKV 更适合同步高频写入非重要信息的场景。</p>
+<h1 id="参考内容">参考内容</h1>
+<ul>
+<li><a href="https://developer.android.google.cn/topic/libraries/architecture/datastore">应用架构：数据层 - DataStore - Android 开发者 | App architecture | Android Developers</a></li>
+</ul>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/How-to-Trace-Android-Dependency-Sources.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/How-to-Trace-Android-Dependency-Sources/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2025-10-29">2025-10-29</time>
+                  <h4 class="title white no-margin">如何追踪 Android 依赖来源</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Protocol-Buffers-Usage-on-Android.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Protocol-Buffers-Usage-on-Android/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2025-08-25">2025-08-25</time>
+                  <h4 class="title white no-margin">在 Android 中使用 Protocol Buffers</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

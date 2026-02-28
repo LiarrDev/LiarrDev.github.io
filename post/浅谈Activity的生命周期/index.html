@@ -1,0 +1,781 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>浅谈 Activity 的生命周期 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="关于 Activity 的生命周期，可以说是每一位 Android 开发者的入门必备知识，也可以说是入了门就几乎不会再翻看的内容。
+相信同行们都知道，这是初级开发者面试必问的问题，虽然问这个问题的意义并不大，主要还是面试官要找一个开场过渡一..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/浅谈Activity的生命周期.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2020-07-24"><i class="fa fa-calendar"></i><span class="lately">6 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/浅谈Activity的生命周期/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/浅谈Activity的生命周期/"> </span>
+              </a>
+              <span id="/浅谈Activity的生命周期/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">浅谈 Activity 的生命周期</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>关于 <code>Activity</code> 的生命周期，可以说是每一位 Android 开发者的入门必备知识，也可以说是入了门就几乎不会再翻看的内容。</p>
+<p>相信同行们都知道，这是初级开发者面试必问的问题，虽然问这个问题的意义并不大，主要还是面试官要找一个开场过渡一下罢了。</p>
+<p>虽说简单，但是如果答不上来，那可不是出师未捷身先死？</p>
+<p>先来放一张来自官方文档陈年经典老图：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1563970868282.png" alt="Activity Lifecycle" loading="lazy"></figure>
+<p>下面一一介绍一下生命周期的七个函数调用：</p>
+<ul>
+<li><code>onCreate()</code> ：当 <code>Activity</code> 第一次创建时会被调用。这是生命周期的第一个方法，在这个方法中，可以做一些初始化工作，比如调用 <code>setContentView()</code> 去加载界面布局资源，初始化 <code>Activity</code> 所需的数据。当然也可借助 <code>onCreate()</code> 方法中的 <code>Bundle</code> 对象来回复异常情况下 <code>Activity</code> 结束时的状态。</li>
+<li><code>onRestart()</code> ：表示 <code>Activity</code> 正在重新启动。一般情况下，当当前 <code>Activity</code> 从不可见重新变为可见状态时，<code>onRestart()</code> 就会被调用。这种情形一般是用户行为导致的，比如用户按 HOME 键切换到桌面或打开了另一个新的 <code>Activity</code>，接着用户又回到了这个 <code>Actvity</code>。</li>
+<li><code>onStart()</code> ：表示 <code>Activity</code> 正在被启动，即将开始，这时 <code>Activity</code> 已经出现了，但是还没有出现在前台，无法与用户交互。这个时候可以理解为 <code>Activity</code> 已经显示出来，但是我们还看不到。</li>
+<li><code>onResume()</code> ：表示 <code>Activity</code> 已经可见了，且出现在前台并开始活动。需要和 <code>onStart()</code> 对比，<code>onStart()</code> 的时候 <code>Activity</code> 还在后台， <code>onResume()</code> 的时候 <code>Activity</code> 才显示到前台。</li>
+<li><code>onPause()</code> ：表示 <code>Activity</code> 正在停止但仍可见，正常情况下，紧接着 <code>onStop()</code> 就会被调用。在特殊情况下，如果这个时候快速地回到当前 <code>Activity</code>，那么 <code>onResume()</code> 就会被调用（极端情况）。<code>onPause()</code> 中不能进行耗时操作，会影响到新 <code>Activity</code> 的显示。因为 <code>onPause()</code> 必须执行完，新的 <code>Activity</code> 的 <code>onResume()</code> 才会执行。</li>
+<li><code>onStop()</code> ：表示 <code>Activity</code> 即将停止，不可见，位于后台。可以做稍微重量级的回收工作，同样不能太耗时。</li>
+<li><code>onDestory()</code> ：表示 <code>Activity</code> 即将销毁，这是 <code>Activity</code> 生命周期的最后一个回调，可以做一些回收工作和最终的资源回收。</li>
+</ul>
+<p>另一张来自《<em><strong>Android programming: the big nerd ranch guide</strong></em>》的图我觉得也能够很好地帮助理解：</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1563971365278.jpg" alt="Activity State" loading="lazy"></figure>
+<p>这里说的是 <code>Activity</code> 的三种运行状态：</p>
+<ul>
+<li>Resumed（活动状态）：又叫 Running 状态，这个 <code>Activity</code> 正在屏幕上显示，并且有用户焦点。这个很好理解，就是用户正在操作的那个界面。</li>
+<li>Paused（暂停状态）：这是一个比较不常见的状态。这个 <code>Activity</code> 在屏幕上是可见的，但是并不是在屏幕最前端的那个 <code>Activity</code>。比如有另一个非全屏的或者透明的 <code>Activity</code> 是 Resumed 状态，没有完全遮盖这个 <code>Activity</code>。</li>
+<li>Stopped（停止状态）：当 <code>Activity</code> 完全不可见时，此时 <code>Activity</code> 还在后台运行，仍然在内存中保留 <code>Activity</code> 的状态，并不是完全销毁。这个也很好理解，当跳转的另外一个界面，之前的界面还在后台，按回退按钮还会恢复原来的状态，大部分软件在打开的时候，直接按 HOME 键，并不会关闭它，此时的 <code>Activity</code> 就是 Stopped 状态。</li>
+</ul>
+<p>当然，有些文章也会把它描述成五种状态，并不影响理解：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1564065726563.png" alt="Activity 的五种状态" loading="lazy"></figure>
+<p>只不过是把启动和销毁两种状态加进来罢了，实际上讨论这两种状态的意义并不大，可以作为参考。</p>
+<p>综合之后，我们可以参考这张图：</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1565595515187.png" alt="Activity State and Lifecycle" loading="lazy"></figure>
+<p>接下来是关于生命周期在一些情况下的表现。</p>
+<ol>
+<li>正常情况下从一个 <code>Activity</code> 启动另一个 <code>Activity</code>，两个 <code>Activity</code> 的生命周期如何交替？</li>
+</ol>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1563973389435.svg" alt="正常启动新的 Activity" loading="lazy"></figure>
+<p>可能有些人不太理解为什么要先执行原 <code>Activity</code> 的 <code>onPause()</code> 方法再启动新 <code>Activity</code> 的创建，可以假设这么一种情况，比如你通过一个按钮来启动一个 <code>Activity</code>，快速双击这个按钮，如果我们等新的 <code>Activity</code> 创建完成了再执行原 <code>Activity</code> 的 <code>onPause()</code>，那么就可能会创建两个相同的 <code>Activity</code> 在栈中，所以必须要先执行原 <code>Activity</code> 的 <code>onPause()</code>，使其进入 Paused 状态，让它无法与用户交互。</p>
+<ol start="2">
+<li>点击 OVERVIEW 键调出最近任务后会执行哪些生命周期函数？</li>
+</ol>
+<p>很多人不知道 OVERVIEW 键是哪个，因为这种说法也很少有，其实就是 Android 手机三大金刚键除了 HOME 和 BACK 剩下的那个，默认情况下该键用于调出最近任务：</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1563976290962.png" alt="Overview" loading="lazy"></figure>
+<p>但实际上该键经历了很多变更，比如在早期该键其实用于呼出菜单，直至近年来才统一为默认调出最近任务，但一些老用户（比如我）还是会将其修改为呼出菜单，而将长按 HOME 键设置为调出最近任务。</p>
+<p>所以这里的意思是调出上述最近任务界面后，原来的 <code>Activity</code> 会执行哪些生命周期函数：</p>
+<figure data-type="image" tabindex="7"><img src="https://LiarrDev.github.io/post-images/1563976607321.svg" alt="呼出最近任务界面" loading="lazy"></figure>
+<p>一般会执行 <code>onPause()</code> 和 <code>onStop()</code> 两个方法，但不绝对，也有部分机型并不会执行生命周期的任何方法。</p>
+<ol start="3">
+<li>锁屏后当前 <code>Activity</code> 会执行哪些生命周期函数？</li>
+</ol>
+<p>和用户点击 HOME 键回到桌面或者调出最近任务相似，锁屏后也会执行 <code>onPause()</code> 以及 <code>onStop()</code> 两个方法。</p>
+<ol start="4">
+<li>什么时候会仅执行 <code>onPause()</code> 而不执行 <code>onStop()</code>？</li>
+</ol>
+<p>上面介绍 <code>Activity</code> 运行状态时也有提到，执行 <code>onPause()</code> 而不执行 <code>onStop()</code>，即 <code>Activity</code> 进入了 Paused 状态，此时比如有另一个非全屏的或者透明的 <code>Activity</code> 是 Resumed 状态，即在前台和用户交互，原来这个可见但不可交互的 <code>Activity</code> 就是处于 Paused 状态，不会执行到 <code>onStop()</code>。</p>
+<figure data-type="image" tabindex="8"><img src="https://LiarrDev.github.io/post-images/1563977782236.png" alt="Dialog 主题的 Activity" loading="lazy"></figure>
+<p>如『<a href="https://liarrdev.github.io/post/Android-Activity-with-Dialog-Theme/">Android 使用 Dialog 样式的 Activity</a>』一文提到的把 <code>Activity</code> 的主题设置为 Dialog 样式。</p>
+<ol start="5">
+<li>弹出 <code>AlertDialog</code> 后 <code>Activity</code> 会执行哪些生命周期函数？</li>
+</ol>
+<figure data-type="image" tabindex="9"><img src="https://LiarrDev.github.io/post-images/1563978862016.png" alt="弹出 AlertDialog" loading="lazy"></figure>
+<p>并不会执行 <code>Activity</code> 的任何生命周期函数。</p>
+<p>其实这里有个很大的误区，许多刚入门的开发者或许会在一些博客中看到一些博主笼统地概括：弹出弹窗后 <code>Activity</code> 就会进入 Paused 状态。</p>
+<p>事实上并不是，而只有上一点提到的 Dialog 主题的 <code>Activity</code> 才会使原 <code>Activity</code> 进入 Paused 状态，而普通的 <code>AlertDialog</code> 并不会使原 <code>Activity</code> 进入 Paused 状态。</p>
+<ol start="6">
+<li>长按 POWER 键会执行哪些生命周期函数？</li>
+</ol>
+<p>长按 POWER 键一般会弹出一个关机或重启的选项界面，不同的 ROM 其实界面也不尽相同，比如原生 Android  9.0 中是从侧边弹出一个选项菜单，而国内的大部分 ROM 会弹出一个全屏的界面让用户选择。</p>
+<p>|<img src="https://LiarrDev.github.io/post-images/1667126648820.png" alt="" loading="lazy">|<br>
+|--|--|</p>
+<p>那么这两种情况是否会触发不一样的生命周期函数呢？</p>
+<p>答案是否定的，长按 POWER 键并不会执行任何生命周期函数，无论你是半遮挡还是全遮挡。</p>
+<ol>
+<li>下拉状态栏会执行哪些生命周期函数？</li>
+</ol>
+<p>下拉通知栏不会执行任何生命周期函数。</p>
+<ol start="8">
+<li>切换屏幕方向时会执行哪些生命周期函数？</li>
+</ol>
+<p>在横竖屏切换的过程中，会发生 <code>Activity</code> 被销毁并重建的过程。</p>
+<p>虽然可以简单粗暴地描述成 <code>Activity</code> 经历了一次完整的生命周期后再次重建，但实际上要复杂些。</p>
+<p>了解这种情况下的生命周期时，首先应该了解这两个回调：<code>onSaveInstanceState()</code> 和 <code>onRestoreInstanceState()</code>。</p>
+<p>在 <code>Activity</code> 由于异常情况下终止时，系统会调用 <code>onSaveInstanceState()</code> 来保存当前 <code>Activity</code> 的状态。这个方法的调用是在 <code>onDestroy()</code> 之前，它和<code>onPause()</code> 没有既定的时序关系，该方法只在 <code>Activity</code> 被异常终止的情况下调用。</p>
+<p>当异常终止的 <code>Activity</code> 被重建以后，系统会调用 <code>onRestoreInstanceState()</code>，并且把 <code>Activity</code> 销毁时 <code>onSaveInstanceState()</code> 方法所保存的 <code>Bundle</code> 对象参数同时传递给 <code>onRestoreInstanceState()</code> 和 <code>onCreate()</code> 方法，你可以很明显的看到，<code>onCreate()</code> 方法入参就有一个 <code>Bundle</code> 对象。</p>
+<p>因此，可以通过 <code>onRestoreInstanceState()</code> 方法来恢复 <code>Activity</code> 的状态，该方法的调用时机是在 <code>onStart()</code> 之后。</p>
+<p>其中 <code>onCreate()</code> 和 <code>onRestoreInstanceState()</code> 方法来恢复 <code>Activity</code> 的状态的区别：<code>onRestoreInstanceState()</code> 回调则表明其中 <code>Bundle</code> 对象非空，不用加非空判断，而 <code>onCreate()</code> 需要非空判断。建议使用 <code>onRestoreInstanceState()</code>。</p>
+<figure data-type="image" tabindex="10"><img src="https://LiarrDev.github.io/post-images/1563979849165.png" alt="异常终止的 Activity" loading="lazy"></figure>
+<p>切换屏幕方向时 <code>Activity</code> 生命周期如下：</p>
+<figure data-type="image" tabindex="11"><img src="https://LiarrDev.github.io/post-images/1563980930894.svg" alt="切换屏幕方向时经历的生命周期" loading="lazy"></figure>
+<p>尽管官方文档中提到 <code>onSaveInstanceState()</code> 会调用在 <code>onStop()</code> 之前，并可能会调用在 <code>onPause()</code> 之前，但是我实际测试中发现，它在 Android 9.0 上也有可能会在 <code>onStop()</code> 之后才调用，我暂时找不到解释的理由，所以对于官方的说法，我暂时做一些修改，<code>onSaveInstanceState()</code> 会在 <code>onDestroy()</code> 之前调用，跟 <code>onPause()</code> 和 <code>onStop()</code> 没有既定的时序关系。</p>
+<p>当然官方的说法理论上是比我更有说服力的，所以我希望有经验的开发者们能替我解释一下这个现象，或者我以后搞明白了再来修改，先放一张图：</p>
+<figure data-type="image" tabindex="12"><img src="https://LiarrDev.github.io/post-images/1564062456275.gif" alt="切换屏幕方向时打印的生命周期日志" loading="lazy"></figure>
+<p>可以看到，<code>onSaveInstanceState()</code> 方法打印的日志在 <code>onStop()</code> 之后，所以才会出现了上面的疑问。</p>
+<p>跟《<em>第一行代码——Android</em>》的作者郭霖交流过后得到的回复是，<code>onSaveInstanceState()</code> 方法不在 <code>Activity</code> 正常的生命周期之中，所以不同系统版本的表现都有可能不一样，只要知道其作用即可，不要依赖于执行的先后顺序去处理逻辑。</p>
+<p>在开发中，常常会禁用屏幕旋转，或者在 <code>Activity</code> 中指定以下属性来避免切换屏幕方向时 <code>Activity</code> 的销毁与重建：</p>
+<pre><code class="language-XML">&lt;activity
+    ...
+    android:configChanges=&quot;orientation|screenSize&quot; /&gt;
+</code></pre>
+<p>指定该属性后，<code>Activity</code> 则会回调以下的方法：</p>
+<pre><code class="language-Java">@Override
+public void onConfigurationChanged(Configuration newConfig) {
+    super.onConfigurationChanged(newConfig);
+}
+</code></pre>
+<ol start="9">
+<li>分屏模式下会执行哪些生命周期函数？</li>
+</ol>
+<p>从 Android N 开始就已经引入了 Split Screen，我们通常叫分屏模式或者多窗口模式，打开最近任务就可以选取任意两个应用进入 Split Screen，通常情况下最先选中的应用会处在上方，后选中处在下方，当然，也有一些 ROM 会采用拖动的策略，且操作焦点一般会在后选中的应用中。</p>
+<p>讨论 Split Screen 下的生命周期调用，要分成三种情况，分别是进入 Split Screen 时、处于 Split Screen 时、退出 Split Screen 时。</p>
+<p>进入 Split Screen 时，即选择应用进入分屏模式，该情况又分为两种小情况，即先选中的应用和后选中的应用。</p>
+<p>先来看进入 Split Screen 时先选中的应用，这时该应用会处于屏幕上半部分，且未获得操作焦点：</p>
+<figure data-type="image" tabindex="13"><img src="https://LiarrDev.github.io/post-images/1565538197903.gif" alt="作为首个选中的应用进入 Split Screen" loading="lazy"></figure>
+<p>进入 Split Screen 时 <code>Activity</code> 同样会执行销毁及重建的过程，所以生命周期如下：</p>
+<figure data-type="image" tabindex="14"><img src="https://LiarrDev.github.io/post-images/1565537630007.svg" alt="作为首个选中的应用进入 Split Screen 时的生命周期" loading="lazy"></figure>
+<p>这些函数的执行是连贯的，你可能会认为当用户选中了第二个应用时才会执行 <code>onPause()</code>，实际上并不是，因为用户选中第一个应用后马上就失去操作焦点，此时操作焦点处于让用户选择第二个应用的 OVERVIEW 中，所以当用户选中第一个应用时该应用就处于 Paused 状态。</p>
+<p>再来看进入 Split Screen 时后选中的应用，这时该应用会处于屏幕下半部分，且获得了操作焦点：</p>
+<figure data-type="image" tabindex="15"><img src="https://LiarrDev.github.io/post-images/1565592336195.gif" alt="作为次个选中的应用进入 Split Screen" loading="lazy"></figure>
+<p>进入 Split Screen 时 <code>Activity</code> 同样会执行销毁及重建的过程，所以生命周期如下：</p>
+<figure data-type="image" tabindex="16"><img src="https://LiarrDev.github.io/post-images/1565592420361.svg" alt="作为次个选中的应用进入 Split Screen 时的生命周期" loading="lazy"></figure>
+<p>由于此时该应用的 <code>Activity</code> 获得了操作焦点，所以处于 Resumed 状态。</p>
+<p>处于 Split Screen 时的生命周期十分好理解，就是获得焦点与失去焦点的切换过程，但由于此时 <code>Activity</code> 总是可见的，所以，当获得焦点时，<code>Activity</code> 就处于 Resumed 状态，失去焦点时，<code>Activity</code> 就处于 Paused 状态，所以在两个应用中切换焦点，就会分别执行 <code>onPause()</code> 和 <code>onResume()</code>。</p>
+<p>若在处于 Split Screen 时我们进行一些其他的操作，如点击 HOME 键或 OVERVIEW 键，那么处于屏幕上方的应用则会向上折叠，将屏幕下方的空间扩大，适应用户的操作。</p>
+<figure data-type="image" tabindex="17"><img src="https://LiarrDev.github.io/post-images/1565603542753.gif" alt="Split Screen 时点击 HOME 键" loading="lazy"></figure>
+<p>处于上方的应用假如处于 Resumed 状态，那么此时就会调用 <code>onPause()</code>，如果处于 Paused 状态，则不会调用任何生命周期函数，因为其依然可见，只是失去了操作焦点。</p>
+<p>但是你点击上方该应用的区域，也是无法回到 Resumed 状态的，因为 Split Screen 必须要由两个应用构成，点按 HOME 键后系统会认为你准备选取第二个应用来填充下方区域，所以此时你要么退出 Split Screen，要么选择应用，不可以单独让一个应用处于 Split Screen。</p>
+<figure data-type="image" tabindex="18"><img src="https://LiarrDev.github.io/post-images/1565604997571.gif" alt="Split Screen 时尝试调整单个应用" loading="lazy"></figure>
+<p>而处于下方的应用则如平常退到后台一样，如果处于 Paused 状态，则直接执行 <code>onStop()</code>，如果处于 Resumed 状态，则还需执行 <code>onPause()</code>。</p>
+<p>退出 Split Screen 时也分为两种小情况，即退出 Split Screen 后该应用是否处于界面上。</p>
+<p>当退出 Split Screen 时选择该应用在界面上活动，则和平时我们正常使用无差别：</p>
+<figure data-type="image" tabindex="19"><img src="https://LiarrDev.github.io/post-images/1565593206792.gif" alt="退出 Split Screen 且在前台" loading="lazy"></figure>
+<p>与进入 Split Screen 时相似，此时的 <code>Activity</code> 也同样进行了一次销毁重建：</p>
+<figure data-type="image" tabindex="20"><img src="https://LiarrDev.github.io/post-images/1565594612076.svg" alt="退出 Split Screen 且在前台时的生命周期" loading="lazy"></figure>
+<p>这个生命周期中有两个判断，是因为同时也有几种情况，我集中一起解说，第一个条件是判断想要处于前台的 <code>Activity</code> 在 Split Screen 时是否处于 Resumed 状态，即是否获取到用户的操作焦点，比较好理解，如果处于 Resumed 状态则需要先执行 <code>onPause()</code>，否则就不需要再执行；接下来就是一个销毁重建的过程，但是测试中意外发现也会出现两种情况，即一开始处于 Paused 状态的应用 <code>Activity</code> 在重建过后会执行两次 <code>onStart()</code> 和 <code>onResume()</code>，而一开始处于 Resumed 状态的应用 <code>Activity</code> 则不会，这就是第二个条件判断，对于此现象我暂时未找到解释的说法。</p>
+<p>当退出 Split Screen 时选择其他应用在界面上活动，此时我们的应用则处于后台：</p>
+<figure data-type="image" tabindex="21"><img src="https://LiarrDev.github.io/post-images/1565596076296.gif" alt="退出 Split Screen 处在后台" loading="lazy"></figure>
+<p>处在后台的应用 <code>Activity</code> 生命周期如下：</p>
+<figure data-type="image" tabindex="22"><img src="https://LiarrDev.github.io/post-images/1565596342516.svg" alt="退出 Split Screen 处在后台时的生命周期" loading="lazy"></figure>
+<p>跟我们正常情况下切换到后台也很相似，但还是要作判断，如果 <code>Activity</code> 处于 Resumed 状态则需先执行 <code>onPause()</code> 再执行 <code>onStop()</code>。</p>
+<p>但是，这样就结束了么？并不是。</p>
+<p>当你把该应用从后台再切回前台的时候就会发现，该 <code>Activity</code> 也同样执行了销毁重建：</p>
+<figure data-type="image" tabindex="23"><img src="https://LiarrDev.github.io/post-images/1565596845333.svg" alt="退出 Split Screen 处在后台并回到前台时的生命周期" loading="lazy"></figure>
+<p>与上面处于前台的 <code>Activity</code> 不同，这里不会根据条件判断是否需要执行两次 <code>onStart()</code> 和 <code>onResume()</code>。</p>
+<ol start="10">
+<li>强制退出当前应用会执行哪些生命周期函数？</li>
+</ol>
+<p>虽然原生 Android 似乎没有提供强制退出当前应用的方法，但很多国内的 ROM 都定制了该功能，如 MIUI 可以设定长按 BACK 键强制关闭等。</p>
+<figure data-type="image" tabindex="24"><img src="https://LiarrDev.github.io/post-images/1564145133442.png" alt="MIUI 长按 BACK 键强制退出" loading="lazy"></figure>
+<p>Android 9.0 的测试中发现强制退出当前应用时调用了 <code>onPause()</code>，而后面的函数没有调用，这个问题属于边界问题，实际上 <code>onPause()</code> 也不一定会调用，因为强制退出应用实际上是直接从系统中 Kill 掉应用所在的进程，进程不在了，<code>Activity</code> 也就无法监听到生命周期的变化。</p>
+<ol start="11">
+<li>从最近任务中结束应用会执行哪些生命周期函数？</li>
+</ol>
+<p>前面提到呼出最近任务会调用 <code>onPause()</code> 和 <code>onStop()</code>，那么在最近任务中结束应用呢？</p>
+<p>在 Android 9.0 的测试中见到，会调用 <code>onDestroy()</code>。</p>
+<ol start="12">
+<li>关机时当前应用会执行哪些生命周期函数？</li>
+</ol>
+<p>上面提到，长按 POWER 键是不会触发生命周期函数的，那么长按 POWER 键再选择关机呢？</p>
+<p>测试中显示会执行 <code>onPause()</code>、<code>onStop()</code> 和 <code>onSaveInstanceState()</code>，可以发现没有执行 <code>onDestroy()</code>，这个问题比较偏门，属于边界问题，个人认为也可能会产生多种情况。但基本情况下是如此的，它和我们强制退出当前应用比较相似，关机的时候从系统层将应用杀死，所以不会执行 <code>onDestroy()</code>。</p>
+<ol start="13">
+<li>当系统内存不足时，哪些 <code>Activity</code> 可能会被杀死？</li>
+</ol>
+<p>当系统内存不足时，优先级低的 <code>Activity</code> 会被杀死，而 <code>Activity</code> 优先级的划分和 <code>Activity</code> 的三种运行状态也是对应的。</p>
+<ul>
+<li>Resumed 状态的 <code>Activity</code> 优先级最高，它正在和用户交互。</li>
+<li>Paused 状态的 <code>Activity</code> 优先级稍低，它虽然不能和用户交互，但它依然可见。</li>
+<li>Stopped 状态的 <code>Activity</code> 优先级最低，它已完全不可见。</li>
+</ul>
+<p>当系统内存不足时，会按照上述优先级从低到高去杀死目标 <code>Activity</code> 所在的进程。我们在平常使用手机时，能经常感受到这一现象。这种情况下数组存储和恢复过程和上述情况一致，生命周期情况也一样。</p>
+<p>这里仅讨论 <code>Activity</code> 所在进程的优先级，其实该问题可以放大到应用进程中进行讨论，比如和 <code>Service</code> 的优先级比较等。</p>
+<hr>
+<p>简单做一个总结，我是这样理解：凡是涉及到当前 <code>Activity</code> 的变动，才会触发生命周期的函数，而涉及到系统级的事件不会导致 <code>Activity</code> 的生命周期变化，需要注意的是，虽然弹出 <code>AlertDialog</code> 依赖于 <code>Activity</code>，但实际上也有系统级的 <code>AlertDialog</code>，所以我把 <code>AlertDialog</code> 归类于系统级事件。</p>
+<p>该文大致回顾了 Android 中 <code>Activity</code> 的生命周期，它是每个 Android 开发者的基础知识，一定要掌握，掌握的目的，当然不是为了应付面试，而是为了在开发中更好的运用。</p>
+<p>毕竟根基不牢，再高的建筑也会倒塌。</p>
+<p>另外，我基于 <code>Activity</code> 的生命周期，开发了一款屏幕监视器——『<a href="https://github.com/LiarrDev/ScreenWatchdog_Android">Screen Watchdog</a>』，可以让你知道是否有人偷看了你的手机，有需要的话可以自取哟。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

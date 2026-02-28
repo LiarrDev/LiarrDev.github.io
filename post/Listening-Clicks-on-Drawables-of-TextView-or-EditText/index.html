@@ -1,0 +1,877 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Android 对 TextView 和 EditText 的 Drawable 监听点击 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="之前在『Android 为 TextView 和 EditText 添加 ICON』一文中介绍了如何为 TextView 和 EditText 添加 Drawable 作为指示，使交互更加友好，开发更方便，但仍遗留了一个问题，我们能否监听该..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Listening-Clicks-on-Drawables-of-TextView-or-EditText.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2021-04-13"><i class="fa fa-calendar"></i><span class="lately">5 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Listening-Clicks-on-Drawables-of-TextView-or-EditText/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Listening-Clicks-on-Drawables-of-TextView-or-EditText/"> </span>
+              </a>
+              <span id="/Listening-Clicks-on-Drawables-of-TextView-or-EditText/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">Android 对 TextView 和 EditText 的 Drawable 监听点击</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>之前在『<a href="https://liarrdev.github.io/post/Add-Icons-for-TextView-or-EditText-in-Android/">Android 为 TextView 和 EditText 添加 ICON</a>』一文中介绍了如何为 <code>TextView</code> 和 <code>EditText</code> 添加 <code>Drawable</code> 作为指示，使交互更加友好，开发更方便，但仍遗留了一个问题，我们能否监听该 <code>Drawable</code> 的点击事件？</p>
+<p>这是一个很常见的需求，比如在密码输入框中添加一个用于切换是否显示明文的按钮：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1563355131994.gif" alt="" loading="lazy"></figure>
+<p>你当然可以使用 <code>EditText</code> 加 <code>ImageButton</code> 组合的方式，这不在本文的讨论范围内。</p>
+<p>那么 <code>TextView</code> 或者是继承自 <code>TextView</code> 的 <code>EditText</code> 有没有提供监听 <code>Drawable</code> 点击事件的方法呢？</p>
+<p>很遗憾，并没有。</p>
+<p>因此，我们需要自己去实现对应的点击逻辑。</p>
+<p>如果你上网搜索对应的内容，介绍的文章真不少，你复制下来到自己的项目上运行，效果或许也的确能够达到你的预期，但我这里要泼个冷水，你拷贝的这份代码很可能是错的——这是我踩过的坑。</p>
+<p>其实原理大家都懂，就是实现上可能会忽略一些细节。</p>
+<p>我简单先说下原理：</p>
+<p>假如我们能够测量出 <code>Drawable</code> 在控件内的区域，就可以对该区域内的触摸事件作监听，也就能够实现监听点击事件的效果。</p>
+<p>而难点，恰好就在于如何测量出 <code>Drawable</code> 所在区域，这也是网上很多文章犯错的地方。</p>
+<p>由几何知识可以知道，在二维平面中，只要确定了 2 个顶点的坐标，以这两个顶点分别向两坐标轴作垂线就可以绘制出一个矩形区域。需要明确的是，在 Android 中坐标点的计算和我们在数学上不太相同，Android 中坐标原点为左上角顶点，往右为 X 轴正方向，往下为 Y 轴正方向。</p>
+<p>接下来只需画个图就能清楚明了。</p>
+<p>以 <code>DrawableLeft</code> 为例：</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1618149375304.png" alt="" loading="lazy"></figure>
+<p><code>DrawableLeft</code> 在 X 轴方向上的距离很容易计算，其左侧与 Y 轴的距离实际上就是该 <code>View</code> 的 <code>PaddingLeft</code>，其右侧与 Y 轴的距离就是 <code>PaddingLeft</code> 和该 <code>Drawable</code> 的宽度之和。</p>
+<p>但 <code>DrawableLeft</code> 在 Y 轴方向上的距离要稍微复杂一些，因为它会受到 <code>DrawableTop</code> 以及文字区域高度的影响，所以我们不能够直接获取。</p>
+<p>这里解释一下，<code>DrawableTop</code> 的影响应该很好理解，也很好处理；文字区域高度的影响，是指不包含 <code>Drawable</code> 的实际文字区域，当文字区域的高度高于 <code>DrawableLeft</code> 的高度时，我们如果不进行计算，获取到的高度可能会比实际上要高，这会造成我们测量出来的区域比实际区域要大。</p>
+<p>计算的方法也不难，我们只需要获取到 <code>DrawableLeft</code> 中心在 Y 轴方向上的位置，再增减 <code>Drawable</code> 本身一半的高度，即可得到其上下边界到 X 轴的距离。</p>
+<p>这样我们就把 <code>DrawableLeft</code> 所在区域计算出来了，同理 <code>DrawableTop</code> 也能够使用相同的方法计算。</p>
+<p>接下来就是 <code>DrawableRight</code>：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1618149402155.png" alt="" loading="lazy"></figure>
+<p><code>DrawableRight</code> 右侧在 X 轴方向上的距离实际上就是该 <code>View</code> 的总宽度与 <code>PaddingRight</code> 之差，其左侧在 X 轴方向上的距离就是其右侧在 X 轴方向的距离与该 <code>Drawable</code> 的宽度之差。</p>
+<p><code>DrawableRight</code> 在 Y 轴方向上的距离与 <code>DrawableLeft</code> 的计算方式无异，不再赘述。</p>
+<p>用同样的方法，我们也能够计算出 <code>DrawableBottom</code> 的区域。</p>
+<p>原理介绍完了，就该上代码了，为了更好的封装，我们可以自定义 <code>View</code> 来实现，以 <code>TextView</code> 为例：</p>
+<pre><code class="language-Java">public class DrawableTextView extends AppCompatTextView {
+
+    final int DRAWABLE_LEFT = 0;
+    final int DRAWABLE_TOP = 1;
+    final int DRAWABLE_RIGHT = 2;
+    final int DRAWABLE_BOTTOM = 3;
+
+    Drawable mDrawableLeft, mDrawableTop, mDrawableRight, mDrawableBottom;
+
+    public DrawableTextView(@NonNull Context context) {
+        super(context);
+    }
+
+    public DrawableTextView(@NonNull Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    public DrawableTextView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) { 
+        super(context, attrs, defStyleAttr);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (onDrawableClickListener != null) {
+                mDrawableLeft = getCompoundDrawables()[DRAWABLE_LEFT];
+                mDrawableTop = getCompoundDrawables()[DRAWABLE_TOP];
+                mDrawableRight = getCompoundDrawables()[DRAWABLE_RIGHT];
+                mDrawableBottom = getCompoundDrawables()[DRAWABLE_BOTTOM];
+                if (touchDrawableLeft(event)) {
+                    onDrawableClickListener.onDrawableLeftClick();
+                }
+                if (touchDrawableTop(event)) {
+                    onDrawableClickListener.onDrawableTopClick();
+                }
+                if (touchDrawableRight(event)) {
+                    onDrawableClickListener.onDrawableRightClick();
+                }
+                if (touchDrawableBottom(event)) {
+                    onDrawableClickListener.onDrawableBottomClick();
+                }
+            }
+        }
+        return super.onTouchEvent(event);
+    }
+
+    private boolean touchDrawableLeft(MotionEvent event) {
+        if (mDrawableLeft == null) {
+            return false;
+        }
+        int drawableHeight = mDrawableLeft.getIntrinsicHeight();
+        int drawableWidth = mDrawableLeft.getIntrinsicWidth();
+        int topOfDrawable = getCompoundPaddingTop();
+        int bottomOfDrawable = getHeight() - getCompoundPaddingBottom();
+        double drawableCenterY = 0.5 * (bottomOfDrawable - topOfDrawable) + topOfDrawable;
+        Rect bounds = new Rect(getPaddingLeft(),
+                (int) (drawableCenterY - 0.5 * drawableHeight),
+                getPaddingLeft() + drawableWidth,
+                (int) (drawableCenterY + 0.5 * drawableHeight)
+        );
+        return bounds.contains((int) event.getX(), (int) event.getY());
+    }
+
+    private boolean touchDrawableTop(MotionEvent event) {
+        if (mDrawableTop == null) {
+            return false;
+        }
+        int drawableHeight = mDrawableTop.getIntrinsicHeight();
+        int drawableWidth = mDrawableTop.getIntrinsicWidth();
+        int leftOfDrawable = getCompoundPaddingLeft();
+        int rightOfDrawable = getWidth() - getCompoundPaddingRight();
+        double drawableCenterX = 0.5 * (rightOfDrawable - leftOfDrawable) + leftOfDrawable;
+        Rect bounds = new Rect((int) (drawableCenterX - 0.5 * drawableWidth),
+                getPaddingTop(),
+                (int) (drawableCenterX + 0.5 * drawableWidth),
+                getPaddingTop() + drawableHeight);
+        return bounds.contains((int) event.getX(), (int) event.getY());
+    }
+
+    private boolean touchDrawableRight(MotionEvent event) {
+        if (mDrawableRight == null) {
+            return false;
+        }
+        int drawableHeight = mDrawableRight.getIntrinsicHeight();
+        int drawableWidth = mDrawableRight.getIntrinsicWidth();
+        int topOfDrawable = getCompoundPaddingTop();
+        int bottomOfDrawable = getHeight() - getCompoundPaddingBottom();
+        double drawableCenterY = 0.5 * (bottomOfDrawable - topOfDrawable) + topOfDrawable;
+        Rect bounds = new Rect(getWidth() - getPaddingRight() - drawableWidth,
+                (int) (drawableCenterY - 0.5 * drawableHeight),
+                getWidth() - getPaddingRight(),
+                (int) (drawableCenterY + 0.5 * drawableHeight));
+        return bounds.contains((int) event.getX(), (int) event.getY());
+    }
+
+    private boolean touchDrawableBottom(MotionEvent event) {
+        if (mDrawableBottom == null) {
+            return false;
+        }
+        int drawHeight = mDrawableBottom.getIntrinsicHeight();
+        int drawWidth = mDrawableBottom.getIntrinsicWidth();
+        int leftOfDrawable = getCompoundPaddingLeft();
+        int rightOfDrawable = getWidth() - getCompoundPaddingRight();
+        double drawableCenterX = 0.5 * (rightOfDrawable - leftOfDrawable) + leftOfDrawable;
+        Rect bounds = new Rect((int) (drawableCenterX - 0.5 * drawWidth),
+                getHeight() - getPaddingBottom() - drawHeight,
+                (int) (drawableCenterX + 0.5 * drawWidth),
+                getHeight() - getPaddingBottom());
+        return bounds.contains((int) event.getX(), (int) event.getY());
+    }
+
+    public interface OnDrawableClickListener {
+        void onDrawableLeftClick();
+        void onDrawableTopClick();
+        void onDrawableRightClick();
+        void onDrawableBottomClick();
+    }
+
+    private OnDrawableClickListener onDrawableClickListener;
+
+    public void setOnDrawableClickListener(OnDrawableClickListener listener) {
+        this.onDrawableClickListener = listener;
+    }
+}
+</code></pre>
+<p>代码不短，但我们理解了上面的原理之后也很容易看懂。</p>
+<p>我在这里定义了一个 <code>OnDrawableClickListener</code> 接口，用于分别回调 <code>TextView</code> 四个方向上的点击事件。</p>
+<p>重点内容在重写的 <code>onTouchEvent()</code> 方法内，这个方法用于监听 <code>TextView</code> 的触摸事件。在该方法内，首先通过 <code>getCompoundDrawables()</code> 方法获取到 <code>Drawable</code> 数组，并通过下标分别拿到四个方向上的 <code>Drawable</code> 对象。紧接着判断触摸事件是否落在对应的 <code>Drawable</code> 区域内，然后回调给 <code>OnDrawableClickListener</code>。</p>
+<p>触摸区域的判断就根据上面原理写就可以了，解释下几个方法。</p>
+<p><code>getIntrinsicWidth()</code> 和 <code>getIntrinsicHeight()</code> 分别用于获取当前 <code>Drawable</code> 对象的宽高。</p>
+<p><code>getCompoundPaddingLeft()</code> 获取的则是 <code>TextView</code> 左边界到文字实际显示区域的距离，我们可以看下源码：</p>
+<pre><code class="language-Java">/**
+ * Returns the left padding of the view, plus space for the left Drawable if any.
+ */
+public int getCompoundPaddingLeft() {
+    final Drawables dr = mDrawables;
+    if (dr == null || dr.mShowing[Drawables.LEFT] == null) {
+        return mPaddingLeft;
+    } else {
+        return mPaddingLeft + dr.mDrawablePadding + dr.mDrawableSizeLeft;
+    }
+}
+</code></pre>
+<p>也就是说，当 <code>DrawableLeft</code> 不存在时，它取得的值是 <code>PaddingLeft</code>，而当 <code>DrawableLeft</code> 存在时，它取得的值是 <code>PaddingLeft</code>、<code>DrawableLeft</code> 的宽度、<code>DrawablePadding</code> 三者之和。其他方向也同理。</p>
+<p>回到刚刚还没解释的问题，当我们知道了文字显示区域距离坐标轴的距离时，<code>Drawable</code> 的中心点也就可以计算出来了。</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1618149477448.png" alt="" loading="lazy"></figure>
+<p>你可能会有疑问，『<a href="https://liarrdev.github.io/post/Add-Icons-for-TextView-or-EditText-in-Android/">Android 为 TextView 和 EditText 添加 ICON</a>』一文不是提到可以通过设置 <code>Gravity</code> 来指定内部元素的对齐方式，那会不会影响到 <code>Drawable</code> 位置的计算？</p>
+<p>并不会，因为 <code>Gravity</code> 实际上指定的是文字在文字区域内的显示位置，而不是 <code>Drawable</code> 的位置，即 <code>Drawable</code> 的位置相对于文字区域来说，依然是居中的，所以我们通过文字区域来计算 <code>Drawable</code> 的中心点仍旧可行。</p>
+<p>最后，我们将 <code>Drawable</code> 所在的矩形区域计算出来，并判断触摸事件在该 <code>View</code> 上的落点是否在 <code>Drawable</code> 的矩形区域内，就能够判断该 <code>Drawable</code> 是否被点击。</p>
+<p>这个自定义的控件写完后，只需替换原来的 <code>TextView</code> 即可，属性与原来无异。</p>
+<p>对于继承自 <code>TextView</code> 的 <code>EditText</code> 也同理，使用上面的自定义方法同样适用。</p>
+<p>我这里就使用自定义的 <code>EditText</code> 来写一下文章开头的密码显隐功能。</p>
+<p>首先替换布局文件中原来的 <code>EditText</code> 控件：</p>
+<pre><code class="language-XML">&lt;com.example.DrawableEditText
+    android:id=&quot;@+id/password&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    android:drawableRight=&quot;@drawable/ic_eye_off&quot;
+    android:inputType=&quot;textPassword&quot; /&gt;
+</code></pre>
+<p>在逻辑代码中响应其点击事件：</p>
+<pre><code class="language-Java">private boolean passwordVisible = false;
+
+void switchPasswordVisibility(final DrawableEditText editText) {
+    editText.setOnDrawableClickListener(new DrawableEditText.OnDrawableClickListener() {
+        @Override
+        public void onDrawableLeftClick() {}
+
+        @Override
+        public void onDrawableTopClick() {}
+
+        @Override
+        public void onDrawableRightClick() {
+            Drawable drawable;
+            if (passwordVisible) {
+                drawable = getResources().getDrawable(R.drawable.ic_eye_off);
+//              editText.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
+                editText.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            } else {
+                drawable = getResources().getDrawable(R.drawable.ic_eye_on);
+//              editText.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                editText.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            }
+            passwordVisible = !passwordVisible;
+            drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+            editText.setCompoundDrawables(null, null, drawable, null);
+        }
+
+        @Override
+        public void onDrawableBottomClick() {}
+    });
+}
+</code></pre>
+<p>因为只设置了 <code>DrawableRight</code>，所以这里只需要写入 <code>DrawableRight</code> 的事件即可。</p>
+<p>效果如下：</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1563361469785.gif" alt="" loading="lazy"></figure>
+<p>虽然我们在 <code>EditText</code> 的控件属性中常用 <code>android:inputType</code> 属性来设置其为密码的样式，但在这里并不建议使用 <code>setInputType()</code> 方法来作更改，而是使用 <code>setTransformationMethod()</code> 方法，主要是因为 <code>setInputType()</code> 方法有两个坑。</p>
+<p>其一，密码从可见状态切回密文状态时，我们以在控件属性中使用的经验，一般会将其设置为：</p>
+<pre><code class="language-Java">editText.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+</code></pre>
+<p>但是运行之后你会发现，并不会生效：</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1563362680037.gif" alt="" loading="lazy"></figure>
+<p>可以看我上方注释掉的代码中需要同时设置两个属性才能生效：</p>
+<pre><code class="language-Java">editText.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
+</code></pre>
+<p>对应控件属性中的：</p>
+<pre><code class="language-XML">&lt;EditText
+    ...
+    android:inputType=&quot;textPassword&quot; /&gt;
+</code></pre>
+<p>因为 <code>textPassword</code> 对应的 <code>InputType</code> 的值为 <code>129</code>，而 <code>InputType.TYPE_TEXT_VARIATION_PASSWORD</code> 对应的值是 <code>128</code>，所以很明显需要和值为 <code>1</code> 的 <code>InputType.TYPE_CLASS_TEXT</code> 做按位或运算。</p>
+<p>其二，使用 <code>setInputType()</code> 方法转换后会出现样式不一的情况：</p>
+<figure data-type="image" tabindex="7"><img src="https://LiarrDev.github.io/post-images/1563362022713.gif" alt="" loading="lazy"></figure>
+<p>可以见到，当切换为密文状态时，点和点之间的距离增大了，与默认样式不统一，会造成用户困扰。</p>
+<p>而使用 <code>setTransformationMethod()</code> 就可以避免上面的情况。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/A-Brief-Overview-of-Hosts.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/A-Brief-Overview-of-Hosts/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2021-04-23">2021-04-23</time>
+                  <h4 class="title white no-margin">一文带你简单了解 Hosts</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Add-Icons-for-TextView-or-EditText-in-Android.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Add-Icons-for-TextView-or-EditText-in-Android/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2021-03-16">2021-03-16</time>
+                  <h4 class="title white no-margin">Android 为 TextView 或 EditText 添加 ICON</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

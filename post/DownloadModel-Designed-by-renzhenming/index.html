@@ -1,0 +1,786 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>@任振铭 的 DownloadModel | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="最近在做一个类似应用商店的项目，需要做大文件下载。
+一开始我基于 OkHttp 和 AsyncTask 实现了一个下载器，并且爬取其他应用商店内的应用下载链接测试成功了，但是当接入到我们自己的后台时，却发现并不能下载成功，会出现下载到某一个..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/DownloadModel-Designed-by-renzhenming.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2020-08-20"><i class="fa fa-calendar"></i><span class="lately">6 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/DownloadModel-Designed-by-renzhenming/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/DownloadModel-Designed-by-renzhenming/"> </span>
+              </a>
+              <span id="/DownloadModel-Designed-by-renzhenming/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">@任振铭 的 DownloadModel</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>最近在做一个类似应用商店的项目，需要做大文件下载。</p>
+<p>一开始我基于 <code>OkHttp</code> 和 <code>AsyncTask</code> 实现了一个下载器，并且爬取其他应用商店内的应用下载链接测试成功了，但是当接入到我们自己的后台时，却发现并不能下载成功，会出现下载到某一个不确定的进度后，网速骤降，下载停止，并等待一个超时的时间后，下载失败。<code>OkHttp</code> 抛出一个异常：</p>
+<pre><code>W/System.err: java.net.ProtocolException: unexpected end of stream
+W/System.err:     at okhttp3.internal.http1.Http1ExchangeCodec$FixedLengthSource.read(Http1ExchangeCodec.kt:371)
+W/System.err:     at okhttp3.internal.connection.Exchange$ResponseBodySource.read(Exchange.kt:276)
+W/System.err:     at okio.RealBufferedSource$inputStream$1.read(RealBufferedSource.kt:158)
+W/System.err:     at java.io.InputStream.read(InputStream.java:101)
+W/System.err:     at ...
+</code></pre>
+<p>这里看样子是 <code>Okio</code> 的异常，因为 <code>OkHttp</code> 底层网络连接是使用 <code>Socket</code>，连接成功后则通过 <code>Okio</code> 库与远程 <code>Socket</code> 建立了 I/O 连接。</p>
+<p>我在国内的技术论坛上找了一圈，能尝试的方法都用遍了，依然不行，于是上『Github』和『Stack Overflow』寻求答案，发现这个问题依然没有个最终的解决方法，甚至『Github』的 <code>OkHttp</code> 和 <code>Okio</code> 项目下已经有数个这样的 Issue 了，但在以 PHP 为后台的项目中复现率较高，且很有可能是服务端的问题。</p>
+<p>不信邪的我拿了其他测试机过来测试后发现，在华为手机上失败率极高，其他手机则基本正常，这样看来应该是 EMUI 对 ROM 做了魔改的问题了，但是，当我使用华为手机切换至数据流量进行下载时，下载却成功了，连接网速快的 Wi-Fi 也能下载成功，因为公司的网络有做限速处理，当下载到某一进度后，下载停止，等待一个超时的时间即下载失败。</p>
+<p>我个人猜测是服务器有一个定时断开连接的设置，当到达这个时间点时，客户端与服务端的连接断开了，然后客户端继续等待，直至超时，抛出异常，而使用数据流量或者网速快的 Wi-Fi 时，由于下载时间短了，那么就相对没有这么容易到达断开连接的时间点，所以就能够下载成功。</p>
+<p>于是去找我们的 PHP 大佬聊聊，大佬也没头绪，无奈，只能先更换我这边的下载方式了。重新调整了下载模块，改用 Android SDK 中的 <code>DownloadManager</code>，这就相当于把下载的实现交给了系统，我这边就不需要管这么多了。</p>
+<p>测试发现该方式更加不稳定，经常下着下着用于显示进度的 <code>Notification</code> 就不见了，然后过一段时间后又弹出继续下载，我猜测这种情况可能跟我自己实现的类似，但是 <code>DownloadManager</code> 可能默认有断线重连的机制，所以就会出现这种情况。</p>
+<p>尽管有了断线重连，不过 <code>Notification</code> 的消失对用户来说这并不是好的交互，最终放弃该方案，转而寻找网上开源的下载器方案。</p>
+<p>Android 开源的下载器似乎并不多，我只知道 LAIX（流利说，没错，就是那个『英语流利说』App 的公司）开源的 <code>OkDownload</code>，<code>OkDownload</code> 的前身其实是 <code>FileDownloader</code>，至于改名 <code>OkDownload</code>，是跟 Square 叫板还是……</p>
+<p>但 <code>OkDownload</code> 对于我的项目似乎又太过笨重，于是我又开始寻找别的替代方案，无意中就发现了 <a href="https://www.jianshu.com/u/9c4d1d2f0f27">@任振铭</a> 的 <code>DownloadModel</code>。</p>
+<p>不得不说的是，<a href="https://www.jianshu.com/u/9c4d1d2f0f27">@任振铭</a> 的 <code>DownloadModel</code> 的 README 文档真是太烂了，我使用的时候，已经更新到了 V1.0.5，但文档却还是基于 V1.0.2，而且还涉及到了 API 的变更，因此我不得不把源码扒下来才搞懂使用的方法。</p>
+<p>先基于 V1.0.5 简单说一下用法吧。</p>
+<p>首先在 Project 的「build.gradle」中配置 JitPack 仓库：</p>
+<pre><code class="language-Groovy">allprojects {
+    repositories {
+        ...
+        maven { url 'https://www.jitpack.io' }
+    }
+}
+</code></pre>
+<p>然后在 Module 的「build.gradle」中添加依赖：</p>
+<pre><code class="language-Groovy">dependencies {
+    ...
+    implementation 'com.github.renzhenming:DownloadModel:(insert latest version)'
+}
+</code></pre>
+<p>启动下载任务时：</p>
+<pre><code class="language-Java">DownloadManager.getInstance(context).download(new DownloadInfo.Builder()
+        .setDownloadUrl(url)
+        .setUniqueKey(uniqueKey)
+        .setName(name)
+        .build());
+</code></pre>
+<p>获取单例后调用 <code>download()</code> 方法进行下载，接收一个封装了下载信息的 <code>DownloadInfo</code> 参数，且会根据 <code>DownloadInfo</code> 中的 <code>uniqueKey</code> 来判断下载任务，由于库内有 MD5 的工具类，所以我一般将其设置为下载地址的 MD5 值。</p>
+<p>如需暂停下载任务：</p>
+<pre><code class="language-Java">DownloadManager.getInstance(context).pause(uniqueKey);
+</code></pre>
+<p>根据 <code>uniqueKey</code> 来暂停相应的下载任务即可。</p>
+<p>除了我们封装的下载信息外，<code>DownloadInfo</code> 中还会包含一些下载时的其他信息，比如下载状态和下载进度等，我们也可以根据 <code>uniqueKey</code> 来获取：</p>
+<pre><code class="language-Java">DownloadInfo downloadInfo = DownloadManager.getInstance(context).getDownloadInfo(uniqueKey);
+if (downloadInfo != null) {
+    float progress = downloadInfo.getProgress();
+    int currentState = downloadInfo.getCurrentState();
+    ...
+}
+</code></pre>
+<p>最重要的，我们需要监听下载进度，就注册一个 <code>Observer</code>：</p>
+<pre><code class="language-Java">DownloadManager.getInstance(context).registerObserver(new DownloadManager.DownloadObserver() {
+    @Override
+    public void onDownloadStateChanged(DownloadInfo info) {
+        if (info.getDownloadUrl().equals(downloadUrl)) {
+            ...
+        }
+    }
+});
+</code></pre>
+<p>但是一般不会采取匿名类的方式，而是在最外层的类中 <code>implements</code> 这个 <code>DownloadManager.DownloadObserver</code> 接口：</p>
+<pre><code class="language-Java">public class ClassName implements DownloadManager.DownloadObserver {
+    ...
+    @Override
+    public void onDownloadStateChanged(DownloadInfo info) {
+        if (info.getDownloadUrl().equals(downloadUrl)) {
+            ...
+        }
+    }
+}
+</code></pre>
+<p>并在需要注册监听的位置调用：</p>
+<pre><code class="language-Java">DownloadManager.getInstance(context).registerObserver(this);
+</code></pre>
+<p>这样我们如果需要移除监听，就可以直接调用：</p>
+<pre><code class="language-Java">DownloadManager.getInstance(context).unregisterObserver(this);
+</code></pre>
+<p>下载的文件位置为 <code>/内部存储/download_asset/</code> 目录下。</p>
+<p>假如使用它来下载 Apk 文件，我们还可以使用其提供的 API 来跳转安装：</p>
+<pre><code class="language-Java">DownloadManager.getInstance(context).install(context, uniqueKey);
+</code></pre>
+<p>跳转安装应用需要配置以下权限：</p>
+<pre><code class="language-XML">&lt;uses-permission android:name=&quot;android.permission.REQUEST_INSTALL_PACKAGES&quot; /&gt;
+</code></pre>
+<p>为了适配 Android 7.0（Nougat，API Level 24）的应用间文件共享，还需要配置在「AndroidManifest.xml」中配置：</p>
+<pre><code class="language-XML">&lt;application ...&gt;
+    ...
+    &lt;provider
+        android:name=&quot;androidx.core.content.FileProvider&quot;
+        android:authorities=&quot;${applicationId}.download.fileprovider&quot;
+        android:exported=&quot;false&quot;
+        android:grantUriPermissions=&quot;true&quot;&gt;
+        &lt;meta-data
+            android:name=&quot;android.support.FILE_PROVIDER_PATHS&quot;
+            android:resource=&quot;@xml/filepath&quot; /&gt;
+    &lt;/provider&gt;
+&lt;/application&gt;
+</code></pre>
+<p>并新建 <code>/res/xml/filepath.xml</code> 文件：</p>
+<pre><code class="language-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;resources&gt;
+    &lt;paths&gt;
+        &lt;external-path
+            name=&quot;external_storage_root&quot;
+            path=&quot;.&quot; /&gt;
+        &lt;files-path
+            name=&quot;.&quot;
+            path=&quot;.&quot; /&gt;
+    &lt;/paths&gt;
+&lt;/resources&gt;
+</code></pre>
+<p>但是目前项目还没有兼容 Android Q（Quince Tart，Android 10，API Level 29）的分区存储，所以我也给项目提了个 Issue（还是这个<a href="https://github.com/renzhenming/DownloadModel/issues/1">项目的第一个 Issue</a> 呢），希望 <a href="https://www.jianshu.com/u/9c4d1d2f0f27">@任振铭</a> 后续会支持。</p>
+<p>那么目前来说，我们可以通过如下方式兼容 Android Q 的分区存储：</p>
+<pre><code class="language-XML">&lt;application ...
+    android:requestLegacyExternalStorage=&quot;true&quot;
+    tools:targetApi=&quot;q&quot;&gt;
+    ...
+&lt;/application&gt;
+</code></pre>
+<p><a href="https://www.jianshu.com/u/9c4d1d2f0f27">@任振铭</a> 的 <code>DownloadModel</code> 的基本用法就是这些，其实支持的功能也是不少的：</p>
+<ul>
+<li><strong>多线程下载</strong>：有些大文件下载的需求中，单线程下载无法满足对效率的追求，此时想尽可能多的利用硬件资源提高下载速度，那可以选择开启 2 个线程或 3 个线程甚至 10 个线程（只要你内核足够）来下载这一个文件，虽然效率不能说成倍提高，但是作用还是很明显的。</li>
+<li><strong>多文件下载</strong>：使用者不需要关心这么多情况，只需把每个下载链接都丢给下载器即可，下载器会告知下载状态，使用者根据状态来更新界面显示即可，其他的一切交给下载器来处理。使用者也可以自定义线程池来管理每一个下载任务，设置下载器的产能，这些接口都通过 <code>IThreadPool</code> 接口开放出来，自主性很高。</li>
+<li><strong>断点下载</strong>：断点下载算是一个基本的功能了。下载过程中用户可能主动停止下载，也可能是系统原因导致下载被迫中断，但是这些也不需要开发者去关心，需要做的依然是丢一个链接进去，其他的不用考虑。</li>
+<li><strong>自定义下载路径</strong>：每个项目下载的存储路径都是不同的，所以必须将下载路径的设置接口开放给使用者，不然这就不能称之为一个通用的框架，<code>IPath</code> 接口已经提供了支持。</li>
+<li><strong>自定义缓存管理</strong>：下载过程中的状态信息需要保存起来，以备后边使用，比如从缓存中拿到上次的下载节点来更新当前的下载进度，<code>ICache</code> 把缓存的读取和写入的能力提供给使用者，只需要实现这个接口，来处理自己的逻辑即可，当然如果图省事，也可以直接使用我默认的缓存工具。</li>
+<li><strong>线程池管理</strong>：每个项目选用的线程池策略也是各有不同的，有的需要单线程顺序下载，有的需要多线程并列执行，所以作者把线程池的接口也开放出来，给使用者自定义的能力，就是上文提到的 <code>IThreadPool</code> 接口。</li>
+<li><strong>开放的网络接口</strong>：项目里网络请求是直接通过 <code>HttpUrlConnection</code> 实现的，使用者可能希望通过其他第三方的开源网络框架实现，那么就可以自定义一个类实现 <code>IConnection</code> 接口来实现自己的网络。</li>
+</ul>
+<p>尽管上面已经做了介绍，但实际的使用我强烈建议参照 <a href="https://www.jianshu.com/u/9c4d1d2f0f27">@任振铭</a> 提供的 Demo，否则不一定能把这个框架使用得合理，尤其是在 <code>RecyclerView</code> 的列表中去下载，当然归根结底我认为是 API 的设计不够简单合理以及文档的不完善。</p>
+<p>还需要提个醒，假如在项目中想使用 <code>Notification</code> 来显示进度的话，建议做一层过滤，可以参照我的代码：</p>
+<pre><code class="language-Java">private void refreshNotification(float progress, int downloadState, String downloadUrl) {
+    ...
+    switch (downloadState) {
+        case DownloadInfo.STATE_DOWNLOAD:
+            if ((int) (progress * 100) &gt; mProgress) {
+                mProgress = (int) (progress * 100);
+                // 刷新 Notification 更新 Progress
+            }
+            break;
+        ...
+    }
+}
+</code></pre>
+<p>因为监听的进度更新极快，几毫秒就能收到一次进度的回调，进度精确到小数点后 7 位，当文件较大时，有可能几秒钟内进度的前两位小数基本不会有变化，而频繁的无用更新会导致整个 App 卡顿，所以我们可以做过滤，只有在前两位小数有变更时才去刷新 <code>Notification</code>。</p>
+<p>想了解更多关于该库的实现可以前往其<a href="https://github.com/renzhenming/DownloadModel">项目主页</a>。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Change-the-Partial-Style-within-Android-TextView.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Change-the-Partial-Style-within-Android-TextView/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2020-08-30">2020-08-30</time>
+                  <h4 class="title white no-margin">Android 改变 TextView 内局部样式</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Using-HttpClient-above-Android-P.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Using-HttpClient-above-Android-P/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2020-08-07">2020-08-07</time>
+                  <h4 class="title white no-margin">在 Android P 上使用 HttpClient</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

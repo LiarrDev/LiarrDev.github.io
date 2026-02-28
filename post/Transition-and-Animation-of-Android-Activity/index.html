@@ -1,0 +1,911 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Android Activity 转场动画 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="在 Android 开发中，Activity 的跳转是有默认的转场动画的，比如在国内的大多数 ROM 中，默认的 Activity 切换方式是从右往左进入，从左往右退出，这也是大多数 App 所使用的切换方式。
+但是，当有时候原型设计出来之..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Transition-and-Animation-of-Android-Activity.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2020-07-08"><i class="fa fa-calendar"></i><span class="lately">6 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Transition-and-Animation-of-Android-Activity/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Transition-and-Animation-of-Android-Activity/"> </span>
+              </a>
+              <span id="/Transition-and-Animation-of-Android-Activity/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">Android Activity 转场动画</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>在 Android 开发中，<code>Activity</code> 的跳转是有默认的转场动画的，比如在国内的大多数 ROM 中，默认的 <code>Activity</code> 切换方式是从右往左进入，从左往右退出，这也是大多数 App 所使用的切换方式。</p>
+<p>但是，当有时候原型设计出来之后，会发现这种方式并不那么合理，比如在『<a href="https://liarrdev.github.io/post/Android-QR-Code-Scanning-with-ZXing/">「ZXing」实现 Android 扫描二维码</a>』一文中可以看到，我把扫描按钮放在了底部导航栏的中央，那么左右切换的方式就有些违和了，所以我改成了从底部向上弹入。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1594451823332.gif" alt="从底部进出" loading="lazy"></figure>
+<p>那么该如何实现这种切换的方式呢？</p>
+<h1 id="编写动画文件">编写动画文件</h1>
+<p>虽然这个 Demo 是用 React Native 写的，但是由于扫描二维码的功能是使用原生 Android，所以这也是原生 Android 的实现方式。</p>
+<p>首先在「res」目录下新建一个文件夹「anim」，不难看出这是一个用于存放动画文件的文件夹，也就是「Animation」的缩写，在「anim」文件夹下新建 Animation Resource File，每一个动画都要匹配一个动画文件。</p>
+<p>比如我想要一个 <code>Activity</code> 的入场动画，我可以新建一个名为「anim_activity_open.xml」的动画文件，然后再在该文件内指定动画的效果。</p>
+<p>先来看从底部弹入 <code>Activity</code> 的实现：</p>
+<pre><code class="language-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;set xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
+    &lt;translate
+        android:duration=&quot;@android:integer/config_mediumAnimTime&quot;
+        android:fromYDelta=&quot;100%p&quot;
+        android:interpolator=&quot;@android:anim/decelerate_interpolator&quot;
+        android:toYDelta=&quot;0&quot; /&gt;
+&lt;/set&gt;
+</code></pre>
+<p>解释一下这几个属性的作用：</p>
+<ul>
+<li><code>android:duration</code>：动画运行的时间，单位是毫秒。</li>
+<li><code>android:fromYDelta</code>：动画起始时，Y 坐标上的位置。</li>
+<li><code>android:toYDelta</code>：动画结束时，Y 坐标上的位置。</li>
+<li><code>android:fromXDelta</code>：动画起始时，X 坐标上的位置。</li>
+<li><code>android:toYDelta</code>：动画结束时，X 坐标上的位置。</li>
+<li><code>android:interpolator</code>：用来修饰动画效果，定义动画的变化率，可以使动画效果 accelerated（加速）、decelerated（减速）、repeated（重复）、bounced（弹跳）等。</li>
+</ul>
+<p>不难理解，该动画实现的效果就是从 Y 轴 <code>100%p</code> 的位置开始，到 Y 轴 <code>0</code> 的位置结束，持续时间是 <code>500</code> 毫秒，并伴有加速效果。</p>
+<p>解释一下轴，只需记住，以屏幕左上角为坐标原点，与之相连的两端屏幕则为坐标轴，往右是 X 轴，往下是 Y 轴。取值可以有多种写法：</p>
+<ul>
+<li>数值（如 <code>50</code>）：表示 <code>View</code> 左上角坐标加上具体数值的像素。</li>
+<li>百分数（如 <code>50%</code>）：表示在当前 <code>View</code> 左上角坐标加上 <code>View</code> 宽度的具体百分比。</li>
+<li>父百分数（如 <code>50%p</code>）：表示在 <code>View</code> 左上角坐标加上父控件宽度的具体百分比。</li>
+</ul>
+<p>同理，从底部退出：</p>
+<pre><code class="language-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;set xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
+    &lt;translate
+        android:duration=&quot;@android:integer/config_mediumAnimTime&quot;
+        android:fromYDelta=&quot;0&quot;
+        android:interpolator=&quot;@android:anim/decelerate_interpolator&quot;
+        android:toYDelta=&quot;100%p&quot; /&gt;
+&lt;/set&gt;
+</code></pre>
+<p>从右边进入：</p>
+<pre><code class="language-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;set xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
+    &lt;translate
+        android:duration=&quot;@android:integer/config_mediumAnimTime&quot;
+        android:fromXDelta=&quot;100%p&quot;
+        android:interpolator=&quot;@android:anim/decelerate_interpolator&quot;
+        android:toXDelta=&quot;0&quot; /&gt;
+&lt;/set&gt;
+</code></pre>
+<p>其他就不一一详述了，参照修改即可。</p>
+<p>接下来就是调用，只需在启动和销毁 <code>Activity</code> 时调用相应的动画即可。</p>
+<p>比如，在调用 <code>startActivity()</code> 启动新的 <code>Activity</code> 时在后面添加一句代码即可：</p>
+<pre><code class="language-Java">startActivity(intent);
+overridePendingTransition(R.anim.anim_activity_open, 0);
+</code></pre>
+<p>其中，第一个参数是要启动的 <code>Activity</code> 的弹入动画，第二个参数是当前 <code>Activity</code> 的退出动画，当参数为 <code>0</code> 时表示无动画。</p>
+<p>在 <code>startActivityForResult()</code> 中也是同理：</p>
+<pre><code class="language-Java">startActivityForResult(intent, CODE);
+overridePendingTransition(R.anim.anim_activity_open, 0);
+</code></pre>
+<p>当销毁 <code>Activity</code> 时，则在重写的 <code>finish()</code> 方法中调用：</p>
+<pre><code class="language-Java">@Override
+public void finish() {
+    super.finish();
+    overridePendingTransition(0, R.anim.anim_activity_close);
+}
+</code></pre>
+<p>但是我在项目中偶尔会遇到退出 <code>Activity</code> 时短暂黑屏的情况，直至该 <code>Activity</code> 完全退出才会正常显示，比如我在上方设置了动画持续时长为 <code>0.5</code> 秒，那么就会有 <code>0.5</code> 秒的黑屏，这是很不好的体验。</p>
+<p>而后我发现新建一个动画可以避免这种情况，于是就有了「anim_activity_stay.xml」这个动画文件，虽说是“动画”，但实际上如其名所述，是一个“不动画”：</p>
+<pre><code class="language-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;set xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
+    &lt;translate
+        android:fromYDelta=&quot;0&quot;
+        android:toYDelta=&quot;0&quot;
+        android:duration=&quot;@android:integer/config_mediumAnimTime&quot; /&gt;
+&lt;/set&gt;
+</code></pre>
+<p>一目了然，起始位置与结束位置相同，即不产生移动。</p>
+<p>在调用时，则使用：</p>
+<pre><code class="language-Java">overridePendingTransition(R.anim.activity_stay, R.anim.activity_close);
+</code></pre>
+<p>这样就能够产生相同的效果。</p>
+<p>对了，Android 本身也自带了一些切换 <code>Activity</code> 的动画文件，可以让你省下造轮子的时间，如从屏幕左边切入，可以直接调用：</p>
+<pre><code class="language-Java">overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+</code></pre>
+<p>当然，官方自带的动画效果总是有限的，所以知道如何自定义也是十分重要的。</p>
+<p>接下来看看还有哪些效果。</p>
+<p>比如我们想实现 iOS 的缩放效果，进场动画可以这样写：</p>
+<pre><code class="language-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;set xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    android:interpolator=&quot;@android:anim/accelerate_interpolator&quot;&gt;
+    &lt;scale
+        android:duration=&quot;@android:integer/config_mediumAnimTime&quot;
+        android:fromXScale=&quot;2.0&quot;
+        android:fromYScale=&quot;2.0&quot;
+        android:pivotX=&quot;50%p&quot;
+        android:pivotY=&quot;50%p&quot;
+        android:toXScale=&quot;1.0&quot;
+        android:toYScale=&quot;1.0&quot; /&gt;
+&lt;/set&gt;
+</code></pre>
+<p><code>&lt;scale&gt;</code> 在这里就是用来实现缩放的，属性的作用如下：</p>
+<ul>
+<li><code>android:fromXScale</code>：起始 X 尺寸比例。</li>
+<li><code>android:fromYScale</code>：起始 Y 尺寸比例。</li>
+<li><code>android:pivotX</code>：缩放起点 X 轴坐标。</li>
+<li><code>android:pivotY</code>：缩放起点 Y 轴坐标。</li>
+<li><code>android:toXScale</code>：最终 X 尺寸比例。</li>
+<li><code>android:toYScale</code>：最终 Y 尺寸比例。</li>
+</ul>
+<p>再来写个退场动画：</p>
+<pre><code class="language-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;set xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    android:interpolator=&quot;@android:anim/decelerate_interpolator&quot;
+    android:zAdjustment=&quot;top&quot;&gt;
+    &lt;scale
+        android:duration=&quot;@android:integer/config_mediumAnimTime&quot;
+        android:fromXScale=&quot;1.0&quot;
+        android:fromYScale=&quot;1.0&quot;
+        android:pivotX=&quot;50%p&quot;
+        android:pivotY=&quot;50%p&quot;
+        android:toXScale=&quot;0.5&quot;
+        android:toYScale=&quot;0.5&quot; /&gt;
+    &lt;alpha
+        android:duration=&quot;@android:integer/config_mediumAnimTime&quot;
+        android:fromAlpha=&quot;1.0&quot;
+        android:toAlpha=&quot;0&quot; /&gt;
+&lt;/set&gt;
+</code></pre>
+<p>相比进场动画，这里还增加了一个 <code>&lt;alpha&gt;</code> 标签，用于改变透明度，属性作用如下：</p>
+<ul>
+<li><code>android:fromAlpha</code>：动画开始的透明度。</li>
+<li><code>android:toAlpha</code>：动画结束的透明度。</li>
+</ul>
+<p>这两个属性的取值为 <code>0.0</code> ~ <code>1.0</code>，<code>0.0</code> 表示完全透明，<code>1.0</code> 表示保持原有状态不变。</p>
+<p>最外层的 <code>&lt;set&gt;</code> 标签我还增加了一个属性：</p>
+<ul>
+<li><code>android:zAdjustment</code>：允许在动画播放期间，调整播放内容在 Z 轴方向的顺序。</li>
+</ul>
+<p>取值有三：</p>
+<ul>
+<li><code>normal</code>（0）：正在播放的动画内容保持当前的 Z 轴顺序。</li>
+<li><code>top</code>（1）：在动画播放期间，强制把当前播放的内容放到其他内容的上面。</li>
+<li><code>bottom</code>（-1）：在动画播放期间，强制把当前播放的内容放到其他内容之下。</li>
+</ul>
+<p>调用也是相同：</p>
+<pre><code class="language-Java">overridePendingTransition(R.anim.anim_zoom_in, R.anim.anim_zoom_out);
+</code></pre>
+<p>效果如下：</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1562500471844.gif" alt="Zoom In &amp; Zoom Out" loading="lazy"></figure>
+<h1 id="android-l-的过渡效果">Android L 的过渡效果</h1>
+<p>上面的切换动画基本上可以满足日常中对 <code>Activity</code> 跳转的需求了，但是总体来说还是相对比较平淡，符合用户习惯，但不惊艳。</p>
+<p><strong>Android 5.0</strong> 之后，Material Design 为 Android 注入了更加炫酷的过渡，通过其可以实现更加优秀的动画效果。</p>
+<h2 id="explode">Explode</h2>
+<p>首先在「res」目录下新建一个文件夹「transition」，然后建一个 Transition Resource File，如「explode.xml」：</p>
+<pre><code class="language-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;explode xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    android:duration=&quot;1000&quot; /&gt;
+</code></pre>
+<p>太简单了就不多解释了，接下来在<strong>要启动的</strong> <code>Activity</code> 中加入如下代码：</p>
+<pre><code class="language-Java">@Override
+protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_explode);
+    if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.LOLLIPOP) {
+        Transition explode = TransitionInflater.from(this).inflateTransition(R.transition.explode);
+        getWindow().setEnterTransition(explode);
+    }
+}
+</code></pre>
+<p>用 <code>Transition</code> 类初始化动画文件后调用 <code>Window</code> 的 <code>setEnterTransition()</code> 方法设置进去即可。</p>
+<p>启动 <code>Activity</code> 的方式稍微有点区别，如下：</p>
+<pre><code class="language-Java">if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.LOLLIPOP) {
+    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(activityContext).toBundle());
+} else {
+    startActivity(intent);
+}
+</code></pre>
+<p><code>startActivity()</code> 的第二参数是用 <code>makeSceneTransitionAnimation()</code> 方法创建的 <code>ActivityOptions</code> 转成的 <code>Bundle</code> 对象，且 <code>makeSceneTransitionAnimation()</code> 方法的参数必须为 <code>Activity</code>，不能是其他 <code>Context</code>。</p>
+<p>另外，由于该过渡动画是从 API 21 引入的，所以如果项目的 <code>minSdkVersion</code> 小于 <code>21</code> 的话要加入上方的判断逻辑。</p>
+<p>效果如下：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1562500527863.gif" alt="Explode" loading="lazy"></figure>
+<h2 id="slide">Slide</h2>
+<p>使用方法相似，建一个 Transition Resource File，如「slide.xml」：</p>
+<pre><code class="language-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;slide xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    android:duration=&quot;1000&quot;
+    android:interpolator=&quot;@android:interpolator/decelerate_cubic&quot;
+    android:slideEdge=&quot;end&quot;&gt;
+    &lt;targets&gt;
+        &lt;target android:excludeId=&quot;@android:id/statusBarBackground&quot; /&gt;
+    &lt;/targets&gt;
+&lt;/slide&gt;
+</code></pre>
+<p>解释一下属性：</p>
+<ul>
+<li><code>android:interpolator</code>：属性设置插值器，用来控制滑动速度。</li>
+<li><code>android:slideEdge</code>：滑动方向。有 4 个值：
+<ul>
+<li><code>end</code>：根据地区使用习惯不同，中国一般在右侧。</li>
+<li><code>start</code>：根据地区使用习惯不同，中国一般在左侧。</li>
+<li><code>top</code>：顶部。</li>
+<li><code>bottom</code>：底部。</li>
+</ul>
+</li>
+</ul>
+<p>默认情况下顶部的状态栏也会执行动画，可以使用 <code>&lt;target&gt;</code> 标签忽略，<code>android:excludeId</code> 属性的值就是忽略的控件的 ID，如果需要忽略多个 <code>View</code>，则在 <code>&lt;targets&gt;</code> 组内继续添加即可。</p>
+<p>调用方法也相似，不贴代码了，直接看效果：</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1562500541662.gif" alt="Slide" loading="lazy"></figure>
+<h2 id="fade">Fade</h2>
+<p>使用方法相似，建一个 Transition Resource File，如「fade.xml」：</p>
+<pre><code class="language-XML">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;fade xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    android:duration=&quot;1000&quot; /&gt;
+</code></pre>
+<p>属性仅指定了动画持续时间，即用 <code>1000</code> 毫秒的时间把 <code>View</code> 从无到有，透明度从 <code>0</code> 到 <code>1</code>。</p>
+<p>调用方法也相似，不贴代码了，直接看效果：</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1562500550143.gif" alt="Fade" loading="lazy"></figure>
+<h2 id="shared-element">Shared Element</h2>
+<p>该效果与前三种不同，可以在切换的时候指定元素过渡，使用这种切换动画，用户可能感觉不到开启了一个新的 <code>Activity</code>，可以说是我最喜欢的交互方案了，先来看效果吧：</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1562500568194.gif" alt="Shared Element" loading="lazy"></figure>
+<p>实现方法与前三种不同，不需要创建 Transition resource file，只需为两个 <code>Activity</code> 需要共享动画的元素指定同一个 <code>android:transitionName</code> 即可。</p>
+<p>如我为原 <code>Activity</code> 的头像指定为 <code>profile</code>，登录按钮指定为 <code>button</code>：</p>
+<pre><code class="language-XML">&lt;ImageView
+    android:id=&quot;@+id/profile&quot;
+    android:layout_width=&quot;wrap_content&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    android:src=&quot;@mipmap/ic_launcher_round&quot;
+    android:transitionName=&quot;profile&quot; /&gt;
+    
+&lt;Button
+    android:id=&quot;@+id/login_btn&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    android:text=&quot;LOGIN&quot;
+    android:transitionName=&quot;button&quot; /&gt;
+</code></pre>
+<p>那么在需要启动的 <code>Activity</code> 中选择需要共享的元素，也指定为相同的名称：</p>
+<pre><code class="language-XML">&lt;ImageView
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;256dp&quot;
+    android:scaleType=&quot;centerCrop&quot;
+    android:transitionName=&quot;profile&quot; /&gt;
+    
+&lt;android.support.design.widget.FloatingActionButton
+    android:id=&quot;@+id/edit&quot;
+    android:layout_width=&quot;wrap_content&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    android:layout_gravity=&quot;bottom|end&quot;
+    android:layout_margin=&quot;16dp&quot;
+    android:src=&quot;@drawable/ic_edit&quot;
+    android:transitionName=&quot;button&quot; /&gt;
+</code></pre>
+<p>然后在原 <code>Activity</code> 中作如下配置：</p>
+<pre><code class="language-Java">ImageView profile = findViewById(R.id.profile);;
+Button loginBtn = findViewById(R.id.login_btn);
+loginBtn.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        Pair profilePair = new Pair&lt;&gt;(profile, ViewCompat.getTransitionName(profile));
+        Pair btnPair = new Pair&lt;&gt;(loginBtn, ViewCompat.getTransitionName(loginBtn));
+        ActivityOptionsCompat transitionActivityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(this, profilePair, btnPair);
+        Intent intent = new Intent(MainActivity.this, SharedElementActivity.class);
+        ActivityCompat.startActivity(this, intent, transitionActivityOptions.toBundle());
+    }
+});
+</code></pre>
+<p>将需要共享的元素构建成 <code>Pair</code> 对象，使用 <code>ViewCompat.getTransitionName()</code> 方法获取我们在布局文件中设置的 <code>android:transitionName</code> 的值。要注意，必须导入 <code>android.support.v4.util.Pair</code> 而不是 <code>android.util.Pair</code>，否则会出现问题。</p>
+<p>通过 <code>ActivityOptionsCompat.makeSceneTransitionAnimation()</code> 静态方法得到 <code>ActivityOptionsCompat</code> 对象，该方法的第二个参数是一个数组，可以传入多个 <code>Pair</code> 对象。</p>
+<p>最后再调用 <code>ActivityCompat.startActivity()</code> 启动 <code>Intent</code> 指定的 <code>Activity</code>，就可以看到上面的效果。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Progress-Bar-for-Android-WebView.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Progress-Bar-for-Android-WebView/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2020-07-18">2020-07-18</time>
+                  <h4 class="title white no-margin">Android 为 WebView 添加进度条</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Where-to-Find-Android-Source-Code.jpeg');"></div>
+                 <a href="https://LiarrDev.github.io/post/Where-to-Find-Android-Source-Code/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2020-06-28">2020-06-28</time>
+                  <h4 class="title white no-margin">从哪里能找到 Android 源码</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

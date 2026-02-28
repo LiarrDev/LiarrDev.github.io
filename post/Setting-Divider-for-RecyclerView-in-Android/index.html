@@ -1,0 +1,862 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Android 为 RecyclerView 设置分割线 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="Android 开发者都知道，RecyclerView 是一个非常强大的组件，它的最基本作用是代替原来的 ListView，但又由于其灵活性，RecyclerView 能够帮我们实现许多复杂的页面布局方案。
+用一句话概括就是，ListVie..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Setting-Divider-for-RecyclerView-in-Android.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2021-07-31"><i class="fa fa-calendar"></i><span class="lately">5 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Setting-Divider-for-RecyclerView-in-Android/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Setting-Divider-for-RecyclerView-in-Android/"> </span>
+              </a>
+              <span id="/Setting-Divider-for-RecyclerView-in-Android/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">Android 为 RecyclerView 设置分割线</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>Android 开发者都知道，<code>RecyclerView</code> 是一个非常强大的组件，它的最基本作用是代替原来的 <code>ListView</code>，但又由于其灵活性，<code>RecyclerView</code> 能够帮我们实现许多复杂的页面布局方案。</p>
+<p>用一句话概括就是，<code>ListView</code> 能实现的 <code>RecyclerView</code> 也能实现，<code>ListView</code> 实现不了的，<code>RecyclerView</code> 也能实现。</p>
+<p>相信很多 Android 初学者也跟我一样，是从<strong>郭霖</strong>的《第一行代码——Android》这本书开始的，不得不说这是一本非常适合入门的书籍，但在里面介绍 <code>RecyclerView</code> 的章节中，<strong>郭霖</strong>并没有介绍过 <code>RecyclerView</code> 分割线的实现方法，而在第二版第 14 章实战『<a href="https://github.com/guolindev/coolweather">CoolWeather</a>』项目中则有如下描述：</p>
+<blockquote>
+<p>之所以这次使用了 <code>ListView</code>，是因为它会自动给每个子项之间添加一条分隔线，而如果使用 <code>RecyclerView</code> 想实现同样的功能则会比较麻烦，这里我们总是选择最优的实现方案。</p>
+</blockquote>
+<p>的确，在默认情况下，<code>ListView</code> 是有分割线的，而 <code>RecyclerView</code> 却没有：</p>
+<table>
+    <td><img src="https://liarrdev.github.io/post-images/1625932485374.png"/></td>
+    <td><img src="https://liarrdev.github.io/post-images/1625932672133.png"/></td>
+</table>
+<p><strong>郭霖</strong>在书中对于 <code>RecyclerView</code> 界面的调整，大多是用 <code>CardView</code> 来实现，以致于我在后面很长一段时间内以为 <code>RecyclerView</code> 设置分割线需要写一些比较复杂的代码，但随着不断的学习，我发现这个理论实际上是错误的，<code>RecyclerView</code> 其实也能够轻松地设置分割线。</p>
+<p><code>RecyclerView</code> 设置分割线是通过 <code>addItemDecoration()</code> 方法来添加的，该方法接收一个 <code>ItemDecoration</code> 对象，<code>ItemDecoration</code> 是一个抽象类，而 <code>RecyclerView</code> 中恰好有一个默认的实现，也就是 <code>DividerItemDecoration</code>，所以我们可以直接使用：</p>
+<pre><code class="language-Java">recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+</code></pre>
+<p><code>DividerItemDecoration</code> 的构造函数接收两个参数，第一个是 <code>Context</code>，用于访问资源，第二个 <code>int</code> 类型的参数表示分割线的方向，只能为 <code>HORIZONTAL</code> 或 <code>VERTICAL</code>，即水平或垂直。</p>
+<p>只需要在 <code>setAdapter()</code> 之前调用上方代码即可。效果如下：</p>
+<figure data-type="image" tabindex="1"><img src="https://files.mdnice.com/user/3907/672b2193-213a-40f0-b491-c1e7c1b45c1c.png" alt="RecyclerView 设置分割线" loading="lazy"></figure>
+<p>看到没有，只需添加一行代码，即可在每个子项之间添加一条与 <code>ListView</code> 中几乎一摸一样的分割线，相比 <code>RecyclerView</code> 的其他代码改造，实在不麻烦。当然，也有可能是<strong>郭霖</strong>为了避免在书中花篇幅介绍一个非基础的知识点而故意不提了，毕竟他也曾说要尽量减少书的厚度。</p>
+<p>关于 <code>DividerItemDecoration</code> 的实现并不复杂，毕竟也就一条直线的事，我们可以看看源码：</p>
+<pre><code class="language-Java">public class DividerItemDecoration extends RecyclerView.ItemDecoration {
+    public static final int HORIZONTAL = LinearLayout.HORIZONTAL;
+    public static final int VERTICAL = LinearLayout.VERTICAL;
+    private static final String TAG = &quot;DividerItem&quot;;
+    private static final int[] ATTRS = new int[]{ android.R.attr.listDivider };
+    private Drawable mDivider;
+    private int mOrientation;
+    private final Rect mBounds = new Rect();
+
+    public DividerItemDecoration(Context context, int orientation) {
+        final TypedArray a = context.obtainStyledAttributes(ATTRS);
+        mDivider = a.getDrawable(0);
+        if (mDivider == null) {
+            Log.w(TAG, &quot;@android:attr/listDivider was not set in the theme used for this &quot; + &quot;DividerItemDecoration. Please set that attribute all call setDrawable()&quot;);
+        }
+        a.recycle();
+        setOrientation(orientation);
+    }
+
+    public void setOrientation(int orientation) {
+        if (orientation != HORIZONTAL &amp;&amp; orientation != VERTICAL) {
+            throw new IllegalArgumentException(&quot;Invalid orientation. It should be either HORIZONTAL or VERTICAL&quot;);
+        }
+        mOrientation = orientation;
+    }
+
+    public void setDrawable(@NonNull Drawable drawable) {
+        if (drawable == null) {
+            throw new IllegalArgumentException(&quot;Drawable cannot be null.&quot;);
+        }
+        mDivider = drawable;
+    }
+
+    @Nullable
+    public Drawable getDrawable() {
+        return mDivider;
+    }
+
+    @Override
+    public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+        if (parent.getLayoutManager() == null || mDivider == null) {
+            return;
+        }
+        if (mOrientation == VERTICAL) {
+            drawVertical(c, parent);
+        } else {
+            drawHorizontal(c, parent);
+        }
+    }
+
+    private void drawVertical(Canvas canvas, RecyclerView parent) {
+        canvas.save();
+        final int left;
+        final int right;
+        if (parent.getClipToPadding()) {
+            left = parent.getPaddingLeft();
+            right = parent.getWidth() - parent.getPaddingRight();
+            canvas.clipRect(left, parent.getPaddingTop(), right, parent.getHeight() - parent.getPaddingBottom());
+        } else {
+            left = 0;
+            right = parent.getWidth();
+        }
+        final int childCount = parent.getChildCount();
+        for (int i = 0; i &lt; childCount; i++) {
+            final View child = parent.getChildAt(i);
+            parent.getDecoratedBoundsWithMargins(child, mBounds);
+            final int bottom = mBounds.bottom + Math.round(child.getTranslationY());
+            final int top = bottom - mDivider.getIntrinsicHeight();
+            mDivider.setBounds(left, top, right, bottom);
+            mDivider.draw(canvas);
+        }
+        canvas.restore();
+    }
+
+    private void drawHorizontal(Canvas canvas, RecyclerView parent) {
+        canvas.save();
+        final int top;
+        final int bottom;
+        if (parent.getClipToPadding()) {
+            top = parent.getPaddingTop();
+            bottom = parent.getHeight() - parent.getPaddingBottom();
+            canvas.clipRect(parent.getPaddingLeft(), top, parent.getWidth() - parent.getPaddingRight(), bottom);
+        } else {
+            top = 0;
+            bottom = parent.getHeight();
+        }
+        final int childCount = parent.getChildCount();
+        for (int i = 0; i &lt; childCount; i++) {
+            final View child = parent.getChildAt(i);
+            parent.getLayoutManager().getDecoratedBoundsWithMargins(child, mBounds);
+            final int right = mBounds.right + Math.round(child.getTranslationX());
+            final int left = right - mDivider.getIntrinsicWidth();
+            mDivider.setBounds(left, top, right, bottom);
+            mDivider.draw(canvas);
+        }
+        canvas.restore();
+    }
+
+    @Override
+    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+        if (mDivider == null) {
+            outRect.set(0, 0, 0, 0);
+            return;
+        }
+        if (mOrientation == VERTICAL) {
+            outRect.set(0, 0, 0, mDivider.getIntrinsicHeight());
+        } else {
+            outRect.set(0, 0, mDivider.getIntrinsicWidth(), 0);
+        }
+    }
+}
+</code></pre>
+<p>首先就是获取传入的方向，也就是水平还是垂直，然后在 <code>onDraw()</code> 中根据方向调用 <code>drawVertical()</code> 或 <code>drawHorizontal()</code> 实现对分割线的绘制。</p>
+<p>绘制前先测量 <code>RecyclerView</code> 的 <code>padding</code>，以得到与 <code>item</code> 不相邻两边的宽度。通过 <code>getChildCount()</code> 获取 <code>item</code> 的数量，然后遍历各个 <code>item</code>，分别计算与 <code>item</code> 相邻两边的宽度，即可绘制出分割线的区域。</p>
+<p><code>getItemOffsets()</code> 方法用于设置 <code>item</code> 的 <code>padding</code> 属性，<code>setDrawable()</code> 则用于设置分割线的样式。</p>
+<p>了解原理之后，我们就可以更灵活地为 <code>RecyclerView</code> 自定义分割线了。</p>
+<p>举个例子，我们可以看到微信常用的一种分割线方式，是左侧有间隔的分割线：</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1627141774977.png" alt="微信常用分割线" loading="lazy"></figure>
+<p>那我们可以参照上方源码简单写一个：</p>
+<pre><code class="language-Java">public class WeChatDividerItemDecoration extends RecyclerView.ItemDecoration {
+
+    private static final int[] ATTRS = new int[]{android.R.attr.listDivider};
+    public static final int HORIZONTAL = LinearLayoutManager.HORIZONTAL;
+    public static final int VERTICAL = LinearLayoutManager.VERTICAL;
+    private static final String TAG = &quot;DividerItem&quot;;
+    private Drawable mDivider;
+    private int mOrientation;
+    private int mMarginStart, mMarginEnd;
+
+    public WeChatDividerItemDecoration(Context context, int orientation, int marginStart, int marginEnd) {
+        final TypedArray a = context.obtainStyledAttributes(ATTRS);
+        mDivider = a.getDrawable(0);
+        if (mDivider == null) {
+            Log.w(TAG, &quot;@android:attr/listDivider was not set in the theme used for this &quot; + &quot;DividerItemDecoration. Please set that attribute all call setDrawable()&quot;);
+        }
+        mMarginStart = marginStart;
+        mMarginEnd = marginEnd;
+        a.recycle();
+        setOrientation(orientation);
+    }
+
+    public void setOrientation(int orientation) {
+        if (orientation != HORIZONTAL &amp;&amp; orientation != VERTICAL) {
+            throw new IllegalArgumentException(&quot;Invalid orientation. It should be either HORIZONTAL or VERTICAL&quot;);
+        }
+        mOrientation = orientation;
+    }
+
+    @Override
+    public void onDraw(@NonNull Canvas c, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+        if (parent.getLayoutManager() == null || mDivider == null) {
+            return;
+        }
+        if (mOrientation == VERTICAL) {
+            drawVertical(c, parent);
+        } else {
+            drawHorizontal(c, parent);
+        }
+    }
+
+    private void drawVertical(Canvas canvas, RecyclerView parent) {
+        final int left = parent.getPaddingLeft();
+        final int right = parent.getWidth() - parent.getPaddingRight();
+        final int childCount = parent.getChildCount();
+        for (int i = 0; i &lt; childCount; i++) {
+            final View child = parent.getChildAt(i);
+            final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
+            final int top = child.getBottom() + params.bottomMargin;
+            final int bottom = top + mDivider.getIntrinsicHeight();
+            mDivider.setBounds(left + mMarginStart, top, right - mMarginEnd, bottom);
+            mDivider.draw(canvas);
+        }
+    }
+
+    private void drawHorizontal(Canvas canvas, RecyclerView parent) {
+        final int top = parent.getPaddingTop();
+        final int bottom = parent.getHeight() - parent.getPaddingBottom();
+        final int childCount = parent.getChildCount();
+        for (int i = 0; i &lt; childCount; i++) {
+            final View child = parent.getChildAt(i);
+            final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
+            final int left = child.getRight() + params.rightMargin;
+            final int right = left + mDivider.getIntrinsicHeight();
+            mDivider.setBounds(left, top + mMarginStart, right, bottom - mMarginEnd);
+            mDivider.draw(canvas);
+        }
+    }
+
+    @Override
+    public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+        if (mDivider == null) {
+            outRect.set(0, 0, 0, 0);
+            return;
+        }
+        if (mOrientation == VERTICAL) {
+            outRect.set(0, 0, 0, mDivider.getIntrinsicHeight());
+        } else {
+            outRect.set(0, 0, mDivider.getIntrinsicWidth(), 0);
+        }
+    }
+}
+</code></pre>
+<p>效果如下：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1627141791442.png" alt="自定义分割线" loading="lazy"></figure>
+<p>只需通过构造函数将 <code>marginStart</code> 和 <code>marginEnd</code> 传入，通过在绘制时增减对应的边距，就可以自由的控制分割线两端的距离，同时还可以利用 <code>drawVertical()</code> 和 <code>drawHorizontal()</code> 分别适配两个方向。</p>
+<p>可以看到，即使是自定义分割线，也并不困难，只要参考 <code>DividerItemDecoration</code> 中的代码，我们也可以依葫芦画瓢实现自己想要的效果。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Real-time-Monitoring-of-SMS-in-Android.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Real-time-Monitoring-of-SMS-in-Android/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2021-08-17">2021-08-17</time>
+                  <h4 class="title white no-margin">Android 实时监听短信</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Thinking-about-the-Solution-of-Client-Domain-being-Hijacked.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Thinking-about-the-Solution-of-Client-Domain-being-Hijacked/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2021-07-21">2021-07-21</time>
+                  <h4 class="title white no-margin">关于客户端域名被劫持的解决方案思考</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

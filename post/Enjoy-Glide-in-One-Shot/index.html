@@ -1,0 +1,822 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>一次实战爱上『Glide』 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="最近写了一个单机版的商城项目『HacppleStore』，涉及到了商品展示等内容，需要加载大量图片，因为我是使用原生 Android 进行开发，而不是像现实中大多数商城一样使用 H5 加载，所以图片的加载与存储就会在本地进行。
+另外，我还希..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Enjoy-Glide-in-One-Shot.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2019-04-08"><i class="fa fa-calendar"></i><span class="lately">7 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Enjoy-Glide-in-One-Shot/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Enjoy-Glide-in-One-Shot/"> </span>
+              </a>
+              <span id="/Enjoy-Glide-in-One-Shot/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">一次实战爱上『Glide』</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>最近写了一个单机版的商城项目『<a href="https://github.com/LiarrDev/HacppleStore_Android">HacppleStore</a>』，涉及到了商品展示等内容，需要加载大量图片，因为我是使用原生 Android 进行开发，而不是像现实中大多数商城一样使用 H5 加载，所以图片的加载与存储就会在本地进行。</p>
+<p>另外，我还希望能够对图片的操作更加简便，并且最好能对图片进行一定的压缩处理，以提高性能。</p>
+<p>根据从『第一行代码——Android』学来的经验，我首先就想到了『Glide』。</p>
+<figure data-type="image" tabindex="1"><img src="https://github.com/bumptech/glide/raw/master/static/glide_logo.png" alt="Glide" loading="lazy"></figure>
+<p>『Glide』是一个被 Google 所推荐的图片加载库，由 bumptech（Bump Technologies）开发。这个库被广泛运用在 Google 的开源项目中，包括 2014 年的 Google I/O 大会上发布的官方 App。</p>
+<p>提到『Glide』就不得不提提『Picasso』了，『Glide』是 Google 员工的开源项目（这也解释了为什么 Google 如此推荐它），是基于『Picasso』的一个图片加载框架。</p>
+<p>那『Picasso』又是啥？</p>
+<p>还记得在『<a href="https://liarrdev.github.io/post/Enjoy-OkHttp-in-One-Shot">一次实战爱上「OkHttp」</a>』中提到的 Square 吗？除了『OkHttp』以外，Square 还开发了许多实用的开源框架，Square 出品必属精品，『Picasso』就是其一。</p>
+<p>敢于冠上毕加索之名，相信也不会太差，主要特点就是使用简单，扩展性强，支持各种来源的图片，包括网络、Resources、Assets、Files、Content Providers 等。内部集成了『OkHttp』的网络框架，所以如果项目中使用了 Square 公司的其他框架，那么就更推荐使用『Picasso』了。</p>
+<p>由于『Glide』在『Picasso』基础上进行的二次开发的，所以两者有近 90% 的相似度，而其优势也是显而易见的。</p>
+<p>当然，『Picasso』我目前仅仅简单了解，并未深入学习，由于『Glide』的易用性我一直使用的都是『Glide』，所以如果以后闲下来有机会深探『Picasso』的时候可以单独唠一唠。</p>
+<p>『Glide』的代码风格与『Picasso』非常相似，增加了更多的功能，非常重要的就是支持 GIF，当然它的包会大一些。</p>
+<p>Glide 是滑行的意思，可以看出这个库的主旨就在于让图片加载变的流畅。它不仅可以用于加载本地图片，还可以加载网络图片、GIF 图片、甚至是本地视频。我只能用超级强大这个词来形容它了。</p>
+<p>吹完『Glide』的优点，就直接介绍用法吧。</p>
+<p>第一件事依然是添加依赖：</p>
+<pre><code class="language-Groovy">dependencies {
+    implementation 'com.github.bumptech.glide:glide:(insert latest version)'
+}
+</code></pre>
+<p>『Glide』的用法非常简单，使用简明的流式语法 API，它允许你在大部分情况下只需一行代码就能轻松实现复杂的图片加载功能：</p>
+<pre><code class="language-Java">Glide.with(context).load(url).into(imageView);
+</code></pre>
+<p>这就是『Glide』一个完整的请求至少需要的三个参数，<code>with()</code> 中传入一个 <code>Context</code>、<code>Activity</code> 或 <code>Fragment</code>，然后调用 <code>load()</code> 方法去加载图片，可以是一个 URL 地址，也可以是一个本地路径，或者是一个资源 ID，最后调用 <code>into()</code> 方法将图片设置到具体某一个 <code>ImageView</code> 中就可以了。</p>
+<p>在『<a href="https://github.com/LiarrDev/HacppleStore_Android">HacppleStore</a>』的开发中，我惊讶的发现，『Glide』还支持对二进制图片的加载，这就使我们的开发更加方便了。</p>
+<p>在『<a href="https://liarrdev.github.io/post/Enjoy-LitePal-in-One-Shot/">一次实战爱上「LitePal」</a>』一文中，我把图片存储在了『SQLite』中，当读取出来加载时，也经历了不少麻烦的操作。</p>
+<p>一开始我是使用原生的写法，将二进制图片转为 <code>Bitmap</code> 再进行加载。</p>
+<pre><code class="language-Java">ImageView goodsImageView = (ImageView) findViewById(R.id.goods_image_view);
+byte[] goodsImg;
+List&lt;Goods&gt; goods = LitePal.where(&quot;name = ?&quot;, goodsName).find(Goods.class);
+for (Goods good: goods) {
+    goodsImg.setImageBitmap(BitmapFactory.decodeByteArray(good.getImage(), 0, good.getImage().length));
+}
+</code></pre>
+<p>而后来查阅文档后发现，使用『Glide』不用进行转换就可以一步到位。</p>
+<pre><code class="language-Java">ImageView goodsImageView = (ImageView) findViewById(R.id.goods_image_view);
+byte[] goodsImg;
+List&lt;Goods&gt; goods = LitePal.where(&quot;name = ?&quot;, goodsName).find(Goods.class);
+for (Goods good: goods) {
+    goodsImg = good.getImage();
+    Glide.with(this).load(goodsImg).into(goodsImageView);
+}
+</code></pre>
+<p>当然，『Glide』也是可以加载 <code>Bitmap</code> 的，只不过在这个场景下，由于其强大的 API，所以我并不需要做多余的操作。</p>
+<p>当然，除了加载图片方便这个原因，『Glide』还有一个特点让我坚持使用，因为我使用的很多图片像素都非常高，如果不进行压缩就直接展示的话，很容易就会引起内存溢出。而使用『Glide』就完全不需要担心这回事，因为『Glide』在内部做了许多非常复杂的逻辑操作，其中就包括了图片压缩，我们只需安心按照它的标准用法去加载图片即可。</p>
+<p>『Glide』默认的 <code>Bitmap</code> 格式是 <code>RGB_565</code>，值得一提的是，『Picasso』用的是 <code>ARGB_8888</code>，所以总体来说，『Glide』加载的图片在质量上不如『Picasso』。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1562236175293.jpeg" alt="Picasso 和 Glide 默认加载格式下图片对比" loading="lazy"></figure>
+<p>但是由于手机屏幕尺寸的限制，用户往往很难察觉出这种差别，所以『Glide』的优势就展现出来了。</p>
+<p>你以为我说的优势是对用户眼睛的欺骗？并不是。</p>
+<p>『Glide』加载的 <code>RGB_565</code> 格式的图片仅仅消耗『Picasso』<code>ARGB_8888</code> 格式图片一半的内存：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1562236212209.png" alt="默认加载格式下 Picasso 和 Glide 消耗内存对比" loading="lazy"></figure>
+<p>当然，由于条件不一样，所以这样对比也并不太妥当。但是『Glide』同样支持把图片的格式转换为 <code>ARGB_8888</code>，那就公平的来比一次吧。</p>
+<p>修改是全局修改，即整个项目使用『Glide』都会自动转换为 <code>ARGB_8888</code>。</p>
+<p>首先自定义一个全局的 <code>GlideModule</code>：</p>
+<pre><code class="language-Java">public class GlideConfiguration implements GlideModule {
+    @Override
+    public void applyOptions(Context context, GlideBuilder builder) {
+        // Apply options to the builder here.
+        builder.setDecodeFormat(DecodeFormat.PREFER_ARGB_8888);
+    }
+    @Override
+    public void registerComponents(Context context, Glide glide) {
+        // register ModelLoaders here.
+    }
+}
+</code></pre>
+<p>然后在「AndroidManifest.xml」中配置：.</p>
+<pre><code class="language-XML">&lt;meta-data  
+    android:name=&quot;packagename.MyGlideModule &quot;  
+    android:value=&quot;GlideModule&quot;/&gt;
+</code></pre>
+<p>之后就可以在项目中按照标准方式使用了。</p>
+<p>这种方法优点是一次设置，全局使用，十分方便，但是缺点也十分明显，所有加载的图片都使用高质量会大大增加内存的消耗，有些得不偿失。</p>
+<p>当然还有第二种方法，我打算放到下文再讲。</p>
+<p>按照第一种方法设置成功后可以看下对比图：</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1562236322352.jpeg" alt="Picasso 和 Glide 相同加载格式下图片对比" loading="lazy"></figure>
+<p>图片质量是一模一样的。</p>
+<p>再看看两者之间的内存消耗：</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1562236368587.png" alt="相同加载格式下 Picasso 和 Glide 消耗内存对比" loading="lazy"></figure>
+<p>虽然用的图片格式一样，并且『Glide』加载的几乎是先前的两倍内存，但是『Picasso』消耗的内存仍然远大于『Glide』。</p>
+<p>其原因在于两者的加载方式不同，上方图片原尺寸是 1920×1080 像素，加载到 768×432 像素的 <code>ImageView</code> 中，『Picasso』使用的方法是加载了完整尺寸的图片进入内存，当绘图的时候，让 GPU 即时的恢复到所需要的尺寸，然而『Glide』则加载精确的 <code>ImageView</code> 尺寸进入内存，所以避免了内存损耗。</p>
+<p>『Glide』还可以取消图片的加载：</p>
+<pre><code class="language-Java">Glide.with(context).clear(imageView);
+</code></pre>
+<p>不过该方法并不常使用，因为图片会跟随 <code>Context</code> 的生命周期消亡而消亡的。</p>
+<p>接下来可以谈谈『Glide』其他的一些用法了。</p>
+<p>先说前文提到的修改图片质量。</p>
+<p>『Glide』使用注解处理器生成一个流式 API，其目的一是为了更好地扩展自定义选项，其二是为了方便打包常用选项组。</p>
+<p>使用 Generated API 仅仅需要两步。第一步，依然是添加依赖：</p>
+<pre><code class="language-Groovy">dependencies {
+    annotationProcessor 'com.github.bumptech.glide:compiler:(insert latest version)'
+}
+</code></pre>
+<p>第二步，我们需要创建一个类继承 <code>AppGlideModule</code>，并为该类添加 <code>@GlideModule</code> 注解。</p>
+<pre><code class="language-Java">import com.bumptech.glide.annotation.GlideModule;
+import com.bumptech.glide.module.AppGlideModule;
+
+@GlideModule
+public class ExampleAppGlideModule extends AppGlideModule {}
+</code></pre>
+<p><code>AppGlideModule</code> 虽然是抽象类，却可以不用重写任何方法。但必须使用 <code>@GlideModule</code> 注解标记该类，否则没法顺利的生成 <code>GlideApp的API</code>，因为该 Module 将不会被『Glide』发现。</p>
+<p>第一次添加 <code>AppGlideModule</code> 或者对 <code>AppGlideModule</code> 做了某些修改时，我们需要重新构建项目重新生成 API。如果『Android Studio』没法自动完成构建，可以使用「Make Project」手动重新构建。</p>
+<p>生成 API 的默认名为 <code>GlideApp</code>，其包名与所在的 Module 的包名相同，而基本用法也于之前相同，只是将 <code>Glide</code> 替换成了 <code>GlideApp</code>，就可以使用了。</p>
+<p>比如上文中的加载图片可以写成：</p>
+<pre><code class="language-Java">GlideApp.with(context).load(url).into(imageView);
+</code></pre>
+<p>而修改图片质量则写成：</p>
+<pre><code class="language-Java">GlideApp.with(context).load(url).format(PREFER_ARGB_8888).into(imageView);.
+</code></pre>
+<p>使用这个方法可以单独在一个加载项中设置想要的图片质量，而不用去全局设定，可以大大的减少内存占用。</p>
+<p>另外，『Glide』允许用户使用这种方法指定三种不同类型的占位符，分别在三种不同场景使用。</p>
+<p>其中，<code>Placeholder</code> 是当请求正在执行时被展示的 <code>Drawable</code>。当请求成功完成时，<code>Placeholder</code> 会被请求到的资源替换。如果被请求的资源是从内存中加载出来的，那么 <code>Placeholder</code> 可能根本不会被显示。如果请求失败并且没有设置 <code>Error</code>，则 <code>Placeholder</code> 将被持续展示。类似地，如果请求的 <code>url/model</code> 为 <code>null</code>，并且 <code>Error</code> 和 <code>Fallback</code> 都没有设置，那么 <code>Placeholder</code> 也会继续显示。</p>
+<p><code>Error</code> 在请求永久性失败时展示。<code>Error</code> 同样也在请求的 <code>url/model</code> 为 <code>null</code>，且并没有设置 <code>Fallback</code> 时展示。</p>
+<p><code>Fallback</code> 在请求的 <code>url/model</code> 为 <code>null</code> 时展示。设计 <code>Fallback</code> 的主要目的是允许用户指示 <code>null</code> 是否为可接受的正常情况。例如，一个 <code>null</code> 的个人资料 URL 可能暗示这个用户没有设置头像，因此应该使用默认头像。然而，<code>null</code> 也可能表明这个元数据根本就是不合法的，或者取不到。默认情况下『Glide』将 <code>null</code> 作为错误处理，所以可以接受 <code>null</code> 的应用应当显式地设置一个 <code>Fallback</code>。</p>
+<p>使用方法如下：</p>
+<pre><code class="language-Java">GlideApp.with(context)
+    .load(url)
+    .placeholder(R.drawable.placeholder)
+    .error(R.drawable.error)
+    .fallback(R.drawable.fallback)
+    .into(imageView);
+</code></pre>
+<p>『Glide』还为我们提供了过渡效果，允许定义如何从占位符到新加载的图片，或从缩略图到全尺寸图像过渡。</p>
+<p>由于版本的升级，『Glide』将不会默认应用交叉淡入或任何其他的过渡效果，每个请求必须手动应用过渡。使用方法如下：</p>
+<pre><code class="language-Java">Glide.with(context)
+    .load(url)
+    .transition(DrawableTransitionOptions.withCrossFade())
+    .into(imageView);
+</code></pre>
+<p><code>TransitionOptions</code> 用于给一个特定的请求指定过渡，而不同的资源类型能决定使用什么类型的过渡选项。<code>Bitmap</code> 和 <code>Drawable</code> 可以对应使用使用 <code>BitmapTransitionOptions</code> 或 <code>DrawableTransitionOptions</code> 来指定类型特定的过渡动画。对于 <code>Bitmap</code> 和 <code>Drawable</code> 之外的资源类型，可以使用 <code>GenericTransitionOptions</code>。</p>
+<p>『Glide』提供了变换功能，在获取到请求的图片之后，能对图片进行一些处理，例如：裁剪、模糊等；而它的强大在于可以自定义，这样一来不仅能处理 <code>Bitmap</code>，同样可以用于处理 GIF 动画和自定义资源类型。</p>
+<p>使用方法如下：</p>
+<pre><code class="language-Java">Glide.with(context)
+    .load(url)
+    .apply(fitCenterTransform())
+    .into(imageView);
+</code></pre>
+<p>如果使用 Generated API，那么这些变换方法已经被内联了，所以使用起来甚至更为轻松：</p>
+<pre><code class="language-Java">GlideApp.with(context)
+    .load(url)
+    .fitCenter()
+    .into(imageView);
+</code></pre>
+<p>不过我个人更倾向于在编写布局文件的时候就设置 <code>ImageView</code> 的 <code>ScaleType</code> 属性，这样能使界面和逻辑更好的区分开来。</p>
+<p>同时，我们还可以对图片的大小进行修改：</p>
+<pre><code class="language-Java">GlideApp.with(context)
+    .load(url)
+    .override(width, height)     // 单位是 px
+    .into(imageView);
+</code></pre>
+<p>前文提到，加载 GIF 图是『Glide』比较特别的功能之一，而且使用起来同样十分简单：</p>
+<pre><code class="language-Java">Glide.with(context)
+    .load(gifUrl)
+    .placeholder(R.drawable.placeholder)
+    .error(R.drawable.error)
+    .into(imageView);
+</code></pre>
+<p>如果希望加载 GIF 时只加载 GIF 的第一帧，把 GIF 当作普通图片一样加载，那么只需要做如下修改即可：</p>
+<pre><code class="language-Java">Glide.with(context)
+    .load(gifUrl)
+    .asBitmap()
+    .error(R.drawable.error)
+    .into(imageView);
+</code></pre>
+<p>如果希望加载的只是 GIF 图，如果不是 GIF 就显示错误图片，则：</p>
+<pre><code class="language-Java">Glide.with(context)
+    .load(gifUrl)
+    .asGif()
+    .error(R.drawable.error)
+    .into(imageView);
+</code></pre>
+<p>上面还提到了缩略图，再来看看缩略图的加载方法：</p>
+<pre><code class="language-Java">Glide.with(context)
+    .load(url)
+    .thumbnail(0.1f)
+    .into(imageView);
+</code></pre>
+<p>这里传入一个浮点数，它代表尺寸的倍数。比如我传了 <code>0.1f</code> 作为参数，那么『Glide』则会显示原图大小的 10%。如果原图的尺寸是 1000×1000 像素，那么缩略图就是 100×100 像素。由于缩略图会比 <code>ImageView</code> 要小许多，所以要确保一个准确的缩放比例。</p>
+<p>最后再说一个非常强大但却使用得比较少的功能，就是上方提到的加载视频，因为作为一个图片加载库可以加载视频的确是很强大，只不过很多人都不会用它来加载视频。</p>
+<pre><code class="language-Java">Glide.with(context)
+    .load(Uri.fromFile(new File(filePath)))
+    .into(view);
+</code></pre>
+<p>『Glide』只能加载本地视频，网络视频或其他途径获得的视频是无效的。</p>
+<p>据开发者统计，『Glide』提供了两千多个方法，相信数量还在增加，所以，就不一一介绍了，上方提到的方法应该算是比较经典的，如果有需要还是靠<a href="http://bumptech.github.io/glide/">官方文档</a>吧。</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1562236493062.png" alt="Method Count" loading="lazy"></figure>
+<p>更值得一提的是，『Glide』有<a href="https://muyangmin.github.io/glide-docs-cn/">中文文档</a>！</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Override-Key-BACK-for-WebView-in-Android.jpeg');"></div>
+                 <a href="https://LiarrDev.github.io/post/Override-Key-BACK-for-WebView-in-Android/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2019-05-06">2019-05-06</time>
+                  <h4 class="title white no-margin">Android 为 WebView 重写 Back 键</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Enjoy-LitePal-in-One-Shot.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Enjoy-LitePal-in-One-Shot/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2019-03-18">2019-03-18</time>
+                  <h4 class="title white no-margin">一次实战爱上『LitePal』</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

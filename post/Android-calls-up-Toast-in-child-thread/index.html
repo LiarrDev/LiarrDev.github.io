@@ -1,0 +1,878 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Android 子线程调用 Toast | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="Android 中经常需要开启子线程进行耗时操作，而在耗时操作结束后，我们又常需要使用 Toast 告知用户，但如果直接在子线程中调用 Toast，往往不能如愿，得到如下 Warn 级报错：
+W/System.err: java.lang...." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Android-calls-up-Toast-in-child-thread.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2020-03-14"><i class="fa fa-calendar"></i><span class="lately">6 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Android-calls-up-Toast-in-child-thread/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Android-calls-up-Toast-in-child-thread/"> </span>
+              </a>
+              <span id="/Android-calls-up-Toast-in-child-thread/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">Android 子线程调用 Toast</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>Android 中经常需要开启子线程进行耗时操作，而在耗时操作结束后，我们又常需要使用 <code>Toast</code> 告知用户，但如果直接在子线程中调用 <code>Toast</code>，往往不能如愿，得到如下 Warn 级报错：</p>
+<pre><code class="language-Bash">W/System.err: java.lang.RuntimeException: Can't create handler inside thread that has not called Looper.prepare()
+W/System.err:     at android.os.Handler.&lt;init&gt;(Handler.java:200)
+W/System.err:     at android.os.Handler.&lt;init&gt;(Handler.java:114)
+W/System.err:     at android.widget.Toast$TN$2.&lt;init&gt;(Toast.java:340)
+W/System.err:     at android.widget.Toast$TN.&lt;init&gt;(Toast.java:340)
+W/System.err:     at android.widget.Toast.&lt;init&gt;(Toast.java:103)
+W/System.err:     at android.widget.Toast.makeText(Toast.java:256)
+W/System.err:     at com.example.liarr.View.Activity.LoginActivity$4.run(LoginActivity.java:209)
+W/System.err:     at java.lang.Thread.run(Thread.java:760)
+</code></pre>
+<p>那么问题就来了，在我印象中 <code>Toast</code> 是不需要依赖于 UI 线程的，所以不需要 <code>runOnUiThread()</code> 来加载，同样也不需要像『<a href="https://liarrdev.github.io/post/Android-Activity-with-Dialog-Theme/">Android 使用 Dialog 样式的 Activity</a>』中提到的 <code>Dialog</code> 一样需要依赖于 <code>Activity</code>，那到底是什么原因导致 <code>Toast</code> 不能正常显示呢？</p>
+<p>从这个错误中，我们可以看到，是因为 <code>Looper</code> 对象的原因。</p>
+<p>下面分析一下 <code>Toast</code> 在主线程与子线程运行的缺失项，来看看 <code>Toast</code> 的部分源码：</p>
+<pre><code class="language-Java">/**
+ * Show the view for the specified duration.
+ */
+public void show() {
+    if (mNextView == null) {
+        throw new RuntimeException(&quot;setView must have been called&quot;);
+    }
+
+    INotificationManager service = getService();
+    String pkg = mContext.getOpPackageName();
+    TN tn = mTN;
+    tn.mNextView = mNextView;
+    final int displayId = mContext.getDisplayId();
+
+    try {
+        service.enqueueToast(pkg, tn, mDuration, displayId);
+    } catch (RemoteException e) {
+        // Empty
+    }
+}
+
+private static INotificationManager sService;
+static private INotificationManager getService() {
+    if (sService != null) {
+        return sService;
+    }
+    sService = INotificationManager.Stub.asInterface(ServiceManager.getService(&quot;notification&quot;));
+    return sService;
+}
+</code></pre>
+<p><code>Toast</code> 内部有两类 IPC 过程，第一类是 <code>Toast</code> 访问 <code>NotificationManagerService</code>，第二类是 <code>NotificationManagerService</code> 回调 <code>Toast</code> 里面的 <code>TN</code> 接口，这里涉及到 AIDL 进程间通讯，<code>TN</code> 继承自远程 <code>NotificationService</code> 的代理类，实际弹 <code>Toast</code> 的工作是在 <code>TN</code> 这个类里面完成的：</p>
+<pre><code class="language-Java">private static class TN extends ITransientNotification.Stub {
+    ...
+    final Handler mHandler;
+    TN(String packageName, @Nullable Looper looper) {
+        ...
+        if (looper == null) {
+            // Use Looper.myLooper() if looper is not specified.
+            looper = Looper.myLooper();
+            if (looper == null) {
+                throw new RuntimeException(&quot;Can't toast on a thread that has not called Looper.prepare()&quot;);
+            }
+        }
+        mHandler = new Handler(looper, null) {
+            @Override
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case SHOW: {
+                        IBinder token = (IBinder) msg.obj;
+                        handleShow(token);
+                        break;
+                    }
+                    case HIDE: {
+                        handleHide();
+                        // Don't do this in handleHide() because it is also invoked by handleShow()
+                        mNextView = null;
+                        break;
+                    }
+                    case CANCEL: {
+                        handleHide();
+                        // Don't do this in handleHide() because it is also invoked by handleShow()
+                        mNextView = null;
+                        try {
+                            getService().cancelToast(mPackageName, TN.this);
+                        } catch (RemoteException e) {}
+                        break;
+                    }
+                }
+            }
+        };
+    }
+
+    /**
+     * schedule handleShow into the right thread
+     */
+    @Override
+    public void show(IBinder windowToken) {
+        if (localLOGV) Log.v(TAG, &quot;SHOW: &quot; + this);
+        mHandler.obtainMessage(SHOW, windowToken).sendToTarget();
+    }
+
+    /**
+     * schedule handleHide into the right thread
+     */
+    @Override
+    public void hide() {
+        if (localLOGV) Log.v(TAG, &quot;HIDE: &quot; + this);
+        mHandler.obtainMessage(HIDE).sendToTarget();
+    }
+
+    public void cancel() {
+        if (localLOGV) Log.v(TAG, &quot;CANCEL: &quot; + this);
+        mHandler.obtainMessage(CANCEL).sendToTarget();
+    }
+
+    public void handleShow(IBinder windowToken) {
+        ...
+    }
+
+    public void handleHide() {
+        ...
+    }
+}
+</code></pre>
+<p>可以看到，<code>TN</code> 里的 <code>show()</code> 运行在 <code>Binder</code> 线程池中，所以需要使用 <code>Handler</code> 将其切换到当前线程中，实际上 <code>show()</code> 和 <code>hide()</code> 方法实际上都是 <code>TN</code> 类通过 <code>Handler</code> 向<strong>当前线程</strong>发送消息，执行相应的任务。</p>
+<p>这里又涉及到 <code>Handler</code> 的消息机制。<code>Handler</code> 的消息机制涉及到三个重要的类：<code>Handler</code>、<code>MessageQueue</code> 和 <code>Looper</code>，该消息机制要完整运行这三个必不可少，而 <code>Handler</code> 的创建过程中：</p>
+<pre><code class="language-Java">/**
+ * Use the {@link Looper} for the current thread with the specified callback interface and set whether the handler should be asynchronous.
+ *
+ * Handlers are synchronous by default unless this constructor is used to make one that is strictly asynchronous.
+ *
+ * Asynchronous messages represent interrupts or events that do not require global ordering with respect to synchronous messages.  Asynchronous messages are not subject to the synchronization barriers introduced by {@link MessageQueue#enqueueSyncBarrier(long)}.
+ *
+ * @param callback The callback interface in which to handle messages, or null.
+ * @param async If true, the handler calls {@link Message#setAsynchronous(boolean)} for each {@link Message} that is sent to it or {@link Runnable} that is posted to it.
+ *
+ * @hide
+ */
+public Handler(@Nullable Callback callback, boolean async) {
+    if (FIND_POTENTIAL_LEAKS) {
+        final Class&lt;? extends Handler&gt; klass = getClass();
+        if ((klass.isAnonymousClass() || klass.isMemberClass() || klass.isLocalClass()) &amp;&amp; (klass.getModifiers() &amp; Modifier.STATIC) == 0) {
+            Log.w(TAG, &quot;The following Handler class should be static or leaks might occur: &quot; + klass.getCanonicalName());
+        }
+    }
+
+    mLooper = Looper.myLooper();
+    if (mLooper == null) {
+        throw new RuntimeException(&quot;Can't create handler inside thread &quot; + Thread.currentThread() + &quot; that has not called Looper.prepare()&quot;);
+    }
+    mQueue = mLooper.mQueue;
+    mCallback = callback;
+    mAsynchronous = async;
+}
+</code></pre>
+<p>必要条件之一是需要一个 <code>Looper</code>, 这里就已经看到开头的那个报错了。</p>
+<p>没错，就是因为缺少 <code>Looper</code>。那为什么主线程不会报错呢？因为主线程在创建的时候已经默认执行了 <code>Looper.prepare()</code> 这个方法并且调用 <code>Looper.loop()</code> 使其开始轮询工作。而子线程是默认没有初始化这个 <code>Looper</code> 的，这也就解释了为什么 <code>Looper.myLooper()</code> 返回的是一个空的对象。</p>
+<p>扒源码扒了这么久，简单来说，Android 的主 UI 线程中其 Android 框架已经默认给出了一个 <code>Looper</code> 对象， 而我们自己创建的子线程中，<code>Looper</code> 对象需要自己给构建出来。这也就是为什么我们在子线程中直接使用 <code>Toast</code> 的时候会报出上面异常。</p>
+<p>既然已经知道了问题是如何产生的，那么我们现在就只需要在我们的子线程中把 <code>Toast</code> 所需要的 <code>Looper</code> 对象给构建出来就可以了。</p>
+<pre><code class="language-Java">new Thread(new Runnable() {
+    @Override
+    public void run() {
+        ...
+        Looper.prepare();
+        Toast.makeText(context, &quot;Toast Content&quot;, Toast.LENGTH_SHORT).show();
+        Looper.loop();
+    }
+}).start();
+</code></pre>
+<p>在子线程里面初始化一个 <code>Looper</code> 对象并开始轮询，这样 <code>Toast</code> 就可以加入到消息队列中，才能够进行输出。</p>
+<p>当然，也可以使用 <code>runOnUiThread()</code> 来解决：</p>
+<pre><code class="language-Java">new Thread(new Runnable() {
+    @Override
+    public void run() {
+        ...
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(context, &quot;Toast Content&quot;, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+}).start();
+</code></pre>
+<p><code>Toast</code> 的代码创建在 <code>Runnable</code> 中，然后在需要 <code>Toast</code> 时，把这个 <code>Runnable</code> 对象传给 <code>runOnUiThread()</code>，这样 <code>Runnable</code> 对象就能在 UI 线程中被调用了。</p>
+<p>我在『<a href="https://www.jianshu.com">简书</a>』上留意到曾任新浪高级架构师、58同城项目负责人的 <a href="https://www.jianshu.com/u/05f58efbd5eb">@初一十五a</a> 在文章『<a href="https://www.jianshu.com/p/d434f8051ed9">Android进阶：六、在子线程中直接使用 Toast 及其原理</a>』中封装一个可以在任何线程中使用 <code>Toast</code> 的工具类，其代码如下：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1583574357179.png" alt="@初一十五a 封装的 ToastUtil" loading="lazy"></figure>
+<p><a href="https://www.jianshu.com/u/05f58efbd5eb">@初一十五a</a> 还解释道：初始化 <code>Toast</code> 之前先判断当前线程的 <code>Looper</code> 是否为空，为空则初始化一个新的 <code>myLooper</code>，然后在调用 <code>Toast</code> 的 <code>show()</code> 方法之后让 <code>Looper</code> 启动起来即可。因为 <code>Looper.loop()</code> 方法是无限循环的，为了防止 <code>Looper</code> 阻塞线程，导致内存泄漏应该及时退出 <code>Looper</code>。</p>
+<p>相信很多人一看，觉得挺有道理，拿来即用，并不会考虑太多，实际上这段代码依然是有 Bug 的，可见 <a href="https://www.jianshu.com/u/05f58efbd5eb">@初一十五a</a> 的测试用例并不完善，可能是他太多注重在子线程的兼容，以至于遗漏了最简单的情况：</p>
+<pre><code class="language-Java">public class MainActivity extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        ToastUtil.showToast(MainActivity.this, &quot;Toast Content&quot;);
+    }
+}
+</code></pre>
+<p>实际效果是这样的：</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1583574589949.gif" alt="测试 @初一十五a 的 ToastUtil 导致 Crash" loading="lazy"></figure>
+<p>一开始看到 <code>Toast</code> 被正常弹出，你可能会觉得这是没问题的，但是实际上整个 App 都处于白屏状态，当你按下 Back 键之后你就知道程序被卡死了。</p>
+<p>问题出在 <code>Looper.loop()</code> 中，其实我们应当判断当前线程是主线程还是子线程，再决定需不需要构建新的 <code>Looper</code>：</p>
+<pre><code class="language-Java">public class ToastUtil {
+    public static void showToast(Context context, String text) {
+        if (isMainThread()) {
+            Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+        } else {
+            Looper mLooper = Looper.myLooper();
+            if (mLooper == null) {
+                Looper.prepare();
+                mLooper = Looper.myLooper();
+            }
+            Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+            if (mLooper != null) {
+                Looper.loop();
+                mLooper.quit();
+            }
+        }
+    }
+    private static boolean isMainThread() {
+        return Looper.getMainLooper() == Looper.myLooper();
+    }
+}
+</code></pre>
+<p>这里可以使用之前『<a href="https://liarrdev.github.io/post/Android-determines-main-Thread/">Android 判断当前是否在主线程</a>』一文中提到的方法来判断当前线程，如果是主线程的话，那就直接弹出 <code>Toast</code> 即可，如果是子线程，则构建 <code>Looper</code>。</p>
+<p>但你依然需要了解，<code>Looper.loop()</code> 是会阻塞线程的，也就是说 <code>Looper.loop()</code> 后面的语句并不会执行（不过许多情况下弹 <code>Toast</code> 的确是当前逻辑的最后一步操作），即使你调用了 <code>quit()</code> 也无济于事，所以我个人还是更加喜欢用 <code>Handler</code> 来辅助封装：</p>
+<pre><code class="language-Java">public class ToastUtil {
+    public static void showToast(final Context context, final String text) {
+        if (isMainThread()) {
+            Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+        } else {
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(context, text, Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    }
+    private static boolean isMainThread() {
+        return Looper.getMainLooper() == Looper.myLooper();
+    }
+}
+</code></pre>
+<p>跟之前一样，如果是主线程那就直接弹出 <code>Toast</code>，如果不是，则通过 <code>Looper.getMainLooper()</code> 获取主线程的 <code>Looper</code>，<code>Handler</code> 会关联 <code>Looper</code> 对应的 <code>MessageQueue</code>，于是这里就将 <code>Toast</code> 放到主线程的 <code>MessageQueue</code> 中进行处理。这种方法其实和 <code>runOnUiThread()</code> 的原理是相似的。</p>
+<p>其实很多入门者会认为 <code>Toast</code> 在子线程中不能正常弹出是因为子线程中进行 UI 更新是非安全操作，但实际上并不是抛出异常的真正原因，因为根本还没有执行到更新 UI 那一步。</p>
+<p><code>Toast</code> 本质上是一个 <code>Window</code>，跟 <code>Activity</code> 是平级的，<code>checkThread()</code> 只是 <code>Activity</code> 维护的 <code>View</code> 树的行为。<code>Toast</code> 操作的是 <code>Window</code>，不属于 <code>checkThread()</code> 抛非主线程不能更新 UI 异常的管理范畴，它用 <code>Handler</code> 只是为了用队列和时间控制排队显示 <code>Toast</code> 罢了。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/use-ADB-on-macOS.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/use-ADB-on-macOS/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2020-03-29">2020-03-29</time>
+                  <h4 class="title white no-margin">在 macOS 上使用 ADB</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Android-determines-main-Thread.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Android-determines-main-Thread/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2020-03-02">2020-03-02</time>
+                  <h4 class="title white no-margin">Android 判断当前是否在主线程</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

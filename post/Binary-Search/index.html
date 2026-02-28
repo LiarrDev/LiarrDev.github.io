@@ -1,0 +1,711 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Binary Search | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="某日，一学生到图书馆借了 N 本书，出图书馆的时候，警报响了，于是保安把该学生拦下，要检查一下哪本书（假设只有一本）没有登记出借。有什么方法？
+我们把这个场景用数学模型表示出来：
+
+Q：给定一个整型有序数组，如何找出某一整数是否在该数组中，..." />
+    <meta name="keywords" content="Algorithm" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('/media/images/gridea.jpg');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2020-08-03"><i class="fa fa-calendar"></i><span class="lately">6 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Binary-Search/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Binary-Search/"> </span>
+              </a>
+              <span id="/Binary-Search/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-0 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">Binary Search</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>某日，一学生到图书馆借了 N 本书，出图书馆的时候，警报响了，于是保安把该学生拦下，要检查一下哪本书（假设只有一本）没有登记出借。有什么方法？</p>
+<p>我们把这个场景用数学模型表示出来：</p>
+<blockquote>
+<p>Q：给定一个整型有序数组，如何找出某一整数是否在该数组中，以及该整数对应的下标？</p>
+</blockquote>
+<p>什么意思呢？给定一个有序数组，有以下两种情况：</p>
+<p><img src="https://LiarrDev.github.io/post-images/1564821874140.webp" alt="查找存在的整数并返回位置" loading="lazy"><br>
+<img src="https://LiarrDev.github.io/post-images/1564821913261.webp" alt="查找的整数不存在" loading="lazy"></p>
+<p>比如在该数组中查找整数 <code>9</code>，存在，所以返回 Index 为 <code>3</code>，如果要查找 <code>28</code>，数组中没有这个数，则返回数据不存在。</p>
+<h1 id="traversal">Traversal</h1>
+<p>最常用的方法，逐个遍历数组中的元素，将其和要查找的整数作比较，如果发现某个元素和要查找的整数相等，就返回它的下标。</p>
+<p>回到文章开头的场景，就是把每一本书在防盗警报器中过一遍，以找到引发警报的书。</p>
+<p>这种方法由于要遍历整个数组，时间复杂度为 <code>O(N)</code>。</p>
+<h1 id="hash-table">Hash Table</h1>
+<p>为了节省时间，我们可以考虑建立一个哈希表，用数组元素作为 <code>key</code>，下标作为 <code>value</code>，后面查找任何整数的时候，直接查哈希表就行了。</p>
+<p>如果要回到文章开头的场景，这种方法比较难比喻，可以理解为，借书的时候，图书馆为每一本要出借的书都贴一张标签，表明这本书是出借的，查找的时候只要看哪本书没有贴这个出借的标签即可。</p>
+<p>这种方法时间复杂度为 <code>O(1)</code>，但是空间复杂度为 <code>O(N)</code>。</p>
+<h1 id="binary-search">Binary Search</h1>
+<p>有没有一种方法，既可以让时间复杂度低于 <code>O(N)</code>，又不占用额外存储空间呢？</p>
+<p>就是本文要介绍的<strong>二分查找</strong>了，通常也叫做折半搜索或对数搜索，是一种在有序数组中查找某一特定元素的搜索算法。</p>
+<p>其实该方法在我们生活中也十分常用，比如我们玩一个猜数字的游戏，被猜方在心里想一个 1000 以内的自然数，猜测方猜的数字比被猜方的数字大，被猜方就说“大了”，猜测方猜的数字比被猜方的数字小，被猜方就说“小了”，一直到猜测为止。</p>
+<p>最理想的方法如下：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1564823202507.webp" alt="猜数游戏" loading="lazy"></figure>
+<p>以上的仅需要 9 次就猜出了 1000 以内的数字，这里用到的就是二分查找的思想，每一次猜测，都选取一段整数范围的中位数，是效率最高的策略。</p>
+<p>为什么说这样效率最高呢？因为每一次选择数字，无论偏大还是偏小，都可以让剩下的选择范围缩小一半。</p>
+<p>给定范围 0 到 1000 的整数：</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1564823422180.webp" alt="设立目标数" loading="lazy"></figure>
+<p>第一次我们选择 500，发现偏大了，那么下一次的选择范围，就变成了 1 到 499：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1564823489507.webp" alt="第一次猜测后折半" loading="lazy"></figure>
+<p>第二次我们选择 250，发现还是偏大了，那么下一次的选择范围，就变成了 1 到 249：</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1564823542756.webp" alt="第二次猜测后折半" loading="lazy"></figure>
+<p>第三次我们选择 125，发现偏小了，那么下一次的选择范围，就变成了 126 到 249：</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1564823590800.webp" alt="第三次猜测后折半" loading="lazy"></figure>
+<p>以此类推，最坏的情况需要猜测多少次呢？答案是 log₂1000=10 次，也就是让原本的区间范围进行 10 次 “折半”。</p>
+<p>再来看看封面图的 Mario 找蘑菇，也是使用了折半查找的方法：</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1564828517030.png" alt="Mario 找蘑菇" loading="lazy"></figure>
+<p>回到文章开头的场景，就是把书分成两堆，把第一堆在防盗警报器中过一遍，警报响了，再把这堆书分成两堆，如此反复，直到找出这本书为止。</p>
+<p>这种方法的时间复杂度为 <code>O(logN)</code>。</p>
+<p>接下来看看代码实现。</p>
+<p>递归实现如下：</p>
+<pre><code class="language-Java">/**
+ * 二分查找 - 递归
+ *
+ * @param arr  有序数组
+ * @param key  需要查找的数
+ * @param low  低位
+ * @param high 高位
+ * @return key 对应的位置
+ */
+public static int binarySearch(int[] arr, int key, int low, int high) {
+    if (arr == null || low &gt; high || key &lt; arr[low] || key &gt; arr[high]) {
+        return -1;
+    }
+//  int mid = low + (high - low);
+    int mid = (low &amp; high) + ((low ^ high) &gt;&gt; 1);
+    if (key &gt; arr[mid]) {
+        return binarySearch(arr, key, mid + 1, high);
+    } else if (key &lt; arr[mid]) {
+        return binarySearch(arr, key, low, mid - 1);
+    } else {
+        return mid;
+    }
+}
+</code></pre>
+<p>非递归实现如下：</p>
+<pre><code class="language-Java">/**
+ * 二分查找 - 非递归
+ *
+ * @param arr 有序数组
+ * @param key 需要查找的数
+ * @return key 对应的位置
+ */
+public static int binarySearch(int[] arr, int key) {
+    int low = 0;
+    int high = arr.length - 1;
+    int mid;
+    if (arr == null || arr.length &lt;= 0 || key &lt; arr[low] || key &gt; arr[high]) {
+        return -1;
+    }
+    while (low &lt;= high) {
+//      mid = low + (high - low);
+        mid = (low &amp; high) + ((low ^ high) &gt;&gt; 1);
+        if (key &gt; arr[mid]) {
+            low = mid + 1;
+        } else if (key &lt; arr[mid]) {
+            high = mid - 1;
+        } else {
+            return mid;
+        }
+    }
+    return -1;
+}
+</code></pre>
+<p>这里折半用到了『<a href="">求两整数平均值</a>』一文中提到的算法，以防止溢出，实际上在这里用减法代替加法（即代码中注释掉的部分）也是可以避免溢出，但官方的实现写法也是使用位运算。</p>
+<p>我们可以再看看折半检索和线性检索在最优和最差情况下的区别的区别：</p>
+<p><img src="https://LiarrDev.github.io/post-images/1564824152378.gif" alt="折半检索最优情况" loading="lazy"><br>
+<img src="https://LiarrDev.github.io/post-images/1564824173716.gif" alt="折半检索最差情况" loading="lazy"></p>
+<p>不要忘记了，折半查找要求线性表必须采用顺序存储结构，而且表中元素按关键字有序排列，不满足这两个条件则无法使用。</p>
+<p>顺便讲一个有趣的事，第一篇二分搜索论文是 1946 年发表的，然而第一个没有 Bug 的二分查找算法却是在 1962 年才出现，中间用了 16 年的时间。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

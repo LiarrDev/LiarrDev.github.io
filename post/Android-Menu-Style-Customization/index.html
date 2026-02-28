@@ -1,0 +1,727 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Android Menu 的样式定制 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="其实做原生 Android 开发这么久，对 Android 的原生控件还是比较满意的，毕竟 Material Design 也不是吃素的，但是目前不太满意的地方可能就是 Menu 了。
+原生 Menu 的默认样式其实和其他控件一样，都是十分..." />
+    <meta name="keywords" content="Android" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1772295599310" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Android-Menu-Style-Customization.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2019-07-03"><i class="fa fa-calendar"></i><span class="lately">7 年前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Android-Menu-Style-Customization/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Android-Menu-Style-Customization/"> </span>
+              </a>
+              <span id="/Android-Menu-Style-Customization/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+              </div>
+              <h1 class="title ularge white bold">Android Menu 的样式定制</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>其实做原生 Android 开发这么久，对 Android 的原生控件还是比较满意的，毕竟 Material Design 也不是吃素的，但是目前不太满意的地方可能就是 <code>Menu</code> 了。</p>
+<p>原生 <code>Menu</code> 的默认样式其实和其他控件一样，都是十分简约的。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1562244347105.jpeg" alt="Menu 默认样式" loading="lazy"></figure>
+<p>可以发现，默认的 <code>Menu</code> 当 Item 折叠的时候，下拉的 <code>Menu</code> 是会把 <code>Toolbar</code> 挡住的，虽然这并不影响我们的使用，但是却和我们既有的交互习惯相悖，而且默认的白色背景也和我们的主题颜色不搭，所以我们需要根据我们的需要定制。</p>
+<p>但定制的时候，你会发现定制的方式比其他控件要相对繁琐，不像其他控件一样，只需要到相应的 layout 文件中修改控件的属性即可，它还需要修改其 values 文件并在 layout 中引用才行。</p>
+<p>首先修改「styles.xml」文件，添加一个 <code>&lt;style&gt;</code> 定义其 Style 属性：</p>
+<pre><code class="language-XML">&lt;resources&gt;
+    &lt;style name=&quot;AppTheme&quot; parent=&quot;Theme.AppCompat.DayNight.NoActionBar&quot;&gt;
+        &lt;item name=&quot;colorPrimary&quot;&gt;@color/colorPrimary&lt;/item&gt;
+        &lt;item name=&quot;colorPrimaryDark&quot;&gt;@color/colorPrimaryDark&lt;/item&gt;
+        &lt;item name=&quot;colorAccent&quot;&gt;@color/colorAccent&lt;/item&gt;
+        &lt;item name=&quot;actionOverflowMenuStyle&quot;&gt;@style/OverflowMenu&lt;/item&gt;
+    &lt;/style&gt;
+
+    &lt;style name=&quot;OverflowMenu&quot; parent=&quot;Base.Widget.AppCompat.PopupMenu.Overflow&quot;&gt;
+        &lt;item name=&quot;overlapAnchor&quot;&gt;false&lt;/item&gt;
+        &lt;item name=&quot;android:popupBackground&quot;&gt;@color/colorPrimary&lt;/item&gt;
+    &lt;/style&gt;
+&lt;/resources&gt;
+</code></pre>
+<p>其中 <code>overlapAnchor</code> 是用来修改 <code>Menu</code> 悬浮位置的，默认为 <code>TRUE</code>，当为 <code>FALSE</code> 的时候则不遮挡 <code>Toolbar</code>。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1562244529091.jpeg" alt="Menu 不遮挡 Toolbar" loading="lazy"></figure>
+<p>如果使用的是 <code>Toolbar</code> 而不是默认的 <code>ActionBar</code>，则不要忘了在 <code>Toolbar</code> 控件中添加 <code>app:popupTheme</code> 属性：</p>
+<pre><code class="language-XML">&lt;android.support.v7.widget.Toolbar
+    android:id=&quot;@+id/toolbar&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;?attr/actionBarSize&quot;
+    android:background=&quot;?attr/colorPrimary&quot;
+    android:theme=&quot;@style/ThemeOverlay.AppCompat.Dark.ActionBar&quot;
+    app:popupTheme=&quot;@style/OverflowMenu&quot; /&gt;
+</code></pre>
+<p>为了符合 Material Design 以及开发方便需要，十分建议使用 <code>Toolbar</code> 而不是 <code>ActionBar</code>，在定制 <code>Menu</code> 这个场景中，如果使用 <code>ActionBar</code> 则还需要使用比较繁琐的方法手动修改 <code>Menu</code> 中的字体颜色，而 <code>Toolbar</code> 只需定义好其主题即可自动修改。</p>
+<p><code>android:popupBackground</code> 则是用来修改下拉 <code>Menu</code> 时的背景颜色，默认是深灰色，我这里则把它设置为与 <code>Toolbar</code> 一样，这样会比较和谐。</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1562244703322.jpeg" alt="Menu 修改 Background" loading="lazy"></figure>
+<p><code>Toolbar</code> 上的 <code>Menu</code> 我们一般都会为其设置 ICON，因为用户对图形的感知会强于文字，所以 ICON 很重要，但是 Menu 默认情况下只会在 Toolbar 上显示 ICON，而下拉则仅显示文字，这就十分不友好了，甚至还浪费了美工的设计成果，必须要改。</p>
+<p>但是这个居然在样式文件中是不能直接设置的，需要到 Activity 中通过反射设置其显示。</p>
+<pre><code class="language-Java">@Override
+public boolean onMenuOpened(int featureId, Menu menu) {
+    if (menu != null) {
+        if (menu.getClass() == MenuBuilder.class) {
+            try {
+                Method method = menu.getClass().getDeclaredMethod(&quot;setOptionalIconsVisible&quot;, Boolean.TYPE);
+                method.setAccessible(true);
+                method.invoke(menu, true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    return super.onMenuOpened(featureId, menu);
+}
+</code></pre>
+<p>这样，就能够将 ICON 和文字同时显示出来了。</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1562244884666.jpeg" alt="下拉 Menu 显示 ICON" loading="lazy"></figure>
+<p>还有在最近的开发中我比较喜欢一体化布局，即 <code>Toolbar</code> 和下方融为一体，虽然不知道 Material Design 是否推崇这种设计方式，但我个人还是觉得挺好看的。</p>
+<p>那么就会出现一种情况，<code>Menu</code> 的「More」三个点是默认的，颜色也是跟随默认的主题，那么如果我在项目中想修改它的颜色也会比较麻烦，如下：</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1562245022905.jpeg" alt="Menu 修改 More 图标" loading="lazy"></figure>
+<p>我一开始的想法是，会有一个关于 <code>Color</code> 的属性让我可以直接设置，但是怎么找都找不到，无奈之下只能选择其他方式，修改这个默认的图标。</p>
+<p>先导入一个喜欢的 ICON，我这里在『Android Studio』中提供的图标库中选择了跟原来相同的「more vert」图标，并修改为合适的颜色。</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1562245096719.jpeg" alt="Android Studio Select Icon" loading="lazy"></figure>
+<p>然后在「styles.xml」文件中添加一个新的 <code>&lt;style&gt;</code>：</p>
+<pre><code class="language-XML">&lt;resources&gt;
+    &lt;style name=&quot;AppTheme&quot; parent=&quot;Theme.AppCompat.Light.NoActionBar&quot;&gt;
+        &lt;item name=&quot;colorPrimary&quot;&gt;@color/colorPrimary&lt;/item&gt;
+        &lt;item name=&quot;colorPrimaryDark&quot;&gt;@color/colorPrimaryDark&lt;/item&gt;
+        &lt;item name=&quot;colorAccent&quot;&gt;@color/colorAccent&lt;/item&gt;
+        &lt;item name=&quot;actionOverflowMenuStyle&quot;&gt;@style/OverflowMenu&lt;/item&gt;
+        &lt;item name=&quot;actionOverflowButtonStyle&quot;&gt;@style/OverflowButtonStyle&lt;/item&gt;
+    &lt;/style&gt;
+    ...
+    &lt;style name=&quot;OverflowButtonStyle&quot; parent=&quot;Base.Widget.AppCompat.ActionButton.Overflow&quot;&gt;
+        &lt;item name=&quot;android:src&quot;&gt;@drawable/ic_more&lt;/item&gt;
+    &lt;/style&gt;
+&lt;/resources&gt;
+</code></pre>
+<p>这里通过指定 <code>actionOverflowButtonStyle</code> 的 Style 设定其图标。</p>
+<p>同时，我还想指定 <code>Menu</code> 中的字体颜色，那么我可以添加属性：</p>
+<pre><code class="language-XML">&lt;resources&gt;
+    &lt;style name=&quot;AppTheme&quot; parent=&quot;Theme.AppCompat.Light.NoActionBar&quot;&gt;
+        &lt;item name=&quot;colorPrimary&quot;&gt;@color/colorPrimary&lt;/item&gt;
+        &lt;item name=&quot;colorPrimaryDark&quot;&gt;@color/colorPrimaryDark&lt;/item&gt;
+        &lt;item name=&quot;colorAccent&quot;&gt;@color/colorAccent&lt;/item&gt;
+        &lt;item name=&quot;actionOverflowMenuStyle&quot;&gt;@style/OverflowMenu&lt;/item&gt;
+        &lt;item name=&quot;actionOverflowButtonStyle&quot;&gt;@style/OverflowButtonStyle&lt;/item&gt;
+        &lt;item name=&quot;actionMenuTextColor&quot;&gt;@android:color/white&lt;/item&gt;
+    &lt;/style&gt;
+    ...
+&lt;/resources&gt;
+</code></pre>
+<p>只需指定 <code>actionMenuTextColor</code> 的颜色即可，我在这里直接指定为白色。</p>
+<p>其实 <code>Menu</code> 还有其他可定制的属性，比如背景透明之类的，但都不能直接在 layout 中修改控件属性，所以的确是比较折腾的。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/IIS-7-Binding-Certificates-for-Multiple-Domains.jpeg');"></div>
+                 <a href="https://LiarrDev.github.io/post/IIS-7-Binding-Certificates-for-Multiple-Domains/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2019-07-17">2019-07-17</time>
+                  <h4 class="title white no-margin">IIS 7 为多个域名绑定证书</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Wechat-H5-Payment-For-Android.jpeg');"></div>
+                 <a href="https://LiarrDev.github.io/post/Wechat-H5-Payment-For-Android/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2019-06-19">2019-06-19</time>
+                  <h4 class="title white no-margin">WeChat H5 Payment for Android</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-27">2026-02-27</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Empowers-Compose-AppWidget-with-Jetpack-Glance .png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-02-02">2026-02-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /"> Jetpack Glance 助力 Compose AppWidget 开发</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Debug-HarmonyOS-ArkWeb-via-HDC.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2025-12-29">2025-12-29</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">HarmonyOS ArkWeb 有线调试</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-1 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-2 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-3 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-4 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-5 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-6 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 151 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>
