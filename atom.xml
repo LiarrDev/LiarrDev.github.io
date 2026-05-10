@@ -1,0 +1,1468 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://LiarrDev.github.io</id>
+    <title>Liarr&apos;s Studio</title>
+    <updated>2026-05-10T16:19:40.387Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://LiarrDev.github.io"/>
+    <link rel="self" href="https://LiarrDev.github.io/atom.xml"/>
+    <subtitle>温故而知新</subtitle>
+    <logo>https://LiarrDev.github.io/images/avatar.png</logo>
+    <icon>https://LiarrDev.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2026, Liarr&apos;s Studio</rights>
+    <entry>
+        <title type="html"><![CDATA[让 JetBrains IDEs 连上本地 Claude Code]]></title>
+        <id>https://LiarrDev.github.io/post/Connect-JetBrains-IDEs-to-Claude-Code/</id>
+        <link href="https://LiarrDev.github.io/post/Connect-JetBrains-IDEs-to-Claude-Code/">
+        </link>
+        <updated>2026-05-11T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>如今各种 AI 编程工具层出不穷，谁才是真正的“最强王者”我不敢妄下定论，但我相信 Claude 在广大开发者的心中必有一席之地。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1778428256446.jpg" alt="Claude" loading="lazy"></figure>
+<p>就我目前的体验来看，哪怕使用同样的模型，Claude 在任务调度方面，表现依然优于许多 AI IDE。</p>
+<p>但即便我是一名开发者，我依然讨厌面对 Claude Code 那黑压压的终端窗口，GUI 才是我的真爱。所以现在大多数 AI 开发任务我都会先交给 Trae 处理，只有在 Trae 不给力的时候，才“退而求其次”回到 Claude Code。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1778428305862.webp" alt="Claude Code" loading="lazy"></figure>
+<p>为什么不用 Claude Desktop？主要是觉得它的界面设计更适合纯 Vibe Coding，对我这种习惯了“古法编程 + AI 辅助”的开发方式来说，实在不够友好。</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1778428327300.png" alt="Claude Desktop" loading="lazy"></figure>
+<p>论写代码，没有什么比“在自己熟悉的 IDE 面板里直接对话”更舒服了。那有没有办法把 Claude Code 接进我日常使用的 Android Studio 或 IntelliJ IDEA 呢？</p>
+<p>官方的确发布了一款<a href="https://plugins.jetbrains.com/plugin/27310-claude-code-beta-">面向 JetBrains IDEs 的插件</a>，可我下载下来之后却大呼上当。它本质上就是在 IDE 内置终端里运行 Claude Code，只不过多了个 Diff Viewer 之类的功能，能查看文件差异，但我仍然逃不掉那个熟悉的黑框。</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1778428381072.png" alt="Claude Code for JetBrains" loading="lazy"></figure>
+<p>反观<a href="https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code">给 VS Code 的插件</a>，从截图就能看到它提供了专门的对话输入界面，看上去友好得多。</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1778428417163.png" alt="Claude Code for VSCode" loading="lazy"></figure>
+<p>既然官方支持有限，那就只能另辟蹊径了。</p>
+<p>2025 年底，JetBrains 为 AI Assistant 插件推送了一个重磅功能：支持自定义 <a href="https://www.jetbrains.com/acp/">ACP（Agent Client Protocol）</a> 配置。这意味着你可以把任意一个支持 ACP 的 Agent <a href="https://www.jetbrains.com/zh-cn/help/ai-assistant/2026.1/acp.html#">接入到 AI Assistant</a>，Claude Code 自然也不例外。</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1778428661833.webp" alt="ACP" loading="lazy"></figure>
+<p>ACP 是一种开放协议，专门用来规范 AI Agent 与 IDE 之间的通信方式。它有点类似于 Language Server Protocol (LSP)，但专注于 AI 代理的集成，让开发者可以在不同编辑器中使用各种各样的 AI 工具，而不用为每个组合单独造适配器。这个协议由 Zed Industries（Zed 编辑器的开发者）主导，与 Anthropic、Google 等合作开发，JetBrains 也已经加入其中。</p>
+<p>在 ACP 出现之前，每个 AI Agent 想要接入某个 IDE，都得单独开发一套适配器。Claude Code 写一套，Cursor 写一套，Windsurf 再写一套——大量重复造轮子，而且每当 Agent 更新，适配器也必须跟着改。</p>
+<p>ACP 的核心思路就是：定义一套标准通信协议，任何 Agent 只要实现了 ACP Server，任何 IDE 只要实现了 ACP Client，二者就能直接对接。</p>
+<p>了解了 ACP，我们开始实操。</p>
+<p>首先确认你已经安装了 <a href="https://plugins.jetbrains.com/plugin/15637-jetbrains-ai-assistant">JetBrains AI Assistant</a> 插件。在 IntelliJ IDEA 里它默认就捆绑好了，但在 Android Studio 中需要自行安装。</p>
+<figure data-type="image" tabindex="7"><img src="https://LiarrDev.github.io/post-images/1778428477147.png" alt="JetBrains AI Assistan Plugin" loading="lazy"></figure>
+<p>同时确保你已经装好并正常配置了 Claude Code。本文不再赘述安装和配置过程，如果你的 Claude Code CLI 无法正常工作，后续操作将无法进行。</p>
+<p>接下来，开始配置 ACP。</p>
+<p>先安装 <a href="https://www.npmjs.com/package/@agentclientprotocol/claude-agent-acp"><code>@agentclientprotocol/claude-agent-acp</code></a>。这是 Zed 官方提供的 ACP 适配器，用来桥接 Claude Code 和 ACP 协议。它的前身是 <a href="https://www.npmjs.com/package/@zed-industries/claude-code-acp"><code>@zed-industries/claude-code-acp</code></a>，如果你看到这个包名，不用顾虑，它们是一脉相承的。</p>
+<pre><code class="language-bash">➜   npm install -g @agentclientprotocol/claude-agent-acp
+</code></pre>
+<p>注意必须用 <code>-g</code> 全局安装，这样 ACP Server 才能作为独立命令被调用。这里我用的是 <code>npm</code>，如果你习惯其他包管理器（比如 <code>pnpm</code> 等），同样可以替换使用。</p>
+<p>打开 JetBrains AI Assistant 聊天面板，在菜单中选择「添加自定义智能体」，会自动打开一个名为 <code>acp.json</code> 的配置文件。</p>
+<figure data-type="image" tabindex="8"><img src="https://LiarrDev.github.io/post-images/1778428593059.png" alt="添加自定义智能体" loading="lazy"></figure>
+<p>在 <code>acp.json</code> 中添加配置项：</p>
+<pre><code class="language-json">{
+  ...
+  &quot;agent_servers&quot;: {
+    &quot;Claude Code&quot;: {
+      &quot;command&quot;: &quot;/Users/Liarr/.nvm/versions/node/v24.14.0/bin/claude-agent-acp&quot;
+    }
+  }
+}
+</code></pre>
+<p>将路径替换为你所安装的路径即可。如果不确定安装位置，可以用下面的命令查看：</p>
+<pre><code class="language-bash">➜   npm ls -g
+</code></pre>
+<p>保存文件后，回到 JetBrains AI Assistant 的聊天面板，在 Agent 列表中就能看到 Claude Code 了。选中它，就能够在熟悉的对话面板中直接使用。</p>
+<figure data-type="image" tabindex="9"><img src="https://LiarrDev.github.io/post-images/1778428617538.png" alt="JetBrains AI Assistant Agents" loading="lazy"></figure>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Flutter Dio 抓包配置]]></title>
+        <id>https://LiarrDev.github.io/post/Flutter-Dio-Proxy-Config/</id>
+        <link href="https://LiarrDev.github.io/post/Flutter-Dio-Proxy-Config/">
+        </link>
+        <updated>2026-04-29T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>之前介绍了『<a href="https://liarrdev.github.io/post/Capture-Traffic-on-Android-with-Fiddler-Everywhere/">Fiddler Everywhere</a>』和『<a href="https://liarrdev.github.io/post/Reqable/">Reqable</a>』两款应用在手机上的抓包流程，最近我在使用 Flutter 开发 HarmonyOS 应用，调试的时候发现，即使我配置了系统代理，它始终都无法抓包，而使用原生 ArkTS 开发的应用却可以抓包成功。</p>
+<p>经过一番了解之后才知道，原因在于 Dart 语言标准库的网络请求不会走 Wi-Fi 代理，常规通过配置 Wi-Fi 代理来抓包的方式行不通。这给我们日常开发测试造成了很大的阻碍，严重降低工作效率。</p>
+<p>虽然说配置方法变了，倒不至于说非常复杂，只需在代码中指定代理地址即可。</p>
+<p>以我们项目中使用的 Dio 库为例：</p>
+<pre><code class="language-dart">class HttpUtils {
+  ...
+  final Dio dio = Dio();
+  void init() {
+    ...
+    if (proxy) {
+      (dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () {
+        final client = HttpClient();
+        client.findProxy = (url) =&gt; 'PROXY 192.168.1.142:9000'; // 代理地址
+        client.badCertificateCallback = ((X509Certificate cert, String host, int port) =&gt; true);
+        return client;
+      };
+    }
+  }
+}
+</code></pre>
+<p>除了指定代理地址，这里还禁用 HTTPS 证书校验：这是一个回调函数，正常情况下用于验证服务器证书是否可信。返回 <code>true</code> 表示无条件信任所有证书，即使证书无效或过期也不拦截。</p>
+<p>把代理地址硬编码在项目中显然不利于协作开发，而且还会污染版本管理，因此最好有一种方式来动态配置代理地址，于是我就仿造系统 Wi-Fi 代理配置的方式，顺手写了个 UI，这样每一位开发或者测试人员就可以直接在手机上配置了。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1777474845955.png" alt="" loading="lazy"></figure>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[本地音乐库构建：音源处理]]></title>
+        <id>https://LiarrDev.github.io/post/Local-Music-Library-Audio-Processing/</id>
+        <link href="https://LiarrDev.github.io/post/Local-Music-Library-Audio-Processing/">
+        </link>
+        <updated>2026-03-30T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>之前『<a href="https://liarrdev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>』提到了我最近在整理本地音乐库，有些朋友也想自行搭建，但苦于音源难以获取，而我的音乐库过于庞大，不适合分享，所以今天来讲讲我的方法论，以作参考。</p>
+<p>希望搭建本地音乐库的朋友相信都饱经各音乐软件的版权折磨，更倾向于白嫖入库，但作为互联网上的老手艺人，我在经历了多番尝试之后，最终选择的方案仍然是：给音乐软件充会员。</p>
+<p>这听起来很离谱，既然充了会员，那么何苦浪费时间搭建本地音乐库？</p>
+<p>网络上的音乐破解工具数不胜数，但经过我的测试，大多数工具都存在音源更新慢、破解成功率低等问题，这就会导致需要浪费大量的时间在寻找音源上。</p>
+<p>而充值音乐软件的会员，则是通过较低的金钱成本来降低时间成本。</p>
+<p>以『<a href="https://y.qq.com">QQ 音乐</a>』为例，按照自动续费的价格，目前每月 15 元即可开通绿钻豪华版，享受 300 首歌的下载额度，并且可以随时取消，还是比较划算的。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1773587121075.png" alt="QQ 音乐价格" loading="lazy"></figure>
+<p>而且这些音乐软件本身都做了较好的搜索、分类、批量下载等功能，能够大大节省我们的处理时间。</p>
+<p>当音乐库搭建得差不多之后，我们就可以随时暂停续费，攒够一波需要下载的音乐时再重新开通即可。</p>
+<p>经过多年的攻防，目前几乎所有的音乐软件都对音频文件做了加密，在版权上来说，这是合理的。但这又会产生另外一个问题，在这个音乐软件上下载的音频，就只能使用该音乐软件来播放，更何况在现在短视频发达的年代，我希望给自己的视频配个 BGM 时却发现下载的音频无法使用，那么我下载似乎就没有意义了。</p>
+<p>既然攻防是一直迭代的，那么我们就可以寻找一些古早版本的音乐软件来破解。</p>
+<p>同样还是以『QQ 音乐』为例，我目前测试 V7.9.1.0 在 macOS 下仍可正常运行。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1773587199160.png" alt="QQ 音乐版本" loading="lazy"></figure>
+<p>这个版本虽然已经对音频文件进行了一定程度的加密，但网上也已经流传了一些破解方案，比较流行的仓库 <a href="https://github.com/unlock-music/unlock-music">@unlock-music/unlock-music</a> 已经被 <a href="https://docs.github.com/zh/site-policy/content-removal-policies/dmca-takedown-policy">DMCA</a>（Digital Millennium Copyright Act，千禧年数字著作权法案）<a href="https://github.com/github/dmca/blob/master/2022/11/2022-11-04-qqmusic.md">下架</a>，不过仍有<a href="https://git.unlock-music.dev/um/web">自托管的仓库</a>，同时 Github 上也有一些预构建版本，可自行搜索。</p>
+<p>我目前使用的是由 <a href="https://www.sorkai.com">@Sorkai</a> 维护的<a href="https://music-unlock.lehinet.com">公益镜像</a>，它使用了 PWA 技术，即使没有网络也可以使用，只需将加密的音频文件拖进去，就可以转换为未加密的 OGG 文件。</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1773587234653.png" alt="unlock music" loading="lazy"></figure>
+<p>但我的音乐库统一采用 MP3 格式的音频文件，所以还需要做一次转换，这个相对来说比较简单，只需要用到 FFmpeg，FFmpeg 是一个用于处理多媒体内容（如音频、视频、字幕及相关元数据）的开源工具，它的功能非常强大。</p>
+<p>安装完成后，只需要执行以下命令即可完成转换：</p>
+<pre><code class="language-bash">➜   ffmpeg -i input.ogg output.mp3
+</code></pre>
+<p>单个文件转换效率太低，所以我就写了一个可以在 macOS 上执行的简易脚本，用于批量转换：</p>
+<pre><code class="language-shell">#!/bin/bash
+
+# 设置要转换的音频文件夹路径
+input_folder=&quot;/Users/Liarr/Desktop/ogg&quot;
+output_folder=&quot;/Users/Liarr/Desktop/mp3&quot;
+
+# 创建输出文件夹（如果不存在）
+mkdir -p &quot;$output_folder&quot;
+
+# 遍历输入文件夹中的所有音频文件
+for file in &quot;$input_folder&quot;/*; do
+    # 获取文件名和扩展名
+    filename=$(basename -- &quot;$file&quot;)
+    extension=&quot;${filename##*.}&quot;
+    filename_without_ext=&quot;${filename%.*}&quot;
+
+    # 转换为 MP3 格式
+    ffmpeg -i &quot;$file&quot; &quot;$output_folder/$filename_without_ext.mp3&quot;
+done
+
+echo &quot;转换完成！&quot;
+</code></pre>
+<p>只需要将需要转换的 OGG 文件放在输入目录，执行脚本之后就会批量生成 MP3 文件到输出目录。</p>
+<p>如果命令对于你来说过于复杂，也可以使用一些开发者自行构建的在线 FFmpeg 服务，比如 <a href="https://github.com/xiguaxigua/ffmpeg-online">@xiguaxigua/ffmpeg-online</a>，同样也是将文件拖进去即可，只是效率确实不如本地执行快。</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1773587254173.png" alt="ffmpeg-online" loading="lazy"></figure>
+<p>这样就得到了一个 MP3 文件，再使用『<a href="https://picard.musicbrainz.org">MusicBrainz Picard</a>』将标签和封面打进去，一切大功告成。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[使用 mp3agic 读写 MP3 的 ID3 标签]]></title>
+        <id>https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/</id>
+        <link href="https://LiarrDev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">
+        </link>
+        <updated>2026-02-26T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="背景">背景</h1>
+<p>数年前为了应对各音乐平台的版权割据，我开始建立自己的离线音乐库。只是当年的我没有意识到，它会庞大到将近 6 千首歌——这还是在我近几年都没有维护的情况下。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1772293914084.png" alt="Music Lib" loading="lazy"></figure>
+<p>为了清晰管理，库建立之初我就采用了统一的文件命名格式：<code>歌手 - 歌曲.mp3</code>。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1772293964378.png" alt="命名规范" loading="lazy"></figure>
+<p>终于有一天我面对着这个 20 几 GB 的文件夹手足无措时，我意识到，它还需要进一步整理。</p>
+<p>我的想法是这样的，为了方便索引，我应该为歌手建立一个目录，然后歌手下再建立专辑子目录，最后把每首歌曲归类到对应的专辑中去。</p>
+<pre><code>Music
+  ├── Singer 1
+  │  ├── Album 1
+  │  │  ├── Song 1
+  │  │  ├── Song 2
+  │  │  └── ···
+  │  ├── Album 2
+  │  │  ├── Song 1
+  │  │  ├── Song 2
+  │  │  └── ···
+  │  └── ···
+  ├── Singer 2
+  │  ├── Album 1
+  │  │  ├── Song 1
+  │  │  ├── Song 2
+  │  │  └── ···
+  │  ├── Album 2
+  │  │  ├── Song 1
+  │  │  ├── Song 2
+  │  │  └── ···
+  │  └── ···
+  └── ···
+</code></pre>
+<p>歌手名字和歌曲名字都好说，得益于我规范的命名，直接解析文件名就可以拿到，那么专辑名应该如何获取呢？</p>
+<p>点开 MP3 文件的属性，可以看到它内部就存储了标题、歌手、专辑等信息，这恰好能够满足我的需要。</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1772294056349.png" alt="MP3 Metadata" loading="lazy"></figure>
+<p>首先需要了解这些元数据的存储方式。MP3 文件的元数据通常遵循 ID3 标准，主要分为 ID3v1 和 ID3v2 两种。</p>
+<p>ID3v1：位于文件尾部，长度为 128 字节，如果 MP3 文件中有 APE 格式信息，则在 APE 信息之后。不支持封面和一些特殊字符，兼容性较好，但信息容量有限。</p>
+<p>ID3v2：位于文件头部，可以包含封面和特殊字符等，长度任意，是目前最常用的标准。它由一个标签头和多个帧（Frame）组成。</p>
+<p>ID3v2 当前最新版本是 ID3v2.4，但一些老设备或软件可能只支持 ID3v2.3。</p>
+<p>ID3v2.4 对 ID3v2.3 做了一些改进：</p>
+<ul>
+<li>容量和限制：ID3v2.4 相比 ID3v2.3 有更好的扩展性，可以支持更大容量的文件。</li>
+<li>标签大小：ID3v2.4 新增了 16 位和 32 位的大小字段，可以表示更大的标签尺寸。</li>
+<li>文本编码：ID3v2.4 强制使用 UTF-16 编码，而 ID3v2.3 则默认使用 ISO-8859-1 编码。</li>
+<li>帧类型：ID3v2.4 废弃了一些过时的帧类型，并引入了新的帧类型，如：用户自定义文本信息等。</li>
+</ul>
+<p>既然知道了元数据存储的位置，如何读取呢？直接解析文件的 <code>ByteArray</code> 是一种方案，但是这种方法过于硬核，使用封装过的三方库显然更加简单易用。</p>
+<h1 id="使用-mp3agic">使用 mp3agic</h1>
+<p>我找到了一个名为 mp3agic 的库，尽管该仓库上一次提交已经是 2022 年，并且在 2024 年已标注为不再积极维护，但我实际测试下来，仍能够满足我的需求。</p>
+<p>先来看看使用方法。</p>
+<p>引入依赖：</p>
+<pre><code class="language-kotlin">dependencies {
+    implementation(&quot;com.mpatric:mp3agic:0.9.1&quot;)
+}
+</code></pre>
+<p>读取 MP3 文件：</p>
+<pre><code class="language-kotlin">fun open(file: File) {
+    val mp3File = Mp3File(it)
+    val length = mp3File.lengthInSeconds
+    val bitrate = mp3File.bitrate
+    val sampleRate = mp3File.sampleRate
+    // ...
+}
+</code></pre>
+<p>支持直接使用路径或者 <code>File</code> 实例构建 <code>Mp3File</code>。</p>
+<p>移除 ID3 或者自定义 Tag：</p>
+<pre><code class="language-kotlin">fun deleteTag(mp3File: Mp3File, savePath: String) {
+    if (mp3File.hasId3v1Tag()) {
+        mp3File.removeId3v1Tag()
+    }
+    if (mp3File.hasId3v2Tag()) {
+        mp3File.removeId3v2Tag()
+    }
+    if (mp3File.hasCustomTag()) {
+        mp3File.removeCustomTag()
+    }
+    mp3File.save(savePath)
+}
+</code></pre>
+<p>需要留意的是修改后调用 <code>save()</code> 保存时，不能直接覆盖原文件，需要提供一个新的保存路径，否则会抛出异常。</p>
+<p>获取 ID3v1 的值：</p>
+<pre><code class="language-kotlin">fun getId3v1(mp3File: Mp3File) {
+    if (mp3File.hasId3v1Tag()) {
+        val v1Tag = mp3File.id3v1Tag
+        val track = v1Tag.track
+        val artist = v1Tag.artist
+        val album = v1Tag.album
+        val title = v1Tag.title
+        val year = v1Tag.year
+        val genre = v1Tag.genre
+        val genreDesc = v1Tag.genreDescription
+        val comment = v1Tag.comment
+        val version = v1Tag.version
+        // ...
+    }
+}
+</code></pre>
+<p>设置 ID3v1 的值：</p>
+<pre><code class="language-kotlin">fun setId3v1(mp3File: Mp3File, savePath: String) {
+    val v1Tag = if (mp3File.hasId3v1Tag()) {
+        mp3File.id3v1Tag
+    } else {
+        ID3v1Tag().also { mp3File.id3v1Tag = it }
+    }
+    v1Tag.track = &quot;5&quot;
+    v1Tag.artist = &quot;An Artist&quot;
+    v1Tag.title = &quot;The Title&quot;
+    v1Tag.album = &quot;The Album&quot;
+    v1Tag.year = &quot;2001&quot;
+    v1Tag.genre = 12
+    v1Tag.comment = &quot;Some comment&quot;
+    // ...
+    mp3File.save(savePath)
+}
+</code></pre>
+<p>其实就是简单的调用 Getter 和 Setter。</p>
+<p>获取 ID3v2 的值：</p>
+<pre><code class="language-kotlin">fun getId3v2(mp3File: Mp3File) {
+    if (mp3File.hasId3v2Tag()) {
+        val v2Tag = mp3File.id3v2Tag
+        val track = v2Tag.track
+        val artist = v2Tag.artist
+        val album = v2Tag.album
+        val title = v2Tag.title
+        val year = v2Tag.year
+        val genre = v2Tag.genre
+        val genreDesc = v2Tag.genreDescription
+        val comment = v2Tag.comment
+        val version = v2Tag.version
+        val lyrics = v2Tag.lyrics
+        val composer = v2Tag.composer
+        val publisher = v2Tag.publisher
+        val origArtist = v2Tag.originalArtist
+        val albumArtist = v2Tag.albumArtist
+        val copyright = v2Tag.copyright
+        val url = v2Tag.url
+        val encoder = v2Tag.encoder
+        val albumImage = v2Tag.albumImage
+        if (albumImage != null) {
+            val mime = v2Tag.albumImageMimeType
+            // Write image to file - can determine appropriate file extension from the mime type
+            val file = RandomAccessFile(&quot;album-artwork&quot;, &quot;rw&quot;)
+            file.write(albumImage);
+            file.close();
+        }
+        // ...
+    }
+}
+</code></pre>
+<p>因为 ID3v2 支持设置专辑封面，所以也可以获取到封面图片。</p>
+<p>设置 ID3v2 的值：</p>
+<pre><code class="language-kotlin">fun setId3v2(mp3File: Mp3File, savePath: String) {
+    val v2Tag = if (mp3File.hasId3v2Tag()) {
+        mp3File.id3v2Tag
+    } else {
+        ID3v24Tag().also { mp3File.id3v2Tag = it }
+    }
+    v2Tag.track = &quot;5&quot;
+    v2Tag.artist = &quot;An Artist&quot;
+    v2Tag.title = &quot;The Title&quot;
+    v2Tag.album = &quot;The Album&quot;
+    v2Tag.year = &quot;2001&quot;
+    v2Tag.genre = 12
+    v2Tag.comment = &quot;Some comment&quot;
+    v2Tag.lyrics = &quot;Some lyrics&quot;
+    v2Tag.composer = &quot;The Composer&quot;
+    v2Tag.publisher = &quot;A Publisher&quot;
+    v2Tag.originalArtist = &quot;Another Artist&quot;
+    v2Tag.albumArtist = &quot;An Artist&quot;
+    v2Tag.copyright = &quot;Copyright&quot;
+    v2Tag.url = &quot;http://foobar&quot;
+    v2Tag.encoder = &quot;The Encoder&quot;
+    v2Tag.setAlbumImage(byteArray, mime)
+    // ...
+    mp3File.save(&quot;MyMp3File.mp3&quot;)
+}
+</code></pre>
+<p><code>Mp3File</code> 支持创建 ID3v2.2、ID3v2.3、ID3v2.4，可以按需创建。</p>
+<h1 id="编写整理脚本">编写整理脚本</h1>
+<p>有了上面的工具，下面就可以写一个符合我预期的脚本了：</p>
+<pre><code class="language-kotlin">object MusicScript {
+
+    private const val SOURCE_DIR = &quot;/Users/Liarr/mp3-source&quot;
+    private const val RESULT_DIR = &quot;/Users/Liarr/mp3-result&quot;
+    private const val FIXED_DIR = &quot;/Users/Liarr/mp3-fixed&quot;
+
+    fun group() {
+        val dir = File(SOURCE_DIR)
+        dir.listFiles()?.forEach {
+            if (it.name.endsWith(&quot;.mp3&quot;)) { // 避免读到本地 .DS_Store 等非 MP3 文件
+                val regex = &quot;&quot;&quot;(.*) - (.*)\.mp3&quot;&quot;&quot;.toRegex()
+                val matchResult = regex.find(it.name)
+                val fileArtist = matchResult?.groupValues?.get(1)
+                val fileTitle = matchResult?.groupValues?.get(2)
+
+                if (fileArtist == null || fileTitle == null) {
+                    return@forEach
+                }
+                val singerDir = File(RESULT_DIR, fileArtist)
+                if (singerDir.exists().not()) {
+                    singerDir.mkdirs()      // 歌手文件夹不存在，先创建
+                }
+
+                val mp3File = Mp3File(it)
+                if (mp3File.hasId3v2Tag()) {
+                    val v2Tag = mp3File.id3v2Tag
+
+                    // ID3v2 Tag 里面的数据和文件名解析出来的不一致，大概率是乱码了，尝试修正
+                    if (fileArtist != v2Tag.artist || fileTitle != v2Tag.title) {
+                        val tagArtist = v2Tag.artist.correctCharset()
+                        val tagTitle = v2Tag.title.correctCharset()
+                        val tagAlbum = v2Tag.album.correctCharset()
+                        if (tagArtist == fileArtist &amp;&amp; tagTitle == fileTitle) { // 转码正确，重设 ID3v2
+                            v2Tag.artist = tagArtist
+                            v2Tag.title = tagTitle
+                            v2Tag.album = tagAlbum
+                            // save 方法不允许覆盖原文件，先存到单独文件夹，后面再处理
+                            mp3File.save(FIXED_DIR + File.separator + it.name)
+                            return@forEach
+                        } else {    // 转码后也不匹配，尝试读取 ID3v1
+                            if (mp3File.hasId3v1Tag().not()) {
+                                return@forEach
+                            }
+                            val v1Tag = mp3File.id3v1Tag
+                            if (fileArtist != v1Tag.artist || fileTitle != v1Tag.title) {
+                                return@forEach
+                            }
+                            // ID3v1 里面的数据正确，重设 ID3v2
+                            v2Tag.artist = v1Tag.artist
+                            v2Tag.title = v1Tag.title
+                            v2Tag.album = v1Tag.album
+                            // save 方法不允许覆盖原文件，先存到单独文件夹，后面再处理
+                            mp3File.save(FIXED_DIR + File.separator + it.name)
+                            return@forEach
+                        }
+                    }
+
+                    if (v2Tag.album.isBlank().not()) {
+                        val albumDir = File(singerDir, v2Tag.album)
+                        if (albumDir.exists().not()) {
+                            albumDir.mkdirs()
+                        }
+                        val f = File(albumDir, it.name)
+                        it.renameTo(f)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun String.correctCharset() = String(this.toByteArray(Charsets.ISO_8859_1), Charset.forName(&quot;gbk&quot;))
+}
+</code></pre>
+<p>总结一下我的实现思路：</p>
+<ol>
+<li>定义三个目录：源文件夹、输出文件夹、修复文件夹。</li>
+<li>遍历源文件夹下所有 MP3 文件（防止读取到比如 <code>.DS_Store</code> 等非 MP3 文件，当然你也可以<a href="https://liarrdev.github.io/post/Verify-File-Types-with-Media-Type-in-Java/">使用 Media Type 校验文件类型</a>）。</li>
+<li>解析文件名得到歌手和歌曲名，在输出文件夹中创建歌手文件夹。</li>
+<li>读取 MP3 的 ID3v2 标签，检查标签中的歌手和歌曲是否与文件名一致。</li>
+<li>如果标签中的信息与文件名一致，且专辑名不为空，则将该文件移动到输出文件夹下对应的 <code>歌手/专辑</code> 子目录中。</li>
+<li>如果标签中的信息与文件名不一致，尝试将其转换为 GBK 编码，若转换后匹配，则修正标签并保存到修复文件夹，仍不匹配则尝试读取 ID3v1 标签，如果 ID3v1 的信息与文件名一致，则将其写入到 ID3v2，并保存到修复文件夹中。</li>
+</ol>
+<p>为什么要做文件名和 ID3v2 的匹配判断呢，因为跑脚本的过程中我发现，一些 MP3 文件解析出来的结果是乱码，系统播放器也不能正常识别：</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1772294509391.png" alt="歌曲信息乱码" loading="lazy"></figure>
+<p>这种情况下大概率就是上文中提到的 ID3v2.3 默认使用 ISO-8859-1 编码导致的，所以会出现跟文件名跟 ID3v2 不一致的问题，尝试将其转换为 GBK 编码。</p>
+<p>执行脚本后，输出文件夹中就归类了本来就符合要求的 MP3 文件，修复文件夹中则得到了经过处理的 MP3 文件，此时可以手动检查修复文件夹中的文件，确认无误后替换源文件，再次运行脚本即可。这样既保证了自动化效率，又留有人工复核的空间。</p>
+<p>二次执行脚本之后剩下的就是无法根据我们定义的规则处理的文件，那就需要手动处理了。</p>
+<h1 id="遇到的小插曲">遇到的小插曲</h1>
+<p>第一次运行脚本时，发现许多文件无法移动，调试到 <code>renameTo()</code> 方法返回了 <code>false</code>，排查发现是权限问题，这些无法被移动的文件都被设置了 <code>uchg</code> 标志，估计是多年前为了防止意外修改而设置的只读属性。</p>
+<p>执行命令：</p>
+<pre><code class="language-bash">➜   ls -lO &quot;/Users/Liarr/mp3-source&quot;
+# -rwxr-xr-x  1 hugecore  staff  uchg 4199728 Jan 24  2017 陈奕迅 - 天下无双.mp3
+# ...
+</code></pre>
+<p>可以看到该目录下输出的文件信息中都包含 <code>uchg</code> 标志（即 user immutable），有这个标志的文件无法通过脚本进行修改、删除、重命名、移动等操作，所以需要先执行命令解除 <code>uchg</code> 标志：</p>
+<pre><code class="language-bash">➜   sudo chflags -R nouchg &quot;/Users/Liarr/mp3-source&quot;
+</code></pre>
+<p>输入密码后即可解除，后面跑脚本就没有问题了。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[ Jetpack Glance 助力 Compose AppWidget 开发]]></title>
+        <id>https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /</id>
+        <link href="https://LiarrDev.github.io/post/Empowers-Compose-AppWidget-with-Jetpack-Glance /">
+        </link>
+        <updated>2026-02-01T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="背景">背景</h1>
+<p>之前『<a href="https://liarrdev.github.io/post/Building-Widgets-for-Android-Apps/">为 Android 应用构建 Widget</a>』一文介绍过在 Android 中 Widget 的开发流程，文中的示例是基于『Android Studio』提供的默认模版，也就是 <code>RemoteViews</code> 来构建的，当时的文章反响不错，也引发了不少读者的讨论，其中有不少读者期待在 Jetpack Compose 中使用更加优雅的解决方案，今天它来了。</p>
+<p>Google 开发了一个构建在 Jetpack Compose Runtime 之上的框架，名为 Glance，帮助你用更少的代码快速构建响应式 Widget。</p>
+<p>事先声明，得益于 Android 良好的兼容方案，之前的 <code>RemoteViews</code> 依然可用，不必为其是否需要迁移感到焦虑。</p>
+<h1 id="实践">实践</h1>
+<h2 id="基本配置">基本配置</h2>
+<p>『Android Studio』的默认创建模版<a href="https://liarrdev.github.io/post/Building-Widgets-for-Android-Apps/">之前的文章</a>中已经介绍过了，它与 Glance 的配置大相径庭，所以本次我们将手动完成配置。</p>
+<p>首先确保当前项目的 Compose 环境已经配置完成，Compose 的配置流程本文不再赘述，读者可以自行搜索。</p>
+<p>接下来添加依赖：</p>
+<pre><code class="language-groovy">dependencies {
+   // For AppWidgets support
+   implementation &quot;androidx.glance:glance-appwidget:1.1.1&quot;
+   // For interop APIs with Material 3
+   implementation &quot;androidx.glance:glance-material3:1.1.1&quot;
+   // For interop APIs with Material 2
+   implementation &quot;androidx.glance:glance-material:1.1.1&quot;
+}
+</code></pre>
+<p>按需添加即可，需要注意的是，Glance 的版本和当前 Compose 的版本也是有关联的，如果不兼容可能会编译出错，修改版本号为对应的版本即可。</p>
+<p>然后编写一个继承自 <code>GlanceAppWidget</code> 的类，我们的 Widget 样式将在这里渲染：</p>
+<pre><code class="language-Kotlin">class MyAppWidget : GlanceAppWidget() {
+    override suspend fun provideGlance(context: Context, id: GlanceId) {
+        provideContent {
+            GlanceTheme {
+                MyContent()
+            }
+        }
+    }
+
+    @Composable
+    private fun MyContent() {
+        ...
+    }
+}
+</code></pre>
+<p>实现 <code>provideGlance()</code> 方法，并在 <code>provideContent()</code> 内创建你的 Compose 视图。</p>
+<p>有几点需要注意：</p>
+<ul>
+<li><code>provideGlance()</code> 方法运行在主线程，所以耗时操作建议使用协程处理。</li>
+<li>虽然表面上看它是使用 Compose 编写 UI，但实际上 Glance 内部重新构建了一套与 Jetpack Compose 类似的组件库，注意不要导错包。</li>
+</ul>
+<p>Glance 只支持 <a href="https://developer.android.google.cn/reference/kotlin/androidx/glance/layout/package-summary#box"><code>Box</code></a>、<a href="https://developer.android.google.cn/reference/kotlin/androidx/glance/layout/package-summary#column"><code>Column</code></a>、<a href="https://developer.android.google.cn/reference/kotlin/androidx/glance/layout/package-summary#row"><code>Row</code></a>、<a href="https://developer.android.google.cn/reference/kotlin/androidx/glance/layout/package-summary#spacer"><code>Spacer</code></a>、<a href="https://developer.android.google.cn/reference/kotlin/androidx/glance/text/package-summary#text"><code>Text</code></a>、<a href="https://developer.android.google.cn/reference/kotlin/androidx/glance/package-summary#button"><code>Button</code></a>、<a href="https://developer.android.google.cn/reference/kotlin/androidx/glance/package-summary#image"><code>Image</code></a>、<a href="https://developer.android.google.cn/reference/kotlin/androidx/glance/appwidget/lazy/package-summary#lazycolumn"><code>LazyColumn</code></a>、<a href="https://developer.android.google.cn/reference/kotlin/androidx/glance/appwidget/components/package-summary#scaffold"><code>Scaffold</code></a> 等，尽管随着版本更新还拓展了一些其他的组件，但仍与 <code>RemoteViews</code> 的限制大同小异，事实上，Glance 只是提供了 Compose-Style 的写法，它依然会翻译成 <code>RemoteViews</code> 可用的方案。</p>
+<p>如果期望 Glance 能够突破组件限制的可以劝退了😂。</p>
+<p>继续创建一个 <code>GlanceAppWidgetReceiver</code> 用于获取刚刚的 <code>GlanceAppWidget</code>：</p>
+<pre><code class="language-kotlin">class MyAppWidgetReceiver : GlanceAppWidgetReceiver() {
+    override val glanceAppWidget = MyAppWidget()
+}
+</code></pre>
+<p>看到这个名字相信你已经察觉到了，我们之前传统的构建方式也需要注册一个广播，扒开它的神秘面纱瞅一眼：</p>
+<pre><code class="language-kotlin">abstract class GlanceAppWidgetReceiver : AppWidgetProvider() {
+    ...
+    abstract val glanceAppWidget: GlanceAppWidget
+}
+</code></pre>
+<p>好家伙，还是基于原来的 <code>AppWidgetProvider</code> 封装的。</p>
+<p>Glance 注册还需要一个 <code>AppWidgetProviderInfo</code> 元数据，这也是老演员了，需要留意的是，Glance 没有默认的初始布局，你可以使用它内部定义的：</p>
+<pre><code class="language-XML">&lt;appwidget-provider
+    ...
+    android:initialLayout=&quot;@layout/glance_default_loading_layout&quot; /&gt;
+</code></pre>
+<p>最后就是在 <code>AndroidManifest.xml</code> 中注册了，同之前一样：</p>
+<pre><code class="language-XML">&lt;manifest ...&gt;
+    &lt;application ...&gt;
+    ...
+    &lt;receiver
+        android:name=&quot;.widget.MyAppWidgetReceiver&quot;
+        android:exported=&quot;false&quot;&gt;
+        &lt;intent-filter&gt;
+            &lt;action android:name=&quot;android.appwidget.action.APPWIDGET_UPDATE&quot; /&gt;
+        &lt;/intent-filter&gt;
+        &lt;meta-data
+            android:name=&quot;android.appwidget.provider&quot;
+            android:resource=&quot;@xml/my_app_widget_info&quot; /&gt;
+        &lt;/receiver&gt;
+    &lt;/application&gt;
+&lt;/manifest&gt;
+</code></pre>
+<h2 id="更新-widget">更新 Widget</h2>
+<p>Glance 官方文档中关于更新 Widget 的内容我认为描述得不够详细，它只告诉你调用 <code>updateAll()</code> 方法即可：</p>
+<pre><code class="language-kotlin">object MyAppWidgetManager {
+    fun updateAll(context: Context) {
+        GlobalScope.launch {
+            MyAppWidget().updateAll(context)
+        }
+    }
+}
+</code></pre>
+<p>又或者调用 <code>update()</code>：</p>
+<pre><code class="language-kotlin">object MyAppWidgetManager {
+    fun updateAll(context: Context) {
+        GlobalScope.launch {
+            val manager = GlanceAppWidgetManager(context)
+            val widget = MyAppWidget()
+            val glanceIds = manager.getGlanceIds(widget.javaClass)
+            glanceIds.forEach { glanceId -&gt;
+                widget.update(context, glanceId)
+            }
+        }
+    }
+}
+</code></pre>
+<p>由于这两个方法都使用 <code>suspend</code> 修饰，所以建议在非主线程中调用。</p>
+<p>如果使用传统开发 Widget 的思维，调用这个方法 Widget 便会执行刷新，但是实际效果却并不能正确执行，请不要认为在任何时候调用这个方法会触发 <code>provideGlance()</code>。</p>
+<p>因为 <code>GlanceAppWidget</code> 的更新是通过状态管理的，比如官方的例子：</p>
+<pre><code class="language-kotlin">class DestinationAppWidget : GlanceAppWidget() {
+    ...
+    @Composable
+    fun MyContent() {
+        val repository = remember { DestinationsRepository.getInstance() }
+        val destinations by repository.destinations.collectAsState(State.Loading)
+
+        when (destinations) {
+            is State.Loading -&gt; {
+                // show loading content
+            }
+            is State.Error -&gt; {
+                // show widget error content
+            }
+            is State.Completed -&gt; {
+                // show the list of destinations
+            }
+        }
+    }
+}
+</code></pre>
+<p>但我们野生开发却很少使用这种状态，比如直接从 <code>SharedPreferences</code> 里面读取值来展示：</p>
+<pre><code class="language-kotlin">class MyAppWidget : GlanceAppWidget() {
+    override suspend fun provideGlance(context: Context, id: GlanceId) {
+        provideContent {
+            val foo = fetchFromPreferences()
+            GlanceTheme {
+                if (foo != null) {
+                    MyContent(foo)
+                } else {
+                    DefaultContent()
+                }
+            }
+        }
+    }
+    @Composable
+    private fun MyContent(foo: Foo) {
+        ...
+    }
+    @Composable
+    private fun DefaultContent() {
+        ...
+    }
+}
+</code></pre>
+<p>这种写法会导致调用 <code>update()</code> 判断不到状态的变更，导致不会刷新，当然野生写法也可以手动给它搞一个状态：</p>
+<pre><code class="language-kotlin">object MyAppWidgetManager {
+    const val KEY_NOW = &quot;now&quot;
+    fun updateAll(context: Context) {
+        GlobalScope.launch {
+            val glanceIds = GlanceAppWidgetManager(context).getGlanceIds(MyAppWidget::class.java)
+            glanceIds.forEach { id -&gt;
+                updateAppWidgetState(context, id) {
+                    it[longPreferencesKey(KEY_NOW)] = System.currentTimeMillis()    // 设置状态
+                }
+                MyAppWidget().update(context, id)
+            }
+        }
+    }
+}
+</code></pre>
+<p>每次调用 <code>update()</code> 方法前，都更新一次 Widget 的状态，即可刷新：</p>
+<pre><code class="language-kotlin">class MyAppWidget : GlanceAppWidget() {
+    override suspend fun provideGlance(context: Context, id: GlanceId) {
+        provideContent {
+            val now = currentState&lt;Preferences&gt;()[longPreferencesKey(MyAppWidgetManager.KEY_NOW)]   // 读取状态
+            val foo = fetchFromPreferences()
+            GlanceTheme {
+                if (foo != null) {
+                    MyContent(foo)
+                } else {
+                    DefaultContent()
+                }
+            }
+        }
+    }
+    ...
+}
+</code></pre>
+<h2 id="从-widget-中启动应用">从 Widget 中启动应用</h2>
+<p>我们知道，Widget 运行在远程进程中，在之前的 <code>RemoteViews</code> 方案，我们通过 <code>PendingIntents</code> 来启动应用，而 Glance 提供了更优雅的实现方案。</p>
+<pre><code class="language-Kotlin">class MyAppWidget : GlanceAppWidget() {
+    ...
+    @Composable
+    private fun MyContent() {
+        Column {
+            Button(text = &quot;Home&quot;, onClick = actionStartActivity&lt;MainActivity&gt;())
+            Text(text = &quot;Settings&quot;, modifier = GlanceModifier.clickable(actionStartActivity&lt;SettingsActivity&gt;()))
+        }
+    }
+}
+</code></pre>
+<p>Glance 通过 <code>Action</code> 来简化处理用户互动的流程，<code>Action</code> 是一个接口，在不同的启动场景中有不同的实现。</p>
+<p>在需要启动 <code>Activity</code> 时，我们只需要调用 <code>actionStartActivity()</code> 方法指定目标 <code>Activity</code> 即可，该方法会返回一个 <code>StartActivityAction</code>，<code>StartActivityAction</code> 也是一个接口，传递不同的参数由 <code>StartActivityClassAction</code>、<code>StartActivityComponentAction</code>、<code>StartActivityIntentAction</code> 等具体实现。</p>
+<p><code>Button</code> 可以通过 <code>onClick</code> 接收 <code>Action</code>，其他 <code>@Composable</code> 也可以通过 <code>GlanceModifier.clickable()</code> 接收 <code>Action</code>。</p>
+<p>启动的时候需要传递参数怎么办，我们看到 <code>actionStartActivity()</code> 方法有个 <code>Bundle</code> 参数，千万不要被迷惑了！</p>
+<pre><code class="language-kotlin">@ExperimentalGlanceApi
+inline fun &lt;reified T : Activity&gt; actionStartActivity(
+    parameters: ActionParameters = actionParametersOf(),
+    activityOptions: Bundle? = null,
+): Action = actionStartActivity(T::class.java, parameters, activityOptions)
+
+@ExperimentalGlanceApi
+fun &lt;T : Activity&gt; actionStartActivity(
+    activity: Class&lt;T&gt;,
+    parameters: ActionParameters = actionParametersOf(),
+    activityOptions: Bundle? = null,
+): Action = StartActivityClassAction(activity, parameters, activityOptions)
+</code></pre>
+<p>启动 <code>Activity</code> 所需的参数并不是在这个 <code>Bundle</code> 中传递的，而是通过 <code>ActionParameters</code> 传递的。尽管 <code>ActionParameters</code> 和 <code>Bundle</code> 一样底层实现都是 <code>Map</code>，但不同于 <code>Bundle</code> 的键是 <code>String</code> 类型，<code>ActionParameters</code> 的键是再做了一层封装的 <code>ActionParameters.Key</code>，这意味着我们需要再做一层转换，好处是不怕传递到错误的类型。</p>
+<pre><code class="language-kotlin">private val destinationKey = ActionParameters.Key&lt;String&gt;(NavigationActivity.KEY_DESTINATION)
+class MyAppWidget : GlanceAppWidget() {
+    ...
+    @Composable
+    private fun MyContent() {
+        Button(
+            text = &quot;Home&quot;, 
+            onClick = actionStartActivity&lt;NavigationActivity&gt;(actionParametersOf(destinationKey to &quot;home&quot;))
+        )
+    }
+}
+</code></pre>
+<p><code>ActionParameters.Key</code> 中的泛型指定为要传递的值的类型，然后传入我们 <code>Activity</code> 中定义的键名构造实例。通过 <code>actionParametersOf()</code> 构造 <code>ActionParameters</code> 对象，它内部可以填充多组 <code>Pair</code> 对应我们要传递的参数。将构建好的 <code>ActionParameters</code> 对象传递给 <code>actionStartActivity()</code> 方法即可。</p>
+<p>目标 <code>Activity</code> 无需做多余的修改，还是使用 <code>getIntent()</code> 读取：</p>
+<pre><code class="language-kotlin">class NavigationActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val destination = intent.getStringExtra(KEY_DESTINATION)
+        ...
+    }
+    companion object {
+        const val KEY_DESTINATION = &quot;destination&quot;
+    }
+}
+</code></pre>
+<p>其他的操作比如启动 <code>Service</code> 或者发送广播同样是通过 <code>Action</code> 来实现，自定义操作也是如此，大同小异，参照文档即可，这里不再赘述。</p>
+<h2 id="remoteviews-兜底"><code>RemoteViews</code> 兜底</h2>
+<p>在某些情况下，可能需要使用 XML 和 <code>RemoteViews</code> 来提供视图。比如已经在不使用 Glance 的情况下实现了某项功能，或者该功能在当前 Glance API 尚未提供或无法使用。对于这种情况 Glance 提供了 <code>AndroidRemoteViews</code>，这是一个互操作性 API。不难看出，它提供了与 Compose 中 <code>AndroidView</code> 类似的功能。</p>
+<p><code>AndroidRemoteViews</code> 允许将 <code>RemoteViews</code> 与其他 <code>@Composable</code> 搭配使用：</p>
+<pre><code class="language-kotlin">class MyAppWidget : GlanceAppWidget() {
+    ...
+    @Composable
+    private fun MyContent() {
+        val packageName = LocalContext.current.packageName
+        Column(modifier = GlanceModifier.fillMaxSize()) {
+            Text(&quot;Isn't that cool?&quot;)
+            AndroidRemoteViews(RemoteViews(packageName, R.layout.example_layout))
+        }
+    }
+}
+</code></pre>
+<p>将 <code>@Composable</code> 放在 <code>AndroidRemoteViews</code> 同样可行：</p>
+<pre><code class="language-kotlin">class MyAppWidget : GlanceAppWidget() {
+    ...
+    @Composable
+    private fun MyContent() {
+        val packageName = LocalContext.current.packageName
+        AndroidRemoteViews(
+            remoteViews = RemoteViews(packageName, R.layout.my_container_view),
+            containerViewId = R.id.example_view
+        ) {
+            Column(modifier = GlanceModifier.fillMaxSize()) {
+                Text(&quot;My title&quot;)
+                Text(&quot;Maybe a long content...&quot;)
+            }
+        }
+    }
+}
+</code></pre>
+<p>要注意的是这里需要传递布局和容器 ID，意味着这个容器必须是 <code>ViewGroup</code>，同时该 <code>ViewGroup</code> 内的所有子 <code>View</code> 都将被移除，取而代之的是在此 <code>AndroidRemoteViews</code> 中填充的内容。不要忘记，提供的 <code>ViewGroup</code> 必须受 <code>RemoteViews</code> 支持。</p>
+<h1 id="写在最后">写在最后</h1>
+<p>这篇文章虽然主要是介绍 Glance，但实际上是对『<a href="https://liarrdev.github.io/post/Building-Widgets-for-Android-Apps/">为 Android 应用构建 Widget</a>』一文的补充，因为 Glance 仍是对传统实现 Widget 的封装，提供了 Compose-Style 的写法，并不会超脱原有 Widget 的限制。</p>
+<p>Glance 是一个很新的库，目前还在实验阶段，但已基本可用，而且它和 Compose 的结合非常紧密，使用起来非常方便。如果你正在使用 Compose，那么不妨尝试一下 Glance，相信你会爱上它的。</p>
+<p>不过我需要在这里打个预防针，经过我们实际在企业项目的验证，目前 Glance 在 vivo 设备上会出现一个 <code>IllegalStateException</code>。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1768730036222.png" alt="Firebase 崩溃记录" loading="lazy"></figure>
+<p>堆栈信息如下：</p>
+<pre><code>Fatal Exception: java.lang.IllegalStateException: Broadcast already finished
+       at android.content.BroadcastReceiver$PendingResult.sendFinished(BroadcastReceiver.java:283)
+       at android.content.BroadcastReceiver$PendingResult$1.run(BroadcastReceiver.java:256)
+       at android.app.QueuedWork.processPendingWork(QueuedWork.java:265)
+       at android.app.QueuedWork.-$$Nest$smprocessPendingWork()
+       at android.app.QueuedWork$QueuedWorkHandler.handleMessage(QueuedWork.java:285)
+       at android.os.Handler.dispatchMessage(Handler.java:106)
+       at android.os.Looper.loopOnce(Looper.java:223)
+       at android.os.Looper.loop(Looper.java:324)
+       at android.os.HandlerThread.run(HandlerThread.java:67)
+</code></pre>
+<p>我追踪到<a href="https://issuetracker.google.com/issues/257513022">在 Google IssueTracker 上从 2022 年开始就有这个问题</a>，并且至今仍未被修复，尚不明确到底是 Glance 的 Bug 还是 vivo OriginOS 的锅。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1768730081261.png" alt="Crash with Glance" loading="lazy"></figure>
+<h1 id="参考内容">参考内容</h1>
+<ul>
+<li><a href="https://developer.android.google.cn/develop/ui/compose/glance">Jetpack Glance | Jetpack Compose | Android Developers</a></li>
+<li><a href="https://developer.android.google.cn/reference/kotlin/androidx/glance/layout/package-summary">androidx.glance.layout | Android Developers</a></li>
+<li><a href="https://stackoverflow.com/questions/77088363/android-jetpack-glance-1-0-0-problems-updating-widget">Android Jetpack Glance 1.0.0 : problems updating widget - Stack Overflow</a></li>
+<li><a href="https://medium.com/@Xiryl/unlock-the-secret-real-time-updates-for-glance-widgets-on-android-6907d0e06fa9">Unlock the Secret: Real-Time Updates for Glance Widgets on Android! | by Fabio Chiarani | Medium</a></li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[HarmonyOS ArkWeb 有线调试]]></title>
+        <id>https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/</id>
+        <link href="https://LiarrDev.github.io/post/Debug-HarmonyOS-ArkWeb-via-HDC/">
+        </link>
+        <updated>2025-12-28T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>我们在进行 Android 开发时，如果要调试 <code>WebView</code>，通常只需要连接 <code>adb</code>，然后就可以打开 Chrome DevTools 进行调试。</p>
+<p>而在 HarmonyOS 上，虽然有类似 <code>adb</code> 的工具：<code>hdc</code>，但是调试 <code>ArkWeb</code> 却并不方便。</p>
+<p>首先需要在需要打开调试的页面开启允许调试的开关：</p>
+<pre><code class="language-ts">@Entry(storage)
+@Component
+struct Index {
+  ...
+  aboutToAppear(): void {
+    webview.WebviewController.setWebDebuggingAccess(BuildProfile.DEBUG)
+  }
+}
+</code></pre>
+<p>这一步与 Android 无异，我们可以通过 <code>BuildProfile.DEBUG</code> 很方便地判断当前是否为 DEBUG 包，就不需要在上线时再将其重置为 <code>false</code> 了。</p>
+<p>然后通过 <code>hdc</code> 连接设备，并进入 Shell：</p>
+<pre><code class="language-bash">➜   hdc shell
+</code></pre>
+<p>接着查找相关进程：</p>
+<pre><code class="language-bash">➜   hdc shell
+    ➜   cat /proc/net/unix | grep devtools
+    # 0: 00000002 0 10000 1 1 49902021 @webview_devtools_remote_32259
+</code></pre>
+<p>执行命令后会输出 <code>ArkWeb</code> 所在 Domain Socket 端口。</p>
+<p>退出 Shell：</p>
+<pre><code class="language-bash">➜   hdc shell
+    ➜   exit
+</code></pre>
+<p>当然我们也有其他方式能够查询到 Domain Socket，比如通过包名：</p>
+<pre><code class="language-bash">➜   hdc shell ps -ef | grep &quot;com.example.app&quot;
+# 20020109       32259    652 0 12:48:30 ?     00:09:04 com.example.app
+</code></pre>
+<p>输出的第二个参数就是查询到的进程 ID。</p>
+<p>将查询到的 Domain Socket 转发至电脑的 TCP <code>9222</code> 端口：</p>
+<pre><code class="language-bash">➜   hdc fport tcp:9222 localabstract:webview_devtools_remote_32259
+# Forwardport result:OK
+</code></pre>
+<p>一般输出 OK 就代表转发成功了，你也可以用下面的命令检查一下</p>
+<pre><code class="language-bash">➜   hdc fport ls
+# FMR0223A24001263    tcp:9222 localabstract:webview_devtools_remote_32259    [Forward]
+</code></pre>
+<p>最后就可以在熟悉的 Chrome DevTools 上进行调试了。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1766848500828.png" alt="DevTools" loading="lazy"></figure>
+<p>由于步骤比较繁琐，官方也提供了便捷脚本支持一键运行，有需要的朋友可以前往官方文档自行下载。</p>
+<p>从 API version 20 开始，官方也支持指定端口号无线调试，简化调试流程。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Android 基于 WebKit 的 Hybrid 交互方案]]></title>
+        <id>https://LiarrDev.github.io/post/Android-WebKit-Based-Hybrid-Interaction-Solution/</id>
+        <link href="https://LiarrDev.github.io/post/Android-WebKit-Based-Hybrid-Interaction-Solution/">
+        </link>
+        <updated>2025-11-23T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="背景">背景</h1>
+<p>之前『<a href="https://liarrdev.github.io/post/Interactin-with-JavaScript-in-Android-WebView">Android WebView 和 JavaScript 交互</a>』一文介绍了普遍 Hybrid 开发场景下 Android 和 JavaScript 的通信方式，相信绝大多数项目都是使用这种方式进行交互的，但是这种方案存在一些安全和性能问题。</p>
+<p>而 JetPack 给我们带来的 WebKit 库提供了一种新的交互方案。</p>
+<h1 id="导入依赖">导入依赖</h1>
+<pre><code class="language-kts">dependencies {
+    implementation(&quot;androidx.webkit:webkit:1.14.0&quot;)
+}
+</code></pre>
+<h1 id="android-向-javascript-发送消息">Android 向 JavaScript 发送消息</h1>
+<p>Android 端代码如下：</p>
+<pre><code class="language-Kotlin">class MainActivity : AppCompatActivity() {
+    ...
+    private fun postMessage(msg: String) {
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.POST_WEB_MESSAGE)) {
+            WebViewCompat.postWebMessage(
+                binding.webview,
+                WebMessageCompat(msg),
+                HOST.toUri()
+            )
+        }
+    }
+    companion object {
+        const val HOST = &quot;http://192.168.1.108:5500&quot;
+    }
+}
+</code></pre>
+<p>先判断 <code>WebView</code> 是否支持此方式发送消息，然后调用 <code>WebViewCompat</code> 的 <code>postWebMessage()</code> 发送，该函数接收 3 个参数，第一个是 <code>WebView</code>，不用赘述，第二个是消息的包装类 <code>WebMessageCompat</code>，我们传一个 <code>String</code> 类型的消息即可，第三个参数用于限制哪个站源可以接收我们的消息，一般情况下我们传自有的域名，不限制的话也可以使用通配符 <code>&quot;*&quot;</code> 代替。</p>
+<p>在 H5 端使用以下方法监听：</p>
+<pre><code class="language-html">&lt;html&gt;
+    &lt;script type=&quot;text/javascript&quot;&gt;
+        ...
+        window.addEventListener(&quot;message&quot;, function (event) {
+            console.log(&quot;收到消息:&quot;, event.data)
+        }, false)
+    &lt;/script&gt;
+    ...
+&lt;/html&gt;
+</code></pre>
+<p>除了简单的 <code>String</code> 类型，它还支持字节流，这在文件传输中十分有用。</p>
+<p>修改 Android 端代码如下：</p>
+<pre><code class="language-kotlin">class MainActivity : AppCompatActivity() {
+    ...
+    private fun postArrayBuffer(arrayBuffer: ByteArray) {
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.POST_WEB_MESSAGE)) {
+            if (WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_ARRAY_BUFFER)) {
+                WebViewCompat.postWebMessage(
+                    binding.webview,
+                    WebMessageCompat(arrayBuffer),
+                    HOST.toUri()
+                )
+            }
+        }
+    }
+    companion object {
+        const val HOST = &quot;http://192.168.1.108:5500&quot;
+    }
+}
+</code></pre>
+<p>需要注意，发送字节流需要判断是否支持 <code>WebViewFeature.WEB_MESSAGE_ARRAY_BUFFER</code>。</p>
+<p>假如传送一个图片，H5 端监听后可以解析：</p>
+<pre><code class="language-html">&lt;html&gt;
+    &lt;script type=&quot;text/javascript&quot;&gt;
+        ...
+        window.addEventListener(&quot;message&quot;, function (event) {
+            ...
+            if (data instanceof ArrayBuffer) {
+                const blob = new Blob([data], { type: &quot;image/png&quot; });
+                const url = URL.createObjectURL(blob);
+                const img = new Image();
+                img.src = url;
+                document.body.appendChild(img);
+            }
+        }, false)
+    &lt;/script&gt;
+    ...
+&lt;/html&gt;
+</code></pre>
+<h1 id="javascript-向-android-端发送消息">JavaScript 向 Android 端发送消息</h1>
+<p>Android 端设置监听：</p>
+<pre><code class="language-kotlin">class MainActivity : AppCompatActivity() {
+    ...
+    private fun addWebMessageListener() {
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER)) {
+            WebViewCompat.addWebMessageListener(binding.webview, &quot;Android&quot;, setOf(HOST)) { view, message, sourceOrigin, isMainFrame, replyProxy -&gt;
+                Log.e(&quot;moji&quot;, &quot;Android 端收到消息：${message.data}&quot;)
+                // 收到消息后可以回复
+                replyProxy.postMessage(&quot;got the message @ ${System.currentTimeMillis()}&quot;)
+            }
+        }
+    }
+    companion object {
+        const val HOST = &quot;http://192.168.1.108:5500&quot;
+    }
+}
+</code></pre>
+<p>首先同样需要判断是否支持监听，然后调用 <code>WebViewCompat</code> 的 <code>addWebMessageListener()</code> 方法添加监听，该函数接收 4 个参数，第一个是 <code>WebView</code>，不用赘述，第二个是注入 JS 对象的名称，这里命名为 <code>Android</code>，下面会用到，第三个参数用来指定哪些站源会注入这个对象，第四个参数就是回调接口。</p>
+<p>收到消息我们可以调用 <code>JavaScriptReplyProxy</code> 对象的 <code>postMessage()</code> 给 H5 端发个回复。</p>
+<p>然后 H5 端就可以发送消息了：</p>
+<pre><code class="language-html">&lt;html&gt;
+    &lt;script type=&quot;text/javascript&quot;&gt;
+        ...
+        function postMessage(message) {
+            if (typeof Android !== &quot;undefined&quot;) {
+                Android.postMessage(message);
+                // 接收来自客户端的回复
+                Android.onmessage = function (event) {
+                    console.log(&quot;Android.onmessage received: &quot;, event);
+                }
+            }
+        }
+    &lt;/script&gt;
+    ...
+&lt;/html&gt;
+</code></pre>
+<p>其中 <code>Android</code> 就是上方我们注入对象的名称，调用 <code>postMessage()</code> 发送消息即可，假如 Android 端提供了回复，那么可以用 <code>onmessage</code> 来监听。</p>
+<p>同样支持字节流，Android 端修改如下：</p>
+<pre><code class="language-kotlin">class MainActivity : AppCompatActivity() {
+    ...
+    private fun addWebMessageListener() {
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER)) {
+            WebViewCompat.addWebMessageListener(binding.webview, &quot;Android&quot;, setOf(HOST)) { view, message, sourceOrigin, isMainFrame, replyProxy -&gt;
+                if (message.type == WebMessageCompat.TYPE_ARRAY_BUFFER) {
+                    val imageData = message.arrayBuffer
+                    ...
+                }
+            }
+        }
+    }
+    companion object {
+        const val HOST = &quot;http://192.168.1.108:5500&quot;
+    }
+}
+</code></pre>
+<p>通过 <code>getType()</code> 判断如果是字节流，就直接从 <code>WebMessageCompat</code> 中取出数据即可。</p>
+<p>H5 端使用同样的方式发送字节流就可以：</p>
+<pre><code class="language-html">&lt;html&gt;
+    &lt;script type=&quot;text/javascript&quot;&gt;
+        ...
+        function postArrayBuffer(buffer) {
+            if (typeof Android !== &quot;undefined&quot;) {
+                Android.postMessage(buffer);
+            }
+        }
+    &lt;/script&gt;
+    ...
+&lt;/html&gt;
+</code></pre>
+<h1 id="总结">总结</h1>
+<p>这种方式安全，但是需要判断是否支持（遗憾的是国内大多数系统 <code>WebView</code> 升级进度拖沓），一来比较繁琐，二来在不支持的设备上仍要寻求其他解决方案，增加维护成本。</p>
+<p>不过目前其他开发平台比如 iOS、HarmonyOS、Flutter 等亦采用类似的方案进行通信，不难看出这类方案将会成为主流。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[如何追踪 Android 依赖来源]]></title>
+        <id>https://LiarrDev.github.io/post/How-to-Trace-Android-Dependency-Sources/</id>
+        <link href="https://LiarrDev.github.io/post/How-to-Trace-Android-Dependency-Sources/">
+        </link>
+        <updated>2025-10-28T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>相信在日常开发中你已经发现，当我们添加某个库的依赖时，它会帮助我们同步它所依赖的库，比如我们常用的网络请求库 <a href="https://square.github.io/okhttp">OkHttp</a> 就依赖了 <a href="https://square.github.io/okio">Okio</a>，但我们依赖 <a href="https://square.github.io/okhttp">OkHttp</a> 时并不需要把 <a href="https://square.github.io/okio">Okio</a> 的依赖也添加进去，这是由 POM 声明的。</p>
+<p>这种方案能够帮助我们屏蔽掉一些多余的信息，降低上手门槛，但有时候却不利于追踪。</p>
+<h1 id="追踪-aar-jar-依赖">追踪 AAR / JAR 依赖</h1>
+<p>好在 Android 官方已经帮我们准备好一个 Gradle 任务用于分析项目中的依赖关系，我们只需要一行命令就可以查询。</p>
+<pre><code class="language-bash">➜   ./gradlew app:dependencies
+</code></pre>
+<p>控制台中会输出整个项目的依赖树：</p>
+<pre><code class="language-bash">+--- androidx.appcompat:appcompat:1.7.1
+|    +--- androidx.activity:activity:1.8.0 -&gt; 1.10.1
+|    |    +--- androidx.annotation:annotation:1.8.1
+|    |    |    \--- androidx.annotation:annotation-jvm:1.8.1
+|    |    |         \--- org.jetbrains.kotlin:kotlin-stdlib:1.7.10 -&gt; 1.8.22
+|    |    |              +--- org.jetbrains.kotlin:kotlin-stdlib-common:1.8.22
+|    |    |              \--- org.jetbrains:annotations:13.0 -&gt; 23.0.0
+|    |    +--- androidx.core:core-ktx:1.13.0
+|    |    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    |    +--- androidx.core:core:1.13.0
+|    |    |    |    +--- androidx.annotation:annotation:1.6.0 -&gt; 1.8.1 (*)
+|    |    |    |    +--- androidx.annotation:annotation-experimental:1.4.0
+|    |    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.7.10 -&gt; 1.8.22 (*)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-runtime:2.6.2
+|    |    |    |    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    |    |    |    +--- androidx.arch.core:core-common:2.2.0
+|    |    |    |    |    |    \--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-common:2.6.2
+|    |    |    |    |    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    |    |    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.8.10 -&gt; 1.8.22 (*)
+|    |    |    |    |    |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4 -&gt; 1.7.3
+|    |    |    |    |    |    |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3
+|    |    |    |    |    |    |    |    \--- org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.7.3
+|    |    |    |    |    |    |    |         +--- org.jetbrains:annotations:23.0.0
+|    |    |    |    |    |    |    |         +--- org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.7.3
+|    |    |    |    |    |    |    |         |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3 (c)
+|    |    |    |    |    |    |    |         |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.7.3 (c)
+|    |    |    |    |    |    |    |         |    \--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3 (c)
+|    |    |    |    |    |    |    |         +--- org.jetbrains.kotlin:kotlin-stdlib-common:1.8.20 -&gt; 1.8.22
+|    |    |    |    |    |    |    |         \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.20 -&gt; 1.8.22
+|    |    |    |    |    |    |    |              +--- org.jetbrains.kotlin:kotlin-stdlib:1.8.22 (*)
+|    |    |    |    |    |    |    |              \--- org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22
+|    |    |    |    |    |    |    |                   \--- org.jetbrains.kotlin:kotlin-stdlib:1.8.22 (*)
+|    |    |    |    |    |    |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.7.3 (*)
+|    |    |    |    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.20 -&gt; 1.8.22 (*)
+|    |    |    |    |    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.6.2 (c)
+|    |    |    |    |    |    +--- androidx.lifecycle:lifecycle-runtime:2.6.2 (c)
+|    |    |    |    |    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.6.2 (c)
+|    |    |    |    |    |    +--- androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2 (c)
+|    |    |    |    |    |    \--- androidx.lifecycle:lifecycle-livedata:2.6.2 (c)
+|    |    |    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.8.10 -&gt; 1.8.22 (*)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-common:2.6.2 (c)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.6.2 (c)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.6.2 (c)
+|    |    |    |    |    +--- androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2 (c)
+|    |    |    |    |    \--- androidx.lifecycle:lifecycle-livedata:2.6.2 (c)
+|    |    |    |    +--- androidx.versionedparcelable:versionedparcelable:1.1.1
+|    |    |    |    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    |    |    |    \--- androidx.collection:collection:1.0.0 -&gt; 1.1.0
+|    |    |    |    |         \--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.8.22 (*)
+|    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.8.22 (*)
+|    |    +--- androidx.core:core-viewtree:1.0.0
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib -&gt; 1.8.22 (*)
+|    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.8.22 (c)
+|    |    +--- androidx.lifecycle:lifecycle-common:2.6.1 -&gt; 2.6.2 (*)
+|    |    +--- androidx.lifecycle:lifecycle-runtime:2.6.1 -&gt; 2.6.2 (*)
+|    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.6.1 -&gt; 2.6.2
+|    |    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.8.10 -&gt; 1.8.22 (*)
+|    |    |    +--- androidx.lifecycle:lifecycle-common:2.6.2 (c)
+|    |    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.6.2 (c)
+|    |    |    +--- androidx.lifecycle:lifecycle-runtime:2.6.2 (c)
+|    |    |    +--- androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2 (c)
+|    |    |    \--- androidx.lifecycle:lifecycle-livedata:2.6.2 (c)
+|    |    +--- androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.1 -&gt; 2.6.2
+|    |    |    +--- androidx.annotation:annotation:1.0.0 -&gt; 1.8.1 (*)
+|    |    |    +--- androidx.core:core-ktx:1.2.0 -&gt; 1.13.0 (*)
+|    |    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.6.2
+|    |    |    |    +--- androidx.lifecycle:lifecycle-common:2.6.2 (*)
+|    |    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.8.10 -&gt; 1.8.22 (*)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-common:2.6.2 (c)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-runtime:2.6.2 (c)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.6.2 (c)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2 (c)
+|    |    |    |    \--- androidx.lifecycle:lifecycle-livedata:2.6.2 (c)
+|    |    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.6.2 (*)
+|    |    |    +--- androidx.savedstate:savedstate:1.2.1
+|    |    |    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.8.10 -&gt; 1.8.22 (*)
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.8.10 -&gt; 1.8.22 (*)
+|    |    |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4 -&gt; 1.7.3 (*)
+|    |    |    +--- androidx.lifecycle:lifecycle-common:2.6.2 (c)
+|    |    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.6.2 (c)
+|    |    |    +--- androidx.lifecycle:lifecycle-runtime:2.6.2 (c)
+|    |    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.6.2 (c)
+|    |    |    \--- androidx.lifecycle:lifecycle-livedata:2.6.2 (c)
+|    |    +--- androidx.savedstate:savedstate:1.2.1 (*)
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib -&gt; 1.8.22 (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.8.22 (c)
+|    +--- androidx.annotation:annotation:1.3.0 -&gt; 1.8.1 (*)
+|    +--- androidx.appcompat:appcompat-resources:1.7.1
+|    |    +--- androidx.annotation:annotation:1.2.0 -&gt; 1.8.1 (*)
+|    |    +--- androidx.core:core:1.6.0 -&gt; 1.13.0 (*)
+|    |    +--- androidx.vectordrawable:vectordrawable:1.1.0
+|    |    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    |    +--- androidx.core:core:1.1.0 -&gt; 1.13.0 (*)
+|    |    |    \--- androidx.collection:collection:1.1.0 (*)
+|    |    +--- androidx.vectordrawable:vectordrawable-animated:1.1.0
+|    |    |    +--- androidx.vectordrawable:vectordrawable:1.1.0 (*)
+|    |    |    +--- androidx.interpolator:interpolator:1.0.0
+|    |    |    |    \--- androidx.annotation:annotation:1.0.0 -&gt; 1.8.1 (*)
+|    |    |    \--- androidx.collection:collection:1.1.0 (*)
+|    |    \--- androidx.appcompat:appcompat:1.7.1 (c)
+|    +--- androidx.core:core:1.13.0 (*)
+|    +--- androidx.cursoradapter:cursoradapter:1.0.0
+|    |    \--- androidx.annotation:annotation:1.0.0 -&gt; 1.8.1 (*)
+|    +--- androidx.drawerlayout:drawerlayout:1.0.0 -&gt; 1.1.1
+|    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    +--- androidx.core:core:1.2.0 -&gt; 1.13.0 (*)
+|    |    \--- androidx.customview:customview:1.1.0
+|    |         +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |         \--- androidx.core:core:1.3.0 -&gt; 1.13.0 (*)
+|    +--- androidx.fragment:fragment:1.5.4
+|    |    +--- androidx.activity:activity:1.5.1 -&gt; 1.10.1 (*)
+|    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    +--- androidx.annotation:annotation-experimental:1.0.0 -&gt; 1.4.0 (*)
+|    |    +--- androidx.collection:collection:1.1.0 (*)
+|    |    +--- androidx.core:core-ktx:1.2.0 -&gt; 1.13.0 (*)
+|    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.5.1 -&gt; 2.6.2 (*)
+|    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.5.1 -&gt; 2.6.2 (*)
+|    |    +--- androidx.lifecycle:lifecycle-viewmodel-savedstate:2.5.1 -&gt; 2.6.2 (*)
+|    |    +--- androidx.loader:loader:1.0.0
+|    |    |    +--- androidx.annotation:annotation:1.0.0 -&gt; 1.8.1 (*)
+|    |    |    +--- androidx.core:core:1.0.0 -&gt; 1.13.0 (*)
+|    |    |    +--- androidx.lifecycle:lifecycle-livedata:2.0.0 -&gt; 2.6.2
+|    |    |    |    +--- androidx.arch.core:core-runtime:2.1.0 -&gt; 2.2.0
+|    |    |    |    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    |    |    |    \--- androidx.arch.core:core-common:2.2.0 (*)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.6.2 (*)
+|    |    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.8.10 -&gt; 1.8.22 (*)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-common:2.6.2 (c)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-livedata-core:2.6.2 (c)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-runtime:2.6.2 (c)
+|    |    |    |    +--- androidx.lifecycle:lifecycle-viewmodel:2.6.2 (c)
+|    |    |    |    \--- androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2 (c)
+|    |    |    \--- androidx.lifecycle:lifecycle-viewmodel:2.0.0 -&gt; 2.6.2 (*)
+|    |    +--- androidx.savedstate:savedstate:1.2.0 -&gt; 1.2.1 (*)
+|    |    +--- androidx.viewpager:viewpager:1.0.0
+|    |    |    +--- androidx.annotation:annotation:1.0.0 -&gt; 1.8.1 (*)
+|    |    |    +--- androidx.core:core:1.0.0 -&gt; 1.13.0 (*)
+|    |    |    \--- androidx.customview:customview:1.0.0 -&gt; 1.1.0 (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.6.21 -&gt; 1.8.22 (*)
+|    +--- androidx.savedstate:savedstate:1.2.1 (*)
+|    \--- androidx.appcompat:appcompat-resources:1.7.1 (c)
++--- com.google.android.material:material:1.12.0
+|    +--- androidx.activity:activity:1.8.0 -&gt; 1.10.1 (*)
+|    +--- androidx.annotation:annotation:1.2.0 -&gt; 1.8.1 (*)
+|    +--- androidx.appcompat:appcompat:1.6.1 -&gt; 1.7.1 (*)
+|    +--- androidx.cardview:cardview:1.0.0
+|    |    \--- androidx.annotation:annotation:1.0.0 -&gt; 1.8.1 (*)
+|    +--- androidx.coordinatorlayout:coordinatorlayout:1.1.0
+|    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    +--- androidx.core:core:1.1.0 -&gt; 1.13.0 (*)
+|    |    +--- androidx.customview:customview:1.0.0 -&gt; 1.1.0 (*)
+|    |    \--- androidx.collection:collection:1.0.0 -&gt; 1.1.0 (*)
+|    +--- androidx.constraintlayout:constraintlayout:2.0.1 -&gt; 2.2.1
+|    +--- androidx.core:core:1.6.0 -&gt; 1.13.0 (*)
+|    +--- androidx.drawerlayout:drawerlayout:1.1.1 (*)
+|    +--- androidx.dynamicanimation:dynamicanimation:1.0.0
+|    |    +--- androidx.core:core:1.0.0 -&gt; 1.13.0 (*)
+|    |    +--- androidx.collection:collection:1.0.0 -&gt; 1.1.0 (*)
+|    |    \--- androidx.legacy:legacy-support-core-utils:1.0.0
+|    |         +--- androidx.annotation:annotation:1.0.0 -&gt; 1.8.1 (*)
+|    |         +--- androidx.core:core:1.0.0 -&gt; 1.13.0 (*)
+|    |         +--- androidx.documentfile:documentfile:1.0.0
+|    |         |    \--- androidx.annotation:annotation:1.0.0 -&gt; 1.8.1 (*)
+|    |         +--- androidx.loader:loader:1.0.0 (*)
+|    |         +--- androidx.localbroadcastmanager:localbroadcastmanager:1.0.0
+|    |         |    \--- androidx.annotation:annotation:1.0.0 -&gt; 1.8.1 (*)
+|    |         \--- androidx.print:print:1.0.0
+|    |              \--- androidx.annotation:annotation:1.0.0 -&gt; 1.8.1 (*)
+|    +--- androidx.annotation:annotation-experimental:1.0.0 -&gt; 1.4.0 (*)
+|    +--- androidx.fragment:fragment:1.2.5 -&gt; 1.5.4 (*)
+|    +--- androidx.lifecycle:lifecycle-runtime:2.0.0 -&gt; 2.6.2 (*)
+|    +--- androidx.recyclerview:recyclerview:1.0.0 -&gt; 1.1.0
+|    |    +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|    |    +--- androidx.core:core:1.1.0 -&gt; 1.13.0 (*)
+|    |    +--- androidx.customview:customview:1.0.0 -&gt; 1.1.0 (*)
+|    |    \--- androidx.collection:collection:1.0.0 -&gt; 1.1.0 (*)
+|    +--- androidx.resourceinspection:resourceinspection-annotation:1.0.1
+|    +--- androidx.transition:transition:1.5.0
+|    |    +--- androidx.annotation:annotation:1.2.0 -&gt; 1.8.1 (*)
+|    |    \--- androidx.core:core:1.13.0 (*)
+|    +--- androidx.vectordrawable:vectordrawable:1.1.0 (*)
+|    \--- androidx.viewpager2:viewpager2:1.0.0
+|         +--- androidx.annotation:annotation:1.1.0 -&gt; 1.8.1 (*)
+|         +--- androidx.fragment:fragment:1.1.0 -&gt; 1.5.4 (*)
+|         +--- androidx.recyclerview:recyclerview:1.1.0 (*)
+|         +--- androidx.core:core:1.1.0 -&gt; 1.13.0 (*)
+|         \--- androidx.collection:collection:1.1.0 (*)
++--- androidx.activity:activity:1.10.1 (*)
++--- androidx.constraintlayout:constraintlayout:2.2.1
+</code></pre>
+<h1 id="追踪-so-依赖">追踪 SO 依赖</h1>
+<p>在添加的 AAR 依赖中还可能存在 SO 库，这追踪起来就相对麻烦一些，相信近期适配 Android 16KB Page Size 的小伙伴可能深有体会。</p>
+<p>我目前没找到官方有类似的任务供我们一键调用，所以写了个任务：</p>
+<pre><code class="language-Groovy">def variantName = &quot;dokitDebug&quot;
+def soName = &quot;librtmp-jni.so&quot;
+android.applicationVariants.all { variant -&gt;
+    if (variant.name != variantName) return   // 只处理你关心的变体
+    tasks.register(&quot;findSoOwner${variant.name.capitalize()}&quot;) {
+        group = &quot;verification&quot;
+        description = &quot;查找 ${soName} 来自哪个 AAR&quot;
+        def artifacts = variant.runtimeConfiguration.incoming.artifacts
+        doLast {
+            artifacts.artifacts.each { artifact -&gt;
+                def file = artifact.file
+                if (file.name.endsWith(&quot;.aar&quot;)) {
+                    new java.util.zip.ZipFile(file).withCloseable { zf -&gt;
+                        zf.entries().each { entry -&gt;
+                            if (entry.name.endsWith(soName)) {
+                                println &quot;Found ${soName} in ${artifact.id.componentIdentifier} (${file.name})&quot;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+</code></pre>
+<p>将最开始的两个变量要修改为自己实际项目中的内容，比如我这里就在一个名为 <code>dokitDebug</code> 的变体下查询 <code>librtmp-jni.so</code> 这个 SO 的来源，只需在终端中执行命令：</p>
+<pre><code class="language-bash">➜   ./gradlew :app:findSoOwner
+</code></pre>
+<p>就可以得到以下输出：</p>
+<pre><code class="language-bash">&gt; Task :app:findSoOwnerDokitDebug
+Found librtmp-jni.so in io.antmedia:rtmp-client:3.2.0 (rtmp-client-3.2.0.aar)
+Found librtmp-jni.so in io.antmedia:rtmp-client:3.2.0 (rtmp-client-3.2.0.aar)
+Found librtmp-jni.so in io.antmedia:rtmp-client:3.2.0 (rtmp-client-3.2.0.aar)
+Found librtmp-jni.so in io.antmedia:rtmp-client:3.2.0 (rtmp-client-3.2.0.aar)
+</code></pre>
+<p>我们可以在结果中看到查找的 SO 库来源于哪个依赖，结果可能会输出多次。</p>
+<p>查询到的依赖也许并不是你自己添加的，这时候只需再使用上一节提到的命令打印依赖树，就可以追踪到根依赖了。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[用 DataStore 将你拉出 SharedPreferences 泥潭]]></title>
+        <id>https://LiarrDev.github.io/post/DataStore-Pull-You-Out-of-SharedPreferences-Quagmire/</id>
+        <link href="https://LiarrDev.github.io/post/DataStore-Pull-You-Out-of-SharedPreferences-Quagmire/">
+        </link>
+        <updated>2025-09-16T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="简介">简介</h1>
+<p>DataStore 是一种数据存储解决方案，允许您使用 <a href="https://liarrdev.github.io/post/Protocol-Buffers-Usage-on-Android">ProtoBuf</a> 存储键值对或类型化对象，由 Android 官方在 2020 年推出，并在 2021 年正式发布的库，旨在替代服役多年的 SharedPreferences。</p>
+<h1 id="sharedpreferences-的缺陷">SharedPreferences 的缺陷</h1>
+<ul>
+<li>文件数据的读取加锁，如果 SharedPreferences 文件未被加载或解析到内存中，读写操作都需要等待，可能会对 UI 线程流畅度造成一定影响，甚至ANR.</li>
+<li>在保存数据时，无论是 <code>commit()</code> 还是 <code>apply()</code> 都有可能引发 ANR 问题。</li>
+<li>没有错误提示机制。</li>
+</ul>
+<h1 id="datastore-的优点">DataStore 的优点</h1>
+<ul>
+<li>基于 Flow 实现，保证主线程的安全性。</li>
+<li>以事务方式处理更新数据。</li>
+<li>可以监听到操作成功或者失败结果。</li>
+<li>多进程使用。</li>
+</ul>
+<h1 id="preferences-datastore-和-proto-datastore">Preferences DataStore 和 Proto DataStore</h1>
+<p>DataStore 提供两种不同的实现：Preferences DataStore 和 Proto DataStore。</p>
+<ul>
+<li>Preferences DataStore 使用键存储和访问数据。此实现不需要预定义的架构，也不确保类型安全。</li>
+<li>Proto DataStore 将数据作为自定义数据类型的实例进行存储。此实现要求您使用 <a href="https://liarrdev.github.io/post/Protocol-Buffers-Usage-on-Android">ProtoBuf</a> 来定义架构，但可以确保类型安全。</li>
+</ul>
+<h1 id="preferences-datastore">Preferences DataStore</h1>
+<p>Preferences DataStore 用于存储键值对，相当于 SharedPreferences 的改良版。</p>
+<pre><code class="language-kotlin">dependencies {
+    implementation(&quot;androidx.datastore:datastore-preferences:1.1.0&quot;)
+}
+</code></pre>
+<p>实例：</p>
+<pre><code class="language-kotlin">// At the top level of your kotlin file:
+val Context.dataStore: DataStore&lt;Preferences&gt; by preferencesDataStore(name = &quot;settings&quot;)
+</code></pre>
+<p>读取：</p>
+<pre><code class="language-kotlin">val EXAMPLE_COUNTER = intPreferencesKey(&quot;example_counter&quot;)
+val exampleCounterFlow: Flow&lt;Int&gt; = context.dataStore.data.map { preferences -&gt;
+    // No type safety.
+    preferences[EXAMPLE_COUNTER] ?: 0
+}
+</code></pre>
+<p>支持的类型基本与 SharedPreferences 一致。</p>
+<p>写入：</p>
+<pre><code class="language-kotlin">suspend fun incrementCounter() {
+    context.dataStore.edit { settings -&gt;
+        val currentCounterValue = settings[EXAMPLE_COUNTER] ?: 0
+        settings[EXAMPLE_COUNTER] = currentCounterValue + 1
+    }
+}
+</code></pre>
+<p>转换块中的所有代码均被视为单个事务。</p>
+<h1 id="proto-datastore">Proto DataStore</h1>
+<p>Proto DataStore 用于存储类型化对象，相当于 SharedPreferences 的升级版。它使用了 <a href="https://liarrdev.github.io/post/Protocol-Buffers-Usage-on-Android">Protocol Buffers</a>。</p>
+<pre><code class="language-kotlin">dependencies {
+    implementation(&quot;androidx.datastore:datastore:1.1.0&quot;)
+}
+</code></pre>
+<p>在 <code>app/src/main/proto/</code> 目录下预定义：</p>
+<pre><code class="language-protobuf">// Settings.proto
+syntax = &quot;proto3&quot;;
+
+option java_package = &quot;com.example.application&quot;;
+option java_multiple_files = true;
+
+message Settings {
+  int32 example_counter = 1;
+}
+</code></pre>
+<p>用于告知 DataStore 如何读取和写入数据的序列化器：</p>
+<pre><code class="language-kotlin">object SettingsSerializer : Serializer&lt;Settings&gt; {
+
+    override val defaultValue: Settings = Settings.getDefaultInstance()
+
+    override suspend fun readFrom(input: InputStream): Settings {
+        try {
+            return Settings.parseFrom(input)
+        } catch (e: InvalidProtocolBufferException) {
+            throw CorruptionException(&quot;Cannot read proto.&quot;, e)
+        }
+    }
+
+    override suspend fun writeTo(t: Settings, output: OutputStream) = t.writeTo(output)
+}
+</code></pre>
+<p>实例：</p>
+<pre><code class="language-kotlin">// At the top level of your kotlin file:
+val Context.settingsDataStore: DataStore&lt;Settings&gt; by dataStore(
+    fileName = &quot;settings.pb&quot;,
+    serializer = SettingsSerializer
+)
+</code></pre>
+<p>读取：</p>
+<pre><code class="language-kotlin">val exampleCounterFlow: Flow&lt;Int&gt; = context.settingsDataStore.data.map { settings -&gt;
+    // The exampleCounter property is generated from the proto schema.
+    settings.exampleCounter
+}
+</code></pre>
+<p>写入：</p>
+<pre><code class="language-kotlin">suspend fun incrementCounter() {
+    context.settingsDataStore.updateData {
+        it.toBuilder()
+            .setExampleCounter(it.exampleCounter + 1)
+            .build()
+    }
+}
+</code></pre>
+<p>同样以事务方式更新数据。</p>
+<h1 id="从-sharedpreferences-中迁移">从 SharedPreferences 中迁移</h1>
+<pre><code class="language-kotlin">private val Context.migrationDataStore: DataStore&lt;Preferences&gt; by preferencesDataStore(
+    name = PREF_FILE_NAME,
+    produceMigrations = {
+        listOf(SharedPreferencesMigration(it, PREF_FILE_NAME))
+    }
+)
+</code></pre>
+<p>数据的迁移在创建 DataStore 的过程中自动完成，迁移完成后，原 SharedPreferences 的 XML 文件会被删除。</p>
+<h1 id="对比-mmkv">对比 MMKV</h1>
+<p>MMKV 是微信团队开源的基于 mmap 内存映射的 Key-Value 组件，底层序列化与反序列化同样使用 <a href="https://liarrdev.github.io/post/Protocol-Buffers-Usage-on-Android">ProtoBuf</a>，性能高，稳定性强。</p>
+<p>虽然 MMKV 的初衷并不是替代 SharedPreferences，但是同样作为 Key-Value 组件，大多数人都将 MMKV 视为 SharedPreferences 的替代品。</p>
+<p>官方文档中也对 MMKV 和 SharedPreferences 的性能进行了对比：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1757255479084.png" alt="MMKV vs SP" loading="lazy"></figure>
+<p>事实上，MMKV 并不是任何时候都更强。由于内存映射这种方案是自行管理一块独立的内存，所以它在尺寸的伸缩上面就比较受限，这就导致它在写大一点的数据时，速度会慢。</p>
+<p>另一方面，该写入耗时对于正常开发来说并非特别重要，界面的流畅度更在意主线程的耗时，而 SharedPreferences 本身也提供了异步写入的 API，所以它们都足够快了。但 MMKV 的诞生场景决定了，它更在意同步处理机制下的耗时。</p>
+<p>MMKV 还有一个缺陷——丢数据。操作系统在往磁盘写数据的过程中发生意外都会导致文件损坏，这种问题不可避免。MMKV 虽然由于底层机制的原因，在程序崩溃的时候不会影响数据往磁盘的写入，但断电关机之类的操作系统级别的崩溃，MMKV 就没办法了，文件照样会损坏。</p>
+<p>对于这种文件损坏，SharedPreferences 和 DataStore 的应对方式是在每次写入新数据之前都对现有文件做一次自动备份，这样在发生了意外出现了文件损坏之后，它们就会把备份的数据恢复过来。</p>
+<p>而 MMKV，没有这种自动的备份和恢复，那么当文件发生了损坏，数据就丢了，之前保存的各种信息只能被重置。据官方统计，<a href="https://github.com/Tencent/MMKV/wiki/design#%E6%95%B0%E6%8D%AE%E6%9C%89%E6%95%88%E6%80%A7">iOS 微信平均约有 70 万日次的数据校验不通过</a>。</p>
+<p>因此 MMKV 更适合同步高频写入非重要信息的场景。</p>
+<h1 id="参考内容">参考内容</h1>
+<ul>
+<li><a href="https://developer.android.google.cn/topic/libraries/architecture/datastore">应用架构：数据层 - DataStore - Android 开发者 | App architecture | Android Developers</a></li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[在 Android 中使用 Protocol Buffers]]></title>
+        <id>https://LiarrDev.github.io/post/Protocol-Buffers-Usage-on-Android/</id>
+        <link href="https://LiarrDev.github.io/post/Protocol-Buffers-Usage-on-Android/">
+        </link>
+        <updated>2025-08-24T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="简介">简介</h1>
+<p>Protocol Buffers（简称 Protobuf）是 Google 开发的一种独立于语言和平台的结构化数据序列化可扩展机制。它与 JSON 类似，只是体积更小、速度更快，而且能生成本地语言绑定。您只需定义一次数据的结构化方式，然后就可以使用特殊生成的源代码，使用各种语言轻松地将结构化数据写入各种数据流或从各种数据流中读取结构化数据。</p>
+<p>Google 提供了多种语言的实现，每一种实现都包含了相应语言的编译器以及库文件。由于它是一种二进制的格式，比使用 XML 进行数据交换快许多（体积小 3～10 倍，速度快 20～100 倍）。作为一种效率和兼容性都很优秀的二进制数据传输格式，可以用于诸如网络传输、配置文件、数据存储等诸多领域。</p>
+<p>它有一个非常棒的特性，即“向后”兼容性好，人们不必破坏已部署的、依靠“老”数据格式的程序就可以对数据结构进行升级。这样您的程序就可以不必担心因为消息结构的改变而造成的大规模的代码重构或者迁移的问题。因为添加新的消息中的 field 并不会引起已经发布的程序的任何改变。</p>
+<p>Protobuf 与 XML 和 JSON 相比也有不足之处。由于 XML 和 JSON 具有某种程度上的自解释性，它可以被人直接读取编辑，在这一点上 Protobuf 不行，它以二进制的方式存储。</p>
+<h1 id="语法">语法</h1>
+<pre><code class="language-ProtoBuf">syntax = &quot;proto3&quot;;
+
+message SearchRequest {
+  string query = 1;
+  int32 page_number = 2;
+  int32 results_per_page = 3;
+}
+</code></pre>
+<ul>
+<li>第一行说明使用的是 proto3 语法：如果不这样做，Protobuf 编译器会认为使用的是 proto2。这必须是文件中第一行非空、非注释的内容。</li>
+<li>SearchRequest 报文定义指定了三个字段（名称/值对），每个字段代表一条要包含在此类报文中的数据。每个字段都有名称和类型。</li>
+<li>须为信息定义中的每个字段赋予一个介于 <code>1</code> 到 <code>536,870,911</code>（<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mn>2</mn><mn>29</mn></msup><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">2^{29} -1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.897438em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span><span class="mord mtight">9</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span>）之间的数字，在该报文中必须唯一，编号 <code>19,000</code> 至 <code>19,999</code> 保留给 Protocol Buffers 实现。</li>
+<li>不能使用任何先前保留的编号。更改字段编号相当于删除该字段，然后创建一个类型相同但编号不同的新字段。删除字段定义时必须保留已删除的字段编号，如果不保留字段编号，开发人员将来有可能重新使用该编号。</li>
+</ul>
+<h1 id="使用">使用</h1>
+<p><code>libs.versions.toml</code> 定义版本：</p>
+<pre><code class="language-TOML">[libraries]
+protobuf-protoc = { group = &quot;com.google.protobuf&quot;, name = &quot;protoc&quot;, version.ref = &quot;protobuf&quot; }
+protobuf-javalite = { group = &quot;com.google.protobuf&quot;, name = &quot;protobuf-javalite&quot;, version.ref = &quot;protobuf&quot; }
+
+[plugins]
+googleProtobuf = { id = &quot;com.google.protobuf&quot;, version.ref = &quot;protobufPlugin&quot; }
+</code></pre>
+<p>项目的 <code>build.gradle.kts</code>：</p>
+<pre><code class="language-kotlin">plugins {
+    // ...
+    alias(libs.plugins.googleProtobuf) apply false
+}
+</code></pre>
+<p>app 的 <code>build.gradle.kts</code>：</p>
+<pre><code class="language-kotlin">import com.google.protobuf.gradle.proto
+
+plugins {
+    // ...
+    alias(libs.plugins.googleProtobuf)
+}
+
+android {
+    //...
+    sourceSets {
+        getByName(&quot;main&quot;).java.srcDir(&quot;src/main/java&quot;)
+        getByName(&quot;main&quot;).proto {
+            srcDir(&quot;src/main/proto&quot;)
+            include(&quot;**/*.proto&quot;)
+        }
+    }
+}
+protobuf {
+    protoc { 
+        artifact = libs.protoc.get().toString()
+    }
+    plugins {
+        generateProtoTasks {
+            all().forEach {
+                it.builtins {
+                    create(&quot;java&quot;) {
+                        option(&quot;lite&quot;)
+                    }
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    // ...
+    implementation(libs.protobuf.protoc)
+    implementation(libs.protobuf.javalite)
+}
+</code></pre>
+<p>混淆配置：</p>
+<pre><code>-keep class * extends com.google.protobuf.GeneratedMessageLite { *; }
+</code></pre>
+<p>在 <code>app/src/main/proto</code> 目录中创建 proto 文件：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1755443506237.png" alt="Proto File" loading="lazy"></figure>
+<p>内容如下：</p>
+<pre><code class="language-ProtoBuf">syntax = &quot;proto3&quot;;  // 声明 proto 协议版本
+package com.example.proto;  // 定义 Protobuf 自动生成类的包名
+option java_package = &quot;com.example.proto&quot;;  // Java 类所在的包名
+option java_outer_classname= &quot;SearchRequestProto&quot;;  // 定义 Protobuf 自动生成类的类名
+
+message SearchRequest {
+  string query = 1;
+  int32 page_number = 2;
+  int32 results_per_page = 3;
+}
+</code></pre>
+<p>Build 项目，会在 <code>app/build/generated/source/proto</code> 中生成对应的 Java 文件：</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1755443529830.png" alt="Generated Java File" loading="lazy"></figure>
+<p>生成的 Java 文件内容太长，就不贴在这里了，但是结构简单，无非就是一堆 Getter 和 Setter 以及一些解析方法，相信你也可以轻易读懂。</p>
+<p>接下来就可以在代码中调用它：</p>
+<pre><code class="language-kotlin">@Test
+fun proto() {
+    // 序列化
+    val request = SearchRequestProto.SearchRequest.newBuilder()
+        .setQuery(&quot;Proto&quot;)
+        .setPageNumber(1)
+        .setResultsPerPage(10)
+        .build()
+    val bytes = request.toByteArray()
+
+    // 反序列化
+    try {
+        val result = SearchRequestProto.SearchRequest.parseFrom(bytes)
+        val query = result.query
+        val pageNumber = result.pageNumber
+        val resultPerPage = result.resultsPerPage
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+}
+</code></pre>
+<p>序列化利用的是 <a href="https://liarrdev.github.io/post/Design-Pattern-Builder">Builder 模式</a>，构建成一个 <code>SearchRequest</code> 对象后，再将其转换成 <code>ByteArray</code>。反序列化则利用 <code>parseFrom()</code> 方法将 <code>ByteArray</code> 或者 <code>InputStream</code> 转成 <code>SearchRequest</code> 对象，<code>parseFrom()</code> 方法就是在上方生成的 Java 文件中自动帮我们插入的方法。</p>
+<h1 id="参考内容">参考内容</h1>
+<ul>
+<li><a href="https://protobuf.dev/programming-guides/proto3/">Language Guide (proto 3) | Protocol Buffers Documentation</a></li>
+</ul>
+]]></content>
+    </entry>
+</feed>
