@@ -1,0 +1,1212 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title> 一个 while 循环跑通 AI Agent | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="如果你最近关注 AI 领域，大概率被「Agent」这个词轰炸过。各种框架、各种概念满天飞：ReAct、Function Calling、Tool Use、Planning、Memory……看起来门槛很高。
+庖丁解牛：Agent 的核心就是一..." />
+    <meta name="keywords" content="" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1791196582300" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Build-an-AI-Agent-with-a-Single-While-Loop.png');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2026-10-08"><i class="fa fa-calendar"></i><span class="lately">2 天内</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Build-an-AI-Agent-with-a-Single-While-Loop/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Build-an-AI-Agent-with-a-Single-While-Loop/"> </span>
+              </a>
+              <span id="/Build-an-AI-Agent-with-a-Single-While-Loop/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+              </div>
+              <h1 class="title ularge white bold"> 一个 while 循环跑通 AI Agent</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>如果你最近关注 AI 领域，大概率被「Agent」这个词轰炸过。各种框架、各种概念满天飞：ReAct、Function Calling、Tool Use、Planning、Memory……看起来门槛很高。</p>
+<p>庖丁解牛：<strong>Agent 的核心就是一个 <code>while</code> 循环。</strong></p>
+<p>这篇文章我不想用任何 Agent 框架，而是用纯 Kotlin（AI 相关开发生态其实在 Python 和 TypeScript 会更丰富一些，说来惭愧，我的技能点主要在 JVM 生态上）从零写一个能干活的 Agent，把这个循环亲手跑起来，跑通之后也许你可以更轻松地理解 Agent 的工作。</p>
+<h1 id="agent-到底是什么">Agent 到底是什么</h1>
+<p>回溯历史我们知道，AI 的爆发和普及是从一个聊天工具开始的——ChatGPT，它的背后是 LLM（Large Language Model，大语言模型），但单纯的 LLM 只能“说”，不能执行“做”，它的行为模式是你问一句它答一句，没有其他任何功能。</p>
+<p>而 AI Agent 的出现，让 LLM 从“顾问”变成了“执行者”——它能操作软件、调用 API、管理流程，真正融入业务场景。通俗来讲，AI Agent 则可以执行更复杂的任务，自主理解你的意图，规划执行步骤，调用合适的工具，最终完成任务。</p>
+<p>LLM 负责“想”，你的代码负责“做”，两者交替进行，直到 LLM 认为任务完成。这个模式有个学名叫 <strong>Agent Loop</strong>（也常被称为 ReAct 模式：Reason + Act）。</p>
+<p>这与传统程序的本质区别在于：传统程序的逻辑是 <code>if-else</code>——开发者预先定义所有可能的输入和对应的输出。而 AI Agent 拥有更强大的能力：</p>
+<ol>
+<li><strong>自主决策</strong>：Agent 根据当前情境和目标，自主决定下一步做什么，而非执行预设指令。</li>
+<li><strong>工具调用</strong>：Agent 可以调用外部工具（搜索、计算、API 等）来扩展能力，而不局限于代码内置的逻辑。</li>
+<li><strong>持续学习</strong>：通过记忆系统，Agent 能够从历史交互中积累经验，优化后续决策。</li>
+</ol>
+<p>这意味着，掌握 Agent 开发意味着你不再只是构建被动响应的系统，而是创造能够主动完成任务的智能应用。</p>
+<h1 id="agent-的核心组件">Agent 的核心组件</h1>
+<p>简单来说，<strong>AI Agent = 大脑（LLM）+ 手脚（Tools）+ 记忆（Memory）+ 规划（Planning）</strong>。它不是一个简单的问答机器，而是一个能够自主决策、执行复杂任务的智能体。</p>
+<p>现在，有个新的名词——<strong>Harness</strong>，上面的等式可以简化成 <strong>AI Agent = LLM + Harness</strong>。Harness 的意思是马具，放到 AI 时代，它指的是智能体驾驭工程系统。</p>
+<p>模型是可替换的内核，真正决定 AI Agent 长什么样的是 Harness，所以我们说的 AI Agent 开发，大多数情况下是开发 Harness，除了少数有条件自训练模型的厂商外，大多数应用都是接入第三方模型。</p>
+<h3 id="llm大脑">LLM（大脑）</h3>
+<p>LLM 是 Agent 的“大脑”，负责理解自然语言输入、生成推理计划、做出决策。当你对 Agent 说“帮我总结今天的会议纪要”时，LLM 需要：</p>
+<ul>
+<li>理解“总结”和“会议纪要”的含义</li>
+<li>判断需要调用哪些工具来获取信息</li>
+<li>将工具返回的原始数据组织成结构化的总结</li>
+</ul>
+<h3 id="tools工具">Tools（工具）</h3>
+<p>工具是 Agent 的“手脚”，让它能够与外部世界交互。常见的工具类型包括：</p>
+<ul>
+<li><strong>搜索工具</strong>：调用搜索引擎获取实时信息</li>
+<li><strong>计算工具</strong>：执行数学运算或数据分析</li>
+<li><strong>API 工具</strong>：调用第三方服务（天气、日历、数据库等）</li>
+<li><strong>代码执行工具</strong>：运行代码片段完成特定计算</li>
+</ul>
+<h3 id="memory记忆">Memory（记忆）</h3>
+<p>记忆系统让 Agent 拥有“上下文感知”能力：</p>
+<ul>
+<li><strong>短期记忆</strong>：当前对话的上下文，让 Agent 理解“它”指的是什么。</li>
+<li><strong>长期记忆</strong>：通过向量数据库存储历史交互，让 Agent 记住用户偏好、项目背景等信息。</li>
+</ul>
+<h3 id="planning规划">Planning（规划）</h3>
+<p>规划能力让 Agent 能够分解复杂任务、制定执行策略，并在执行过程中反思修正。例如，“帮我写一份技术方案”这个任务，Agent 可能会规划为：</p>
+<ol>
+<li>分析需求背景</li>
+<li>搜索相关技术文档</li>
+<li>设计系统架构</li>
+<li>撰写方案初稿</li>
+<li>自我审查并优化</li>
+</ol>
+<h1 id="实现一个简单的-agent">实现一个简单的 Agent</h1>
+<h2 id="准备工作">准备工作</h2>
+<p>本篇文章以接入 DeepSeek 作为示例，因此需要先申请一个 API Key，其他供应商的接入方式基本类似。同时因为我仅抽取 DeepSeek 相关的内容来演示，所以代码中可能会出现一些暂时用不上的封装代码，读者可以根据实际情况理解。</p>
+<p>项目依赖方面，没有 LangChain，没有任何 Agent 框架。这是刻意的——我们要看清全部细节。</p>
+<p>这里仅仅引入一个 JSON 解析库，用于传输数据。为了方便演示我这里直接使用 <code>org.json</code>，当然你也可以换成其他顺手的，比如 <code>kotlinx.serialization</code> 或者 <code>Gson</code> 等。</p>
+<pre><code class="language-kotlin">dependencies {
+    ...
+    implementation(&quot;org.json:json:20240303&quot;)
+}
+</code></pre>
+<p>Http 请求我就直接基于 <code>HttpClient</code> 简单封装了一下：</p>
+<pre><code class="language-kotlin">object Http {
+    private val client: HttpClient = HttpClient.newHttpClient()
+
+    fun post(
+        url: String,
+        body: JSONObject,
+        headers: (HttpRequest.Builder) -&gt; HttpRequest.Builder
+    ): JSONObject {
+        val request = headers(HttpRequest.newBuilder().uri(URI.create(url)).header(&quot;content-type&quot;, &quot;application/json&quot;))
+            .POST(HttpRequest.BodyPublishers.ofString(body.toString()))
+            .build()
+        val response = client.send(request, BodyHandlers.ofString())
+        val status = response.statusCode()
+        if (status != 200) throw RuntimeException(&quot;API error [$status] $url: ${response.body()}&quot;)
+        return JSONObject(response.body())
+    }
+
+    fun get(url: String): JSONObject {
+        val request = HttpRequest.newBuilder()
+            .uri(URI.create(url))
+            .timeout(Duration.ofSeconds(10))
+            .GET()
+            .build()
+        val response = client.send(request, BodyHandlers.ofString())
+        val status = response.statusCode()
+        if (status != 200) throw RuntimeException(&quot;API error [$status] $url: ${response.body()}&quot;)
+        return JSONObject(response.body())
+    }
+}
+</code></pre>
+<h2 id="定义内部消息格式">定义内部消息格式</h2>
+<pre><code class="language-kotlin">sealed class Msg {
+    class System(val content: String) : Msg()
+    class User(val content: String) : Msg()
+    data class Assistant(val blocks: List&lt;AssistantBlock&gt;) : Msg()
+    data class ToolResults(val results: List&lt;ToolResult&gt;) : Msg()
+}
+
+sealed class AssistantBlock {
+    data class Text(val text: String) : AssistantBlock()
+    data class ToolCall(
+        val id: String,
+        val name: String,
+        val input: JSONObject
+    ) : AssistantBlock()
+}
+
+data class ToolResult(
+    val callId: String,
+    val content: String
+)
+</code></pre>
+<p>定义了 4 种与厂商无关的消息类型，Agent 只操作这些：</p>
+<ul>
+<li><code>System</code>：系统提示，用于设置 Agent 的行为和风格。</li>
+<li><code>User</code>：用户输入，包含用户的问题或指令。</li>
+<li><code>Assistant</code>：模型生成的回复，包含文本和工具调用。</li>
+<li><code>ToolResults</code>：工具调用的结果，用于更新 Agent 的状态。</li>
+</ul>
+<h2 id="定义工具序列化格式">定义工具序列化格式</h2>
+<p>如果你经常接触 AI 相关的工具，你一定知道目前行业已经形成了两套 API 格式，分别是 OpenAI Chat Completions 和 Anthropic Messages，即以两家巨头 LLM 提供商规定的格式为规范，几乎所有的模型都提供了这两种接入格式。</p>
+<p>简单来说无非是传输数据的结构差异罢了，我们开发 Agent 时，也可以考虑同时兼容这两种格式。</p>
+<pre><code class="language-kotlin">data class Tool(
+    val name: String,                           // 工具名称，LLM 用它来标识要调用哪个
+    val description: String,                    // 工具描述，LLM 据此决定何时调用
+    val properties: Map&lt;String, JSONObject&gt;,    // 参数定义（JSON Schema）
+    val required: List&lt;String&gt;,                 // 必填参数
+    val execute: (JSONObject) -&gt; String         // 实际执行逻辑
+) {
+    private fun buildSchema(propKey: String): JSONObject = JSONObject()
+        .put(&quot;type&quot;, &quot;object&quot;)
+        .put(propKey, JSONObject().apply {
+            properties.forEach { (k, v) -&gt; put(k, v) }
+        })
+        .put(&quot;required&quot;, JSONArray(required))
+
+    fun toAnthropicFormat(): JSONObject = JSONObject()
+        .put(&quot;name&quot;, name)
+        .put(&quot;description&quot;, description)
+        .put(&quot;input_schema&quot;, buildSchema(&quot;properties&quot;))
+
+    fun toOpenAIFormat(): JSONObject = JSONObject()
+        .put(&quot;type&quot;, &quot;function&quot;)
+        .put(&quot;function&quot;, JSONObject()
+            .put(&quot;name&quot;, name)
+            .put(&quot;description&quot;, description)
+            .put(&quot;parameters&quot;, buildSchema(&quot;properties&quot;))
+        )
+}
+</code></pre>
+<h2 id="接入-llm-供应商">接入 LLM 供应商</h2>
+<p>先抽象 LLM 供应商接口，OpenAI Chat Completions 和 Anthropic Messages 两种格式都是基于这个接口实现：</p>
+<pre><code class="language-kotlin">interface LLMProvider {
+    fun chat(
+        messages: List&lt;Msg&gt;,
+        tools: List&lt;Tool&gt;,
+        systemPrompt: String?
+    ): Msg.Assistant
+}
+</code></pre>
+<p>由于本文以 DeepSeek 作为示例，所以任意挑选一种格式即可，这里我选择 OpenAI Chat Completions。</p>
+<p>尽管如此，为了方便其他模型的接入，再增加一层抽象：</p>
+<pre><code class="language-kotlin">abstract class OpenAICompatibleProvider(
+    private val apiKey: String,
+    private val model: String,
+    private val baseUrl: String
+) : LLMProvider {
+
+    override fun chat(
+        messages: List&lt;Msg&gt;,
+        tools: List&lt;Tool&gt;,
+        systemPrompt: String?
+    ): Msg.Assistant {
+        val body = JSONObject()
+            .put(&quot;model&quot;, model)
+            .put(&quot;max_tokens&quot;, 1024)
+        body.put(&quot;messages&quot;, toMessages(messages, systemPrompt))
+        if (tools.isNotEmpty()) {
+            body.put(&quot;tools&quot;, JSONArray().apply {
+                tools.forEach { put(it.toOpenAIFormat()) }
+            })
+        }
+        val resp = Http.post(&quot;$baseUrl/chat/completions&quot;, body) {
+            it.header(&quot;Authorization&quot;, &quot;Bearer $apiKey&quot;)
+        }
+        return parseResponse(resp)
+    }
+
+    private fun toMessages(msgs: List&lt;Msg&gt;, systemPrompt: String?): JSONArray {
+        val arr = JSONArray()
+        if (systemPrompt != null) {
+            arr.put(JSONObject().put(&quot;role&quot;, &quot;system&quot;).put(&quot;content&quot;, systemPrompt))
+        }
+        for (msg in msgs) {
+            when (msg) {
+                is Msg.System -&gt; { /* handled by systemPrompt param */ }
+                is Msg.User -&gt; arr.put(JSONObject().put(&quot;role&quot;, &quot;user&quot;).put(&quot;content&quot;, msg.content))
+                is Msg.Assistant -&gt; {
+                    val assistantMsg = JSONObject().put(&quot;role&quot;, &quot;assistant&quot;)
+                    val texts = msg.blocks.filterIsInstance&lt;AssistantBlock.Text&gt;().map { it.text }
+                    val calls = msg.blocks.filterIsInstance&lt;AssistantBlock.ToolCall&gt;()
+                    if (texts.isNotEmpty()) {
+                        assistantMsg.put(&quot;content&quot;, texts.joinToString(&quot;\n&quot;))
+                    }
+                    if (calls.isNotEmpty()) {
+                        val tcArray = JSONArray()
+                        for (tc in calls) {
+                            tcArray.put(
+                                JSONObject()
+                                    .put(&quot;id&quot;, tc.id)
+                                    .put(&quot;type&quot;, &quot;function&quot;)
+                                    .put(&quot;function&quot;, JSONObject().put(&quot;name&quot;, tc.name).put(&quot;arguments&quot;, tc.input.toString()))
+                            )
+                        }
+                        assistantMsg.put(&quot;tool_calls&quot;, tcArray)
+                    }
+                    arr.put(assistantMsg)
+                }
+                is Msg.ToolResults -&gt; {
+                    for (tr in msg.results) {
+                        arr.put(JSONObject().put(&quot;role&quot;, &quot;tool&quot;).put(&quot;tool_call_id&quot;, tr.callId).put(&quot;content&quot;, tr.content))
+                    }
+                }
+            }
+        }
+        return arr
+    }
+
+    private fun parseResponse(resp: JSONObject): Msg.Assistant {
+        val message = resp.getJSONArray(&quot;choices&quot;).getJSONObject(0).getJSONObject(&quot;message&quot;)
+        val blocks = mutableListOf&lt;AssistantBlock&gt;()
+        val content = message.optString(&quot;content&quot;, &quot;&quot;)
+        if (content.isNotBlank()) {
+            blocks.add(AssistantBlock.Text(content))
+        }
+        val toolCalls = message.optJSONArray(&quot;tool_calls&quot;)
+        if (toolCalls != null) {
+            for (i in 0 until toolCalls.length()) {
+                val tc = toolCalls.getJSONObject(i)
+                val func = tc.getJSONObject(&quot;function&quot;)
+                val args = JSONObject(func.getString(&quot;arguments&quot;))
+                blocks.add(
+                    AssistantBlock.ToolCall(
+                        id = tc.getString(&quot;id&quot;),
+                        name = func.getString(&quot;name&quot;),
+                        input = args
+                    )
+                )
+            }
+        }
+        return Msg.Assistant(blocks)
+    }
+}
+</code></pre>
+<p>这样我们在接入任何模型的时候都可以继承这个抽象类：</p>
+<pre><code class="language-kotlin">class OpenAIProvider(
+    apiKey: String,
+    model: String = &quot;gpt-6-luna&quot;
+) : OpenAICompatibleProvider(
+    apiKey,
+    model,
+    &quot;https://api.openai.com/v1&quot;
+)
+class DeepSeekProvider(
+    apiKey: String,
+    model: String = &quot;deepseek-flash&quot;
+) : OpenAICompatibleProvider(
+    apiKey,
+    model,
+    &quot;https://api.deepseek.com/v1&quot;
+)
+</code></pre>
+<p>API Key 我们通过外部传入，不写在默认值里，硬编码密钥是严重的安全反模式。</p>
+<h2 id="agent-运行时">Agent 运行时</h2>
+<p>这一步我们把上面剖析的 Agent 本质转换成代码，核心循环是这样的：用户输入 → LLM 思考 → 如需用工具则执行 → 结果送回 LLM → 再思考，直到 LLM 返回不含工具调用的纯文本回复。</p>
+<p>万事俱备。现在写那个“<code>while</code> 循环”：</p>
+<pre><code class="language-kotlin">class Agent(private val provider: LLMProvider) {
+    fun run(
+        systemPrompt: String,
+        userMessage: String,
+        tools: List&lt;Tool&gt;,
+        history: MutableList&lt;Msg&gt;
+    ): String {
+        history.add(Msg.User(userMessage))
+        var iteration = 0
+        while (iteration++ &lt; 10) {
+            val assistantMsg = provider.chat(
+                messages = history,
+                tools = tools,
+                systemPrompt = systemPrompt
+            )
+            history.add(assistantMsg)
+            val texts = assistantMsg.blocks.filterIsInstance&lt;AssistantBlock.Text&gt;()
+            val toolCalls = assistantMsg.blocks.filterIsInstance&lt;AssistantBlock.ToolCall&gt;()
+            if (toolCalls.isNotEmpty()) {
+                val results = toolCalls.map { tc -&gt;
+                    println(&quot;  🔧 调用工具: ${tc.name}(${tc.input})&quot;)
+                    val tool = tools.find { it.name == tc.name }
+                    val result = tool?.execute?.invoke(tc.input) ?: &quot;错误：未知工具 '${tc.name}'&quot;
+                    println(&quot;  📊 结果: $result&quot;)
+                    ToolResult(tc.id, result)
+                }
+                history.add(Msg.ToolResults(results))
+                continue
+            }
+            return texts.joinToString(&quot;\n&quot;) { it.text }
+        }
+        return &quot;错误：Agent 迭代次数超过上限&quot;
+    }
+}
+</code></pre>
+<p>值得注意的是，这里我们通过一个列表来维护对话的历史，就相当于实现了对话的记忆功能，用户可以连续输入多个问题，Agent 会根据之前的上下文来回答。</p>
+<h2 id="先把-chatbot-跑起来">先把 Chatbot 跑起来</h2>
+<p>虽然还没有定义工具，但是我们已经接好了 API，所以可以先把那个最原始的聊天机器人跑起来。</p>
+<pre><code class="language-kotlin">fun main() {
+    println(&quot;&quot;&quot;
+        请选择 LLM 供应商:
+          1. Anthropic (Claude)
+          2. OpenAI
+          3. DeepSeek
+    &quot;&quot;&quot;.trimIndent())
+    val choice: String
+    while (true) {
+        print(&quot;输入数字 [1/2/3]: &quot;)
+        val input = readlnOrNull()?.trim()
+        if (input == &quot;1&quot; || input == &quot;2&quot; || input == &quot;3&quot;) {
+            choice = input
+            break
+        }
+        println(&quot;❌ 无效输入，请重新输入 1、2 或 3&quot;)
+    }
+    val (envKey, providerName) = when (choice) {
+        &quot;1&quot; -&gt; &quot;ANTHROPIC_API_KEY&quot; to &quot;Anthropic&quot;
+        &quot;2&quot; -&gt; &quot;OPENAI_API_KEY&quot; to &quot;OpenAI&quot;
+        &quot;3&quot; -&gt; &quot;DEEPSEEK_API_KEY&quot; to &quot;DeepSeek&quot;
+        else -&gt; error(&quot;unreachable&quot;)
+    }
+    val apiKey = System.getenv(envKey)
+    if (apiKey.isNullOrBlank()) {
+        println(&quot;&quot;&quot;
+            ❌ 请设置环境变量 $envKey
+               export $envKey=&lt;your-api-key&gt;
+        &quot;&quot;&quot;.trimIndent())
+        exitProcess(1)
+    }
+
+    val provider: LLMProvider = when (choice) {
+        &quot;1&quot; -&gt; AnthropicProvider(apiKey = apiKey)
+        &quot;2&quot; -&gt; OpenAIProvider(apiKey = apiKey)
+        &quot;3&quot; -&gt; DeepSeekProvider(apiKey = apiKey)
+        else -&gt; error(&quot;unreachable&quot;)
+    }
+    val agent = Agent(provider)
+    val tools = createTools()
+    val systemPrompt = &quot;&quot;&quot;
+        你是一个友好的中文助手。你可以使用提供的工具来帮助用户。
+        - 用中文回复用户，并且每次回复前都增加敬语“聪明的人类”。
+    &quot;&quot;&quot;.trimIndent()
+
+    val history = mutableListOf&lt;Msg&gt;()
+
+    val divider = &quot;=&quot;.repeat(50)
+    println(&quot;&quot;&quot;
+        
+        $divider
+        🤖 AI Agent 已启动 [供应商: $providerName]
+        $divider
+        输入 'exit'  退出
+        输入 'clear' 重置对话
+        $divider
+        
+    &quot;&quot;&quot;.trimIndent())
+
+    while (true) {
+        print(&quot;👤 你: &quot;)
+        val input = readlnOrNull()?.trim() ?: break
+        if (input.isBlank()) continue
+        when (input.lowercase()) {
+            &quot;exit&quot; -&gt; {
+                println(&quot;👋 再见!&quot;)
+                exitProcess(0)
+            }
+            &quot;clear&quot; -&gt; {
+                history.clear()
+                println(&quot;🗑️  对话已重置。\n&quot;)
+                continue
+            }
+        }
+        try {
+            val reply = agent.run(
+                systemPrompt = systemPrompt,
+                userMessage = input,
+                tools = tools,
+                history = history
+            )
+            println(&quot;🤖 Agent: $reply&quot;)
+            println()
+        } catch (e: Exception) {
+            println(&quot;❌ 错误: ${e.message}&quot;)
+            println()
+        }
+    }
+}
+
+fun createTools(): List&lt;Tool&gt; = listOf()
+</code></pre>
+<p>这就是一个简易的终端聊天工具，用户输入指令，模型返回回复，我在输出时增加了两个 Emoji，用来分辨是用户输入还是模型回复。记得要先配置好 LLM 供应商的 API 密钥。</p>
+<p>我添加了 Prompt，引导模型在回复前都增加敬语“聪明的人类”。Tools 还未实现，我只给模型提供了空的工具列表。历史对话在 <code>Agent</code> 类中维护，每次迭代时都会更新历史记录。</p>
+<p>运行起来是这样的：</p>
+<pre><code class="language-Bash">请选择 LLM 供应商:
+  1. Anthropic (Claude)
+  2. OpenAI
+  3. DeepSeek
+输入数字 [1/2/3]: 3
+
+==================================================
+🤖 AI Agent 已启动 [供应商: DeepSeek]
+==================================================
+输入 'exit'  退出
+输入 'clear' 重置对话
+==================================================
+
+👤 你: U there?
+🤖 Agent: 聪明的人类，我在的！很高兴为您服务，有什么可以帮您的吗？
+
+👤 你: 今天几号
+🤖 Agent: 聪明的人类，很抱歉，我无法实时查看今天的日期。建议您查看手机、电脑或日历小工具，那里有最准确的日期哦！如果还有其他问题，我随时可以帮忙～
+
+👤 你: 广州天气怎么样
+🤖 Agent: 聪明的人类，很抱歉，我目前没有实时查询天气的功能。建议您打开手机天气应用或搜索“广州天气”，就能看到最新的温度和降雨情况啦！如果还有其他能帮上忙的事，请随时吩咐～
+</code></pre>
+<p>可以看到，模型根据我提供的 Prompt 来回复用户，但后面两个问题就能看出 LLM 回答的边界，那么下一步，我们就来定义相应的工具，给 LLM 调用。</p>
+<h2 id="给-agent-加上手脚">给 Agent 加上“手脚”</h2>
+<p>Agent 的能力边界取决于它拥有的工具。一个没有工具的 Agent 能理解需求，却无法采取实际行动。</p>
+<p>上面 <code>Tool</code> 抽象规定了所有工具必须遵循的契约：每个工具都有唯一的名字、描述（帮助 LLM 理解用途）和执行方法。我们接下来给 AI 添加上面两个工具，即获取时间和查询天气。</p>
+<pre><code class="language-kotlin">fun createTools(): List&lt;Tool&gt; = listOf(
+    Tool(
+        name = &quot;get_current_time&quot;,
+        description = &quot;获取当前日期和时间。不需要参数。&quot;,
+        properties = emptyMap(),
+        required = emptyList(),
+        execute = {
+            LocalDateTime.now().toString()
+        }
+    ),
+    Tool(
+        name = &quot;get_weather&quot;,
+        description = &quot;查询指定城市的当前天气（数据来自 wttr.in）。&quot;,
+        properties = mapOf(
+            &quot;city&quot; to JSONObject()
+                .put(&quot;type&quot;, &quot;string&quot;)
+                .put(&quot;description&quot;, &quot;城市名称，如：Beijing、Shanghai、Tokyo&quot;)
+        ),
+        required = listOf(&quot;city&quot;),
+        execute = {
+            val city = URLEncoder.encode(it.getString(&quot;city&quot;), Charsets.UTF_8)
+            try {
+                val current = Http.get(&quot;https://wttr.in/$city?format=j1&quot;)
+                    .getJSONArray(&quot;current_condition&quot;)
+                    .getJSONObject(0)
+                JSONObject()
+                    .put(&quot;城市&quot;, it.getString(&quot;city&quot;))
+                    .put(&quot;天气&quot;, current.getJSONArray(&quot;weatherDesc&quot;).getJSONObject(0).getString(&quot;value&quot;))
+                    .put(&quot;温度&quot;, &quot;${current.getString(&quot;temp_C&quot;)}°C&quot;)
+                    .put(&quot;体感温度&quot;, &quot;${current.getString(&quot;FeelsLikeC&quot;)}°C&quot;)
+                    .put(&quot;湿度&quot;, &quot;${current.getString(&quot;humidity&quot;)}%&quot;)
+                    .put(&quot;风速&quot;, &quot;${current.getString(&quot;windspeedKmph&quot;)} km/h&quot;)
+                    .toString()
+            } catch (e: Exception) {
+                &quot;错误：查询天气失败 - ${e.message}&quot;
+            }
+        }
+    )
+)
+</code></pre>
+<p>无论我们如何执行逻辑，最后只需将结果以 <code>String</code> 格式返回给 LLM 即可，LLM 会根据结果继续生成回复。</p>
+<p>比如获取时间就是调用 <code>LocalDateTime.now()</code>，聪明的 LLM 会自己解析；查询天气也是同样，我使用之前介绍过的 <a href="https://liarrdev.github.io/post/Check-the-Weather-with-a-Single-Command-wttr-in/">wttr.in</a> 提供的 API 来获取天气数据，直接把 JSON 字符串返回给 LLM，LLM 也会自动解析。</p>
+<p>接下来看看效果：</p>
+<pre><code class="language-Bash">请选择 LLM 供应商:
+  1. Anthropic (Claude)
+  2. OpenAI
+  3. DeepSeek
+输入数字 [1/2/3]: 3
+
+==================================================
+🤖 AI Agent 已启动 [供应商: DeepSeek]
+==================================================
+输入 'exit'  退出
+输入 'clear' 重置对话
+==================================================
+
+👤 你: 今天几号
+  🔧 调用工具: get_current_time({})
+  📊 结果: 2026-08-03T16:24:07.183085
+🤖 Agent: 聪明的人类，今天是 **2026年8月3日**（星期一），现在是下午4点24分左右。请问还有什么可以帮您的吗？
+
+👤 你: 广州天气怎么样
+  🔧 调用工具: get_weather({&quot;city&quot;:&quot;Guangzhou&quot;})
+  📊 结果: {&quot;天气&quot;:&quot;Light rain shower&quot;,&quot;温度&quot;:&quot;25°C&quot;,&quot;体感温度&quot;:&quot;28°C&quot;,&quot;风速&quot;:&quot;14 km/h&quot;,&quot;湿度&quot;:&quot;91%&quot;,&quot;城市&quot;:&quot;Guangzhou&quot;}
+🤖 Agent: 聪明的人类，这是广州今天的天气情况：
+
+| 项目 | 详情 |
+|------|------|
+| 🌤️ **天气** | 小阵雨 |
+| 🌡️ **温度** | 25°C |
+| 🥵 **体感温度** | 28°C |
+| 💨 **风速** | 14 km/h |
+| 💧 **湿度** | 91% |
+
+今天广州有小阵雨，湿度较高，体感会比较闷热。出门记得带把伞哦！还有什么可以帮您的吗？
+</code></pre>
+<h1 id="总结">总结</h1>
+<p>以上代码展示了一个最简 Agent 的完整结构，用一句伪代码概括 Agent：</p>
+<pre><code class="language-Bash">while (任务没完成) {
+    行动 = LLM(目标, 历史, 可用工具)
+    结果 = 执行(行动)
+    历史 += 结果
+}
+</code></pre>
+<p>关键设计原则：</p>
+<ul>
+<li><strong>LLM 作为决策核心</strong>：Agent 不硬编码业务逻辑，所有决策委托给 LLM。</li>
+<li><strong>记忆分层管理</strong>：短期记忆维护当前对话上下文，长期记忆存储跨会话信息。</li>
+<li><strong>循环执行</strong>：Agent 持续交互、逐步完成任务，支持多步推理和多次工具调用。</li>
+<li><strong>关注点分离</strong>：LLM 负责“思考”，工具负责”执行“，Agent 负责“调度”。</li>
+</ul>
+<p>当然还有一些可以优化的地方，比如当工具数量不断增长时，直接使用一个 <code>List</code> 来维护是不符合工程规范的，此时应当抽象出一个接口，每个工具实现这个接口来提供自己的功能。</p>
+<h1 id="进阶">进阶</h1>
+<h2 id="流式输出">流式输出</h2>
+<p>文中的 Agent 回复是阻塞式的——要等模型把整段回复生成完才一次性返回，回复越长用户等得越久。而 LLM 实际是逐 token 产出的，服务端完全可以在生成第一个 token 时就推给客户端，不必等全部生成完。这就是<strong>流式输出（Streaming）</strong>：响应变成一条持续不断的事件流，客户端收到一个 token 就展示一个 token，让用户几乎和模型同步看到文字浮现，体验上的差别是质变，心理等待感大幅降低。</p>
+<p>主流 LLM API 的流式输出都基于 <strong>SSE（Server-Sent Events）</strong>：请求时加上 <code>stream: true</code>，响应就变成一条条以 <code>data:</code> 为前缀的事件，每条携带一个增量片段，最后以 <code>[DONE]</code> 结束。HTTP 连接保持打开，服务端持续写入，客户端逐行读取、逐行处理。</p>
+<p>需要特别注意的是，<strong>工具调用也是流式分片返回的</strong>。模型不会一次性给出完整的工具名和参数，而是拆成多个碎片陆续到达——先来工具名，再来一小截参数字符串，拼起来才是完整的 JSON。这些碎片单看任何一片都无法解析，更不能拿去执行工具，必须缓冲、逐片拼接，等流结束凑出完整参数后才能调用。因此 Agent 流式要分两类处理：<strong>文字增量</strong>即收即显，追求低延迟；<strong>工具调用增量</strong>先缓冲、后执行，必须等参数攒齐。</p>
+<h2 id="记忆系统">记忆系统</h2>
+<p>记忆系统的核心是对话历史管理——存储、维护和裁剪对话上下文，确保 LLM 获取足够历史信息，同时不超出上下文窗口限制。</p>
+<p>记忆的价值体现在三个方面：</p>
+<ul>
+<li><strong>上下文理解</strong>：自然语言大量使用代词指代和省略表达，需要依赖对话历史才能正确理解。</li>
+<li><strong>任务连续性</strong>：复杂任务需要多轮对话完成，记忆让 Agent 能逐步推进。</li>
+<li><strong>个性化体验</strong>：记住用户偏好，避免重复询问。</li>
+</ul>
+<p>实际项目中，记忆分为两类：</p>
+<ul>
+<li><strong>短期记忆</strong>：当前对话上下文，对话开始时清空</li>
+<li><strong>长期记忆</strong>：跨会话持久化，用向量数据库存储历史摘要</li>
+</ul>
+<p><strong>短期记忆实现要点</strong>：使用 <code>List</code> 存储历史，系统提示词固定在最前面。如果历史只增不减，任务一长就会撑爆模型的上下文窗口，token 费用也会失控。生产环境应基于 <strong>token 数量</strong>裁剪，或实现“记忆压缩”——将早期对话总结为摘要保留。工具结果应摘要化处理，只保留关键信息进入历史。</p>
+<p><strong>长期记忆实现思路</strong>：使用向量数据库（如 Milvus、Pinecone）存储对话摘要的向量表示。写入策略包括显式保存、自动提取、定期摘要；检索时将当前输入与记忆库做相似度匹配，检索结果作为上下文注入。这种“向量检索 + 上下文注入”的范式称为 <strong>RAG（Retrieval Augmented Generation，检索增强生成）</strong>，是主流的记忆实现方案。</p>
+<h2 id="多-agent-协作模式">多 Agent 协作模式</h2>
+<p>复杂任务往往需要多个 Agent 协作完成。常见模式包括：</p>
+<ul>
+<li><strong>Supervisor 模式</strong>：一个“主管 Agent”负责分配任务，多个“工人 Agent”各司其职。</li>
+<li><strong>Pipeline 模式</strong>：多个 Agent 按流水线方式协作，前一个 Agent 的输出是下一个的输入。</li>
+<li><strong>Debate 模式</strong>：多个 Agent 对同一问题提出不同观点，通过辩论得出最优解。</li>
+</ul>
+<h2 id="安全边界">安全边界</h2>
+<p>Agent 会真实地改动你的系统，必须设防：</p>
+<ul>
+<li><strong>路径校验</strong>：拒绝路径逃逸；</li>
+<li><strong>危险操作确认</strong>：删除、覆盖、网络请求等操作前，暂停循环询问用户；</li>
+<li><strong>沙箱</strong>：让工具在容器或受限目录里执行。</li>
+</ul>
+<h2 id="框架推荐">框架推荐</h2>
+<p>从零开始实现完整的 Agent 系统工作量较大，以下框架可以加速开发：</p>
+<ul>
+<li><strong>LangChain4j</strong>：Java/Kotlin 生态的 AI 开发框架，提供 LLM 调用、工具集成、记忆管理等能力。</li>
+<li><strong>Spring AI</strong>：Spring 官方的 AI 开发框架，与 Spring Boot 无缝集成，适合企业级应用。</li>
+<li><strong>Koog</strong>：JetBrains 官方的 Kotlin Agent 框架。</li>
+</ul>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Check-the-Weather-with-a-Single-Command-wttr-in.jpg');"></div>
+                 <a href="https://LiarrDev.github.io/post/Check-the-Weather-with-a-Single-Command-wttr-in/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2026-09-15">2026-09-15</time>
+                  <h4 class="title white no-margin">用一行命令查天气：wttr.in</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Build-an-AI-Agent-with-a-Single-While-Loop/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Build-an-AI-Agent-with-a-Single-While-Loop.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-10-08">2026-10-08</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Build-an-AI-Agent-with-a-Single-While-Loop/"> 一个 while 循环跑通 AI Agent</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Check-the-Weather-with-a-Single-Command-wttr-in/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Check-the-Weather-with-a-Single-Command-wttr-in.jpg');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-09-15">2026-09-15</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Check-the-Weather-with-a-Single-Command-wttr-in/">用一行命令查天气：wttr.in</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Open-City-AI-Haidian/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Open-City-AI-Haidian.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-08-20">2026-08-20</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Open-City-AI-Haidian/">第一次，真实城市规划交给 Agent · 百年京张 AI 创新带</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-0 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-1 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-2 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-3 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-4 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-5 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-6 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 163 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

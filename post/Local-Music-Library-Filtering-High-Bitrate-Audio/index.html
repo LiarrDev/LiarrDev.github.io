@@ -1,0 +1,696 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>本地音乐库构建：筛选高码率音频 | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="有看过之前文章『使用 mp3agic 读写 MP3 的 ID3 标签』的读者们应该知道，前段时间我在整理本地音乐库，本篇是对『本地音乐库构建：音源处理』的补充。
+前面提到我本地的音乐库体积庞大，经过这次整理和添加，体积已经突破 30GB，并..." />
+    <meta name="keywords" content="" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1791196582300" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Local-Music-Library-Filtering-High-Bitrate-Audio.jpg');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2026-05-28"><i class="fa fa-calendar"></i><span class="lately">4 个月前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Local-Music-Library-Filtering-High-Bitrate-Audio/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Local-Music-Library-Filtering-High-Bitrate-Audio/"> </span>
+              </a>
+              <span id="/Local-Music-Library-Filtering-High-Bitrate-Audio/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+              </div>
+              <h1 class="title ularge white bold">本地音乐库构建：筛选高码率音频</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>有看过之前文章『<a href="https://liarrdev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>』的读者们应该知道，前段时间我在整理本地音乐库，本篇是对『<a href="https://liarrdev.github.io/post/Local-Music-Library-Audio-Processing/">本地音乐库构建：音源处理</a>』的补充。</p>
+<p>前面提到我本地的音乐库体积庞大，经过这次整理和添加，体积已经突破 30GB，并且还在继续膨胀。</p>
+<p>众所周知，最近内存价格疯涨，存储空间越来越宝贵，我不得不考虑如何压缩音乐库的体积。</p>
+<p>直接用 ZIP 压缩音乐库首先被我排除。原因很简单：ZIP 需要解压后才能读取文件，使用上不够便捷；而且 MP3 本身就是高度压缩的格式，ZIP 几乎无法进一步压缩。</p>
+<p>看来只能从音频本身入手了，要么转换格式，要么降低码率。</p>
+<p>而在之前『<a href="https://liarrdev.github.io/post/Local-Music-Library-Audio-Processing/">本地音乐库构建：音源处理</a>』中，我通过 FFmpeg 将 OGG 转为 MP3，主要是为了更好的兼容性，目前没有再迁移格式的打算，那么可行的方案就只有降低码率了，准确来说，应该是比特率。因为目前我手头上已经没有高功率的发烧设备，以后大概率也不会再购买，听音乐的需求停留在能听个响就行。</p>
+<p>在音频文件中，kbps 是“千比特每秒”（Kilobits Per Second）的缩写，它代表了音频数据的比特率。比特率是指每秒钟传输或处理的比特（bit）数量，是衡量音频质量和文件大小的一个重要指标。一般来说，比特率越高，音频文件的质量越好，因为它能够编码更多的音频数据，提供更丰富的音质细节。然而，更高的比特率也意味着更大的文件大小。</p>
+<p>我们在音乐平台选择不同音质时，本质上就是在选择不同的码率：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1779815771951.png" alt="音乐平台不同音质选择" loading="lazy"></figure>
+<p>为了节约存储空间，我一般都是选择「标准音质」，通常情况下，它是 128kbps。</p>
+<p>但部分音频可能是早年用不明来源下载的，码率偏高。比如『<a href="https://melodyinbox.com">MelodyInbox</a>』虽然说有多种码率选择，但很多时候都指向同一个高码率的音频文件。</p>
+<p>既然如此，我需要先从数千首歌中筛选出高码率音频，再去寻找低码率替代源。</p>
+<p>之前做音源处理时就有读者问：如此繁琐的工作，为什么不交给 AI？</p>
+<p>不得不承认，AI 时代确实已经到来，但很遗憾，有些场景下程序员的效率依然更高。</p>
+<p>以我使用 Claude Code 搭配 MiniMax M2.7 HighSpeed 模型为例，让它列出所有大于 200kbps 的音频文件，等了 6 分钟仍无结果：</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1779815810800.png" alt="AI 筛选" loading="lazy"></figure>
+<p>无奈只能关掉 AI，转而手搓脚本：</p>
+<pre><code class="language-bash">#!/bin/bash
+
+# 查找当前目录及子目录下所有码率大于 200kbps 的 MP3 文件
+# 使用 ffprobe 获取码率，不修改任何文件
+
+echo &quot;正在扫描 MP3 文件...&quot;
+
+while IFS= read -r -d '' file; do
+    bitrate=$(ffprobe -v error -show_entries format=bit_rate -of default=noprint_wrappers=1:nokey=1 &quot;$file&quot; 2&gt;/dev/null)
+    size=$(stat -f%z &quot;$file&quot; 2&gt;/dev/null)
+    if [ -n &quot;$bitrate&quot; ] &amp;&amp; [ &quot;$bitrate&quot; -gt 200000 ]; then
+        size_mb=$(awk &quot;BEGIN {printf \&quot;%.2f\&quot;, $size / 1024 / 1024}&quot;)
+        echo &quot;$file | 码率: $((bitrate / 1000)) kbps | 大小: ${size_mb} MB&quot;
+    fi
+done &lt; &lt;(find . -name &quot;*.mp3&quot; -type f -print0)
+
+echo &quot;扫描完成。&quot;
+</code></pre>
+<p>脚本比较简单，只运行了 2 分多钟就把我需要的结果筛选出来了。</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1779815830532.png" alt="脚本筛选" loading="lazy"></figure>
+<p>接下来就是去寻找低码率的替代源。如果实在找不到，可能会考虑对高码率音频进行二次压缩，但这并非最佳方案——音频本身就是从母带压缩而来，二次压缩会导致失真叠加，还是应该优先寻找原生低码率版本。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Configure-Third-Party-Models-in-Claude-Code.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Configure-Third-Party-Models-in-Claude-Code/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2026-06-04">2026-06-04</time>
+                  <h4 class="title white no-margin">Claude Code 如何配置第三方模型</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Connect-JetBrains-IDEs-to-Claude-Code.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Connect-JetBrains-IDEs-to-Claude-Code/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2026-05-12">2026-05-12</time>
+                  <h4 class="title white no-margin">让 JetBrains IDEs 连上本地 Claude Code</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Build-an-AI-Agent-with-a-Single-While-Loop/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Build-an-AI-Agent-with-a-Single-While-Loop.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-10-08">2026-10-08</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Build-an-AI-Agent-with-a-Single-While-Loop/"> 一个 while 循环跑通 AI Agent</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Check-the-Weather-with-a-Single-Command-wttr-in/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Check-the-Weather-with-a-Single-Command-wttr-in.jpg');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-09-15">2026-09-15</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Check-the-Weather-with-a-Single-Command-wttr-in/">用一行命令查天气：wttr.in</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Open-City-AI-Haidian/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Open-City-AI-Haidian.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-08-20">2026-08-20</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Open-City-AI-Haidian/">第一次，真实城市规划交给 Agent · 百年京张 AI 创新带</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-0 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-1 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-2 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-3 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-4 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-5 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-6 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 163 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

@@ -1,0 +1,739 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>用一行命令查天气：wttr.in | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="我们每天是怎么查看天气的，拿出手机解锁打开天气 App，这个步骤已经养成了肌肉记忆。
+当前 AI 时代，如果你恰巧打开了一个终端，那么也许你可以考虑一下用一行命令来查看天气。
+
+wttr.in 对自己的介绍很有趣：
+
+wttr.in — t..." />
+    <meta name="keywords" content="" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1791196582300" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Check-the-Weather-with-a-Single-Command-wttr-in.jpg');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2026-09-15"><i class="fa fa-calendar"></i><span class="lately">21 天前</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Check-the-Weather-with-a-Single-Command-wttr-in/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Check-the-Weather-with-a-Single-Command-wttr-in/"> </span>
+              </a>
+              <span id="/Check-the-Weather-with-a-Single-Command-wttr-in/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+              </div>
+              <h1 class="title ularge white bold">用一行命令查天气：wttr.in</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>我们每天是怎么查看天气的，拿出手机解锁打开天气 App，这个步骤已经养成了肌肉记忆。</p>
+<p>当前 AI 时代，如果你恰巧打开了一个终端，那么也许你可以考虑一下用一行命令来查看天气。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/Check-the-Weather-with-a-Single-Command-wttr-in.jpg" alt="" loading="lazy"></figure>
+<p><a href="https://github.com/chubin/wttr.in">wttr.in</a> 对自己的介绍很有趣：</p>
+<blockquote>
+<p>wttr.in — the right way to <s>check</s> <code>curl</code> the weather!</p>
+</blockquote>
+<p>它是一种以控制台为界面的天气预报服务，支持多种信息呈现方式，由开发者 Igor Chubin 创建并开源。它不依赖任何客户端，你只需要 <code>curl</code> 或浏览器就能使用。</p>
+<p>这个项目最初只是一个小型项目，旨在作为 wego 的扩展功能来展示面向控制台的服务能力。后来，wttr.in 逐渐发展成为一款受欢迎的天气报告服务，每天处理数以千万计的用户查询请求。</p>
+<p>在终端中输入：</p>
+<pre><code class="language-bash">➜   curl wttr.in
+</code></pre>
+<p>它就能根据你的 IP 地址查询对应的天气信息，默认显示温度、风速、能见度、降雨量等基本信息，使用 ASCII 字符和 Emoji 渲染在终端里。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1789408327193.png" alt="wttr-curl" loading="lazy"></figure>
+<p>实际上它的能力不仅仅于此，比如你可以指定查询地点和语言：</p>
+<pre><code class="language-bash">➜   curl 'wttr.in/guangzhou?lang=zh-cn'
+</code></pre>
+<p>甚至你可以写中文：</p>
+<pre><code class="language-bash">➜   curl 'wttr.in/广州?lang=zh-cn'
+</code></pre>
+<p>它都能够正确查询。</p>
+<p>下面是它支持的地点查询方式：</p>
+<pre><code class="language-bash">➜   curl 'wttr.in/paris' # 城市名
+➜   curl 'wttr.in/~Eiffel+tower' # 地标名（空格用 `+` 号替代）
+➜   curl 'wttr.in/Москва' # 任何语言的 Unicode 城市名
+➜   curl 'wttr.in/ctu' # 机场三字代码（成都机场）
+➜   curl 'wttr.in/510000' # 邮政编码查询
+➜   curl 'wttr.in/-78.46,106.79' # GPS坐标
+</code></pre>
+<p>你可以指定单位：</p>
+<pre><code class="language-bash">➜   curl 'wttr.in/beijing?m' # 强制使用公制单位
+➜   curl 'wttr.in/newyork?u' # 强制使用美制单位
+➜   curl 'wttr.in/london?M' # 风速采用 m/s 显示
+</code></pre>
+<p>还能配置显示选项：</p>
+<pre><code class="language-bash">➜   curl 'wttr.in/shenzhen?0' # 只显示当前天气
+➜   curl 'wttr.in/shenzhen?1' # 显示当前天气和当天预报
+➜   curl 'wttr.in/shenzhen?2' # 显示当前天气和两天预报
+➜   curl 'wttr.in/shenzhen?3' # 显示当前天气和三天预报
+➜   curl 'wttr.in/shenzhen?F' # 隐藏 Follow 相关内容
+➜   curl 'wttr.in/shenzhen?n' # 仅显示昼夜
+➜   curl 'wttr.in/shenzhen?q' # 隐藏 Weather report 标题
+➜   curl 'wttr.in/shenzhen?Q' # 隐藏 Weather report 标题和城市名
+➜   curl 'wttr.in/shenzhen?T' # 去除颜色
+➜   curl 'wttr.in/shenzhen?format=3' # 超精简，仅显示天气和温度
+➜   curl 'wttr.in/shenzhen?format=j1' # JSON 格式
+</code></pre>
+<p>指定语言：</p>
+<pre><code class="language-bash">➜   curl 'wttr.in/foshan?lang=zh-cn' # 参数指定
+➜   curl 'zh-cn.wttr.in/foshan' # 域名指定
+➜   curl -H &quot;Accept-Language: zh-cn&quot; wttr.in/foshan # 请求头指定
+</code></pre>
+<p>你以为无论怎么查它就是一个简单的天气表格？</p>
+<p>温度曲线、降雨柱状图、月相、天文时间等增强信息都能给你安排上：</p>
+<pre><code class="language-bash">➜   curl 'wttr.in/hongkong?format=v2'
+</code></pre>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1789408404976.png" alt="wttr-format-v2" loading="lazy"></figure>
+<p>月相也能给你玩出花：</p>
+<pre><code class="language-bash">➜   curl 'wttr.in/moon' # 当前月相
+➜   curl 'wttr.in/moon@2026-08-07' # 查询指定日期月相
+</code></pre>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1789408426324.png" alt="wttr-moon" loading="lazy"></figure>
+<p>如果你想把查询的结果生成图片，你不需要截图，用命令保存就行：</p>
+<pre><code class="language-bash">➜   curl 'wttr.in/paris.png' --output paris.png # 天气图片
+➜   curl 'wttr.in/paris_0pq.png' --output paris_0pq.png # 组合参数
+➜   curl 'wttr.in/paris.png?transparency=150' --output paris_t150.png # 透明度，0-255
+➜   curl 'wttr.in/paris.png?background=00aaaa' --output paris_bg.png # 背景颜色
+</code></pre>
+<p>更多的功能可以参考项目的文档，在这里就不一一列举了。</p>
+<p>如果你不习惯使用终端，在浏览器中直接访问 <a href="https://wttr.in">wttr.in</a> 也可以查看天气信息。</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1789408443074.png" alt="wttr-browser" loading="lazy"></figure>
+<p>主域名偶尔会因流量过大响应缓慢，官方提供完全等价的备用域名 <a href="https://wttr.is">wttr.is</a>。</p>
+<p>需要注意的是，wttr.in 的数据来源于 WorldWeatherOnline，偶尔会出现定位偏差或数据延迟。对于分钟级降水预警这类需求，专业天气 App 仍然是更好的选择。但对于日常快速查看，wttr.in 提供的信息已经足够丰富。</p>
+<p>至于为什么要在终端中查看天气？哈哈，我也不知道 😆。</p>
+<p>不过我觉得这个工具的应用场景可能会更多的面向开发者，比如在一些工具的状态栏嵌入一行天气信息，或者在脚本或者自动化任务中调用，根据天气条件自动调整服务器散热策略等等。</p>
+<p>wttr.in 的优势在于「轻量」和「可编程」。它不会替代专业天气 App 的雷达图和分钟级降水预警，而是在你需要快速看一眼天气时，用最低成本完成这件事。</p>
+<p>一行命令，零安装，零广告。这就是 wttr.in 的哲学——最好的工具，是你不需要专门去「打开」的工具。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Build-an-AI-Agent-with-a-Single-While-Loop.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Build-an-AI-Agent-with-a-Single-While-Loop/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2026-10-08">2026-10-08</time>
+                  <h4 class="title white no-margin"> 一个 while 循环跑通 AI Agent</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Open-City-AI-Haidian.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Open-City-AI-Haidian/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2026-08-20">2026-08-20</time>
+                  <h4 class="title white no-margin">第一次，真实城市规划交给 Agent · 百年京张 AI 创新带</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Build-an-AI-Agent-with-a-Single-While-Loop/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Build-an-AI-Agent-with-a-Single-While-Loop.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-10-08">2026-10-08</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Build-an-AI-Agent-with-a-Single-While-Loop/"> 一个 while 循环跑通 AI Agent</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Check-the-Weather-with-a-Single-Command-wttr-in/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Check-the-Weather-with-a-Single-Command-wttr-in.jpg');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-09-15">2026-09-15</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Check-the-Weather-with-a-Single-Command-wttr-in/">用一行命令查天气：wttr.in</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Open-City-AI-Haidian/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Open-City-AI-Haidian.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-08-20">2026-08-20</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Open-City-AI-Haidian/">第一次，真实城市规划交给 Agent · 百年京张 AI 创新带</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-0 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-1 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-2 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-3 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-4 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-5 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-6 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 163 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>

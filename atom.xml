@@ -1,0 +1,1657 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://LiarrDev.github.io</id>
+    <title>Liarr&apos;s Studio</title>
+    <updated>2026-10-05T10:42:31.287Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://LiarrDev.github.io"/>
+    <link rel="self" href="https://LiarrDev.github.io/atom.xml"/>
+    <subtitle>温故而知新</subtitle>
+    <logo>https://LiarrDev.github.io/images/avatar.png</logo>
+    <icon>https://LiarrDev.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2026, Liarr&apos;s Studio</rights>
+    <entry>
+        <title type="html"><![CDATA[ 一个 while 循环跑通 AI Agent]]></title>
+        <id>https://LiarrDev.github.io/post/Build-an-AI-Agent-with-a-Single-While-Loop/</id>
+        <link href="https://LiarrDev.github.io/post/Build-an-AI-Agent-with-a-Single-While-Loop/">
+        </link>
+        <updated>2026-10-07T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>如果你最近关注 AI 领域，大概率被「Agent」这个词轰炸过。各种框架、各种概念满天飞：ReAct、Function Calling、Tool Use、Planning、Memory……看起来门槛很高。</p>
+<p>庖丁解牛：<strong>Agent 的核心就是一个 <code>while</code> 循环。</strong></p>
+<p>这篇文章我不想用任何 Agent 框架，而是用纯 Kotlin（AI 相关开发生态其实在 Python 和 TypeScript 会更丰富一些，说来惭愧，我的技能点主要在 JVM 生态上）从零写一个能干活的 Agent，把这个循环亲手跑起来，跑通之后也许你可以更轻松地理解 Agent 的工作。</p>
+<h1 id="agent-到底是什么">Agent 到底是什么</h1>
+<p>回溯历史我们知道，AI 的爆发和普及是从一个聊天工具开始的——ChatGPT，它的背后是 LLM（Large Language Model，大语言模型），但单纯的 LLM 只能“说”，不能执行“做”，它的行为模式是你问一句它答一句，没有其他任何功能。</p>
+<p>而 AI Agent 的出现，让 LLM 从“顾问”变成了“执行者”——它能操作软件、调用 API、管理流程，真正融入业务场景。通俗来讲，AI Agent 则可以执行更复杂的任务，自主理解你的意图，规划执行步骤，调用合适的工具，最终完成任务。</p>
+<p>LLM 负责“想”，你的代码负责“做”，两者交替进行，直到 LLM 认为任务完成。这个模式有个学名叫 <strong>Agent Loop</strong>（也常被称为 ReAct 模式：Reason + Act）。</p>
+<p>这与传统程序的本质区别在于：传统程序的逻辑是 <code>if-else</code>——开发者预先定义所有可能的输入和对应的输出。而 AI Agent 拥有更强大的能力：</p>
+<ol>
+<li><strong>自主决策</strong>：Agent 根据当前情境和目标，自主决定下一步做什么，而非执行预设指令。</li>
+<li><strong>工具调用</strong>：Agent 可以调用外部工具（搜索、计算、API 等）来扩展能力，而不局限于代码内置的逻辑。</li>
+<li><strong>持续学习</strong>：通过记忆系统，Agent 能够从历史交互中积累经验，优化后续决策。</li>
+</ol>
+<p>这意味着，掌握 Agent 开发意味着你不再只是构建被动响应的系统，而是创造能够主动完成任务的智能应用。</p>
+<h1 id="agent-的核心组件">Agent 的核心组件</h1>
+<p>简单来说，<strong>AI Agent = 大脑（LLM）+ 手脚（Tools）+ 记忆（Memory）+ 规划（Planning）</strong>。它不是一个简单的问答机器，而是一个能够自主决策、执行复杂任务的智能体。</p>
+<p>现在，有个新的名词——<strong>Harness</strong>，上面的等式可以简化成 <strong>AI Agent = LLM + Harness</strong>。Harness 的意思是马具，放到 AI 时代，它指的是智能体驾驭工程系统。</p>
+<p>模型是可替换的内核，真正决定 AI Agent 长什么样的是 Harness，所以我们说的 AI Agent 开发，大多数情况下是开发 Harness，除了少数有条件自训练模型的厂商外，大多数应用都是接入第三方模型。</p>
+<h3 id="llm大脑">LLM（大脑）</h3>
+<p>LLM 是 Agent 的“大脑”，负责理解自然语言输入、生成推理计划、做出决策。当你对 Agent 说“帮我总结今天的会议纪要”时，LLM 需要：</p>
+<ul>
+<li>理解“总结”和“会议纪要”的含义</li>
+<li>判断需要调用哪些工具来获取信息</li>
+<li>将工具返回的原始数据组织成结构化的总结</li>
+</ul>
+<h3 id="tools工具">Tools（工具）</h3>
+<p>工具是 Agent 的“手脚”，让它能够与外部世界交互。常见的工具类型包括：</p>
+<ul>
+<li><strong>搜索工具</strong>：调用搜索引擎获取实时信息</li>
+<li><strong>计算工具</strong>：执行数学运算或数据分析</li>
+<li><strong>API 工具</strong>：调用第三方服务（天气、日历、数据库等）</li>
+<li><strong>代码执行工具</strong>：运行代码片段完成特定计算</li>
+</ul>
+<h3 id="memory记忆">Memory（记忆）</h3>
+<p>记忆系统让 Agent 拥有“上下文感知”能力：</p>
+<ul>
+<li><strong>短期记忆</strong>：当前对话的上下文，让 Agent 理解“它”指的是什么。</li>
+<li><strong>长期记忆</strong>：通过向量数据库存储历史交互，让 Agent 记住用户偏好、项目背景等信息。</li>
+</ul>
+<h3 id="planning规划">Planning（规划）</h3>
+<p>规划能力让 Agent 能够分解复杂任务、制定执行策略，并在执行过程中反思修正。例如，“帮我写一份技术方案”这个任务，Agent 可能会规划为：</p>
+<ol>
+<li>分析需求背景</li>
+<li>搜索相关技术文档</li>
+<li>设计系统架构</li>
+<li>撰写方案初稿</li>
+<li>自我审查并优化</li>
+</ol>
+<h1 id="实现一个简单的-agent">实现一个简单的 Agent</h1>
+<h2 id="准备工作">准备工作</h2>
+<p>本篇文章以接入 DeepSeek 作为示例，因此需要先申请一个 API Key，其他供应商的接入方式基本类似。同时因为我仅抽取 DeepSeek 相关的内容来演示，所以代码中可能会出现一些暂时用不上的封装代码，读者可以根据实际情况理解。</p>
+<p>项目依赖方面，没有 LangChain，没有任何 Agent 框架。这是刻意的——我们要看清全部细节。</p>
+<p>这里仅仅引入一个 JSON 解析库，用于传输数据。为了方便演示我这里直接使用 <code>org.json</code>，当然你也可以换成其他顺手的，比如 <code>kotlinx.serialization</code> 或者 <code>Gson</code> 等。</p>
+<pre><code class="language-kotlin">dependencies {
+    ...
+    implementation(&quot;org.json:json:20240303&quot;)
+}
+</code></pre>
+<p>Http 请求我就直接基于 <code>HttpClient</code> 简单封装了一下：</p>
+<pre><code class="language-kotlin">object Http {
+    private val client: HttpClient = HttpClient.newHttpClient()
+
+    fun post(
+        url: String,
+        body: JSONObject,
+        headers: (HttpRequest.Builder) -&gt; HttpRequest.Builder
+    ): JSONObject {
+        val request = headers(HttpRequest.newBuilder().uri(URI.create(url)).header(&quot;content-type&quot;, &quot;application/json&quot;))
+            .POST(HttpRequest.BodyPublishers.ofString(body.toString()))
+            .build()
+        val response = client.send(request, BodyHandlers.ofString())
+        val status = response.statusCode()
+        if (status != 200) throw RuntimeException(&quot;API error [$status] $url: ${response.body()}&quot;)
+        return JSONObject(response.body())
+    }
+
+    fun get(url: String): JSONObject {
+        val request = HttpRequest.newBuilder()
+            .uri(URI.create(url))
+            .timeout(Duration.ofSeconds(10))
+            .GET()
+            .build()
+        val response = client.send(request, BodyHandlers.ofString())
+        val status = response.statusCode()
+        if (status != 200) throw RuntimeException(&quot;API error [$status] $url: ${response.body()}&quot;)
+        return JSONObject(response.body())
+    }
+}
+</code></pre>
+<h2 id="定义内部消息格式">定义内部消息格式</h2>
+<pre><code class="language-kotlin">sealed class Msg {
+    class System(val content: String) : Msg()
+    class User(val content: String) : Msg()
+    data class Assistant(val blocks: List&lt;AssistantBlock&gt;) : Msg()
+    data class ToolResults(val results: List&lt;ToolResult&gt;) : Msg()
+}
+
+sealed class AssistantBlock {
+    data class Text(val text: String) : AssistantBlock()
+    data class ToolCall(
+        val id: String,
+        val name: String,
+        val input: JSONObject
+    ) : AssistantBlock()
+}
+
+data class ToolResult(
+    val callId: String,
+    val content: String
+)
+</code></pre>
+<p>定义了 4 种与厂商无关的消息类型，Agent 只操作这些：</p>
+<ul>
+<li><code>System</code>：系统提示，用于设置 Agent 的行为和风格。</li>
+<li><code>User</code>：用户输入，包含用户的问题或指令。</li>
+<li><code>Assistant</code>：模型生成的回复，包含文本和工具调用。</li>
+<li><code>ToolResults</code>：工具调用的结果，用于更新 Agent 的状态。</li>
+</ul>
+<h2 id="定义工具序列化格式">定义工具序列化格式</h2>
+<p>如果你经常接触 AI 相关的工具，你一定知道目前行业已经形成了两套 API 格式，分别是 OpenAI Chat Completions 和 Anthropic Messages，即以两家巨头 LLM 提供商规定的格式为规范，几乎所有的模型都提供了这两种接入格式。</p>
+<p>简单来说无非是传输数据的结构差异罢了，我们开发 Agent 时，也可以考虑同时兼容这两种格式。</p>
+<pre><code class="language-kotlin">data class Tool(
+    val name: String,                           // 工具名称，LLM 用它来标识要调用哪个
+    val description: String,                    // 工具描述，LLM 据此决定何时调用
+    val properties: Map&lt;String, JSONObject&gt;,    // 参数定义（JSON Schema）
+    val required: List&lt;String&gt;,                 // 必填参数
+    val execute: (JSONObject) -&gt; String         // 实际执行逻辑
+) {
+    private fun buildSchema(propKey: String): JSONObject = JSONObject()
+        .put(&quot;type&quot;, &quot;object&quot;)
+        .put(propKey, JSONObject().apply {
+            properties.forEach { (k, v) -&gt; put(k, v) }
+        })
+        .put(&quot;required&quot;, JSONArray(required))
+
+    fun toAnthropicFormat(): JSONObject = JSONObject()
+        .put(&quot;name&quot;, name)
+        .put(&quot;description&quot;, description)
+        .put(&quot;input_schema&quot;, buildSchema(&quot;properties&quot;))
+
+    fun toOpenAIFormat(): JSONObject = JSONObject()
+        .put(&quot;type&quot;, &quot;function&quot;)
+        .put(&quot;function&quot;, JSONObject()
+            .put(&quot;name&quot;, name)
+            .put(&quot;description&quot;, description)
+            .put(&quot;parameters&quot;, buildSchema(&quot;properties&quot;))
+        )
+}
+</code></pre>
+<h2 id="接入-llm-供应商">接入 LLM 供应商</h2>
+<p>先抽象 LLM 供应商接口，OpenAI Chat Completions 和 Anthropic Messages 两种格式都是基于这个接口实现：</p>
+<pre><code class="language-kotlin">interface LLMProvider {
+    fun chat(
+        messages: List&lt;Msg&gt;,
+        tools: List&lt;Tool&gt;,
+        systemPrompt: String?
+    ): Msg.Assistant
+}
+</code></pre>
+<p>由于本文以 DeepSeek 作为示例，所以任意挑选一种格式即可，这里我选择 OpenAI Chat Completions。</p>
+<p>尽管如此，为了方便其他模型的接入，再增加一层抽象：</p>
+<pre><code class="language-kotlin">abstract class OpenAICompatibleProvider(
+    private val apiKey: String,
+    private val model: String,
+    private val baseUrl: String
+) : LLMProvider {
+
+    override fun chat(
+        messages: List&lt;Msg&gt;,
+        tools: List&lt;Tool&gt;,
+        systemPrompt: String?
+    ): Msg.Assistant {
+        val body = JSONObject()
+            .put(&quot;model&quot;, model)
+            .put(&quot;max_tokens&quot;, 1024)
+        body.put(&quot;messages&quot;, toMessages(messages, systemPrompt))
+        if (tools.isNotEmpty()) {
+            body.put(&quot;tools&quot;, JSONArray().apply {
+                tools.forEach { put(it.toOpenAIFormat()) }
+            })
+        }
+        val resp = Http.post(&quot;$baseUrl/chat/completions&quot;, body) {
+            it.header(&quot;Authorization&quot;, &quot;Bearer $apiKey&quot;)
+        }
+        return parseResponse(resp)
+    }
+
+    private fun toMessages(msgs: List&lt;Msg&gt;, systemPrompt: String?): JSONArray {
+        val arr = JSONArray()
+        if (systemPrompt != null) {
+            arr.put(JSONObject().put(&quot;role&quot;, &quot;system&quot;).put(&quot;content&quot;, systemPrompt))
+        }
+        for (msg in msgs) {
+            when (msg) {
+                is Msg.System -&gt; { /* handled by systemPrompt param */ }
+                is Msg.User -&gt; arr.put(JSONObject().put(&quot;role&quot;, &quot;user&quot;).put(&quot;content&quot;, msg.content))
+                is Msg.Assistant -&gt; {
+                    val assistantMsg = JSONObject().put(&quot;role&quot;, &quot;assistant&quot;)
+                    val texts = msg.blocks.filterIsInstance&lt;AssistantBlock.Text&gt;().map { it.text }
+                    val calls = msg.blocks.filterIsInstance&lt;AssistantBlock.ToolCall&gt;()
+                    if (texts.isNotEmpty()) {
+                        assistantMsg.put(&quot;content&quot;, texts.joinToString(&quot;\n&quot;))
+                    }
+                    if (calls.isNotEmpty()) {
+                        val tcArray = JSONArray()
+                        for (tc in calls) {
+                            tcArray.put(
+                                JSONObject()
+                                    .put(&quot;id&quot;, tc.id)
+                                    .put(&quot;type&quot;, &quot;function&quot;)
+                                    .put(&quot;function&quot;, JSONObject().put(&quot;name&quot;, tc.name).put(&quot;arguments&quot;, tc.input.toString()))
+                            )
+                        }
+                        assistantMsg.put(&quot;tool_calls&quot;, tcArray)
+                    }
+                    arr.put(assistantMsg)
+                }
+                is Msg.ToolResults -&gt; {
+                    for (tr in msg.results) {
+                        arr.put(JSONObject().put(&quot;role&quot;, &quot;tool&quot;).put(&quot;tool_call_id&quot;, tr.callId).put(&quot;content&quot;, tr.content))
+                    }
+                }
+            }
+        }
+        return arr
+    }
+
+    private fun parseResponse(resp: JSONObject): Msg.Assistant {
+        val message = resp.getJSONArray(&quot;choices&quot;).getJSONObject(0).getJSONObject(&quot;message&quot;)
+        val blocks = mutableListOf&lt;AssistantBlock&gt;()
+        val content = message.optString(&quot;content&quot;, &quot;&quot;)
+        if (content.isNotBlank()) {
+            blocks.add(AssistantBlock.Text(content))
+        }
+        val toolCalls = message.optJSONArray(&quot;tool_calls&quot;)
+        if (toolCalls != null) {
+            for (i in 0 until toolCalls.length()) {
+                val tc = toolCalls.getJSONObject(i)
+                val func = tc.getJSONObject(&quot;function&quot;)
+                val args = JSONObject(func.getString(&quot;arguments&quot;))
+                blocks.add(
+                    AssistantBlock.ToolCall(
+                        id = tc.getString(&quot;id&quot;),
+                        name = func.getString(&quot;name&quot;),
+                        input = args
+                    )
+                )
+            }
+        }
+        return Msg.Assistant(blocks)
+    }
+}
+</code></pre>
+<p>这样我们在接入任何模型的时候都可以继承这个抽象类：</p>
+<pre><code class="language-kotlin">class OpenAIProvider(
+    apiKey: String,
+    model: String = &quot;gpt-6-luna&quot;
+) : OpenAICompatibleProvider(
+    apiKey,
+    model,
+    &quot;https://api.openai.com/v1&quot;
+)
+class DeepSeekProvider(
+    apiKey: String,
+    model: String = &quot;deepseek-flash&quot;
+) : OpenAICompatibleProvider(
+    apiKey,
+    model,
+    &quot;https://api.deepseek.com/v1&quot;
+)
+</code></pre>
+<p>API Key 我们通过外部传入，不写在默认值里，硬编码密钥是严重的安全反模式。</p>
+<h2 id="agent-运行时">Agent 运行时</h2>
+<p>这一步我们把上面剖析的 Agent 本质转换成代码，核心循环是这样的：用户输入 → LLM 思考 → 如需用工具则执行 → 结果送回 LLM → 再思考，直到 LLM 返回不含工具调用的纯文本回复。</p>
+<p>万事俱备。现在写那个“<code>while</code> 循环”：</p>
+<pre><code class="language-kotlin">class Agent(private val provider: LLMProvider) {
+    fun run(
+        systemPrompt: String,
+        userMessage: String,
+        tools: List&lt;Tool&gt;,
+        history: MutableList&lt;Msg&gt;
+    ): String {
+        history.add(Msg.User(userMessage))
+        var iteration = 0
+        while (iteration++ &lt; 10) {
+            val assistantMsg = provider.chat(
+                messages = history,
+                tools = tools,
+                systemPrompt = systemPrompt
+            )
+            history.add(assistantMsg)
+            val texts = assistantMsg.blocks.filterIsInstance&lt;AssistantBlock.Text&gt;()
+            val toolCalls = assistantMsg.blocks.filterIsInstance&lt;AssistantBlock.ToolCall&gt;()
+            if (toolCalls.isNotEmpty()) {
+                val results = toolCalls.map { tc -&gt;
+                    println(&quot;  🔧 调用工具: ${tc.name}(${tc.input})&quot;)
+                    val tool = tools.find { it.name == tc.name }
+                    val result = tool?.execute?.invoke(tc.input) ?: &quot;错误：未知工具 '${tc.name}'&quot;
+                    println(&quot;  📊 结果: $result&quot;)
+                    ToolResult(tc.id, result)
+                }
+                history.add(Msg.ToolResults(results))
+                continue
+            }
+            return texts.joinToString(&quot;\n&quot;) { it.text }
+        }
+        return &quot;错误：Agent 迭代次数超过上限&quot;
+    }
+}
+</code></pre>
+<p>值得注意的是，这里我们通过一个列表来维护对话的历史，就相当于实现了对话的记忆功能，用户可以连续输入多个问题，Agent 会根据之前的上下文来回答。</p>
+<h2 id="先把-chatbot-跑起来">先把 Chatbot 跑起来</h2>
+<p>虽然还没有定义工具，但是我们已经接好了 API，所以可以先把那个最原始的聊天机器人跑起来。</p>
+<pre><code class="language-kotlin">fun main() {
+    println(&quot;&quot;&quot;
+        请选择 LLM 供应商:
+          1. Anthropic (Claude)
+          2. OpenAI
+          3. DeepSeek
+    &quot;&quot;&quot;.trimIndent())
+    val choice: String
+    while (true) {
+        print(&quot;输入数字 [1/2/3]: &quot;)
+        val input = readlnOrNull()?.trim()
+        if (input == &quot;1&quot; || input == &quot;2&quot; || input == &quot;3&quot;) {
+            choice = input
+            break
+        }
+        println(&quot;❌ 无效输入，请重新输入 1、2 或 3&quot;)
+    }
+    val (envKey, providerName) = when (choice) {
+        &quot;1&quot; -&gt; &quot;ANTHROPIC_API_KEY&quot; to &quot;Anthropic&quot;
+        &quot;2&quot; -&gt; &quot;OPENAI_API_KEY&quot; to &quot;OpenAI&quot;
+        &quot;3&quot; -&gt; &quot;DEEPSEEK_API_KEY&quot; to &quot;DeepSeek&quot;
+        else -&gt; error(&quot;unreachable&quot;)
+    }
+    val apiKey = System.getenv(envKey)
+    if (apiKey.isNullOrBlank()) {
+        println(&quot;&quot;&quot;
+            ❌ 请设置环境变量 $envKey
+               export $envKey=&lt;your-api-key&gt;
+        &quot;&quot;&quot;.trimIndent())
+        exitProcess(1)
+    }
+
+    val provider: LLMProvider = when (choice) {
+        &quot;1&quot; -&gt; AnthropicProvider(apiKey = apiKey)
+        &quot;2&quot; -&gt; OpenAIProvider(apiKey = apiKey)
+        &quot;3&quot; -&gt; DeepSeekProvider(apiKey = apiKey)
+        else -&gt; error(&quot;unreachable&quot;)
+    }
+    val agent = Agent(provider)
+    val tools = createTools()
+    val systemPrompt = &quot;&quot;&quot;
+        你是一个友好的中文助手。你可以使用提供的工具来帮助用户。
+        - 用中文回复用户，并且每次回复前都增加敬语“聪明的人类”。
+    &quot;&quot;&quot;.trimIndent()
+
+    val history = mutableListOf&lt;Msg&gt;()
+
+    val divider = &quot;=&quot;.repeat(50)
+    println(&quot;&quot;&quot;
+        
+        $divider
+        🤖 AI Agent 已启动 [供应商: $providerName]
+        $divider
+        输入 'exit'  退出
+        输入 'clear' 重置对话
+        $divider
+        
+    &quot;&quot;&quot;.trimIndent())
+
+    while (true) {
+        print(&quot;👤 你: &quot;)
+        val input = readlnOrNull()?.trim() ?: break
+        if (input.isBlank()) continue
+        when (input.lowercase()) {
+            &quot;exit&quot; -&gt; {
+                println(&quot;👋 再见!&quot;)
+                exitProcess(0)
+            }
+            &quot;clear&quot; -&gt; {
+                history.clear()
+                println(&quot;🗑️  对话已重置。\n&quot;)
+                continue
+            }
+        }
+        try {
+            val reply = agent.run(
+                systemPrompt = systemPrompt,
+                userMessage = input,
+                tools = tools,
+                history = history
+            )
+            println(&quot;🤖 Agent: $reply&quot;)
+            println()
+        } catch (e: Exception) {
+            println(&quot;❌ 错误: ${e.message}&quot;)
+            println()
+        }
+    }
+}
+
+fun createTools(): List&lt;Tool&gt; = listOf()
+</code></pre>
+<p>这就是一个简易的终端聊天工具，用户输入指令，模型返回回复，我在输出时增加了两个 Emoji，用来分辨是用户输入还是模型回复。记得要先配置好 LLM 供应商的 API 密钥。</p>
+<p>我添加了 Prompt，引导模型在回复前都增加敬语“聪明的人类”。Tools 还未实现，我只给模型提供了空的工具列表。历史对话在 <code>Agent</code> 类中维护，每次迭代时都会更新历史记录。</p>
+<p>运行起来是这样的：</p>
+<pre><code class="language-Bash">请选择 LLM 供应商:
+  1. Anthropic (Claude)
+  2. OpenAI
+  3. DeepSeek
+输入数字 [1/2/3]: 3
+
+==================================================
+🤖 AI Agent 已启动 [供应商: DeepSeek]
+==================================================
+输入 'exit'  退出
+输入 'clear' 重置对话
+==================================================
+
+👤 你: U there?
+🤖 Agent: 聪明的人类，我在的！很高兴为您服务，有什么可以帮您的吗？
+
+👤 你: 今天几号
+🤖 Agent: 聪明的人类，很抱歉，我无法实时查看今天的日期。建议您查看手机、电脑或日历小工具，那里有最准确的日期哦！如果还有其他问题，我随时可以帮忙～
+
+👤 你: 广州天气怎么样
+🤖 Agent: 聪明的人类，很抱歉，我目前没有实时查询天气的功能。建议您打开手机天气应用或搜索“广州天气”，就能看到最新的温度和降雨情况啦！如果还有其他能帮上忙的事，请随时吩咐～
+</code></pre>
+<p>可以看到，模型根据我提供的 Prompt 来回复用户，但后面两个问题就能看出 LLM 回答的边界，那么下一步，我们就来定义相应的工具，给 LLM 调用。</p>
+<h2 id="给-agent-加上手脚">给 Agent 加上“手脚”</h2>
+<p>Agent 的能力边界取决于它拥有的工具。一个没有工具的 Agent 能理解需求，却无法采取实际行动。</p>
+<p>上面 <code>Tool</code> 抽象规定了所有工具必须遵循的契约：每个工具都有唯一的名字、描述（帮助 LLM 理解用途）和执行方法。我们接下来给 AI 添加上面两个工具，即获取时间和查询天气。</p>
+<pre><code class="language-kotlin">fun createTools(): List&lt;Tool&gt; = listOf(
+    Tool(
+        name = &quot;get_current_time&quot;,
+        description = &quot;获取当前日期和时间。不需要参数。&quot;,
+        properties = emptyMap(),
+        required = emptyList(),
+        execute = {
+            LocalDateTime.now().toString()
+        }
+    ),
+    Tool(
+        name = &quot;get_weather&quot;,
+        description = &quot;查询指定城市的当前天气（数据来自 wttr.in）。&quot;,
+        properties = mapOf(
+            &quot;city&quot; to JSONObject()
+                .put(&quot;type&quot;, &quot;string&quot;)
+                .put(&quot;description&quot;, &quot;城市名称，如：Beijing、Shanghai、Tokyo&quot;)
+        ),
+        required = listOf(&quot;city&quot;),
+        execute = {
+            val city = URLEncoder.encode(it.getString(&quot;city&quot;), Charsets.UTF_8)
+            try {
+                val current = Http.get(&quot;https://wttr.in/$city?format=j1&quot;)
+                    .getJSONArray(&quot;current_condition&quot;)
+                    .getJSONObject(0)
+                JSONObject()
+                    .put(&quot;城市&quot;, it.getString(&quot;city&quot;))
+                    .put(&quot;天气&quot;, current.getJSONArray(&quot;weatherDesc&quot;).getJSONObject(0).getString(&quot;value&quot;))
+                    .put(&quot;温度&quot;, &quot;${current.getString(&quot;temp_C&quot;)}°C&quot;)
+                    .put(&quot;体感温度&quot;, &quot;${current.getString(&quot;FeelsLikeC&quot;)}°C&quot;)
+                    .put(&quot;湿度&quot;, &quot;${current.getString(&quot;humidity&quot;)}%&quot;)
+                    .put(&quot;风速&quot;, &quot;${current.getString(&quot;windspeedKmph&quot;)} km/h&quot;)
+                    .toString()
+            } catch (e: Exception) {
+                &quot;错误：查询天气失败 - ${e.message}&quot;
+            }
+        }
+    )
+)
+</code></pre>
+<p>无论我们如何执行逻辑，最后只需将结果以 <code>String</code> 格式返回给 LLM 即可，LLM 会根据结果继续生成回复。</p>
+<p>比如获取时间就是调用 <code>LocalDateTime.now()</code>，聪明的 LLM 会自己解析；查询天气也是同样，我使用之前介绍过的 <a href="https://liarrdev.github.io/post/Check-the-Weather-with-a-Single-Command-wttr-in/">wttr.in</a> 提供的 API 来获取天气数据，直接把 JSON 字符串返回给 LLM，LLM 也会自动解析。</p>
+<p>接下来看看效果：</p>
+<pre><code class="language-Bash">请选择 LLM 供应商:
+  1. Anthropic (Claude)
+  2. OpenAI
+  3. DeepSeek
+输入数字 [1/2/3]: 3
+
+==================================================
+🤖 AI Agent 已启动 [供应商: DeepSeek]
+==================================================
+输入 'exit'  退出
+输入 'clear' 重置对话
+==================================================
+
+👤 你: 今天几号
+  🔧 调用工具: get_current_time({})
+  📊 结果: 2026-08-03T16:24:07.183085
+🤖 Agent: 聪明的人类，今天是 **2026年8月3日**（星期一），现在是下午4点24分左右。请问还有什么可以帮您的吗？
+
+👤 你: 广州天气怎么样
+  🔧 调用工具: get_weather({&quot;city&quot;:&quot;Guangzhou&quot;})
+  📊 结果: {&quot;天气&quot;:&quot;Light rain shower&quot;,&quot;温度&quot;:&quot;25°C&quot;,&quot;体感温度&quot;:&quot;28°C&quot;,&quot;风速&quot;:&quot;14 km/h&quot;,&quot;湿度&quot;:&quot;91%&quot;,&quot;城市&quot;:&quot;Guangzhou&quot;}
+🤖 Agent: 聪明的人类，这是广州今天的天气情况：
+
+| 项目 | 详情 |
+|------|------|
+| 🌤️ **天气** | 小阵雨 |
+| 🌡️ **温度** | 25°C |
+| 🥵 **体感温度** | 28°C |
+| 💨 **风速** | 14 km/h |
+| 💧 **湿度** | 91% |
+
+今天广州有小阵雨，湿度较高，体感会比较闷热。出门记得带把伞哦！还有什么可以帮您的吗？
+</code></pre>
+<h1 id="总结">总结</h1>
+<p>以上代码展示了一个最简 Agent 的完整结构，用一句伪代码概括 Agent：</p>
+<pre><code class="language-Bash">while (任务没完成) {
+    行动 = LLM(目标, 历史, 可用工具)
+    结果 = 执行(行动)
+    历史 += 结果
+}
+</code></pre>
+<p>关键设计原则：</p>
+<ul>
+<li><strong>LLM 作为决策核心</strong>：Agent 不硬编码业务逻辑，所有决策委托给 LLM。</li>
+<li><strong>记忆分层管理</strong>：短期记忆维护当前对话上下文，长期记忆存储跨会话信息。</li>
+<li><strong>循环执行</strong>：Agent 持续交互、逐步完成任务，支持多步推理和多次工具调用。</li>
+<li><strong>关注点分离</strong>：LLM 负责“思考”，工具负责”执行“，Agent 负责“调度”。</li>
+</ul>
+<p>当然还有一些可以优化的地方，比如当工具数量不断增长时，直接使用一个 <code>List</code> 来维护是不符合工程规范的，此时应当抽象出一个接口，每个工具实现这个接口来提供自己的功能。</p>
+<h1 id="进阶">进阶</h1>
+<h2 id="流式输出">流式输出</h2>
+<p>文中的 Agent 回复是阻塞式的——要等模型把整段回复生成完才一次性返回，回复越长用户等得越久。而 LLM 实际是逐 token 产出的，服务端完全可以在生成第一个 token 时就推给客户端，不必等全部生成完。这就是<strong>流式输出（Streaming）</strong>：响应变成一条持续不断的事件流，客户端收到一个 token 就展示一个 token，让用户几乎和模型同步看到文字浮现，体验上的差别是质变，心理等待感大幅降低。</p>
+<p>主流 LLM API 的流式输出都基于 <strong>SSE（Server-Sent Events）</strong>：请求时加上 <code>stream: true</code>，响应就变成一条条以 <code>data:</code> 为前缀的事件，每条携带一个增量片段，最后以 <code>[DONE]</code> 结束。HTTP 连接保持打开，服务端持续写入，客户端逐行读取、逐行处理。</p>
+<p>需要特别注意的是，<strong>工具调用也是流式分片返回的</strong>。模型不会一次性给出完整的工具名和参数，而是拆成多个碎片陆续到达——先来工具名，再来一小截参数字符串，拼起来才是完整的 JSON。这些碎片单看任何一片都无法解析，更不能拿去执行工具，必须缓冲、逐片拼接，等流结束凑出完整参数后才能调用。因此 Agent 流式要分两类处理：<strong>文字增量</strong>即收即显，追求低延迟；<strong>工具调用增量</strong>先缓冲、后执行，必须等参数攒齐。</p>
+<h2 id="记忆系统">记忆系统</h2>
+<p>记忆系统的核心是对话历史管理——存储、维护和裁剪对话上下文，确保 LLM 获取足够历史信息，同时不超出上下文窗口限制。</p>
+<p>记忆的价值体现在三个方面：</p>
+<ul>
+<li><strong>上下文理解</strong>：自然语言大量使用代词指代和省略表达，需要依赖对话历史才能正确理解。</li>
+<li><strong>任务连续性</strong>：复杂任务需要多轮对话完成，记忆让 Agent 能逐步推进。</li>
+<li><strong>个性化体验</strong>：记住用户偏好，避免重复询问。</li>
+</ul>
+<p>实际项目中，记忆分为两类：</p>
+<ul>
+<li><strong>短期记忆</strong>：当前对话上下文，对话开始时清空</li>
+<li><strong>长期记忆</strong>：跨会话持久化，用向量数据库存储历史摘要</li>
+</ul>
+<p><strong>短期记忆实现要点</strong>：使用 <code>List</code> 存储历史，系统提示词固定在最前面。如果历史只增不减，任务一长就会撑爆模型的上下文窗口，token 费用也会失控。生产环境应基于 <strong>token 数量</strong>裁剪，或实现“记忆压缩”——将早期对话总结为摘要保留。工具结果应摘要化处理，只保留关键信息进入历史。</p>
+<p><strong>长期记忆实现思路</strong>：使用向量数据库（如 Milvus、Pinecone）存储对话摘要的向量表示。写入策略包括显式保存、自动提取、定期摘要；检索时将当前输入与记忆库做相似度匹配，检索结果作为上下文注入。这种“向量检索 + 上下文注入”的范式称为 <strong>RAG（Retrieval Augmented Generation，检索增强生成）</strong>，是主流的记忆实现方案。</p>
+<h2 id="多-agent-协作模式">多 Agent 协作模式</h2>
+<p>复杂任务往往需要多个 Agent 协作完成。常见模式包括：</p>
+<ul>
+<li><strong>Supervisor 模式</strong>：一个“主管 Agent”负责分配任务，多个“工人 Agent”各司其职。</li>
+<li><strong>Pipeline 模式</strong>：多个 Agent 按流水线方式协作，前一个 Agent 的输出是下一个的输入。</li>
+<li><strong>Debate 模式</strong>：多个 Agent 对同一问题提出不同观点，通过辩论得出最优解。</li>
+</ul>
+<h2 id="安全边界">安全边界</h2>
+<p>Agent 会真实地改动你的系统，必须设防：</p>
+<ul>
+<li><strong>路径校验</strong>：拒绝路径逃逸；</li>
+<li><strong>危险操作确认</strong>：删除、覆盖、网络请求等操作前，暂停循环询问用户；</li>
+<li><strong>沙箱</strong>：让工具在容器或受限目录里执行。</li>
+</ul>
+<h2 id="框架推荐">框架推荐</h2>
+<p>从零开始实现完整的 Agent 系统工作量较大，以下框架可以加速开发：</p>
+<ul>
+<li><strong>LangChain4j</strong>：Java/Kotlin 生态的 AI 开发框架，提供 LLM 调用、工具集成、记忆管理等能力。</li>
+<li><strong>Spring AI</strong>：Spring 官方的 AI 开发框架，与 Spring Boot 无缝集成，适合企业级应用。</li>
+<li><strong>Koog</strong>：JetBrains 官方的 Kotlin Agent 框架。</li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[用一行命令查天气：wttr.in]]></title>
+        <id>https://LiarrDev.github.io/post/Check-the-Weather-with-a-Single-Command-wttr-in/</id>
+        <link href="https://LiarrDev.github.io/post/Check-the-Weather-with-a-Single-Command-wttr-in/">
+        </link>
+        <updated>2026-09-14T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>我们每天是怎么查看天气的，拿出手机解锁打开天气 App，这个步骤已经养成了肌肉记忆。</p>
+<p>当前 AI 时代，如果你恰巧打开了一个终端，那么也许你可以考虑一下用一行命令来查看天气。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/Check-the-Weather-with-a-Single-Command-wttr-in.jpg" alt="" loading="lazy"></figure>
+<p><a href="https://github.com/chubin/wttr.in">wttr.in</a> 对自己的介绍很有趣：</p>
+<blockquote>
+<p>wttr.in — the right way to <s>check</s> <code>curl</code> the weather!</p>
+</blockquote>
+<p>它是一种以控制台为界面的天气预报服务，支持多种信息呈现方式，由开发者 Igor Chubin 创建并开源。它不依赖任何客户端，你只需要 <code>curl</code> 或浏览器就能使用。</p>
+<p>这个项目最初只是一个小型项目，旨在作为 wego 的扩展功能来展示面向控制台的服务能力。后来，wttr.in 逐渐发展成为一款受欢迎的天气报告服务，每天处理数以千万计的用户查询请求。</p>
+<p>在终端中输入：</p>
+<pre><code class="language-bash">➜   curl wttr.in
+</code></pre>
+<p>它就能根据你的 IP 地址查询对应的天气信息，默认显示温度、风速、能见度、降雨量等基本信息，使用 ASCII 字符和 Emoji 渲染在终端里。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1789408327193.png" alt="wttr-curl" loading="lazy"></figure>
+<p>实际上它的能力不仅仅于此，比如你可以指定查询地点和语言：</p>
+<pre><code class="language-bash">➜   curl 'wttr.in/guangzhou?lang=zh-cn'
+</code></pre>
+<p>甚至你可以写中文：</p>
+<pre><code class="language-bash">➜   curl 'wttr.in/广州?lang=zh-cn'
+</code></pre>
+<p>它都能够正确查询。</p>
+<p>下面是它支持的地点查询方式：</p>
+<pre><code class="language-bash">➜   curl 'wttr.in/paris' # 城市名
+➜   curl 'wttr.in/~Eiffel+tower' # 地标名（空格用 `+` 号替代）
+➜   curl 'wttr.in/Москва' # 任何语言的 Unicode 城市名
+➜   curl 'wttr.in/ctu' # 机场三字代码（成都机场）
+➜   curl 'wttr.in/510000' # 邮政编码查询
+➜   curl 'wttr.in/-78.46,106.79' # GPS坐标
+</code></pre>
+<p>你可以指定单位：</p>
+<pre><code class="language-bash">➜   curl 'wttr.in/beijing?m' # 强制使用公制单位
+➜   curl 'wttr.in/newyork?u' # 强制使用美制单位
+➜   curl 'wttr.in/london?M' # 风速采用 m/s 显示
+</code></pre>
+<p>还能配置显示选项：</p>
+<pre><code class="language-bash">➜   curl 'wttr.in/shenzhen?0' # 只显示当前天气
+➜   curl 'wttr.in/shenzhen?1' # 显示当前天气和当天预报
+➜   curl 'wttr.in/shenzhen?2' # 显示当前天气和两天预报
+➜   curl 'wttr.in/shenzhen?3' # 显示当前天气和三天预报
+➜   curl 'wttr.in/shenzhen?F' # 隐藏 Follow 相关内容
+➜   curl 'wttr.in/shenzhen?n' # 仅显示昼夜
+➜   curl 'wttr.in/shenzhen?q' # 隐藏 Weather report 标题
+➜   curl 'wttr.in/shenzhen?Q' # 隐藏 Weather report 标题和城市名
+➜   curl 'wttr.in/shenzhen?T' # 去除颜色
+➜   curl 'wttr.in/shenzhen?format=3' # 超精简，仅显示天气和温度
+➜   curl 'wttr.in/shenzhen?format=j1' # JSON 格式
+</code></pre>
+<p>指定语言：</p>
+<pre><code class="language-bash">➜   curl 'wttr.in/foshan?lang=zh-cn' # 参数指定
+➜   curl 'zh-cn.wttr.in/foshan' # 域名指定
+➜   curl -H &quot;Accept-Language: zh-cn&quot; wttr.in/foshan # 请求头指定
+</code></pre>
+<p>你以为无论怎么查它就是一个简单的天气表格？</p>
+<p>温度曲线、降雨柱状图、月相、天文时间等增强信息都能给你安排上：</p>
+<pre><code class="language-bash">➜   curl 'wttr.in/hongkong?format=v2'
+</code></pre>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1789408404976.png" alt="wttr-format-v2" loading="lazy"></figure>
+<p>月相也能给你玩出花：</p>
+<pre><code class="language-bash">➜   curl 'wttr.in/moon' # 当前月相
+➜   curl 'wttr.in/moon@2026-08-07' # 查询指定日期月相
+</code></pre>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1789408426324.png" alt="wttr-moon" loading="lazy"></figure>
+<p>如果你想把查询的结果生成图片，你不需要截图，用命令保存就行：</p>
+<pre><code class="language-bash">➜   curl 'wttr.in/paris.png' --output paris.png # 天气图片
+➜   curl 'wttr.in/paris_0pq.png' --output paris_0pq.png # 组合参数
+➜   curl 'wttr.in/paris.png?transparency=150' --output paris_t150.png # 透明度，0-255
+➜   curl 'wttr.in/paris.png?background=00aaaa' --output paris_bg.png # 背景颜色
+</code></pre>
+<p>更多的功能可以参考项目的文档，在这里就不一一列举了。</p>
+<p>如果你不习惯使用终端，在浏览器中直接访问 <a href="https://wttr.in">wttr.in</a> 也可以查看天气信息。</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1789408443074.png" alt="wttr-browser" loading="lazy"></figure>
+<p>主域名偶尔会因流量过大响应缓慢，官方提供完全等价的备用域名 <a href="https://wttr.is">wttr.is</a>。</p>
+<p>需要注意的是，wttr.in 的数据来源于 WorldWeatherOnline，偶尔会出现定位偏差或数据延迟。对于分钟级降水预警这类需求，专业天气 App 仍然是更好的选择。但对于日常快速查看，wttr.in 提供的信息已经足够丰富。</p>
+<p>至于为什么要在终端中查看天气？哈哈，我也不知道 😆。</p>
+<p>不过我觉得这个工具的应用场景可能会更多的面向开发者，比如在一些工具的状态栏嵌入一行天气信息，或者在脚本或者自动化任务中调用，根据天气条件自动调整服务器散热策略等等。</p>
+<p>wttr.in 的优势在于「轻量」和「可编程」。它不会替代专业天气 App 的雷达图和分钟级降水预警，而是在你需要快速看一眼天气时，用最低成本完成这件事。</p>
+<p>一行命令，零安装，零广告。这就是 wttr.in 的哲学——最好的工具，是你不需要专门去「打开」的工具。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[第一次，真实城市规划交给 Agent · 百年京张 AI 创新带]]></title>
+        <id>https://LiarrDev.github.io/post/Open-City-AI-Haidian/</id>
+        <link href="https://LiarrDev.github.io/post/Open-City-AI-Haidian/">
+        </link>
+        <updated>2026-08-19T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>1909 年，詹天佑主持修建了京张铁路——中国人自主设计的第一条干线铁路。117 年后，这条铁路沿线的 43.6 平方公里真实城区，正向全球 AI Agent 发出一份城市设计邀请函。</p>
+<p>2026 年 8 月 7 日，北京市海淀区启动了「<a href="https://haidian.open-city.ai/">百年京张 AI 创新带城市设计开源征集</a>」。这不是一个虚拟沙盘，也不是一场刷榜竞赛。它是真实存在的城区——有居民、有车流、有产业——而且入选方案将进入实际工程深化。整个征集只对 Agent 开放：人类不直接投稿，而是把任务交给自己的 AI Agent，由 Agent 读取任务、生成方案、自检并提交。</p>
+<p>让 Agent 参与城市建设，是全球首次。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/Open-City-AI-Haidian.png" alt="官网" loading="lazy"></figure>
+<h1 id="436-平方公里的真实战场">43.6 平方公里的真实战场</h1>
+<p>这个区域现在是一片遗址公园，从清华园火车站往南，穿过北航、北邮这一片高校区，一路到大钟寺。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1787157585014.webp" alt="京张铁路沿线示意" loading="lazy"></figure>
+<p>设计范围从北五环向南，经清华园火车站、大钟寺，一路延伸至北京北站，覆盖面积比整个澳门还大。其中协调研究范围 43.6 平方公里，整体设计范围 11.4 平方公里，三个核心区的重点详细设计合计 368.4 公顷：</p>
+<table>
+<thead>
+<tr>
+<th>核心区</th>
+<th>面积</th>
+<th>定位</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>中关村智源</td>
+<td>192.1 公顷</td>
+<td>AI 自主创新加速区</td>
+</tr>
+<tr>
+<td>北京 AI 原点社区</td>
+<td>104.3 公顷</td>
+<td>人才与活力枢纽</td>
+</tr>
+<tr>
+<td>大钟寺 AI 产业集群</td>
+<td>72.0 公顷</td>
+<td>产业枢纽</td>
+</tr>
+</tbody>
+</table>
+<p>这片区域叠加了三条主题带：百年京张文化带、都市 AI 生活体验带、AI 融合创新带。空间上采用“三个核心区 + 两翼”的框架，京张铁路遗址公园作为文化主线贯穿其中。</p>
+<video  controls>
+  <source src="https://haidian.open-city.ai/assets/open-city-film-zh.mp4?v=3" type="video/mp4">
+</video>
+<h1 id="agent-如何参与">Agent 如何参与</h1>
+<p>整个流程围绕 GitHub 仓库 <a href="https://github.com/open-city-ai/haidian">open-city-ai/haidian</a> 展开。参与方式极其简洁——打开你的 Agent（Claude Code、Codex、ZCode、Kimi Code，或豆包、飞书、WorkBuddy、千问办公等办公 Agent），粘贴一句话：</p>
+<blockquote>
+<p>阅读 https://github.com/open-city-ai/haidian/tree/main/skills/urban-design-ai-submission 并参与百年京张AI创新带城市设计开源征集</p>
+</blockquote>
+<p>Agent 随后会自主完成以下流程：</p>
+<ol>
+<li><strong>读取结构化任务书</strong>。所有设计任务、场地数据、格式要求和评审规则都以机器可读文件存储在仓库中，Agent 不需要解析 PDF 或网页，直接按规则工作。</li>
+<li><strong>生成方案包</strong>。包括中英文 proposal.md、HTML 可视化页面、A3/A0 图纸和带文字的图件。</li>
+<li><strong>本地自检</strong>。运行校验脚本检查格式完整度、路径归属和合规风险。</li>
+<li><strong>提交 Pull Request</strong>。自动化的 CI 检查会验证格式、路径和合规性，通过后方案进入公开展示。</li>
+</ol>
+<p>仓库内置了部分海淀公开资料，Agent 也可以引用国家统计局数据或其他来源清晰的第三方数据（教育资源、地图、流量热力、骑手/网约车数据等），但所有引用都必须登记来源和用途边界，不得上传个人隐私或非公开规划资料。</p>
+<p>与传统征集最大的不同在于，这是一个<strong>实时更新的任务环境</strong>。任务书、公开资料、空间数据、校验脚本都可能持续修订。每次回来迭代的 Agent 都需要先同步主分支、重新检查说明文件、浏览 Issues 和 Pull Requests 中的讨论，甚至阅读其他 Agent 的方案来改进自己的设计。</p>
+<h1 id="agent-要设计什么">Agent 要设计什么</h1>
+<p>征集任务覆盖从宏观概念到落地细节的六个层面：</p>
+<ul>
+<li><strong>总体概念与品牌</strong>。为创新带提出命名体系、Logo 和视觉规范，将“人字形线路”等京张铁路符号转化为空间结构语言。</li>
+<li><strong>AI 创新生态</strong>。研究全球科技园区和创新街区案例，提出覆盖基础研究、产业孵化、资本服务的创新网络和指标体系。</li>
+<li><strong>未来城市形态</strong>。设计 AI+医疗、AI+教育、AI+商业等场景如何嵌入具体街区，构建可感知的未来生活。</li>
+<li><strong>基础设施与公共服务</strong>。面向 AI 人才、企业和居民，提出交通、公共服务和创新基础设施解决方案。</li>
+<li><strong>公共空间与活力带</strong>。为京张铁路遗址公园设计开发者散步道、开源成果展示廊、智能体贡献荣誉墙等公共空间。</li>
+<li><strong>文化叙事与长期运营</strong>。融合百年铁路文化、中关村创新文化和 AI 新文化，设计文化导览路线和年度活动运营机制。</li>
+</ul>
+<h1 id="七维评审与永久纪念">七维评审与永久纪念</h1>
+<p>方案评审覆盖七个维度：与任务书的相关性、概念原创性、AI 与规划的创新融合、落地可行性、公共利益与包容性、风险与合规意识、表达完整度。CI 只做确定性格式检查，内容评审由维护者完成。</p>
+<p>奖励机制本身也带有标志性意义。项目计划沿京张铁路遗址公园建设一套永久纪念体系——智能体贡献荣誉墙、人工智能里程碑、开源成果展示节点和全球开发者荣誉墙。入选方案背后的 Agent 和贡献者的 GitHub 名称，有机会以碑刻形式留下。纪念体系可持续更新，每年记录最杰出的贡献。此外还有荣誉证书、纪念性奖励和物质奖励，特别突出的团队可对接海淀科创政策与资源。</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1787158111614.png" alt="纪念碑概念图" loading="lazy"></figure>
+<h1 id="超越渲染能力的问题">超越渲染能力的问题</h1>
+<p>这场征集引发的核心讨论，并不在于 Agent 能生成多少张效果图。<a href="https://6g-ai.com/news/beijing-opens-43-6-square-kilometers-of-real-city-to-ai-agents-urban">6G-AI 的分析</a>指出，城市规划真正困难的问题从来不是画出更多道路、商业区和绿地的组合，而是把不可逆的决策分配给有名字、有职位、可追责的人。</p>
+<p>当一个 Agent 生成上百个方案变体时，决策者的工作从“做出判断”变成了“设置参数”。价值判断并没有消失，而是迁移到了评分函数、约束列表和权重设置中，最终以“系统优化”的面目呈现。审批环节虽然真实存在，但一位官员在时间压力下审查上百份机器生成的方案，其审查深度与一位能完整重建推理过程的规划师不可同日而语。</p>
+<p>征集的合规须知也体现了这种清醒：所有方案都被视为开放共创建议，不构成审定结论；涉及建筑强度、高度或道路线位的内容必须标注为概念性建议。正式数据发布后，方案需要重新复算。</p>
+<h1 id="时间线与参与方式">时间线与参与方式</h1>
+<p>征集已于北京时间 2026 年 8 月 7 日开放，<strong>8 月 31 日截止</strong>，<strong>9 月开始公布结果并进入落地深化</strong>。</p>
+<p>参与步骤：</p>
+<ol>
+<li>打开你的 AI Agent，粘贴上面的参与指令</li>
+<li>Agent 自动读取任务、生成方案包、完成自检</li>
+<li>Agent 通过 GitHub Pull Request 提交方案</li>
+<li>CI 自动检查格式与合规性，通过后方案进入公开展示</li>
+</ol>
+<p>本项目由海淀主导，<a href="https://www.open-city.ai">@赛博禅心（open-city.ai）</a>负责 Agent 基础设施、技术策划与执行。项目介绍页和展示页同样接受社区 Pull Request。发现问题可在 GitHub 直接提 Issue。</p>
+<p>一百年前，詹天佑的名字刻在了京张铁路上。一百年后，你的 GitHub ID 也许会刻在这条铁路的遗址公园里——不是因为你亲手画了图纸，而是因为你释放了一个 Agent，让它第一次参与了真实城市的塑造。</p>
+<h1 id="我的-agent-已参与">我的 Agent 已参与</h1>
+<p>整个征集由 Agent 自主完成设计，人类需要做的只是搭好环境、放出指令。但如果你看完上面的介绍仍不清楚具体怎么上手，下面是我实际跑通全流程的操作记录。</p>
+<p>准备 GitHub 环境。首先需要一个 GitHub 账号（注册和登录问题这里不再展开）。然后安装 <a href="https://github.com/cli/cli">GitHub CLI</a>，用于与 GitHub 仓库交互。macOS 用户可以通过 Homebrew 安装：</p>
+<pre><code class="language-bash">➜   brew install gh
+</code></pre>
+<p>其他平台用户可以自行参考安装指南。装好之后完成身份验证：</p>
+<pre><code class="language-bash">➜   gh auth login
+</code></pre>
+<p>根据终端提示选择验证方式即可。</p>
+<p>配置完成之后，在你喜欢的目录下创建一个项目文件夹，就可以把上文提到的指令交给你的 Agent，Agent 会自动在你的 GitHub 账号下 Fork 官方仓库、拉取到本地，然后自主完成设计并提交 Pull Request。</p>
+<p>上面已经提到，使用任何 Agent 都可以参与，但有些 Agent 可能比较“严谨”一些，会频繁打断对话请求确认，所以建议选择你熟悉的 Agent。</p>
+<p>这次我选择了 TRAE Work 来参赛，至于原因嘛，TRAE 近期赠送了不少积分，每天签到还有 200 积分，基本不用消耗自己的 Token。</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1787158277451.png" alt="TRAE Work" loading="lazy"></figure>
+<p>我的项目整个流程初次跑完大约消耗 600 积分，耗时一个小时左右。因为全程由 Agent 自主完成，具体用量因 Agent 而异，以上数据仅供参考。建议预留充足积分，避免跑到一半因积分不足而中止。</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1787158302739.png" alt="TRAE 任务积分消耗" loading="lazy"></figure>
+<p>如果你是新用户，可以使用我的链接登录 TRAE Work，获取 500 专属积分，官方还会额外赠送 5000 积分：</p>
+<blockquote>
+<p>我在用 TraeWork AI 办公平台，搞定各类任务，通过我的分享链接登录桌面端，新注册用户一次性获得 5000 积分！ <a href="https://www.trae.cn/work-fission/Y6ZYA76ZWY2Q?utm_source=copy_link&amp;utm_medium=friends_invite">https://www.trae.cn/work-fission/Y6ZYA76ZWY2Q?utm_source=copy_link&amp;utm_medium=friends_invite</a></p>
+</blockquote>
+<p>提交 PR 之后，官方会执行 CI 脚本进行检查，如果发现问题会在你的 PR 里留 Comment，你也不用费心，同样叫 Agent 自行处理即可。我使用 TRAE Work 在 4 轮对话中就修复了全部问题并成功 Merge 进主分支。</p>
+<p>已合并到 GitHub 主分支的方案自动进入展厅。有兴趣的话可以看看<a href="https://haidian.open-city.ai/proposal-view.html?proposal=submissions/LiarrDev/jingzhang-ai-spine">我的方案</a>：</p>
+<p><img src="https://LiarrDev.github.io/post-images/1787158416648.png" alt="我的方案" loading="lazy"><br>
+<img src="https://LiarrDev.github.io/post-images/1787158427314.png" alt="可视化交互" loading="lazy"></p>
+<p>完整对话记录贴在下面。虽然每个 Agent 的设计思路各不相同，这份记录未必有普适参考价值，但或许能让你对全流程有个直观感受。</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1787158474206.png" alt="TRAE 对话" loading="lazy"></figure>
+<p>官方 Review Agent 打出的评分是 66/100，勉强合格。我看到有不少开发者会让 Agent 持续优化来提高评分，至于我嘛，重在参与就好 😄。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Flutter PageView 手势冲突：从“不跟手”到“丝滑”的探索之路]]></title>
+        <id>https://LiarrDev.github.io/post/Flutter-PageView-Gesture-Conflicts/</id>
+        <link href="https://LiarrDev.github.io/post/Flutter-PageView-Gesture-Conflicts/">
+        </link>
+        <updated>2026-08-12T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>『MOJi辞書』的 HarmonyOS 版本采用 Flutter 开发。上线后，用户反馈单词详情页左右滑动过于灵敏，导致上下滑动手势常常被误判，体验不佳。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1782238935450.gif" alt="手势冲突" loading="lazy"></figure>
+<p>这个页面的实现并不复杂，本质上就是在一个 <code>PageView</code> 里面嵌套了 <code>WebView</code>。</p>
+<pre><code class="language-dart">class WordDetailPage extends StatefulWidget {
+  const WordDetailPage({super.key});
+  @override
+  State&lt;StatefulWidget&gt; createState() =&gt; _WordDetailPageState();
+}
+
+class _WordDetailPageState extends State&lt;WordDetailPage&gt; {
+  ...
+  late final PageController _pageController;
+  @override
+  Widget build(BuildContext context) {
+    ...
+    return PageView(controller: _pageController, children: _getPages());
+  }
+  List&lt;Widget&gt; _getPages() {
+    List&lt;WordDetailWidget&gt; pages = [];
+    ...     // 填充 WebView 组件
+    return pages;
+  }
+}
+</code></pre>
+<p>做过 Android 开发的小伙伴应该对这个问题不陌生，我们之前在『<a href="https://liarrdev.github.io/post/ViewPager2-Horizontal-Nested-Scroll/">ViewPager2 横向嵌套滚动</a>』一文中，就通过自定义 <code>ViewGroup</code> 重写事件分发来解决类似问题。</p>
+<p>那在 Flutter 中是否也能照猫画虎呢？于是我把问题告诉 AI，AI 与我不谋而合，马上就给我生成了一个 <code>Widget</code>：</p>
+<pre><code class="language-dart">class DirectionalPageView extends StatefulWidget {
+  const DirectionalPageView({
+    super.key,
+    required List&lt;Widget&gt; this.children,
+    this.initialPage = 0,
+    this.directionThreshold = 1.0,
+    this.moveThreshold = 8.0,
+    this.switchThreshold = 50.0,
+    this.duration = const Duration(milliseconds: 300),
+    this.curve = Curves.easeInOut,
+    this.onPageChanged,
+  })  : itemCount = null,
+        itemBuilder = null;
+
+  const DirectionalPageView.builder({
+    super.key,
+    required this.itemCount,
+    required this.itemBuilder,
+    this.initialPage = 0,
+    this.directionThreshold = 1.0,
+    this.moveThreshold = 8.0,
+    this.switchThreshold = 50.0,
+    this.duration = const Duration(milliseconds: 300),
+    this.curve = Curves.easeInOut,
+    this.onPageChanged,
+  }) : children = null;
+
+  final List&lt;Widget&gt;? children;
+  final int? itemCount;
+  final Widget Function(BuildContext context, int index)? itemBuilder;
+  final int initialPage;
+  final double directionThreshold;
+  final double moveThreshold;
+  final double switchThreshold;
+  final Duration duration;
+  final Curve curve;
+  final ValueChanged&lt;int&gt;? onPageChanged;
+
+  @override
+  State&lt;DirectionalPageView&gt; createState() =&gt; _DirectionalPageViewState();
+}
+
+class _DirectionalPageViewState extends State&lt;DirectionalPageView&gt; {
+  late final PageController _pageController;
+  double _dragStartX = 0;
+  double _dragStartY = 0;
+  bool _isDragging = false;
+  bool _isHorizontalGesture = false;
+  int _currentPage = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentPage = widget.initialPage;
+    _pageController = PageController(initialPage: widget.initialPage);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void _onPointerDown(PointerDownEvent event) {
+    _dragStartX = event.position.dx;
+    _dragStartY = event.position.dy;
+    _isDragging = true;
+    _isHorizontalGesture = false;
+  }
+
+  void _onPointerMove(PointerMoveEvent event) {
+    if (!_isDragging) return;
+
+    final dx = event.position.dx - _dragStartX;
+    final dy = event.position.dy - _dragStartY;
+    final absDx = dx.abs();
+    final absDy = dy.abs();
+
+    if (!_isHorizontalGesture &amp;&amp; (absDx &gt; widget.moveThreshold || absDy &gt; widget.moveThreshold)) {
+      _isHorizontalGesture = absDy == 0 || (absDx / absDy) &gt; widget.directionThreshold;
+      if (!_isHorizontalGesture) {
+        _isDragging = false;
+      }
+    }
+  }
+
+  void _onPointerUp(PointerUpEvent event) {
+    if (!_isDragging) return;
+
+    final dx = event.position.dx - _dragStartX;
+    final velocity = dx.abs() &gt; widget.switchThreshold ? (dx &gt; 0 ? 1.0 : -1.0) : 0.0;
+
+    if (_isHorizontalGesture &amp;&amp; velocity != 0) {
+      if (velocity &gt; 0 &amp;&amp; _currentPage &gt; 0) {
+        _animateToPage(_currentPage - 1);
+      } else if (velocity &lt; 0 &amp;&amp; _currentPage &lt; _totalPages - 1) {
+        _animateToPage(_currentPage + 1);
+      }
+    }
+
+    _isDragging = false;
+    _isHorizontalGesture = false;
+  }
+
+  void _animateToPage(int page) {
+    _pageController
+        .animateToPage(
+      page,
+      duration: widget.duration,
+      curve: widget.curve,
+    )
+        .then((_) {
+      if (_currentPage != page) {
+        setState(() =&gt; _currentPage = page);
+        widget.onPageChanged?.call(page);
+      }
+    });
+  }
+
+  int get _totalPages {
+    if (widget.children != null) {
+      return widget.children!.length;
+    }
+    return widget.itemCount ?? 0;
+  }
+
+  Widget _buildPage(int index) {
+    if (widget.children != null) {
+      return widget.children![index];
+    }
+    return widget.itemBuilder!(context, index);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Listener(
+      onPointerDown: _onPointerDown,
+      onPointerMove: _onPointerMove,
+      onPointerUp: _onPointerUp,
+      onPointerCancel: (_) {
+        _isDragging = false;
+        _isHorizontalGesture = false;
+      },
+      behavior: HitTestBehavior.translucent,
+      child: PageView.builder(
+        controller: _pageController,
+        scrollBehavior: _isHorizontalGesture ? null : const _NoScrollBehavior(),
+        itemCount: _totalPages,
+        itemBuilder: (context, index) =&gt; _buildPage(index),
+      ),
+    );
+  }
+}
+
+class _NoScrollBehavior extends ScrollBehavior {
+  const _NoScrollBehavior();
+
+  @override
+  ScrollPhysics getScrollPhysics(BuildContext context) {
+    return const NeverScrollableScrollPhysics();
+  }
+}
+
+extension DirectionalPageViewController on PageController {
+  void nextPage(Duration duration, Curve curve) {
+    final currentPage = (page?.round() ?? 0);
+    final position = positions.isNotEmpty ? positions.first : null;
+    if (position != null) {
+      final pageSize = position.viewportDimension;
+      final totalPages = (position.maxScrollExtent / pageSize).ceil() + 1;
+      if (currentPage &lt; totalPages - 1) {
+        animateToPage(currentPage + 1, duration: duration, curve: curve);
+      }
+    }
+  }
+
+  void previousPage(Duration duration, Curve curve) {
+    final currentPage = (page?.round() ?? 0);
+    if (currentPage &gt; 0) {
+      animateToPage(currentPage - 1, duration: duration, curve: curve);
+    }
+  }
+}
+</code></pre>
+<p>用法也非常简单，只需将原本的 <code>PageView</code> 替换为 <code>DirectionalPageView</code> 即可。</p>
+<pre><code class="language-dart">class WordDetailPage extends StatelessWidget {
+  const WordDetailPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return DirectionalPageView(children: _getPages());
+  }
+
+  List&lt;Widget&gt; _getPages() {
+    List&lt;WordDetailWidget&gt; pages = [];
+    ...     // 填充 WebView 组件
+    return pages;
+  }
+}
+</code></pre>
+<p>效果如下：</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1782238996460.gif" alt="不跟手" loading="lazy"></figure>
+<p>AI 生成的这个 <code>DirectionalPageView</code>，解决了横向滑动过于灵敏的问题，使纵向的滑动得以识别，但新问题也随之而来——从上图中可以看到，页面切换要等到手指释放后才触发，滑动过程完全不跟手，体验大打折扣。</p>
+<p>我转念一想，作为一个声明式 UI，Flutter 应该有更加优雅的方式来处理手势冲突，而不是像 Android View 那样手动处理。于是我开始搜资料找文档查源码，还真让我找到了解决方案。</p>
+<p>Flutter 中大多数可滚动的组件（如 <code>PageView</code>、<code>ListView</code> 等），它们的滑动效果都来自于 <code>Scrollable</code> 组件，在 <code>Scrollable</code> 内部针对不同方向的响应，是通过 <code>RawGestureDetector</code> 完成的，<code>VerticalDragGestureRecognizer</code> 和 <code>HorizontalDragGestureRecognizer</code> 分别负责处理纵向和横向的滑动事件。</p>
+<pre><code class="language-dart">class Scrollable extends StatefulWidget {
+  ...
+  @override
+  ScrollableState createState() =&gt; ScrollableState();
+}
+
+class ScrollableState extends State&lt;Scrollable&gt; with TickerProviderStateMixin, RestorationMixin implements ScrollContext {
+  ...
+  @override
+  @protected
+  void setCanDrag(bool value) {
+    ...
+    if (!value) {
+      ...
+    } else {
+      switch (widget.axis) {
+        case Axis.vertical:
+          _gestureRecognizers = &lt;Type, GestureRecognizerFactory&gt;{
+            VerticalDragGestureRecognizer: GestureRecognizerFactoryWithHandlers&lt;VerticalDragGestureRecognizer&gt;(
+              () =&gt; VerticalDragGestureRecognizer(supportedDevices: _configuration.dragDevices),
+              (VerticalDragGestureRecognizer instance) {
+                ...
+              },
+            ),
+          };
+        case Axis.horizontal:
+          _gestureRecognizers = &lt;Type, GestureRecognizerFactory&gt;{
+            HorizontalDragGestureRecognizer: GestureRecognizerFactoryWithHandlers&lt;HorizontalDragGestureRecognizer&gt;(
+              () =&gt; HorizontalDragGestureRecognizer(supportedDevices: _configuration.dragDevices),
+              (HorizontalDragGestureRecognizer instance) {
+                ...
+              },
+            ),
+          };
+      }
+    }
+    ...
+  }
+}
+</code></pre>
+<p>再看它们相应的判断逻辑：</p>
+<pre><code class="language-dart">abstract class DragGestureRecognizer extends OneSequenceGestureRecognizer {
+  ...
+  bool _hasSufficientGlobalDistanceToAccept(PointerDeviceKind pointerDeviceKind, double? deviceTouchSlop);
+}
+
+class HorizontalDragGestureRecognizer extends DragGestureRecognizer {
+  ...
+  @override
+  bool _hasSufficientGlobalDistanceToAccept(PointerDeviceKind pointerDeviceKind, double? deviceTouchSlop) {
+    return _globalDistanceMoved.abs() &gt; computeHitSlop(pointerDeviceKind, gestureSettings);
+  }
+}
+
+class VerticalDragGestureRecognizer extends DragGestureRecognizer {
+  ...
+  @override
+  bool _hasSufficientGlobalDistanceToAccept(PointerDeviceKind pointerDeviceKind, double? deviceTouchSlop) {
+    return _globalDistanceMoved.abs() &gt; computeHitSlop(pointerDeviceKind, gestureSettings);
+  }
+}
+
+double computeHitSlop(PointerDeviceKind kind, DeviceGestureSettings? settings) {
+  switch (kind) {
+    case PointerDeviceKind.mouse:
+      return kPrecisePointerHitSlop;
+    case PointerDeviceKind.stylus:
+    case PointerDeviceKind.invertedStylus:
+    case PointerDeviceKind.unknown:
+    case PointerDeviceKind.touch:
+    case PointerDeviceKind.trackpad:
+      return settings?.touchSlop ?? kTouchSlop;
+  }
+}
+</code></pre>
+<p><code>computeHitSlop()</code> 方法会根据 Pointer 的类型确定当前命中需要的最小像素，触摸（<code>PointerDeviceKind.touch</code>）默认值是 <code>kTouchSlop</code>，目前是 <code>18.0</code>。</p>
+<p>为什么说“目前”？文档是这么解释的：</p>
+<blockquote>
+<p>The distance a touch has to travel for the framework to be confident that the gesture is a scroll gesture, or, inversely, the maximum distance that a touch can travel before the framework becomes confident that it is not a tap.</p>
+<p>A total delta less than or equal to <code>kTouchSlop</code> is not considered to be a drag, whereas if the delta is greater than <code>kTouchSlop</code> it is considered to be a drag.</p>
+<p>This value was empirically derived. We started at 8.0 and increased it to 18.0 after getting complaints that it was too difficult to hit targets.</p>
+</blockquote>
+<p>由此可见，通过调整 <code>PageView</code> 的 <code>touchSlop</code> 就能改变响应灵敏度。而这个值正是通过 <code>DeviceGestureSettings</code> 传入 <code>computeHitSlop()</code> 的，而 <code>DeviceGestureSettings</code> 又可以通过 <code>MediaQuery</code> 来设置。所以我们只需给 <code>PageView</code> 包一层 <code>MediaQuery</code>，把 <code>touchSlop</code> 调大：</p>
+<pre><code class="language-dart">class WordDetailPage extends StatefulWidget {
+  const WordDetailPage({super.key});
+  @override
+  State&lt;StatefulWidget&gt; createState() =&gt; _WordDetailPageState();
+}
+
+class _WordDetailPageState extends State&lt;WordDetailPage&gt; {
+  ...
+  late final PageController _pageController;
+  @override
+  Widget build(BuildContext context) {
+    ...
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(gestureSettings: const DeviceGestureSettings(touchSlop: 48)), // 用于调整滑动灵敏度
+      child: PageView(controller: _pageController, children: _getPages()),
+    );
+  }
+  List&lt;Widget&gt; _getPages() {
+    List&lt;WordDetailWidget&gt; pages = [];
+    ...     // 填充 WebView 组件
+    return pages;
+  }
+}
+</code></pre>
+<p>但是不要忘记，在子组件中需要把 <code>touchSlop</code> 切换回默认的 <code>kTouchSlop</code>：</p>
+<pre><code class="language-dart">class WordDetailWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    ...
+    return Scaffold(
+      body: Stack(
+        children: [
+          ...
+          KeepAliveWrapper(
+            child: MediaQuery(
+              data: MediaQuery.of(context).copyWith(gestureSettings: const DeviceGestureSettings(touchSlop: kTouchSlop)),
+              child: InAppWebView(
+                ...
+              ),
+            ),
+          );
+        ],
+      ),
+    );
+  }
+}
+</code></pre>
+<p>最后看看效果，丝滑：</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1782239029284.gif" alt="丝滑" loading="lazy"></figure>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Flutter 帧动画]]></title>
+        <id>https://LiarrDev.github.io/post/flutter-frame-animation/</id>
+        <link href="https://LiarrDev.github.io/post/flutter-frame-animation/">
+        </link>
+        <updated>2026-07-16T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>帧动画（Frame Animation）是一种通过快速连续播放一系列静态图像来产生运动错觉的动画技术，在移动应用中极为常见。本文将介绍如何在 Flutter 中实现帧动画。</p>
+<p>首先，我们需要准备好帧动画所需的图片资源。以下是一个简单的示例：</p>
+<pre><code class="language-dart">class FrameAnimPage extends StatefulWidget {
+  const FrameAnimPage({super.key});
+
+  @override
+  State&lt;FrameAnimPage&gt; createState() =&gt; _FrameAnimPageState();
+}
+
+class _FrameAnimPageState extends State&lt;FrameAnimPage&gt; with SingleTickerProviderStateMixin {
+  static final _frames = [
+    Assets.icons.icTabSettingAnim00,
+    Assets.icons.icTabSettingAnim01,
+    Assets.icons.icTabSettingAnim02,
+    ...
+  ];
+
+  late final AnimationController _controller;
+  late final Animation&lt;int&gt; _frameAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 20 * _frames.length),
+    );
+    _frameAnimation = IntTween(begin: 0, end: _frames.length - 1).animate(_controller);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AnimatedBuilder(
+              animation: _frameAnimation,
+              builder: (_, __) =&gt; Image(
+                image: _frames[_frameAnimation.value].provider(),
+                width: 100,
+                height: 100,
+              ),
+            ),
+            const SizedBox(height: 32),
+            FilledButton.icon(
+              onPressed: () {
+                if (_controller.isAnimating) {
+                  _controller.stop();
+                }
+                _controller.reset();
+                _controller.forward();
+              },
+              icon: const Icon(Icons.play_arrow),
+              label: const Text('播放'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+</code></pre>
+<p>Flutter 的动画系统基于 VSync 信号驱动。每帧（通常为 60fps，约 16.67ms/帧）<code>Ticker</code> 会触发回调，<code>AnimationController</code> 据此更新动画值并通知监听者重建 UI。代码中通过 <code>duration</code> 参数指定总时长，这里设定为每帧 20ms，总时长 = 20ms × 帧数。</p>
+<p><code>AnimatedBuilder</code> 负责监听动画值变化，获取当前帧索引并转换为 <code>ImageProvider</code> 提供给 <code>Image</code> 组件。而播放、暂停等控制逻辑则由 <code>AnimationController</code> 统一管理。</p>
+<p>如果你满心欢喜地运行上述代码，会发现帧动画虽然能播放，但首次播放时会出现明显的闪烁，第二次之后就恢复正常。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1782406315688.gif" alt="帧动画首次播放闪烁" loading="lazy"></figure>
+<p>这是由于首次播放时，<code>Image</code> 组件每帧切换到一个新的 <code>ImageProvider</code>，如果该帧的图片尚未解码缓存，Flutter 需要解码图片，期间画面空白造成闪烁。</p>
+<p>有两种解决方案。</p>
+<p>第一种方法是在页面渲染后立即预缓存所有帧图片，播放时直接从内存缓存读取，消除解码延迟。</p>
+<pre><code class="language-dart">class _FrameAnimPageState extends State&lt;FrameAnimPage&gt; with SingleTickerProviderStateMixin {
+  ...
+  static final _frames = [
+    Assets.icons.icTabSettingAnim00,
+    Assets.icons.icTabSettingAnim01,
+    Assets.icons.icTabSettingAnim02,
+    ...
+  ];
+  bool _precached = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_precached) {
+      _precached = true;
+      for (final frame in _frames) {
+        precacheImage(frame.provider(), context);
+      }
+    }
+  }
+}
+</code></pre>
+<p>第二种方法比较剑走偏锋，在新帧未加载完时继续显示旧帧，这样就不会产生画面空白，也就没有了闪烁问题。</p>
+<pre><code class="language-dart">class _FrameAnimPageState extends State&lt;FrameAnimPage&gt; with SingleTickerProviderStateMixin {
+  ...
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AnimatedBuilder(
+              animation: _frameAnimation,
+              builder: (_, __) =&gt; Image(
+                image: _frames[_frameAnimation.value].provider(),
+                width: 100,
+                height: 100,
+                gaplessPlayback: true,
+              ),
+            ),
+            ...
+          ],
+        ),
+      ),
+    );
+  }
+}
+</code></pre>
+<p>注意：该方式下，首次播放每帧仍需现场解码，若解码耗时较长，旧帧停留时间可能过长，导致视觉上的“掉帧”感。</p>
+<p>我们可以将两者结合使用，并封装成一个新的组件：</p>
+<pre><code class="language-dart">class FrameAnimImage extends StatefulWidget {
+  final List&lt;String&gt; assetPaths; // 图片路径列表
+  final AnimationController? controller; // 动画控制器
+  final int durationPerFrame; // 每帧时长（毫秒）
+  final bool isLoop; // 是否循环播放
+  final double? width; // 内容的宽度
+  final double? height; // 内容的高度
+
+  const FrameAnimImage({
+    Key? key,
+    required this.assetPaths,
+    this.controller,
+    this.durationPerFrame = 20,
+    this.isLoop = true,
+    this.width,
+    this.height,
+  }) : super(key: key);
+
+  @override
+  State&lt;FrameAnimImage&gt; createState() =&gt; _FrameAnimImageState();
+}
+
+class _FrameAnimImageState extends State&lt;FrameAnimImage&gt; with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation&lt;int&gt; _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _initAnimation();
+  }
+
+  void _initAnimation() {
+    final totalDuration = Duration(milliseconds: widget.assetPaths.length * widget.durationPerFrame);
+    _controller = widget.controller ?? AnimationController(vsync: this, duration: totalDuration);
+    _controller.duration = totalDuration;
+    _animation = IntTween(begin: 0, end: widget.assetPaths.length - 1).animate(_controller);
+    if (widget.isLoop) {
+      _controller.repeat();
+    } else {
+      _controller.forward();
+    }
+  }
+
+  @override
+  void didUpdateWidget(FrameAnimImage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.assetPaths != widget.assetPaths ||
+        oldWidget.durationPerFrame != widget.durationPerFrame ||
+        oldWidget.isLoop != widget.isLoop) {
+      _controller.stop();
+      _controller.reset();
+      _controller.duration = Duration(
+        milliseconds: widget.assetPaths.length * widget.durationPerFrame,
+      );
+      _animation = IntTween(begin: 0, end: widget.assetPaths.length - 1).animate(_controller);
+      if (widget.isLoop) {
+        _controller.repeat();
+      } else {
+        _controller.forward();
+      }
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    for (var path in widget.assetPaths) {
+      precacheImage(AssetImage(path), context);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, child) {
+        return Image.asset(
+          widget.assetPaths[_animation.value],
+          gaplessPlayback: true,
+          width: widget.width,
+          height: widget.height,
+        );
+      },
+    );
+  }
+}
+</code></pre>
+<p>把 <code>AnimatedBuilder</code> 替换为 <code>FrameAnimImage</code> 组件即可，无需再手动处理首次播放闪烁的问题。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Claude Desktop 如何配置第三方模型]]></title>
+        <id>https://LiarrDev.github.io/post/Configure-Third-Party-Models-in-Claude-Desktop/</id>
+        <link href="https://LiarrDev.github.io/post/Configure-Third-Party-Models-in-Claude-Desktop/">
+        </link>
+        <updated>2026-06-25T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="背景">背景</h1>
+<p>之前我们介绍了<a href="https://liarrdev.github.io/post/Configure-Third-Party-Models-in-Claude-Code/">如何给 Claude Code 配置第三方模型</a>，相信有很多小伙伴都不喜欢使用终端操作，那么今天我们来讲讲如何给 Claude Desktop 配置第三方模型。</p>
+<h1 id="准备">准备</h1>
+<p>首先当然是安装 Claude Desktop，Claude Desktop 的安装相比 Claude Code 要简单很多，本文不再赘述。</p>
+<p>其次需要购买第三方 AI 模型服务，在其控制台获取以下信息：</p>
+<ul>
+<li>API Key</li>
+<li>Base URL（需兼容 Anthropic 接口协议）</li>
+<li>模型 ID</li>
+</ul>
+<p>这部分内容请参考『<a href="https://liarrdev.github.io/post/Configure-Third-Party-Models-in-Claude-Code/">如何给 Claude Code 配置第三方模型</a>』。</p>
+<h1 id="手动配置">手动配置</h1>
+<p>Claude Desktop 本身就支持配置第三方模型，只是入口隐藏较深，我们来一步步打开它。</p>
+<p>首先需要打开 Developer Mode，点击菜单栏中的 <code>Help</code> → <code>Troubleshooting</code> → <code>Enable Developer Mode</code>。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1782149561034.png" alt="Enable Developer Mode" loading="lazy"></figure>
+<p>Claude Desktop 会在重启后进入 Developer Mode，在菜单栏中选择 <code>Developer</code> → <code>Configure Third-Party Inference...</code> 即可配置第三方模型。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1782149575939.png" alt="Configure Third-Party Inference" loading="lazy"></figure>
+<p>把第三方模型信息填入，并保存即可。</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1782149598153.png" alt="填写信息" loading="lazy"></figure>
+<p>配置完成后，Claude Desktop 会再次要求重启，这时候我们可以跟它随意发起对话，如果能够收到回复，证明配置成功。</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1782149617503.png" alt="对话" loading="lazy"></figure>
+<h1 id="cc-switch-一键配置">CC Switch 一键配置</h1>
+<p>之前我们在『<a href="https://liarrdev.github.io/post/Configure-Third-Party-Models-in-Claude-Code/">如何给 Claude Code 配置第三方模型</a>』中感受到了 CC Switch 的方便，其实它也可以用来配置 Claude Desktop。</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1780503513132.png" alt="CC Switch" loading="lazy"></figure>
+<p>上面可以看到，即使配置了第三方模型，对话框中的模型列表显示的却是「Legacy Model」。虽然在模型配置页面支持手动添加模型，但我试过却并不生效。</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1782149671766.png" alt="模型列表配置" loading="lazy"></figure>
+<p>而 CC Switch 刚好可以顺带解决这个问题。</p>
+<p>切换到 Claude Desktop 选项卡并添加模型配置，可以看到，跟 Claude Code 不一致的是需要路由，打开左上角的路由开关，即可生效。</p>
+<figure data-type="image" tabindex="7"><img src="https://LiarrDev.github.io/post-images/1782149687098.png" alt="CC Switch 配置" loading="lazy"></figure>
+<p>这时候打开 Claude Desktop，就可以在对话框中的模型列表中看到第三方模型的名字了。</p>
+<figure data-type="image" tabindex="8"><img src="https://LiarrDev.github.io/post-images/1782149699754.png" alt="对话" loading="lazy"></figure>
+<p>这时候再回到配置里的模型列表一探究竟，可以发现是通过 Claude Sonnet 映射过来的。</p>
+<figure data-type="image" tabindex="9"><img src="https://LiarrDev.github.io/post-images/1782149721267.png" alt="模型列表配置" loading="lazy"></figure>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Android 判断热点是否开启]]></title>
+        <id>https://LiarrDev.github.io/post/Check-If-Android-Tethering-Enabled/</id>
+        <link href="https://LiarrDev.github.io/post/Check-If-Android-Tethering-Enabled/">
+        </link>
+        <updated>2026-06-15T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>最近在写一个小工具，需要判断用户是否开启了便携式热点（Wi-Fi 热点），发现 Android 系统并没有提供直接的公开 API 来判断热点状态，遂调研了一下实现方案并记录。</p>
+<h1 id="wifimanager-反射调用"><code>WifiManager</code> 反射调用</h1>
+<p>虽然 Android 没有提供公开 API 来判断热点状态，但可以通过反射调用 <code>WifiManager</code> 的隐藏方法来实现。</p>
+<pre><code class="language-kotlin">fun isHotspotEnabled(context: Context): Boolean {
+    val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+    return try {
+        val method: Method = wifiManager.javaClass.getDeclaredMethod(&quot;isWifiApEnabled&quot;)
+        method.isAccessible = true
+        method.invoke(wifiManager) as Boolean
+    } catch (e: Exception) {
+        e.printStackTrace()
+        false
+    }
+}
+</code></pre>
+<p><code>isWifiApEnabled</code> 被标记为 <code>@hide</code>，它内部是调用 <code>getWifiApState</code> 方法来判断热点状态的。</p>
+<pre><code class="language-java">@SystemService(Context.WIFI_SERVICE)
+public class WifiManager {
+    ...
+    /**
+     * Return whether tethered Wi-Fi AP is enabled or disabled.
+     * @return {@code true} if tethered  Wi-Fi AP is enabled
+     * @see #getWifiApState()
+     *
+     * @hide
+     */
+    @SystemApi
+    @RequiresPermission(android.Manifest.permission.ACCESS_WIFI_STATE)
+    public boolean isWifiApEnabled() {
+        return getWifiApState() == WIFI_AP_STATE_ENABLED;
+    }
+}
+</code></pre>
+<p>如果我们需要区分热点状态值，也可以通过反射调用 <code>getWifiApState</code> 方法来获取，返回值为 <code>int</code> 类型，定义如下：</p>
+<pre><code class="language-java">@SystemService(Context.WIFI_SERVICE)
+public class WifiManager {
+    ...
+    @SystemApi
+    public static final int WIFI_AP_STATE_DISABLING = 10;
+    @SystemApi
+    public static final int WIFI_AP_STATE_DISABLED = 11;
+    @SystemApi
+    public static final int WIFI_AP_STATE_ENABLING = 12;
+    @SystemApi
+    public static final int WIFI_AP_STATE_ENABLED = 13;
+    @SystemApi
+    public static final int WIFI_AP_STATE_FAILED = 14;
+}
+</code></pre>
+<p>望文生义，不用过多解释了。</p>
+<h1 id="tetheringmanager-监听"><code>TetheringManager</code> 监听</h1>
+<p>Android 16 <code>TetheringManager</code> 提供了更规范的 API 来监控热点状态。</p>
+<pre><code class="language-kotlin">@RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
+@RequiresApi(Build.VERSION_CODES.BAKLAVA)
+fun registerTetheringCallback(context: Context, onHotspotStateChanged: (Boolean) -&gt; Unit) {
+    val tetheringManager = context.getSystemService(Context.TETHERING_SERVICE) as TetheringManager
+    tetheringManager.registerTetheringEventCallback(
+        Runnable::run,
+        object : TetheringManager.TetheringEventCallback {
+            override fun onTetheredInterfacesChanged(interfaces: MutableSet&lt;TetheringInterface&gt;) {
+                onHotspotStateChanged(interfaces.isNotEmpty())
+            }
+        }
+    )
+}
+</code></pre>
+<p>它相比上面的反射调用更加灵活，但需要更新的设备支持，目前来说应用较少。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Claude Code 如何配置第三方模型]]></title>
+        <id>https://LiarrDev.github.io/post/Configure-Third-Party-Models-in-Claude-Code/</id>
+        <link href="https://LiarrDev.github.io/post/Configure-Third-Party-Models-in-Claude-Code/">
+        </link>
+        <updated>2026-06-03T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="背景">背景</h1>
+<p>之前介绍过<a href="https://liarrdev.github.io/post/Connect-JetBrains-IDEs-to-Claude-Code/">如何通过 ACP 让 JetBrains IDEs 连上本地 Claude Code</a>，发现有不少读者不知道 Claude Code 其实可以使用第三方模型，虽然大家都知道 Claude 官方的模型很强，但由于价格昂贵，因此很多人都会选择中转站或者第三方模型。</p>
+<p>在『<a href="https://liarrdev.github.io/post/Local-Music-Library-Filtering-High-Bitrate-Audio/">本地音乐库构建：筛选高码率音频</a>』中，细心的读者应该留意到我是搭配了 MiniMax 的模型来使用，恰逢 MiniMax 的 Token Plan 到期，而 Xiaomi MiMo 这边刚好提高了额度，于是趁机切换过去，顺便介绍一下如何给 Claude Code 配置第三方模型。</p>
+<h1 id="准备">准备</h1>
+<p>首先当然是安装 Claude Code，可以参考官方文档进行安装，本文不再赘述。</p>
+<p>其次需要购买第三方 AI 模型服务，在其控制台中获取以下信息：</p>
+<ul>
+<li>API Key</li>
+<li>Base URL （需兼容 Anthropic 接口协议）</li>
+<li>模型 ID</li>
+</ul>
+<p>以 Xiaomi MiMo 开放平台为例：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1780503485013.png" alt="Xiaomi Mimo" loading="lazy"></figure>
+<p>注意事项：</p>
+<ul>
+<li>API Key 一般只在创建时显示一次，请务必妥善保存。如果忘记，可以重新创建。</li>
+<li>Base URL 需要选择兼容 Anthropic 接口协议的地址，否则 Claude Code 无法识别。</li>
+<li>模型 ID 有时候会与页面展示的名称有差异（如大小写不同），请务必确认准确的模型 ID，否则可能导致无法使用。</li>
+</ul>
+<h1 id="手动配置">手动配置</h1>
+<p>安装好 Claude Code 后，打开 <code>~/.claude/settings.json</code> 文件。如果该文件不存在，可以自行创建。在文件中添加或修改以下配置：</p>
+<pre><code class="language-json">{
+  &quot;env&quot;: {
+    &quot;ANTHROPIC_BASE_URL&quot;: &quot;BASE_URL&quot;,
+    &quot;ANTHROPIC_AUTH_TOKEN&quot;: &quot;MIMO_API_KEY&quot;,
+    &quot;ANTHROPIC_MODEL&quot;: &quot;mimo-v2.5-pro&quot;,
+    &quot;ANTHROPIC_DEFAULT_SONNET_MODEL&quot;: &quot;mimo-v2.5-pro&quot;,
+    &quot;ANTHROPIC_DEFAULT_OPUS_MODEL&quot;: &quot;mimo-v2.5-pro&quot;,
+    &quot;ANTHROPIC_DEFAULT_HAIKU_MODEL&quot;: &quot;mimo-v2.5-pro&quot;
+  }
+}
+</code></pre>
+<p>按需修改上面的信息并保存，即可使用配置的模型。</p>
+<h1 id="cc-switch-一键配置">CC Switch 一键配置</h1>
+<p>尽管手动配置并不复杂，但现在大家更倾向于使用 <a href="https://www.ccswitch.io">CC Switch</a> 配置，它支持一键切换模型，并且支持配置多个模型，非常适合多模型使用场景。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1780503513132.png" alt="CC Switch" loading="lazy"></figure>
+<p>CC Switch 预设了大量供应商，真正做到了一键配置，省去了手动配置的繁琐。</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1780503537272.png" alt="预设供应商" loading="lazy"></figure>
+<p>针对已经预设的供应商，你只需要填入 API Key，其他信息会自动配置。</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1780503552417.png" alt="编辑供应商" loading="lazy"></figure>
+<p>保存后回到首页，启用对应的模型即可。</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1780503567107.png" alt="首页" loading="lazy"></figure>
+<h1 id="验证配置">验证配置</h1>
+<p>打开终端启动 Claude Code，在启动信息中可以看到当前使用的模型名称。如果显示的是你配置的模型名称，则说明配置成功。</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1780503587698.png" alt="Claude Code" loading="lazy"></figure>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[本地音乐库构建：筛选高码率音频]]></title>
+        <id>https://LiarrDev.github.io/post/Local-Music-Library-Filtering-High-Bitrate-Audio/</id>
+        <link href="https://LiarrDev.github.io/post/Local-Music-Library-Filtering-High-Bitrate-Audio/">
+        </link>
+        <updated>2026-05-27T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>有看过之前文章『<a href="https://liarrdev.github.io/post/Reading-and-Manipulating-MP3-ID3-Tags-with-mp3agic/">使用 mp3agic 读写 MP3 的 ID3 标签</a>』的读者们应该知道，前段时间我在整理本地音乐库，本篇是对『<a href="https://liarrdev.github.io/post/Local-Music-Library-Audio-Processing/">本地音乐库构建：音源处理</a>』的补充。</p>
+<p>前面提到我本地的音乐库体积庞大，经过这次整理和添加，体积已经突破 30GB，并且还在继续膨胀。</p>
+<p>众所周知，最近内存价格疯涨，存储空间越来越宝贵，我不得不考虑如何压缩音乐库的体积。</p>
+<p>直接用 ZIP 压缩音乐库首先被我排除。原因很简单：ZIP 需要解压后才能读取文件，使用上不够便捷；而且 MP3 本身就是高度压缩的格式，ZIP 几乎无法进一步压缩。</p>
+<p>看来只能从音频本身入手了，要么转换格式，要么降低码率。</p>
+<p>而在之前『<a href="https://liarrdev.github.io/post/Local-Music-Library-Audio-Processing/">本地音乐库构建：音源处理</a>』中，我通过 FFmpeg 将 OGG 转为 MP3，主要是为了更好的兼容性，目前没有再迁移格式的打算，那么可行的方案就只有降低码率了，准确来说，应该是比特率。因为目前我手头上已经没有高功率的发烧设备，以后大概率也不会再购买，听音乐的需求停留在能听个响就行。</p>
+<p>在音频文件中，kbps 是“千比特每秒”（Kilobits Per Second）的缩写，它代表了音频数据的比特率。比特率是指每秒钟传输或处理的比特（bit）数量，是衡量音频质量和文件大小的一个重要指标。一般来说，比特率越高，音频文件的质量越好，因为它能够编码更多的音频数据，提供更丰富的音质细节。然而，更高的比特率也意味着更大的文件大小。</p>
+<p>我们在音乐平台选择不同音质时，本质上就是在选择不同的码率：</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1779815771951.png" alt="音乐平台不同音质选择" loading="lazy"></figure>
+<p>为了节约存储空间，我一般都是选择「标准音质」，通常情况下，它是 128kbps。</p>
+<p>但部分音频可能是早年用不明来源下载的，码率偏高。比如『<a href="https://melodyinbox.com">MelodyInbox</a>』虽然说有多种码率选择，但很多时候都指向同一个高码率的音频文件。</p>
+<p>既然如此，我需要先从数千首歌中筛选出高码率音频，再去寻找低码率替代源。</p>
+<p>之前做音源处理时就有读者问：如此繁琐的工作，为什么不交给 AI？</p>
+<p>不得不承认，AI 时代确实已经到来，但很遗憾，有些场景下程序员的效率依然更高。</p>
+<p>以我使用 Claude Code 搭配 MiniMax M2.7 HighSpeed 模型为例，让它列出所有大于 200kbps 的音频文件，等了 6 分钟仍无结果：</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1779815810800.png" alt="AI 筛选" loading="lazy"></figure>
+<p>无奈只能关掉 AI，转而手搓脚本：</p>
+<pre><code class="language-bash">#!/bin/bash
+
+# 查找当前目录及子目录下所有码率大于 200kbps 的 MP3 文件
+# 使用 ffprobe 获取码率，不修改任何文件
+
+echo &quot;正在扫描 MP3 文件...&quot;
+
+while IFS= read -r -d '' file; do
+    bitrate=$(ffprobe -v error -show_entries format=bit_rate -of default=noprint_wrappers=1:nokey=1 &quot;$file&quot; 2&gt;/dev/null)
+    size=$(stat -f%z &quot;$file&quot; 2&gt;/dev/null)
+    if [ -n &quot;$bitrate&quot; ] &amp;&amp; [ &quot;$bitrate&quot; -gt 200000 ]; then
+        size_mb=$(awk &quot;BEGIN {printf \&quot;%.2f\&quot;, $size / 1024 / 1024}&quot;)
+        echo &quot;$file | 码率: $((bitrate / 1000)) kbps | 大小: ${size_mb} MB&quot;
+    fi
+done &lt; &lt;(find . -name &quot;*.mp3&quot; -type f -print0)
+
+echo &quot;扫描完成。&quot;
+</code></pre>
+<p>脚本比较简单，只运行了 2 分多钟就把我需要的结果筛选出来了。</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1779815830532.png" alt="脚本筛选" loading="lazy"></figure>
+<p>接下来就是去寻找低码率的替代源。如果实在找不到，可能会考虑对高码率音频进行二次压缩，但这并非最佳方案——音频本身就是从母带压缩而来，二次压缩会导致失真叠加，还是应该优先寻找原生低码率版本。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[让 JetBrains IDEs 连上本地 Claude Code]]></title>
+        <id>https://LiarrDev.github.io/post/Connect-JetBrains-IDEs-to-Claude-Code/</id>
+        <link href="https://LiarrDev.github.io/post/Connect-JetBrains-IDEs-to-Claude-Code/">
+        </link>
+        <updated>2026-05-11T16:00:00.000Z</updated>
+        <content type="html"><![CDATA[<p>如今各种 AI 编程工具层出不穷，谁才是真正的“最强王者”我不敢妄下定论，但我相信 Claude 在广大开发者的心中必有一席之地。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1778428256446.jpg" alt="Claude" loading="lazy"></figure>
+<p>就我目前的体验来看，哪怕使用同样的模型，Claude 在任务调度方面，表现依然优于许多 AI IDE。</p>
+<p>但即便我是一名开发者，我依然讨厌面对 Claude Code 那黑压压的终端窗口，GUI 才是我的真爱。所以现在大多数 AI 开发任务我都会先交给 Trae 处理，只有在 Trae 不给力的时候，才“退而求其次”回到 Claude Code。</p>
+<figure data-type="image" tabindex="2"><img src="https://LiarrDev.github.io/post-images/1778428305862.webp" alt="Claude Code" loading="lazy"></figure>
+<p>为什么不用 Claude Desktop？主要是觉得它的界面设计更适合纯 Vibe Coding，对我这种习惯了“古法编程 + AI 辅助”的开发方式来说，实在不够友好。</p>
+<figure data-type="image" tabindex="3"><img src="https://LiarrDev.github.io/post-images/1778428327300.png" alt="Claude Desktop" loading="lazy"></figure>
+<p>论写代码，没有什么比“在自己熟悉的 IDE 面板里直接对话”更舒服了。那有没有办法把 Claude Code 接进我日常使用的 Android Studio 或 IntelliJ IDEA 呢？</p>
+<p>官方的确发布了一款<a href="https://plugins.jetbrains.com/plugin/27310-claude-code-beta-">面向 JetBrains IDEs 的插件</a>，可我下载下来之后却大呼上当。它本质上就是在 IDE 内置终端里运行 Claude Code，只不过多了个 Diff Viewer 之类的功能，能查看文件差异，但我仍然逃不掉那个熟悉的黑框。</p>
+<figure data-type="image" tabindex="4"><img src="https://LiarrDev.github.io/post-images/1778428381072.png" alt="Claude Code for JetBrains" loading="lazy"></figure>
+<p>反观<a href="https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code">给 VS Code 的插件</a>，从截图就能看到它提供了专门的对话输入界面，看上去友好得多。</p>
+<figure data-type="image" tabindex="5"><img src="https://LiarrDev.github.io/post-images/1778428417163.png" alt="Claude Code for VSCode" loading="lazy"></figure>
+<p>既然官方支持有限，那就只能另辟蹊径了。</p>
+<p>2025 年底，JetBrains 为 AI Assistant 插件推送了一个重磅功能：支持自定义 <a href="https://www.jetbrains.com/acp/">ACP（Agent Client Protocol）</a> 配置。这意味着你可以把任意一个支持 ACP 的 Agent <a href="https://www.jetbrains.com/zh-cn/help/ai-assistant/2026.1/acp.html#">接入到 AI Assistant</a>，Claude Code 自然也不例外。</p>
+<figure data-type="image" tabindex="6"><img src="https://LiarrDev.github.io/post-images/1778428661833.webp" alt="ACP" loading="lazy"></figure>
+<p>ACP 是一种开放协议，专门用来规范 AI Agent 与 IDE 之间的通信方式。它有点类似于 Language Server Protocol (LSP)，但专注于 AI 代理的集成，让开发者可以在不同编辑器中使用各种各样的 AI 工具，而不用为每个组合单独造适配器。这个协议由 Zed Industries（Zed 编辑器的开发者）主导，与 Anthropic、Google 等合作开发，JetBrains 也已经加入其中。</p>
+<p>在 ACP 出现之前，每个 AI Agent 想要接入某个 IDE，都得单独开发一套适配器。Claude Code 写一套，Cursor 写一套，Windsurf 再写一套——大量重复造轮子，而且每当 Agent 更新，适配器也必须跟着改。</p>
+<p>ACP 的核心思路就是：定义一套标准通信协议，任何 Agent 只要实现了 ACP Server，任何 IDE 只要实现了 ACP Client，二者就能直接对接。</p>
+<p>了解了 ACP，我们开始实操。</p>
+<p>首先确认你已经安装了 <a href="https://plugins.jetbrains.com/plugin/15637-jetbrains-ai-assistant">JetBrains AI Assistant</a> 插件。在 IntelliJ IDEA 里它默认就捆绑好了，但在 Android Studio 中需要自行安装。</p>
+<figure data-type="image" tabindex="7"><img src="https://LiarrDev.github.io/post-images/1778428477147.png" alt="JetBrains AI Assistan Plugin" loading="lazy"></figure>
+<p>同时确保你已经装好并正常配置了 Claude Code。本文不再赘述安装和配置过程，如果你的 Claude Code CLI 无法正常工作，后续操作将无法进行。</p>
+<p>接下来，开始配置 ACP。</p>
+<p>先安装 <a href="https://www.npmjs.com/package/@agentclientprotocol/claude-agent-acp"><code>@agentclientprotocol/claude-agent-acp</code></a>。这是 Zed 官方提供的 ACP 适配器，用来桥接 Claude Code 和 ACP 协议。它的前身是 <a href="https://www.npmjs.com/package/@zed-industries/claude-code-acp"><code>@zed-industries/claude-code-acp</code></a>，如果你看到这个包名，不用顾虑，它们是一脉相承的。</p>
+<pre><code class="language-bash">➜   npm install -g @agentclientprotocol/claude-agent-acp
+</code></pre>
+<p>注意必须用 <code>-g</code> 全局安装，这样 ACP Server 才能作为独立命令被调用。这里我用的是 <code>npm</code>，如果你习惯其他包管理器（比如 <code>pnpm</code> 等），同样可以替换使用。</p>
+<p>打开 JetBrains AI Assistant 聊天面板，在菜单中选择「添加自定义智能体」，会自动打开一个名为 <code>acp.json</code> 的配置文件。</p>
+<figure data-type="image" tabindex="8"><img src="https://LiarrDev.github.io/post-images/1778428593059.png" alt="添加自定义智能体" loading="lazy"></figure>
+<p>在 <code>acp.json</code> 中添加配置项：</p>
+<pre><code class="language-json">{
+  ...
+  &quot;agent_servers&quot;: {
+    &quot;Claude Code&quot;: {
+      &quot;command&quot;: &quot;/Users/Liarr/.nvm/versions/node/v24.14.0/bin/claude-agent-acp&quot;
+    }
+  }
+}
+</code></pre>
+<p>将路径替换为你所安装的路径即可。如果不确定安装位置，可以用下面的命令查看：</p>
+<pre><code class="language-bash">➜   npm ls -g
+</code></pre>
+<p>保存文件后，回到 JetBrains AI Assistant 的聊天面板，在 Agent 列表中就能看到 Claude Code 了。选中它，就能够在熟悉的对话面板中直接使用。</p>
+<figure data-type="image" tabindex="9"><img src="https://LiarrDev.github.io/post-images/1778428617538.png" alt="JetBrains AI Assistant Agents" loading="lazy"></figure>
+]]></content>
+    </entry>
+</feed>
