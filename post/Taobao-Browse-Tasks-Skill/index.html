@@ -1,0 +1,719 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>把薅羊毛交给 AI：我做了个自动刷淘宝任务的 SKILL | Liarr&#39;s Studio</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://LiarrDev.github.io/favicon.ico">
+<link rel="stylesheet" href="https://LiarrDev.github.io/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+
+<script src="https://LiarrDev.github.io/media/js/jquery.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/masonry.pkgd.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/aos.js"></script>
+<script src="https://LiarrDev.github.io/media/js/pace.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/view-image.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/jquery.magnific-popup.min.js"></script>
+<script src="https://LiarrDev.github.io/media/js/functions.js"></script>
+    <meta name="referrer" content="never">
+    <meta name="description" content="不知道你有没有做过 App 里的薅羊毛任务：用一点小奖品或优惠吸引用户参与，用户却要每天花不少时间刷激励任务。以淘宝为例，芭芭农场要逛店，淘金币要“搜一搜”，各种会场要停留 15~30 秒领奖励。单个任务不过半分钟，但一天攒下来能吃掉一两个..." />
+    <meta name="keywords" content="" />
+    <script src="https://LiarrDev.github.io/media/js/waterfall.min.js"></script>
+    <script src="https://LiarrDev.github.io/media/js/prism.min.js"></script>
+  </head>
+  <body>
+            <header id="header" class="grid-container">
+        <!-- start: .menu-wrapper -->
+        <div class="menu-mobile"> 
+          <i class="fa fa-reorder"></i>
+        </div>
+        <div class="menu-wrapper">
+          <div class="">
+            <div class="logo">
+              <a href="https://LiarrDev.github.io"><img src="/media/images/custom-headerLogo.png" alt=""></a>
+            </div>
+            <!-- start: .main-nav -->
+
+            <nav class="main-nav grid-container grid-parent">
+              <ul id="menu-header" class="menu gradient-effect">
+                <li class=""><a href="https://LiarrDev.github.io" class="menu">首页</a></li>
+                
+                  <li class="" >
+                    <a href="/archives" class="menu">
+                      归档
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/tags" class="menu">
+                      标签
+                    </a>
+                  </li>
+                
+                  <li class="" >
+                    <a href="/post/about" class="menu">
+                      关于
+                    </a>
+                  </li>
+                
+                <li class="search-menu-item hide-on-mobile hide-on-tablet"><a href="#search-lightbox" class="lightbox mfp-inline"><i class="fa fa-search-line"></i></a></li>
+              </ul>
+            </nav>
+            <a href="#search-lightbox" class="lightbox epcl-search-button mfp-inline hide-on-tablet hide-on-desktop"><i class="fa fa-search-line"></i></a>
+            <!-- end: .main-nav -->
+            <div class="clear"></div>
+            <div class="border hide-on-tablet hide-on-mobile"></div>
+          </div>    
+          <div class="clear"></div>
+        </div>
+        <!-- end: .menu-wrapper -->
+        <div class="clear"></div>
+      </header>
+      <div class="hide-on-mobile hide-on-tablet hide-on-desktop">
+        <div id="search-lightbox" class="grid-container grid-small grid-parent mfp-hide">
+          <div class="search-wrapper section">
+            <form id="gridea-search-form" data-update="1793643771617" action="/search/index.html" class="search-form" _lpchecked="1">
+              <input type="text" name="q" id="s" value="" class="search-field" placeholder="搜点啥..." aria-label="搜点啥..." required="">
+              <button type="submit" class="submit" aria-label="Submit">
+                <i class="fa fa-search-line"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <main id="single" class="main grid-container fullcover no-sidebar aos-init aos-animate" data-aos="fade">
+
+        <div class="center content">
+          <div class="featured-image cover" style="background-image: url('https://LiarrDev.github.io/post-images/Taobao-Browse-Tasks-Skill.jpg');">
+            <div class="meta top"> 
+              <time class="meta-info" style="float:left;" datetime="2026-11-08"><i class="fa fa-calendar"></i><span class="lately">5 天内</span></time>
+              
+              <a href="https://LiarrDev.github.io/post/Taobao-Browse-Tasks-Skill/#comments" class="comments meta-info" title="">
+                <i class="fa fa-comment remixicon"></i><span class="comment-count valine-comment-count" data-xid="/Taobao-Browse-Tasks-Skill/"> </span>
+              </a>
+              <span id="/Taobao-Browse-Tasks-Skill/" class="leancloud_visitors views-counter meta-info" title=""><i class="fa fa-leancloud remixicon"></i><span class="leancloud-visitors-count"></span></span>
+              
+            </div>
+            <div class="info">
+              <div class="tags ">
+                
+              </div>
+              <h1 class="title ularge white bold">把薅羊毛交给 AI：我做了个自动刷淘宝任务的 SKILL</h1>
+            </div>
+          </div>
+        </div>  
+
+        <div class="epcl-page-wrapper">
+          <div class="left-content grid-70 np-mobile">
+            <article class="main-article post">
+              <section class="post-content">
+                <div class="text">
+                  <p>不知道你有没有做过 App 里的薅羊毛任务：用一点小奖品或优惠吸引用户参与，用户却要每天花不少时间刷激励任务。以淘宝为例，芭芭农场要逛店，淘金币要“搜一搜”，各种会场要停留 15~30 秒领奖励。单个任务不过半分钟，但一天攒下来能吃掉一两个小时。我每天上下班在地铁上，总能看到有人机械地刷着这些任务。</p>
+<table>
+    <tr>
+        <th>淘金币</th>
+        <th>芭芭农场</th>
+    </tr>
+    <tr>
+        <td><img src="https://liarrdev.github.io/post-images/1793635290004.png"></td>
+        <td><img src="https://liarrdev.github.io/post-images/1793635298484.png"></td>
+    </tr>
+</table>
+<p>坦白说，这些任务确实能薅到一些羊毛，但如果换算成时间成本，性价比并不高。我就在想：把这些碎片化时间用来看几篇文章，会不会更有价值？</p>
+<p>小孩子才做选择，成年人全都要。羊毛和时间，我都不放过！</p>
+<p>上次介绍过 <a href="https://liarrdev.github.io/post/Mobile-MCP/">Mobile MCP</a>，一个由 AI 驱动的强大移动端自动化工具。最近我基于它做了一个自动刷淘宝任务的 Skill：只需把手机连接电脑，就可以让 AI 接管任务流程，你则可以利用这段时间做更有意义的事，尤其适合上班后挂在后台运行。</p>
+<figure data-type="image" tabindex="1"><img src="https://LiarrDev.github.io/post-images/1793635530941.png" alt="执行 taobao-browse-tasks" loading="lazy"></figure>
+<p>『<a href="https://github.com/LiarrDev/taobao-browse-tasks">taobao-browse-tasks</a>』不是一个独立 App，而是一个 Agent Skill，它的组成很轻量，不过是若干份参考文档和 Python 脚本，告诉 AI 怎么理解任务、如何决策、怎么操作。加载到任何支持 Agent Skill 的客户端，只需要说一句“刷淘宝任务”或者“做芭芭农场”，Agent 就会自己识屏、点任务、停留、返回，并把每一步记进日志。</p>
+<p>这个 Skill 做得很克制，只做浏览类任务，这也是激励任务的大头，跳转第三方应用、游戏、关注等一概跳过，避免干扰和风险。</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>处理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BROWSE</code> 浏览 / 逛店 / 看会场</td>
+<td>✅ 执行</td>
+</tr>
+<tr>
+<td><code>GAME</code> 去玩 / 挑战 / 抽奖 / 合成</td>
+<td>⏭ 跳过</td>
+</tr>
+<tr>
+<td><code>THIRD_PARTY</code> 支付宝 / 头条 / 百度 / 淘宝特价版</td>
+<td>⏭ 跳过</td>
+</tr>
+<tr>
+<td><code>OTHER</code> 下单 / 加购 / 关注 / 邀请 / 看直播</td>
+<td>⏭ 跳过</td>
+</tr>
+</tbody>
+</table>
+<p>做这个 Skill 过程中也踩了一些坑。淘宝的页面架构也许比较混乱，有些是 H5，有些用的是古早的 Weex。而 <a href="https://liarrdev.github.io/post/Mobile-MCP/">Mobile MCP</a> 默认通过 dump 读控件树，在部分任务列表中会出现“滑动后读到的控件树仍是滑动前状态”的情况，导致 AI 无法正确识别任务。幸好 <a href="https://liarrdev.github.io/post/Mobile-MCP/">Mobile MCP</a> 有回退机制，会自动切换到截图模式，通过图像识别读取位置。偶尔 AI 也会因为计算坐标偏差而点错，好在它能自行纠错，点错就返回。</p>
+<p>比技术更难对付的是淘宝的风控模型。众所周知，阿里系产品的体验常被吐槽，但安全风控能力确实很强。早些年我尝试用 Auto.js 写脚本刷淘宝任务，很快就被风控降权了，这次依然绕不开这个问题。风控是个黑盒，我们无法知道它的具体规则，停留过短、路径单一、频次过高等等行为都可能被标记，只能通过猜测和推断调整行为来规避，因此目前仍无法完全避免，所以我还定了规则控制每轮任务的上限，尽量减少触发风控的机会，你也可以通过 Agent 修改它。</p>
+<p>使用也很简单，通过下面的命令安装 Skill：</p>
+<pre><code class="language-bash">➜   git clone https://github.com/LiarrDev/taobao-browse-tasks.git ~/.agents/skills/taobao-browse-tasks
+</code></pre>
+<p>或者直接把<a href="https://github.com/LiarrDev/taobao-browse-tasks">项目</a>丢给 Agent 就好，它会告诉你怎么做。</p>
+<p>目前主流程覆盖<strong>芭芭农场</strong>和<strong>淘金币任务</strong>，外加红包签到和小黑盒；另外，最近不是双十一嘛，我也加了两个对应的临时活动模块，你可以跑起来试试。</p>
+<p>由于大模型主要参与决策，不需要很长的推理，整个任务跑下来并不会消耗太多 Token；但建议使用聪明一点的模型，能明显减少决策时间。</p>
+<p>如果你追求极致的时间效率，这个 Skill 也许并不是最佳选择。它本质上是一个带安全边界的具身 Agent 最小闭环：看屏幕 → 做动作 → 验证结果 → 记账。实际任务执行时间可能只占流程的一半，也就是说，一个 15 秒的任务，真正跑下来可能要超过 30 秒。</p>
+<p>它的核心价值是 “省注意力”，而不是“省时间”。</p>
+<p>每天省下的不是那一两个小时，是“还得惦记着去做任务”的那份心理负担。</p>
+
+                </div>
+                <div class="clear"></div>
+              </section>
+            </article>
+            <div class="clear"></div>
+
+            <section class="related section">
+              
+              <article class="prev grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/MediaRecorder-MediaPlayer.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/MediaRecorder-MediaPlayer/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2026-12-08">2026-12-08</time>
+                  <h4 class="title white no-margin">MediaRecorder &amp; MediaPlayer 实现 Android 录音与回放</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/left-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+              
+              <article class="next grid-50 tablet-grid-50 grid-parent">
+                <div class="thumb cover lazy loaded" style="background-image: url('https://LiarrDev.github.io/post-images/Mobile-MCP.png');"></div>
+                 <a href="https://LiarrDev.github.io/post/Mobile-MCP/" class="full-link"></a>
+                 <div class="info">
+                  <time datetime="2026-11-02">2026-11-02</time>
+                  <h4 class="title white no-margin">从脚本到 Agent：Mobile MCP 让 AI 直接操作手机</h4>
+                </div>
+                 <span class="epcl-button red">
+                  <img src="https://LiarrDev.github.io/media/images/right-arrow.svg" width="15" alt="Left Arrow">
+                </span>
+                <div class="overlay"></div>
+              </article>
+              
+
+                <div class="clear"></div>
+            </section>
+
+              <div class="clear"></div>
+              
+            
+              <div id="comments" class="bg-white hosted ">
+                
+                  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+<div class="clear"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '92c64360108d74cc926d',
+    clientSecret: '4d07c0a120bd31a7b0cfd8f588c616d543448893',
+    repo: 'LiarrDev.github.io',
+    owner: 'LiarrDev',
+    admin: ['LiarrDev'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+                
+                
+              </div>
+            
+
+            </div>
+          </div>
+      </main>
+
+          <footer id="footer" class="grid-container">
+        <div class="widgets row gradient-effect">
+            <div class="default-sidebar border-effect">
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_epcl_posts_thumbs underline-effect">
+                  <h4 class="widget-title title white bordered">最新文章</h4>
+                  
+                  
+                  <article class="item post-0 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/MediaRecorder-MediaPlayer/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/MediaRecorder-MediaPlayer.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-12-08">2026-12-08</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/MediaRecorder-MediaPlayer/">MediaRecorder &amp; MediaPlayer 实现 Android 录音与回放</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-1 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Taobao-Browse-Tasks-Skill/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Taobao-Browse-Tasks-Skill.jpg');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-11-08">2026-11-08</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Taobao-Browse-Tasks-Skill/">把薅羊毛交给 AI：我做了个自动刷淘宝任务的 SKILL</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  <article class="item post-2 post type-post status-publish format-standard has-post-thumbnail hentry">
+                    <a href="https://LiarrDev.github.io/post/Mobile-MCP/" class="thumb hover-effect">
+                      <span class="fullimage cover" style="display:block;border-radius:50%;background-image: url('https://LiarrDev.github.io/post-images/Mobile-MCP.png');"></span>
+                    </a>
+                    <div class="info gradient-effect">
+                      <time datetime="2026-11-02">2026-11-02</time>
+                      <h4 class="title usmall">
+                        <a href="https://LiarrDev.github.io/post/Mobile-MCP/">从脚本到 Agent：Mobile MCP 让 AI 直接操作手机</a>
+                      </h4>
+                    </div>
+                    <div class="clear"></div>
+                  </article>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="tag_cloud-2" class="widget widget_tag_cloud underline-effect">
+                  <h4 class="widget-title title white bordered">标签云</h4>
+                  <div class="tagcloud">
+                    
+                      <a href="https://LiarrDev.github.io/tag/Android/" class="ctag ctag-0 ctag-Android" aria-label="">Android</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/-qO3SInb4/" class="ctag ctag-1 ctag--qO3SInb4" aria-label="">Flutter</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/vAaPhYGe0/" class="ctag ctag-2 ctag-vAaPhYGe0" aria-label="">HarmonyOS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/3PRwtWYOei/" class="ctag ctag-3 ctag-3PRwtWYOei" aria-label="">Design Pattern</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Server/" class="ctag ctag-4 ctag-Server" aria-label="">Server</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Java/" class="ctag ctag-5 ctag-Java" aria-label="">Java</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Algorithm/" class="ctag ctag-6 ctag-Algorithm" aria-label="">Algorithm</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Hosts/" class="ctag ctag-7 ctag-Hosts" aria-label="">Hosts</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/Blog/" class="ctag ctag-8 ctag-Blog" aria-label="">Blog</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/JavaScript/" class="ctag ctag-9 ctag-JavaScript" aria-label="">JavaScript</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/LaaHFFyAa/" class="ctag ctag-10 ctag-LaaHFFyAa" aria-label="">HTML / CSS</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/NodeJS/" class="ctag ctag-11 ctag-NodeJS" aria-label="">Node.js</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/C&amp;C++/" class="ctag ctag-12 ctag-C&amp;C++" aria-label="">C / C++</a>
+                    
+                      <a href="https://LiarrDev.github.io/tag/React-Native/" class="ctag ctag-13 ctag-React-Native" aria-label="">React Native</a>
+                    
+                  </div>
+                  <div class="clear"></div>
+                </section>
+              </div>
+
+              <div class="grid-33 tablet-grid-50 mobile-grid-100">
+                <section id="epcl_about-2" class="widget widget_epcl_about underline-effect">
+                  <h4 class="widget-title title white bordered">关于我</h4>
+                  <div class="avatar">
+                    <a href="" class="translate-effect thumb"><span class="fullimage cover" style="background-image: url(https://LiarrDev.github.io/images/avatar.png);"></span></a>
+                  </div>
+                  <div class="info">
+                    <h4 class="title small author-name gradient-effect no-margin"><a href="">Liarr&#39;s Studio</a></h4>
+                    <p class="founder">温故而知新</p>
+                    <div class="social">
+                      
+                          
+                            <a href="https://github.com/LiarrDev" class="translate-effect" target="_blank"><i class="fa fa-github"></i></a>
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                        
+                      
+                    </div> 
+                  </div>
+                  <div class="clear"></div>
+                  </section>
+              </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="logo">
+          <a href="https://LiarrDev.github.io"><img src="/media/images/gridea.png" alt=""></a>
+        </div>
+        <p class="published border-effect">
+          ©2020 共 167 篇文章
+          <br/>
+          Theme <a href="https://github.com/lmm214/gridea-theme-breek" target="_blank">「breek」</a> Powered by <a href="https://gridea.dev/" target="_blank">「Gridea」</a>
+        </p>
+        
+        <a href="javascript:void(0)" id="back-to-top" class="epcl-button dark" style="display:none">
+          <i class="fa fa-arrow"></i>
+        </a>
+    </footer>
+    
+    <div class="clear"></div>
+
+        
+
+      
+    <script src="https://LiarrDev.github.io/media/js/functions-post.js"></script>
+
+    </div>
+    <!-- end: #wrapper -->
+  </body>
+</html>
